@@ -1,0 +1,1906 @@
+<!DOCTYPE html><html lang="es" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://jssdocente.github.io/pmdm2627d/temas/proyectos/GameVault/08-LibraryAndDetailAdvanced.html">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../imagenes/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>8. LibraryScreen y Detalle Avanzado - 2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M17%2013h-4v4h-2v-4H7v-2h4V7h2v4h4m-5-9A10%2010%200%200%200%202%2012a10%2010%200%200%200%2010%2010%2010%2010%200%200%200%2010-10A10%2010%200%200%200%2012%202%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../extra/css/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="Teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#8-libraryscreen-y-detalle-avanzado" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../../index.html" title="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" class="md-header__button md-logo" aria-label="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" data-md-component="logo">
+      
+  <img src="../../../imagenes/logofp.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              8. LibraryScreen y Detalle Avanzado
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="Teal" aria-label="Cambiar a modo noche" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo noche" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="light-blue" data-md-color-accent="Teal" aria-label="Cambiar a modo día" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo día" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../index.html" title="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" class="md-nav__button md-logo" aria-label="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" data-md-component="logo">
+      
+  <img src="../../../imagenes/logofp.png" alt="logo">
+
+    </a>
+    2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Android
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Android
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    El lenguaje kotlin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    El lenguaje kotlin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introducción
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/11-variables-tipos-datos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/12-expresiones-vs-sentencias.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Expresiones vs Sentencias
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/12.1-when.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    When
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/13-funciones-lambdas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funciones y lambdas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/14-null-safety.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Null safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_7">
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_7" id="__nav_2_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Colecciones
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Colecciones
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/41-arrays.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arrays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/42-listas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/43-maps.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/44-sets.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/21-poo.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    POO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/22-objetos-anonimos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Objetos anónimos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/23-data-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data classes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/24-enum-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enum classes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/25-genericos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Genéricos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/26-sealed-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clases selladas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/31-scope-functions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scope functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-kotlin/52-corrutinas-sencillo.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corrutinas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3">
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Herramientas Proyecto Android
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Herramientas Proyecto Android
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-tools/01-gradle-agp-estructura.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gradle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-tools/02-build-gradle.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build-gradle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-tools/03-android-manifest.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fichero Manifest
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4">
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jetpack Compose
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Jetpack Compose
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-compose/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introducción
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-compose/21-composable-functions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funciones componibles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-compose/22-state-management.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gestión del estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-compose/23-listas-cuadriculas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-compose/24-navegacion-rutas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navegación Rutas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-compose/25-material-design.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Material Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../00-android/00-compose/99-glosario-android.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glosario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UT1 - Visión General y Entorno de desarrollo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#indice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📖 Índice
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flujo-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ El Flujo de Persistencia: Favoritos y Wishlist
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏗️ El Flujo de Persistencia: Favoritos y Wishlist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-de-la-ui-al-repositorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. De la UI al Repositorio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-la-magia-de-la-reactividad-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. La Magia de la Reactividad (Flow)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diseno-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ Diseño de LibraryScreen: Tu Colección Personal
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏗️ Diseño de LibraryScreen: Tu Colección Personal">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-implementacion-de-la-pantalla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Implementación de la Pantalla
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#navegacion-card" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ Navegación y LibraryGameCard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏗️ Navegación y LibraryGameCard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-navegacion-desde-la-card" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Navegación desde la Card
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-diseno-de-librarygamecard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Diseño de LibraryGameCard
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#swipe-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ Interacción Avanzada: Swipe-to-Action y Diálogos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏗️ Interacción Avanzada: Swipe-to-Action y Diálogos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-swipe-to-dismissbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Swipe-to-DismissBox
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-confirmacion-con-alertdialog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Confirmación con AlertDialog
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modificaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ Modificaciones en Componentes Existentes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Resumen de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="8-libraryscreen-y-detalle-avanzado"><strong>8. LibraryScreen y Detalle Avanzado</strong><a class="headerlink" href="#8-libraryscreen-y-detalle-avanzado" title="Permanent link">¶</a></h1>
+<p>En esta 8ª entrega, daremos el salto final en la experiencia de usuario de nuestra aplicación. Aprenderemos a diseñar la pantalla de <strong>Mi Biblioteca</strong> (<code>LibraryScreen</code>) integrando filtros dinámicos y acciones avanzadas como el <strong>Swipe-to-Action</strong>. Además, profundizaremos en la implementación técnica de los flujos de persistencia para <strong>Favoritos</strong> y <strong>Lista de Deseos</strong>, y cómo la arquitectura reactiva permite que la aplicación se actualice sola.</p>
+<hr>
+<h2 id="indice">📖 Índice<a class="headerlink" href="#indice" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#flujo-persistencia">El Flujo de Persistencia: Favoritos y Wishlist</a></li>
+<li><a href="#diseno-library">Diseño de LibraryScreen: Tu Colección Personal</a></li>
+<li><a href="#navegacion-card">Navegación y LibraryGameCard</a></li>
+<li><a href="#swipe-action">Interacción Avanzada: Swipe-to-Action y Diálogos</a></li>
+<li><a href="#modificaciones">Modificaciones en Componentes Existentes</a></li>
+</ol>
+<hr>
+<h2 id="flujo-persistencia">🏗️ El Flujo de Persistencia: Favoritos y Wishlist<a class="headerlink" href="#flujo-persistencia" title="Permanent link">¶</a></h2>
+<p>Una de las partes más importantes de esta entrega es entender cómo un click en la UI se convierte en un dato permanente. Hemos implementado dos flujos paralelos pero casi idénticos para <code>Favorite</code> y <code>Wishlist</code>.</p>
+<h3 id="11-de-la-ui-al-repositorio">1.1. De la UI al Repositorio<a class="headerlink" href="#11-de-la-ui-al-repositorio" title="Permanent link">¶</a></h3>
+<p>Ubicación: <code>presentation/ui/screens/DetailScreen.kt</code></p>
+<p>Cuando el usuario pulsa el icono del corazón o del marcador en <code>DetailScreen</code>, se desencadena la siguiente cadena:</p>
+<ol>
+<li><strong>UI (<code>DetailScreen</code>)</strong>: Llama a <code>viewModel.toggleFavorite()</code>.</li>
+<li><strong>ViewModel (<code>DetailViewModel</code>)</strong>: Ejecuta una corrutina que invoca al Caso de Uso <code>useCases.toggleFavorite(gameId)</code>.</li>
+<li><strong>Caso de Uso (<code>GameUseCases</code>)</strong>: Actúa como pasarela hacia el repositorio.</li>
+<li>
+<p><strong>Repositorio (<code>MockGamesRepositoryImpl</code>)</strong>: Contiene la lógica de negocio. </p>
+<ul>
+<li>Comprueba si el usuario existe en Room (integridad referencial).</li>
+<li>Si el juego no está, lo inserta con el estado correspondiente.</li>
+<li>Si ya está con ese estado, lo mantiene o elimina (comportamiento de "toggle").</li>
+<li>Si está con otro estado, lo actualiza.</li>
+</ul>
+</li>
+</ol>
+<pre class="mermaid"><code>sequenceDiagram
+    participant UI as DetailScreen
+    participant VM as DetailViewModel
+    participant UC as GameUseCases
+    participant Repo as GamesRepository
+    participant DB as Room (Database)
+
+    UI-&gt;&gt;VM: onToggleFavorite() / onToggleWishlist()
+    VM-&gt;&gt;UC: toggleFavorite(id) / toggleWishlist(id)
+    UC-&gt;&gt;Repo: toggleFavorite(id) / toggleWishlist(id)
+    Repo-&gt;&gt;DB: getUserByUsername(user)
+    DB--&gt;&gt;Repo: UserEntity
+    Note over Repo: Lógica de Negocio (Insert/Update/Delete)
+    Repo-&gt;&gt;DB: insertLibraryEntry() / deleteLibraryEntry()
+    DB--&gt;&gt;Repo: OK
+    Repo--&gt;&gt;UC: Resource.Success
+    UC--&gt;&gt;VM: Resource.Success</code></pre>
+<h3 id="12-la-magia-de-la-reactividad-flow">1.2. La Magia de la Reactividad (Flow)<a class="headerlink" href="#12-la-magia-de-la-reactividad-flow" title="Permanent link">¶</a></h3>
+<p>Para que el botón cambie de color instantáneamente, no usamos una variable simple, sino un <strong>Flow</strong>:</p>
+<ul>
+<li>El ViewModel observa <code>useCases.isFavorite(gameId)</code> desde el <code>init</code>.</li>
+<li>Room emite un nuevo valor cada vez que la tabla <code>library</code> cambia.</li>
+<li>La UI reacciona automáticamente al nuevo estado del <code>StateFlow</code> en el ViewModel.</li>
+</ul>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DB as Room (SQLite)
+    participant Repo as GamesRepository
+    participant UC as GameUseCases
+    participant VM as DetailViewModel
+    participant UI as DetailScreen
+
+    Note over DB, UI: Ciclo de Observación Reactiva
+    DB-&gt;&gt;Repo: Emite cambio en tabla 'library' (Flow)
+    Repo-&gt;&gt;UC: Propaga flujo de datos
+    UC-&gt;&gt;VM: Emite nuevo valor Boolean
+    VM-&gt;&gt;VM: Actualiza _uiState (StateFlow)
+    VM-&gt;&gt;UI: Notifica cambio de estado
+    UI-&gt;&gt;UI: Re-composición (Icono se ilumina)</code></pre>
+<hr>
+<h2 id="diseno-library">🏗️ Diseño de LibraryScreen: Tu Colección Personal<a class="headerlink" href="#diseno-library" title="Permanent link">¶</a></h2>
+<p>La <code>LibraryScreen</code> es el "hub" central del usuario. Su implementación se basa en un filtrado dinámico sobre los datos de Room.</p>
+<h3 id="21-implementacion-de-la-pantalla">2.1. Implementación de la Pantalla<a class="headerlink" href="#21-implementacion-de-la-pantalla" title="Permanent link">¶</a></h3>
+<p>Ubicación: <code>presentation/ui/screens/LibraryScreen.kt</code></p>
+<p>La pantalla utiliza un <code>LibraryViewModel</code> que gestiona el estado de los juegos cargados. El corazón de la pantalla es la combinación de:</p>
+<ul>
+<li><strong>Estado de Filtro</strong>: Un <code>LibraryStatus</code> que cambia cuando el usuario pulsa los chips superiores.</li>
+<li><strong>Carga de Datos</strong>: El método <code>loadLibrary()</code> solicita al repositorio los juegos que coinciden con el filtro seleccionado.</li>
+</ul>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// En LibraryViewModel.kt</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">fun</span><span class="w"> </span><span class="nf">loadLibrary</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">viewModelScope</span><span class="p">.</span><span class="na">launch</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="n">useCases</span><span class="p">.</span><span class="na">getLibraryGames</span><span class="p">(</span><span class="n">selectedFilter</span><span class="p">).</span><span class="na">collect</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">resource</span><span class="w"> </span><span class="o">-&gt;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="n">_uiState</span><span class="p">.</span><span class="na">update</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">libraryGames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resource</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr>
+<h2 id="navegacion-card">🏗️ Navegación y LibraryGameCard<a class="headerlink" href="#navegacion-card" title="Permanent link">¶</a></h2>
+<p>Para que la aplicación sea fluida, la biblioteca debe permitir volver al detalle de cualquier juego.</p>
+<h3 id="31-navegacion-desde-la-card">3.1. Navegación desde la Card<a class="headerlink" href="#31-navegacion-desde-la-card" title="Permanent link">¶</a></h3>
+<p>Ubicación: <code>presentation/ui/screens/LibraryScreen.kt</code></p>
+<p>Dentro de la <code>LibraryScreen</code>, cada elemento de la lista es una <code>LibraryGameCard</code>. Le pasamos un callback <code>onClick</code> que utiliza nuestro sistema de navegación:</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">LibraryGameCard</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">game</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">game</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uiState</span><span class="p">.</span><span class="na">selectedFilter</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">onClick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navStack</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">AppRoutes</span><span class="p">.</span><span class="na">Detail</span><span class="p">(</span><span class="n">game</span><span class="p">.</span><span class="na">id</span><span class="p">))</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="c1">// Navegación al detalle</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">onDelete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">gameToDelete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">game</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="32-diseno-de-librarygamecard">3.2. Diseño de LibraryGameCard<a class="headerlink" href="#32-diseno-de-librarygamecard" title="Permanent link">¶</a></h3>
+<p>Ubicación: <code>presentation/ui/componentes/LibraryCard.kt</code></p>
+<p>A diferencia de la <code>GameCard</code> de la Home, esta tarjeta es horizontal para aprovechar mejor el espacio:</p>
+<ul>
+<li><strong>Fila 1</strong>: Iconos de plataformas y un "Badge" que indica el estado (ej: "Deseados").</li>
+<li><strong>Fila 2</strong>: Título en negrita con truncado de texto.</li>
+<li><strong>Fila 3</strong>: Rating con estrella dorada.</li>
+<li><strong>Fila 4</strong>: Géneros del juego (GenreChipsRow).</li>
+<li><strong>Espaciado</strong>: Se utiliza <code>Arrangement.SpaceEvenly</code> para que toda la información quede perfectamente distribuida verticalmente.</li>
+</ul>
+<hr>
+<h2 id="swipe-action">🏗️ Interacción Avanzada: Swipe-to-Action y Diálogos<a class="headerlink" href="#swipe-action" title="Permanent link">¶</a></h2>
+<p>Hemos implementado el gesto de deslizar para eliminar, una de las interacciones más comunes en Android moderno.</p>
+<h3 id="41-swipe-to-dismissbox">4.1. Swipe-to-DismissBox<a class="headerlink" href="#41-swipe-to-dismissbox" title="Permanent link">¶</a></h3>
+<p>Ubicación: <code>presentation/ui/componentes/LibraryCard.kt</code></p>
+<p>Utilizamos el componente experimental de Material 3 <code>SwipeToDismissBox</code>. Lo configuramos para que solo permita deslizar de derecha a izquierda (EndToStart).</p>
+<h3 id="42-confirmacion-con-alertdialog">4.2. Confirmación con AlertDialog<a class="headerlink" href="#42-confirmacion-con-alertdialog" title="Permanent link">¶</a></h3>
+<p>Ubicación: <code>presentation/ui/screens/LibraryScreen.kt</code></p>
+<p>Para evitar borrados accidentales, el swipe no borra el dato directamente, sino que activa un estado <code>gameToDelete</code>. Esto dispara un <code>AlertDialog</code>:</p>
+<ul>
+<li>Si el usuario confirma, se llama a <code>viewModel.removeFromLibrary()</code>.</li>
+<li>Si cancela, el estado vuelve a <code>null</code> y la tarjeta recupera su posición.</li>
+</ul>
+<hr>
+<h2 id="modificaciones">🏗️ Modificaciones en Componentes Existentes<a class="headerlink" href="#modificaciones" title="Permanent link">¶</a></h2>
+<p>Para albergar estas funciones, hemos tenido que "tocar" piezas que ya teníamos:</p>
+<ol>
+<li>
+<p><strong><code>GameUseCases.kt</code></strong>: Se han añadido los métodos para Wishlist, notas y borrado. Es nuestro punto único de acceso a la lógica de juegos.</p>
+<p>Ubicación: <code>domain/usecase/GameUseCases.kt</code></p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Nuevos métodos en GameUseCases.kt</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">suspend</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">toggleWishlist</span><span class="p">(</span><span class="n">gameId</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">):</span><span class="w"> </span><span class="n">Resource</span><span class="o">&lt;</span><span class="kt">Unit</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gamesRepository</span><span class="p">.</span><span class="na">toggleWishlist</span><span class="p">(</span><span class="n">gameId</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kd">fun</span><span class="w"> </span><span class="nf">isInWishlist</span><span class="p">(</span><span class="n">gameId</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">):</span><span class="w"> </span><span class="n">Flow</span><span class="o">&lt;</span><span class="kt">Boolean</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gamesRepository</span><span class="p">.</span><span class="na">isInWishlist</span><span class="p">(</span><span class="n">gameId</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kd">suspend</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">removeFromLibrary</span><span class="p">(</span><span class="n">gameId</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">):</span><span class="w"> </span><span class="n">Resource</span><span class="o">&lt;</span><span class="kt">Unit</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gamesRepository</span><span class="p">.</span><span class="na">removeFromLibrary</span><span class="p">(</span><span class="n">gameId</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="kd">suspend</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">saveNoteForGame</span><span class="p">(</span><span class="n">gameId</span><span class="p">:</span><span class="w"> </span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">note</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="n">GameProgress</span><span class="p">)</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">gamesRepository</span><span class="p">.</span><span class="na">saveNoteForGame</span><span class="p">(</span><span class="n">gameId</span><span class="p">,</span><span class="w"> </span><span class="n">note</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">)</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong><code>DetailViewModel.kt</code></strong>: Ha crecido para observar múltiples flujos (isFavorite, isInWishlist, note, progress). Ahora es un ViewModel mucho más robusto y reactivo.</p>
+<p>Ubicación: <code>presentation/viewmodel/DetailViewModel.kt</code></p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// DetailViewModel.kt: Observación de múltiples flujos</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">init</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="n">loadGame</span><span class="p">()</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="n">observeFavoriteStatus</span><span class="p">()</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">observeWishlistStatus</span><span class="p">()</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="n">loadNoteAndProgress</span><span class="p">()</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="n">addToRecent</span><span class="p">()</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">}</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="kd">private</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">observeFavoriteStatus</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="n">viewModelScope</span><span class="p">.</span><span class="na">launch</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">        </span><span class="n">useCases</span><span class="p">.</span><span class="na">isFavorite</span><span class="p">(</span><span class="n">gameId</span><span class="p">).</span><span class="na">collect</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">favorite</span><span class="w"> </span><span class="o">-&gt;</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">            </span><span class="n">_uiState</span><span class="p">.</span><span class="na">update</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">isFavorite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">favorite</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="p">}</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong><code>AuthRepositoryImpl.kt</code></strong>: Ahora asegura que el usuario se guarde en Room al hacer login. Sin esto, las Claves Foráneas de Room fallarían por falta de integridad.</p>
+<p>Ubicación: <code>data/repository/AuthRepositoryImpl.kt</code></p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// AuthRepositoryImpl.kt: Sincronización con Room</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kd">override</span><span class="w"> </span><span class="kd">suspend</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span><span class="n">username</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="n">password</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">):</span><span class="w"> </span><span class="n">LoginResult</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="c1">// ... validación ...</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">validUsers</span><span class="o">[</span><span class="n">username</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">password</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">userData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registeredUsers</span><span class="o">[</span><span class="n">username</span><span class="o">]</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">userData</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">            </span><span class="n">db</span><span class="p">.</span><span class="na">userDao</span><span class="p">().</span><span class="na">insertUser</span><span class="p">(</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">                </span><span class="n">UserEntity</span><span class="p">(</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">                    </span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userData</span><span class="p">.</span><span class="na">username</span><span class="p">,</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">                    </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userData</span><span class="p">.</span><span class="na">username</span><span class="p">.</span><span class="na">replaceFirstChar</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">uppercase</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">                    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userData</span><span class="p">.</span><span class="na">email</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">                </span><span class="p">)</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">            </span><span class="p">)</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">LoginResult</span><span class="p">.</span><span class="na">Success</span><span class="p">(</span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">username</span><span class="p">)</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="p">}</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong><code>MockGamesRepositoryImpl.kt</code></strong>: Se ha convertido en un repositorio híbrido que mezcla datos estáticos (del Mock) con datos dinámicos (de Room) mediante operaciones de cruce por ID.</p>
+<p>Ubicación: <code>data/repository/MockGamesRepositoryImpl.kt</code></p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// MockGamesRepositoryImpl.kt: Repositorio híbrido</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">getLibraryGames</span><span class="p">(</span><span class="n">status</span><span class="p">:</span><span class="w"> </span><span class="n">LibraryStatus</span><span class="p">):</span><span class="w"> </span><span class="n">Flow</span><span class="o">&lt;</span><span class="n">Resource</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Game</span><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flow</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">emit</span><span class="p">(</span><span class="n">Resource</span><span class="p">.</span><span class="na">Loading</span><span class="p">)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getCurrentUser</span><span class="p">()</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">flow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">LibraryStatus</span><span class="p">.</span><span class="na">ALL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">        </span><span class="n">db</span><span class="p">.</span><span class="na">libraryDao</span><span class="p">().</span><span class="na">getLibraryForUser</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="n">db</span><span class="p">.</span><span class="na">libraryDao</span><span class="p">().</span><span class="na">getGamesByStatus</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">)</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="n">flow</span><span class="p">.</span><span class="na">collect</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">entities</span><span class="w"> </span><span class="o">-&gt;</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">games</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entities</span><span class="p">.</span><span class="na">mapNotNull</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">entity</span><span class="w"> </span><span class="o">-&gt;</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">            </span><span class="n">dataSource</span><span class="p">.</span><span class="na">games</span><span class="p">.</span><span class="na">find</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">entity</span><span class="p">.</span><span class="na">gameId</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">        </span><span class="n">emit</span><span class="p">(</span><span class="n">Resource</span><span class="p">.</span><span class="na">Success</span><span class="p">(</span><span class="n">games</span><span class="p">))</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">}</span>
+</span></code></pre></div>
+</li>
+</ol>
+<hr>
+<h2 id="resumen-de-aprendizaje">🎯 Resumen de Aprendizaje<a class="headerlink" href="#resumen-de-aprendizaje" title="Permanent link">¶</a></h2>
+<p>Al finalizar esta parte, el alumno domina:</p>
+<ol>
+<li><strong>Flujos Reactivos Completos</strong>: Desde la persistencia hasta la actualización visual.</li>
+<li><strong>Arquitectura Híbrida</strong>: Mezclar fuentes de datos estáticas y dinámicas.</li>
+<li><strong>Componentes UX Modernos</strong>: Swipe, diálogos de confirmación y badges de estado.</li>
+<li><strong>Integridad de Datos</strong>: Gestión de Foreign Keys y sincronización de usuarios.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2026-2027 Jesús García - Licencia CC BY-NC-SA
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="mailto:&lt;jssgarcia.docente@gmail.com&gt;" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 12.13c-.15.01-.29.06-.39.17l-1 1 2.05 2 1-1c.22-.21.22-.56 0-.77l-1.24-1.23a.56.56 0 0 0-.38-.17m-2 1.75L13 19.94V22h2.06l6.06-6.07M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v-.89l8.24-8.22c.47-.49 1.12-.76 1.8-.76.34 0 .68.06 1 .19V6c0-1.12-.92-2-2.04-2m0 4-8 5-8-5V6l8 5 8-5"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["header.autohide", "content.tabs.link", "content.code.copy", "content.code.select", "navigation.top", "content.code.annotate", "navigation.path", "content.tooltips"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

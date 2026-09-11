@@ -1,0 +1,2683 @@
+<!DOCTYPE html><html lang="es" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://jssdocente.github.io/pmdm2627d/temas/01/index.html">
+      
+      
+        <link rel="prev" href="../00-android/00-compose/99-glosario-android.html">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../imagenes/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>UT1 - Visión General y Entorno de desarrollo - 2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M17%2013h-4v4h-2v-4H7v-2h4V7h2v4h4m-5-9A10%2010%200%200%200%202%2012a10%2010%200%200%200%2010%2010%2010%2010%200%200%200%2010-10A10%2010%200%200%200%2012%202%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../extra/css/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="Teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ut1-evolucion-y-entornos-de-desarrollo" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../index.html" title="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" class="md-header__button md-logo" aria-label="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" data-md-component="logo">
+      
+  <img src="../../imagenes/logofp.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              UT1 - Visión General y Entorno de desarrollo
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="Teal" aria-label="Cambiar a modo noche" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo noche" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="light-blue" data-md-color-accent="Teal" aria-label="Cambiar a modo día" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo día" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" class="md-nav__button md-logo" aria-label="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" data-md-component="logo">
+      
+  <img src="../../imagenes/logofp.png" alt="logo">
+
+    </a>
+    2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Android
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Android
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    El lenguaje kotlin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    El lenguaje kotlin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introducción
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/11-variables-tipos-datos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/12-expresiones-vs-sentencias.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Expresiones vs Sentencias
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/12.1-when.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    When
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/13-funciones-lambdas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funciones y lambdas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/14-null-safety.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Null safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_7">
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_7" id="__nav_2_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Colecciones
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Colecciones
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/41-arrays.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arrays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/42-listas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/43-maps.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/44-sets.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/21-poo.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    POO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/22-objetos-anonimos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Objetos anónimos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/23-data-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data classes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/24-enum-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enum classes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/25-genericos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Genéricos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/26-sealed-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clases selladas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/31-scope-functions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scope functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/52-corrutinas-sencillo.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corrutinas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3">
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Herramientas Proyecto Android
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Herramientas Proyecto Android
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-tools/01-gradle-agp-estructura.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gradle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-tools/02-build-gradle.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build-gradle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-tools/03-android-manifest.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fichero Manifest
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4">
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jetpack Compose
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Jetpack Compose
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introducción
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/21-composable-functions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funciones componibles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/22-state-management.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gestión del estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/23-listas-cuadriculas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/24-navegacion-rutas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navegación Rutas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/25-material-design.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Material Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/99-glosario-android.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glosario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UT1 - Visión General y Entorno de desarrollo
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="index.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UT1 - Visión General y Entorno de desarrollo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#1-limitaciones-en-el-desarrollo-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Limitaciones en el desarrollo móvil
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-desarrollo-movil-en-la-actualidad-un-ecosistema-de-opciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Desarrollo Móvil en la Actualidad: Un Ecosistema de Opciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Desarrollo Móvil en la Actualidad: Un Ecosistema de Opciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-desarrollo-nativo-la-via-de-la-maxima-potencia-y-experiencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Desarrollo Nativo: La Vía de la Máxima Potencia y Experiencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-desarrollo-hibrido-un-codigo-para-gobernarlos-a-todos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Desarrollo Híbrido: Un Código para Gobernarlos a Todos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-kotlin-multiplatform-kmp-lo-mejor-de-ambos-mundos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Kotlin Multiplatform (KMP): ¿Lo mejor de Ambos mundos?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-progressive-web-apps-pwa-la-web-se-viste-de-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Progressive Web Apps (PWA): La Web se Viste de App
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-el-ciclo-de-vida-de-una-aplicacion-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. El Ciclo de Vida de una Aplicación Móvil
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. El Ciclo de Vida de una Aplicación Móvil">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-descubrimiento-como-me-encuentran" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Descubrimiento: "¿Cómo me encuentran?"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-instalacion-te-quiero-en-mi-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Instalación: "Te quiero en mi móvil"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-ejecucion-a-funcionar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Ejecución: "¡A funcionar!"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-actualizacion-mejorando-contigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Actualización: "Mejorando contigo"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-borrado-desinstalacion-ha-sido-un-placer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E. Borrado (Desinstalación): "Ha sido un placer"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparativa-de-ciclos-de-vida-web-vs-pwa-vs-nativa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparativa de Ciclos de Vida -- Web vs PWA vs Nativa
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#android-el-sdk-de-android-y-sus-versiones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Android: El SDK de Android y sus Versiones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Android: El SDK de Android y sus Versiones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b-los-componentes-del-sdk-de-android" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Los Componentes del SDK de Android
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-entendiendo-las-versiones-de-android-la-clave-esta-en-el-nivel-de-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Entendiendo las Versiones de Android: ¡La Clave está en el Nivel de API!
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-listado-de-versiones-de-android" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Listado de Versiones de Android
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#1-limitaciones-en-el-desarrollo-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Limitaciones en el desarrollo móvil
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-desarrollo-movil-en-la-actualidad-un-ecosistema-de-opciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Desarrollo Móvil en la Actualidad: Un Ecosistema de Opciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Desarrollo Móvil en la Actualidad: Un Ecosistema de Opciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-desarrollo-nativo-la-via-de-la-maxima-potencia-y-experiencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Desarrollo Nativo: La Vía de la Máxima Potencia y Experiencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-desarrollo-hibrido-un-codigo-para-gobernarlos-a-todos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Desarrollo Híbrido: Un Código para Gobernarlos a Todos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-kotlin-multiplatform-kmp-lo-mejor-de-ambos-mundos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Kotlin Multiplatform (KMP): ¿Lo mejor de Ambos mundos?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-progressive-web-apps-pwa-la-web-se-viste-de-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Progressive Web Apps (PWA): La Web se Viste de App
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-el-ciclo-de-vida-de-una-aplicacion-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. El Ciclo de Vida de una Aplicación Móvil
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. El Ciclo de Vida de una Aplicación Móvil">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-descubrimiento-como-me-encuentran" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Descubrimiento: "¿Cómo me encuentran?"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-instalacion-te-quiero-en-mi-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Instalación: "Te quiero en mi móvil"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-ejecucion-a-funcionar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Ejecución: "¡A funcionar!"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-actualizacion-mejorando-contigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Actualización: "Mejorando contigo"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#e-borrado-desinstalacion-ha-sido-un-placer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        E. Borrado (Desinstalación): "Ha sido un placer"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparativa-de-ciclos-de-vida-web-vs-pwa-vs-nativa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparativa de Ciclos de Vida -- Web vs PWA vs Nativa
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#android-el-sdk-de-android-y-sus-versiones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Android: El SDK de Android y sus Versiones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Android: El SDK de Android y sus Versiones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b-los-componentes-del-sdk-de-android" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Los Componentes del SDK de Android
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-entendiendo-las-versiones-de-android-la-clave-esta-en-el-nivel-de-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Entendiendo las Versiones de Android: ¡La Clave está en el Nivel de API!
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-listado-de-versiones-de-android" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D. Listado de Versiones de Android
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ut1-evolucion-y-entornos-de-desarrollo"><strong>UT1. Evolución y Entornos de desarrollo</strong><a class="headerlink" href="#ut1-evolucion-y-entornos-de-desarrollo" title="Permanent link">¶</a></h1>
+<h2 id="1-limitaciones-en-el-desarrollo-movil">1. Limitaciones en el desarrollo móvil<a class="headerlink" href="#1-limitaciones-en-el-desarrollo-movil" title="Permanent link">¶</a></h2>
+<hr>
+<p>A menudo, cuando empezamos a programar, venimos de un mundo de desarrollo de escritorio o incluso web, donde los recursos parecen casi infinitos. Un ordenador de sobremesa moderno tiene gigabytes de RAM, procesadores de múltiples núcleos a altas velocidades, almacenamiento masivo y una conexión a internet estable y rápida. Los servidores que alojan aplicaciones web son aún más potentes.</p>
+<p>Sin embargo, el entorno móvil es un ecosistema completamente diferente. Un smartphone, por muy avanzado que sea, es un dispositivo que llevamos en el bolsillo, alimentado por una batería y sujeto a condiciones muy variables. Ignorar estas limitaciones no solo lleva a una mala calificación en esta asignatura, sino, lo que es peor, a crear aplicaciones que los usuarios desinstalarán por ser lentas, consumir su batería o no funcionar cuando más las necesitan.</p>
+<p>Pensemos en un desarrollador de escritorio como el arquitecto de un gran rascacielos con cimientos profundos y acceso a la red eléctrica principal. En cambio, un desarrollador móvil es como el ingeniero de un coche de Fórmula 1: cada gramo de peso, cada gota de combustible y cada pieza de la aerodinámica cuentan. La optimización no es una opción; es una obligación.</p>
+<p>A continuación, vamos a desglosar las principales áreas de restricción.</p>
+<ol>
+<li>
+<p><strong>Recursos de Hardware: La eterna dieta</strong></p>
+<p>A pesar de los impresionantes avances, los dispositivos móviles operan con recursos de hardware significativamente más modestos que sus homólogos de escritorio.</p>
+<p><code>Procesador (CPU)</code>: Las CPUs móviles están diseñadas con un objetivo principal: la eficiencia energética. Un procesador de escritorio puede permitirse consumir 100W o más y disipar el calor con grandes ventiladores. Una CPU móvil debe operar con un consumo mínimo para no agotar la batería en minutos y sobrecalentar el dispositivo. Esto implica velocidades de reloj más bajas y arquitecturas (como ARM) optimizadas para el bajo consumo, lo que se traduce en una menor capacidad de cómputo bruto. Tareas muy intensivas, como el renderizado de vídeo o cálculos complejos, deben ser abordadas con mucho más cuidado.</p>
+<p><code>Memoria (RAM)</code>: Mientras que un PC de gama media actual puede tener 16 GB o 32 GB de RAM, un smartphone de gama alta puede tener 8 GB o 12 GB, y los de gama media, bastante menos. Además, el sistema operativo móvil (Android o iOS) es muy agresivo a la hora de gestionar esta memoria. Si tu aplicación consume demasiada RAM, el sistema no dudará en "matarla" (finalizar su proceso) sin previo aviso para liberar recursos para la aplicación que está en primer plano. Esto contrasta con un sistema de escritorio, donde las aplicaciones pueden permanecer en memoria durante días.</p>
+<p><code>Almacenamiento</code>: Aunque los dispositivos modernos ofrecen más almacenamiento, sigue siendo un recurso finito y, a menudo, no ampliable. Las aplicaciones deben ser ligeras. Una aplicación de escritorio puede ocupar varios gigabytes sin que el usuario se preocupe, pero una app móvil que ocupe ese espacio será una candidata clara a ser eliminada cuando el usuario necesite liberar espacio para sus fotos o vídeos.</p>
+</li>
+<li>
+<p><strong>La Batería: El recurso más preciado</strong></p>
+<p>Esta es, sin duda, la limitación más crítica y definitoria del desarrollo móvil. A diferencia del desarrollo web o de escritorio, donde la alimentación es constante, en el móvil cada ciclo de CPU, cada byte enviado por la red y cada píxel encendido en la pantalla consume una porción de un recurso muy limitado: la batería.</p>
+<p><code>Consumo energético</code>: El desarrollador debe ser consciente del impacto energético de su código. Dejar un sensor activo (como el GPS) innecesariamente, realizar operaciones de red con demasiada frecuencia (polling) o ejecutar procesos complejos en segundo plano son los caminos más rápidos para agotar la batería del usuario y ganarse una reseña de una estrella en la tienda de aplicaciones.</p>
+<p><code>Optimización del sistema</code>: Los sistemas operativos móviles modernos implementan mecanismos muy estrictos para controlar el consumo, como Doze Mode y App Standby en Android. Estos modos ponen las aplicaciones en un estado de "sueño profundo", restringiendo su acceso a la red y a la CPU cuando el dispositivo no está en uso. El desarrollador ya no tiene control total sobre cuándo se ejecuta su código en segundo plano.</p>
+</li>
+<li>
+<p><strong>Conectividad: Un mundo inestable y costoso</strong></p>
+<p>Las aplicaciones de escritorio y web suelen asumir una conexión a internet permanente, rápida y de bajo coste (Wi-Fi o Ethernet). En el mundo móvil, la realidad es muy diferente.</p>
+<p><code>Variabilidad de la red</code>: La aplicación debe funcionar de manera predecible en múltiples escenarios: una conexión Wi-Fi de alta velocidad, una red 5G, una conexión 4G inestable en un tren, una red 3G lenta en una zona rural, o incluso sin conexión alguna.</p>
+<p><code>Latencia y ancho de banda</code>: La latencia en redes móviles es generalmente mayor que en redes fijas. Las transferencias de datos deben minimizarse. No puedes permitirte descargar 50 MB de datos cada vez que el usuario abre la app. Debes implementar estrategias de caché, compresión de datos y sincronización inteligente.</p>
+<p><code>Coste de los datos</code>: A diferencia del Wi-Fi, los datos móviles suelen tener un coste para el usuario. Una aplicación que consuma una cantidad excesiva del plan de datos de un usuario será desinstalada rápidamente. Debes ofrecer opciones para limitar el uso de datos (por ejemplo, descargar contenido pesado solo con Wi-Fi).</p>
+</li>
+<li>
+<p><strong>Fragmentación del Ecosistema</strong></p>
+<p>Mientras que en el desarrollo de escritorio se trabaja con un conjunto relativamente estándar de resoluciones de pantalla y capacidades, y en la web se usan técnicas de "responsive design", en el móvil (especialmente en Android) nos enfrentamos a una fragmentación extrema.</p>
+<p><code>Diversidad de pantallas</code>: Existen miles de modelos de dispositivos con diferentes tamaños de pantalla, densidades de píxeles (DPI), y relaciones de aspecto. Tu interfaz de usuario (UI) debe adaptarse fluidamente a todas ellas, desde un teléfono pequeño hasta una tablet de gran formato.</p>
+<p><code>Variedad de Hardware</code>: Más allá de la pantalla, te encontrarás con una enorme diversidad de CPUs, GPUs, cantidad de RAM y sensores disponibles (algunos tienen NFC, otros no; algunos tienen un barómetro, la mayoría no). Tu aplicación debe ser capaz de gestionar esta diversidad, ya sea adaptando su funcionalidad o informando al usuario de que una característica no está disponible en su dispositivo.</p>
+<p><code>Versiones del Sistema Operativo</code>: Especialmente en Android, los usuarios tardan en actualizar sus dispositivos. No es raro tener que dar soporte a varias versiones del sistema operativo simultáneamente, cada una con sus propias APIs, características y bugs.</p>
+</li>
+<li>
+<p><strong>Ciclo de Vida de la Aplicación y Restricciones del SO</strong></p>
+<p>En un ordenador de escritorio, el usuario lanza una aplicación y esta se ejecuta hasta que él decide cerrarla. En un dispositivo móvil, el ciclo de vida es mucho más complejo y está gestionado de forma estricta por el sistema operativo.</p>
+<p><code>Estados de la aplicación</code>: Una aplicación móvil no está simplemente "abierta" o "cerrada". Pasa por múltiples estados (creada, iniciada, en primer plano, pausada, detenida, destruida). Por ejemplo, si entra una llamada mientras el usuario está usando tu app, esta pasará al estado de "pausada". Debes guardar el estado del usuario en ese momento para que, al volver, pueda continuar donde lo dejó.</p>
+<p><code>Procesos en segundo plano (Background)</code>: Como mencionamos antes, la ejecución de código en segundo plano está severamente restringida. No puedes simplemente iniciar un hilo que se ejecute indefinidamente. Debes usar las APIs específicas proporcionadas por el sistema (como WorkManager en Android) que permiten al SO ejecutar tu tarea de la forma más eficiente posible (por ejemplo, agrupando tareas de varias apps para despertar al dispositivo una sola vez).</p>
+</li>
+</ol>
+<p>Desarrollar para dispositivos móviles es un desafío apasionante que requiere un cambio de mentalidad. No se trata de trasladar directamente las prácticas del desarrollo de escritorio o web, sino de abrazar las restricciones y convertirlas en una guía para la excelencia en la ingeniería de software.</p>
+<p>Una aplicación móvil exitosa no es la que más funcionalidades tiene, sino la que ofrece una experiencia fluida, es respetuosa con los recursos del usuario (batería, datos, almacenamiento) y funciona de manera fiable en un entorno impredecible. Recordad siempre: en el mundo móvil, la eficiencia no es una característica, es el cimiento sobre el que se construye todo lo demás.</p>
+<h2 id="2-desarrollo-movil-en-la-actualidad-un-ecosistema-de-opciones">2. Desarrollo Móvil en la Actualidad: Un Ecosistema de Opciones<a class="headerlink" href="#2-desarrollo-movil-en-la-actualidad-un-ecosistema-de-opciones" title="Permanent link">¶</a></h2>
+<hr>
+<p>Hace una década, las opciones eran limitadas. Hoy, nos encontramos ante un ecosistema rico y diverso con diferentes enfoques, cada uno con sus propias filosofías, ventajas y desventajas. La elección de la tecnología es una de las decisiones más críticas que tomaréis como desarrolladores o arquitectos de software, ya que impactará directamente en el presupuesto del proyecto, el tiempo de desarrollo, el rendimiento de la aplicación y la experiencia final del usuario.</p>
+<p>El objetivo de este documento es proporcionaros un mapa claro de este territorio. Analizaremos las tres grandes rutas que podemos tomar para construir una aplicación móvil: el desarrollo <strong>Nativo</strong>, el <strong>Híbrido</strong> y las <strong>Progressive Web Apps (PWA)</strong>. ¡Empecemos!</p>
+<hr>
+<h3 id="a-desarrollo-nativo-la-via-de-la-maxima-potencia-y-experiencia">A. Desarrollo Nativo: La Vía de la Máxima Potencia y Experiencia<a class="headerlink" href="#a-desarrollo-nativo-la-via-de-la-maxima-potencia-y-experiencia" title="Permanent link">¶</a></h3>
+<p>El desarrollo nativo consiste en construir una aplicación utilizando las herramientas, lenguajes y APIs (Application Programming Interfaces) que la propia plataforma provee de forma oficial. En esencia, se crea una aplicación específica y optimizada para un único sistema operativo.</p>
+<blockquote>
+<p>🔥 Esto significa que si queremos que nuestra app funcione en Android y en iOS, necesitaremos desarrollar <strong>dos aplicaciones separadas</strong>, una para cada plataforma, con sus respectivos códigos fuente.</p>
+</blockquote>
+<div class="admonition info">
+<p class="admonition-title">Ventajas Clave</p>
+<ul>
+<li>
+<p><strong>Rendimiento Insuperable:</strong> La aplicación se compila a código máquina que se ejecuta directamente sobre el sistema operativo, sin capas intermedias. Esto garantiza la máxima velocidad, fluidez y capacidad de respuesta. Es la opción ideal para juegos, aplicaciones con gráficos intensivos o que realicen cálculos complejos.</p>
+</li>
+<li>
+<p><strong>Acceso Total al Hardware y APIs:</strong> Tienes acceso inmediato y completo a todas las capacidades del dispositivo: GPS, cámara, acelerómetro, NFC, ARKit (iOS), etc. Además, eres el primero en poder usar las nuevas funcionalidades que se lanzan con cada actualización del sistema operativo.</p>
+</li>
+<li>
+<p><strong>Experiencia de Usuario (UX) Perfecta:</strong> La interfaz de usuario (UI) se construye con los componentes nativos de la plataforma. El resultado es una aplicación que se ve y se siente exactamente como el resto del sistema operativo, lo que la hace intuitiva y familiar para el usuario.</p>
+</li>
+<li>
+<p><strong>Mayor Seguridad y Fiabilidad:</strong> Al operar directamente sobre la plataforma, se aprovechan todas sus capas de seguridad y optimizaciones.</p>
+</li>
+</ul>
+</div>
+<h4 id="tecnologias-y-lenguajes">Tecnologías y Lenguajes<a class="headerlink" href="#tecnologias-y-lenguajes" title="Permanent link">¶</a></h4>
+<div class="admonition debug">
+<p class="admonition-title">Para Android:</p>
+<ul>
+<li>
+<p><strong>Lenguajes:</strong></p>
+<ul>
+<li>
+<p><strong>Kotlin:</strong> Es el lenguaje moderno, conciso y seguro que Google recomienda oficialmente desde 2019. Es interoperable al 100% con Java.</p>
+</li>
+<li>
+<p><strong>Java:</strong> Fue el lenguaje original para el desarrollo en Android. Sigue siendo muy utilizado, especialmente en proyectos más antiguos (legacy), pero Kotlin es la opción preferida para nuevos desarrollos.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Entorno de Desarrollo (IDE):</strong> <strong>Android Studio</strong>. Es el IDE oficial de Google, basado en IntelliJ IDEA. Incluye todo lo necesario: editor de código, depurador, emuladores, analizadores de rendimiento, etc.</p>
+</li>
+<li>
+<p><strong>Recursos para profundizar:</strong></p>
+<ul>
+<li>
+<p><a href="https://developer.android.com/">Android Developers (Oficial)</a> - El punto de partida para todo.</p>
+</li>
+<li>
+<p><a href="https://kotlinlang.org/docs/home.html">Documentación de Kotlin</a> - Aprende el lenguaje que impulsa el desarrollo moderno de Android.</p>
+</li>
+<li>
+<p><a href="https://developer.android.com/studio">Descargar Android Studio</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Para iOS (Ecosistema Apple)</p>
+<ul>
+<li>
+<p><strong>Lenguajes:</strong></p>
+<ul>
+<li>
+<p><strong>Swift:</strong> Es el lenguaje moderno, potente y seguro creado por Apple. Es la opción recomendada para cualquier aplicación nueva en el ecosistema de Apple (iOS, iPadOS, macOS, watchOS).</p>
+</li>
+<li>
+<p><strong>Objective-C:</strong> Es el lenguaje original de desarrollo para iOS. Aunque Swift lo ha superado en popularidad, todavía es fundamental para mantener proyectos existentes.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Entorno de Desarrollo (IDE):</strong> <strong>Xcode</strong>. Es el IDE oficial de Apple, que se ejecuta exclusivamente en macOS. Proporciona todas las herramientas para desarrollar, depurar y publicar apps para todas las plataformas de Apple.</p>
+</li>
+<li>
+<p><strong>Recursos para profundizar:</strong></p>
+<ul>
+<li>
+<p><a href="https://developer.apple.com/">Apple Developer (Oficial)</a> - Tu puerta de entrada al desarrollo para iOS.</p>
+</li>
+<li>
+<p><a href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/">Documentación de Swift</a> - La guía oficial y completa del lenguaje Swift.</p>
+</li>
+<li>
+<p><a href="https://developer.apple.com/xcode/">Descargar Xcode</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<hr>
+<h3 id="b-desarrollo-hibrido-un-codigo-para-gobernarlos-a-todos">B. Desarrollo Híbrido: Un Código para Gobernarlos a Todos<a class="headerlink" href="#b-desarrollo-hibrido-un-codigo-para-gobernarlos-a-todos" title="Permanent link">¶</a></h3>
+<p>El desarrollo híbrido, también conocido como multiplataforma, busca resolver el principal inconveniente del desarrollo nativo: la necesidad de mantener dos bases de código. La filosofía aquí es <strong><em>"escribe una vez, ejecuta en todas partes"</em></strong> (<em>write once, run anywhere</em>).</p>
+<p>Se utiliza un único lenguaje y un framework específico para generar aplicaciones que funcionen tanto en Android como en iOS.</p>
+<div class="admonition info">
+<p class="admonition-title">Ventajas Clave</p>
+<ul>
+<li>
+<p><strong>Eficiencia en Coste y Tiempo:</strong> Es la ventaja más evidente. Se necesita un solo equipo de desarrollo y un único código base, lo que reduce drásticamente los tiempos y costes de desarrollo y mantenimiento.</p>
+</li>
+<li>
+<p><strong>Lanzamiento Rápido al Mercado (Time-to-Market):</strong> Al desarrollar para ambas plataformas simultáneamente, puedes lanzar tu producto mucho más rápido.</p>
+</li>
+<li>
+<p><strong>Consistencia de Marca:</strong> La aplicación tendrá una apariencia muy similar en ambas plataformas, lo que puede ser beneficioso para la identidad de marca.</p>
+</li>
+</ul>
+</div>
+<h4 id="tecnologias-y-lenguajes_1">Tecnologías y Lenguajes<a class="headerlink" href="#tecnologias-y-lenguajes_1" title="Permanent link">¶</a></h4>
+<p>Existen diferentes enfoques dentro del mundo híbrido, pero los más relevantes hoy en día son:</p>
+<div class="admonition note">
+<p class="admonition-title">Flutter</p>
+<ul>
+<li>
+<p><strong>Concepto:</strong> Es un toolkit de UI desarrollado por Google que ha ganado una tracción inmensa. Flutter no utiliza los componentes nativos de la UI, sino que trae su propio motor de renderizado (Skia) para dibujar cada píxel en la pantalla. Esto le da un control total sobre la interfaz y permite animaciones complejas a 60/120 FPS.</p>
+</li>
+<li>
+<p><strong>Lenguaje:</strong> <strong>Dart</strong>. Un lenguaje moderno, orientado a objetos y optimizado para el desarrollo de UI.</p>
+</li>
+<li>
+<p><strong>Ideal para:</strong> Aplicaciones con una interfaz de usuario muy personalizada, expresiva y con muchas animaciones.</p>
+</li>
+<li>
+<p><strong>Recursos para profundizar:</strong></p>
+<ul>
+<li>
+<p><a href="https://flutter.dev/">Flutter (Oficial)</a> - Descubre por qué es una de las tecnologías más queridas por los desarrolladores.</p>
+</li>
+<li>
+<p><a href="https://dart.dev/guides">Documentación de Dart</a> - Aprende los fundamentos del lenguaje de Flutter.</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="admonition quote">
+<p class="admonition-title">React Native</p>
+<ul>
+<li>
+<p><strong>Concepto:</strong> Creado por Meta (Facebook), React Native permite a los desarrolladores web usar sus conocimientos de JavaScript y React para crear aplicaciones móviles. A diferencia de Flutter, React Native utiliza un "puente" (bridge) para comunicarse con los componentes de la UI nativa de cada plataforma. Esto puede hacer que la app se sienta un poco más "nativa".</p>
+</li>
+<li>
+<p><strong>Lenguaje:</strong> <strong>JavaScript</strong> o <strong>TypeScript</strong> (una versión de JavaScript con tipado estático, muy recomendada).</p>
+</li>
+<li>
+<p><strong>Ideal para:</strong> Empresas con equipos de desarrollo web que quieran pasar al móvil, o para aplicaciones donde el aspecto nativo sea una prioridad.</p>
+</li>
+<li>
+<p><strong>Recursos para profundizar:</strong></p>
+<ul>
+<li><a href="https://reactnative.dev/">React Native (Oficial)</a> - La documentación oficial para empezar.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">.NET MAUI (Multi-platform App UI)</p>
+<ul>
+<li>
+<p><strong>Concepto:</strong> Es la evolución de Xamarin.Forms, impulsada por Microsoft. Permite a los desarrolladores del ecosistema .NET usar C# y XAML para crear aplicaciones para iOS, Android, Windows y macOS desde una única base de código.</p>
+</li>
+<li>
+<p><strong>Lenguaje:</strong> <strong>C#</strong>.</p>
+</li>
+<li>
+<p><strong>Ideal para:</strong> Organizaciones que ya tienen una fuerte inversión en tecnologías de Microsoft y .NET.</p>
+</li>
+<li>
+<p><strong>Recursos para profundizar:</strong></p>
+<ul>
+<li><a href="https://dotnet.microsoft.com/en-us/apps/maui">.NET MAUI (Oficial)</a> - La plataforma multiplataforma del ecosistema .NET.</li>
+</ul>
+</li>
+</ul>
+</div>
+<hr>
+<h3 id="c-kotlin-multiplatform-kmp-lo-mejor-de-ambos-mundos">C. Kotlin Multiplatform (KMP): ¿Lo mejor de Ambos mundos?<a class="headerlink" href="#c-kotlin-multiplatform-kmp-lo-mejor-de-ambos-mundos" title="Permanent link">¶</a></h3>
+<p>Hemos analizado el desarrollo Nativo y el Híbrido como dos caminos separados. El primero nos da el máximo rendimiento y la mejor experiencia de usuario a costa de duplicar el trabajo. El segundo nos ofrece eficiencia y una base de código única, pero a veces con compromisos en rendimiento o en acceso a las últimas funcionalidades nativas.</p>
+<p>Pero, ¿y si existiera un enfoque que intentara combinar la eficiencia del código compartido con el poder del desarrollo nativo? Aquí es donde entra en juego <strong>Kotlin Multiplatform (KMP)</strong>.</p>
+<p>KMP no es otro framework híbrido como Flutter o React Native. Es un enfoque radicalmente diferente.</p>
+<p><strong>La Lógica Compartida, la UI Nativa</strong></p>
+<p>La filosofía de Kotlin Multiplatform, impulsado por JetBrains (los creadores de Kotlin y de IntelliJ), no es "escribe una vez, ejecuta en todas partes", sino más bien <strong>"escribe la lógica de negocio una vez, y construye la interfaz de usuario de forma nativa"</strong>.</p>
+<p>KMP permite a los desarrolladores escribir código en Kotlin que puede ser compilado para múltiples plataformas:</p>
+<ul>
+<li><strong>JVM</strong> (para aplicaciones Android y de servidor).</li>
+<li><strong>JavaScript</strong> (para aplicaciones web).</li>
+<li><strong>Nativo</strong> (utilizando la infraestructura del compilador LLVM para generar binarios para iOS, macOS, Windows, etc.).</li>
+</ul>
+<p>La idea central es identificar el código que es independiente de la interfaz de usuario ---la <strong>lógica de negocio</strong>--- y compartirlo entre plataformas.</p>
+<h4 id="que-es-la-logica-de-negocio">¿Qué es la "Lógica de Negocio"?<a class="headerlink" href="#que-es-la-logica-de-negocio" title="Permanent link">¶</a></h4>
+<p>Piensa en todo lo que tu aplicación hace "detrás de las cámaras":</p>
+<ul>
+<li><strong>Acceso a la red:</strong> Realizar llamadas a una API REST o GraphQL.</li>
+<li><strong>Gestión de la base de datos:</strong> Guardar, leer y actualizar datos en una base de datos local (como SQLite).</li>
+<li><strong>Modelos de datos:</strong> Las clases que representan la información de tu app (Usuario, Producto, etc.).</li>
+<li><strong>Validaciones:</strong> Comprobar que un email tiene el formato correcto o que una contraseña cumple los requisitos.</li>
+<li><strong>Algoritmos y cálculos:</strong> Cualquier procesamiento de datos específico de tu aplicación.</li>
+</ul>
+<p>Todo este código, que suele ser el núcleo de la aplicación, no depende de si el botón en la pantalla es redondo o cuadrado. Por lo tanto, se puede escribir una sola vez en Kotlin y compartirlo.</p>
+<h4 id="y-que-pasa-con-la-interfaz-de-usuario-ui">¿Y qué pasa con la Interfaz de Usuario (UI)?<a class="headerlink" href="#y-que-pasa-con-la-interfaz-de-usuario-ui" title="Permanent link">¶</a></h4>
+<p>Aquí es donde KMP brilla y se diferencia de los frameworks híbridos. La UI se construye de forma <strong>100% nativa</strong> en cada plataforma:</p>
+<ul>
+<li>
+<p><strong>En Android:</strong> Creas tus vistas (layouts) y gestionas el ciclo de vida de las Activities y Fragments utilizando <strong>Jetpack Compose</strong> o las vistas XML tradicionales. Desde este código nativo, llamas a la lógica de negocio compartida en Kotlin.</p>
+</li>
+<li>
+<p><strong>En iOS:</strong> Desarrollas tu interfaz de usuario con <strong>SwiftUI</strong> o <strong>UIKit</strong>, exactamente como lo haría un desarrollador nativo de iOS. Desde tu código en Swift, puedes invocar directamente las funciones y clases del módulo de Kotlin compartido.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Ventajas Clave</p>
+<ul>
+<li>
+<p><strong>Rendimiento Nativo:</strong> Dado que la UI y toda la interacción con la plataforma se gestionan con código nativo, el rendimiento y la fluidez son idénticos a los de una aplicación puramente nativa. No hay "puentes" ni capas de abstracción que ralenticen la interfaz.</p>
+</li>
+<li>
+<p><strong>UI/UX Perfecta:</strong> La aplicación se ve, se siente y se comporta exactamente como el usuario espera en su dispositivo, ya que utilizas los componentes nativos de Android (Material Design) y de iOS (Human Interface Guidelines).</p>
+</li>
+<li>
+<p><strong>Eficiencia sin Sacrificios:</strong> Compartes una parte significativa del código (a menudo más del 50-60%), lo que reduce el tiempo de desarrollo, la duplicación de esfuerzos y la probabilidad de bugs, sin renunciar a las ventajas del desarrollo nativo.</p>
+</li>
+<li>
+<p><strong>Acceso Inmediato a APIs Nativas:</strong> Como estás escribiendo código nativo en la capa de UI, puedes acceder a las últimas APIs de cada sistema operativo desde el primer día, sin esperar a que un framework de terceros añada soporte.</p>
+</li>
+<li>
+<p><strong>Adopción Gradual:</strong> Puedes empezar a usar KMP en una pequeña parte de una aplicación existente, tanto en Android como en iOS, sin necesidad de reescribirla por completo.</p>
+</li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Desventajas y Consideraciones</p>
+<ul>
+<li>
+<p><strong>Complejidad Inicial:</strong> La configuración del proyecto puede ser más compleja que en otros enfoques. Requiere conocimientos tanto de desarrollo en Android (Gradle) como en iOS (Xcode, CocoaPods).</p>
+</li>
+<li>
+<p><strong>Se Necesitan Habilidades Nativas:</strong> A diferencia del desarrollo híbrido puro, no basta con un solo equipo de desarrolladores. Necesitas expertos que se sientan cómodos construyendo la UI en Android (Kotlin/Compose) y en iOS (Swift/SwiftUI).</p>
+</li>
+<li>
+<p><strong>Ecosistema en Crecimiento:</strong> Aunque está madurando rápidamente, el ecosistema de librerías multiplataforma todavía es más pequeño que el de plataformas como React Native o Flutter.</p>
+</li>
+</ul>
+</div>
+<h4 id="un-ecosistema-en-evolucion-compose-multiplatform">Un Ecosistema en Evolución: Compose Multiplatform<a class="headerlink" href="#un-ecosistema-en-evolucion-compose-multiplatform" title="Permanent link">¶</a></h4>
+<p>Para añadir una capa más, JetBrains está llevando Jetpack Compose (el moderno toolkit de UI declarativa de Android) al mundo multiplataforma con <strong>Compose Multiplatform</strong>.</p>
+<p>Compose Multiplatform permite compartir no solo la lógica de negocio, sino también la <strong>interfaz de usuario</strong>, utilizando el mismo código declarativo en Kotlin para describir la UI en Android, iOS , escritorio (Windows, macOS, Linux) y web (Wasm).</p>
+<p>Esto acerca a KMP al modelo de Flutter, donde tanto la lógica como la UI son compartidas, pero con la ventaja de estar construido sobre el lenguaje y el ecosistema de Kotlin.</p>
+<ul>
+<li>
+<p><strong>Recursos para profundizar:</strong></p>
+<ul>
+<li><a href="https://www.jetbrains.com/compose-multiplatform/">Kotlin Multiplatform (Oficial)</a> - La documentación oficial y el mejor lugar para empezar.</li>
+</ul>
+</li>
+</ul>
+<h3 id="d-progressive-web-apps-pwa-la-web-se-viste-de-app">D. Progressive Web Apps (PWA): La Web se Viste de App<a class="headerlink" href="#d-progressive-web-apps-pwa-la-web-se-viste-de-app" title="Permanent link">¶</a></h3>
+<p>Las PWA no son aplicaciones móviles en el sentido tradicional. Son <strong>aplicaciones web</strong> que utilizan las tecnologías web más modernas para ofrecer una experiencia muy similar a la de una aplicación nativa. No se instalan desde una tienda de aplicaciones, sino que el usuario puede "añadirlas a la pantalla de inicio" directamente desde el navegador.</p>
+<div class="admonition info">
+<p class="admonition-title">Ventajas Clave</p>
+<ul>
+<li>
+<p><strong>Sin Tiendas de Aplicaciones:</strong> No necesitas pasar por los procesos de revisión y publicación de la App Store de Apple o Google Play. La "instalación" es instantánea.</p>
+</li>
+<li>
+<p><strong>Multiplataforma por Definición:</strong> Funcionan en cualquier dispositivo que tenga un navegador web moderno (Android, iOS, Windows, macOS, etc.). El mismo código sirve para todo.</p>
+</li>
+<li>
+<p><strong>Siempre Actualizadas:</strong> Al ser una web, el usuario siempre tiene la última versión disponible sin necesidad de actualizar nada.</p>
+</li>
+<li>
+<p><strong>Compartibles:</strong> Se puede compartir la "app" simplemente enviando una URL.</p>
+</li>
+</ul>
+</div>
+<h4 id="tecnologias-clave-y-lenguajes">Tecnologías Clave y Lenguajes<a class="headerlink" href="#tecnologias-clave-y-lenguajes" title="Permanent link">¶</a></h4>
+<p>Las PWA se construyen sobre el estándar de la web.</p>
+<ul>
+<li>
+<p><strong>Lenguajes:</strong> <strong>HTML5, CSS3, JavaScript/TypeScript</strong>.</p>
+</li>
+<li>
+<p><strong>Componentes Esenciales:</strong></p>
+<ul>
+<li>
+<p><strong>HTTPS:</strong> Es un requisito de seguridad indispensable.</p>
+</li>
+<li>
+<p><strong>Service Worker:</strong> Es un script que el navegador ejecuta en segundo plano. Es la tecnología que permite funcionalidades como el <strong>trabajo offline</strong> (acceder a la app sin conexión) y las <strong>notificaciones push</strong>.</p>
+</li>
+<li>
+<p><strong>Web App Manifest:</strong> Es un archivo JSON que le dice al navegador cómo debe verse y comportarse la aplicación cuando se "instala" (nombre, icono, pantalla de bienvenida, etc.).</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Recursos para profundizar:</strong></p>
+<ul>
+<li>
+<p><a href="https://web.dev/progressive-web-apps/">web.dev by Google (PWA)</a> - Una de las mejores guías para entender y construir PWAs.</p>
+</li>
+<li>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">MDN Web Docs: Service Worker API</a> - Documentación técnica de referencia.</p>
+</li>
+</ul>
+</li>
+</ul>
+<div class="admonition question">
+<p class="admonition-title">¿Qué tecnología y lenguaje elegir?</p>
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed//IrkJljILrzQ?t=50" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe></p>
+</div>
+<h2 id="3-el-ciclo-de-vida-de-una-aplicacion-movil">3. El Ciclo de Vida de una Aplicación Móvil<a class="headerlink" href="#3-el-ciclo-de-vida-de-una-aplicacion-movil" title="Permanent link">¶</a></h2>
+<hr>
+<p>Pensemos en una aplicación no como un simple programa, sino como un producto con el que un usuario interactúa a lo largo del tiempo. Este viaje, desde que oye hablar de la app hasta que decide eliminarla de su teléfono, se conoce como su ciclo de vida. Entender cada fase nos permite tomar mejores decisiones para que nuestra app no solo sea útil, sino también exitosa.</p>
+<hr>
+<h3 id="a-descubrimiento-como-me-encuentran">A. Descubrimiento: "¿Cómo me encuentran?"<a class="headerlink" href="#a-descubrimiento-como-me-encuentran" title="Permanent link">¶</a></h3>
+<p>Esta es la fase de "marketing". Nuestra aplicación ya está terminada y publicada, pero para el usuario, todo empieza aquí. ¿Cómo llega un usuario a conocer nuestra existencia entre millones de aplicaciones?</p>
+<ul>
+<li>
+<p><strong>Tiendas de Aplicaciones (App Stores):</strong> Son el principal escaparate.</p>
+<ul>
+<li>
+<p><strong>Google Play Store (Android)</strong> y <strong>Apple App Store (iOS)</strong> son los mercados dominantes. Actúan como gigantescos centros comerciales donde los usuarios pueden buscar, explorar categorías (juegos, productividad, etc.), ver listas de éxitos ("Top Ventas", "Top Gratuitas"), y leer reseñas y valoraciones de otros usuarios.</p>
+</li>
+<li>
+<p><strong>Búsqueda:</strong> La mayoría de los descubrimientos ocurren a través del buscador de la tienda. Por eso, un buen nombre, un icono atractivo y una descripción clara (lo que se conoce como <strong>ASO - App Store Optimization</strong>) son cruciales.</p>
+</li>
+<li>
+<p><strong>Recomendaciones Editoriales:</strong> Ser destacado por los equipos editoriales de Google o Apple puede catapultar una aplicación a la fama.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Otros Canales:</strong> No todo ocurre en las tiendas.</p>
+<ul>
+<li>
+<p><strong>Buscadores Web:</strong> Una búsqueda en Google puede llevar a la ficha de una aplicación en la tienda.</p>
+</li>
+<li>
+<p><strong>Redes Sociales y "Boca a Boca":</strong> Recomendaciones de amigos, influencers o publicidad en plataformas como Instagram, TikTok o X.</p>
+</li>
+<li>
+<p><strong>Medios de Comunicación:</strong> Artículos en blogs de tecnología o noticias que hablen de nuestra app.</p>
+</li>
+<li>
+<p><strong>Publicidad Directa:</strong> Un código QR en un cartel o un enlace en una web pueden llevar directamente a la página de instalación.</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="b-instalacion-te-quiero-en-mi-movil">B. Instalación: "Te quiero en mi móvil"<a class="headerlink" href="#b-instalacion-te-quiero-en-mi-movil" title="Permanent link">¶</a></h3>
+<p>Una vez descubierta la app, el usuario decide "adquirirla". Este proceso, aunque parece simple, tiene matices importantes, sobre todo en cuanto a seguridad.</p>
+<ul>
+<li>
+<p><strong>Desde Tiendas Oficiales:</strong></p>
+<ul>
+<li>
+<p>Este es el método <strong>seguro y recomendado</strong>.</p>
+</li>
+<li>
+<p>El usuario pulsa el botón "Instalar" (en Google Play) o "Obtener" (en la App Store).</p>
+</li>
+<li>
+<p>La tienda gestiona todo el proceso de forma segura: verifica la identidad del usuario, descarga el paquete de la aplicación (<code>.apk</code> en Android, <code>.ipa</code> en iOS) y lo instala en el dispositivo. El sistema operativo coloca el icono de la app en la pantalla de inicio o en el cajón de aplicaciones.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Desde Fuentes Externas ("Sideloading"):</strong></p>
+<ul>
+<li>
+<p>Esta opción es prácticamente <strong>exclusiva de Android</strong>. Permite a los usuarios instalar aplicaciones descargando el archivo <code>.apk</code> directamente desde una página web o una tienda de aplicaciones alternativa (como F-Droid, que se especializa en software de código abierto).</p>
+</li>
+<li>
+<p><strong>Riesgos de Seguridad:</strong> El "sideloading" es la principal vía de entrada de <strong>malware</strong> en Android. La aplicación no ha pasado los controles de seguridad de Google Play, por lo que podría contener software malicioso.</p>
+</li>
+<li>
+<p>Por defecto, Android bloquea estas instalaciones. El usuario debe conceder explícitamente permiso a la aplicación (por ejemplo, al navegador Chrome) para "instalar aplicaciones desconocidas", asumiendo el riesgo que conlleva.</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="c-ejecucion-a-funcionar">C. Ejecución: "¡A funcionar!"<a class="headerlink" href="#c-ejecucion-a-funcionar" title="Permanent link">¶</a></h3>
+<p>Una vez instalada, la aplicación está lista para ser utilizada. Al pulsar su icono por primera vez, ocurren varias cosas:</p>
+<ol>
+<li>
+<p><strong>Carga en Memoria:</strong> El sistema operativo carga el código de la aplicación en la memoria RAM del dispositivo.</p>
+</li>
+<li>
+<p><strong>Pantalla de Bienvenida (Splash Screen):</strong> A menudo se muestra una pantalla de inicio con el logo de la app mientras se cargan los recursos necesarios en segundo plano.</p>
+</li>
+<li>
+<p><strong>Solicitud de Permisos:</strong> ¡Un paso fundamental! Las aplicaciones ya no reciben todos los permisos al instalarse. Ahora, deben solicitar acceso a funciones sensibles <strong>en tiempo de ejecución</strong>, es decir, la primera vez que necesitan usarlas.</p>
+<ul>
+<li>
+<p><strong>Ejemplo:</strong> Una app de mensajería pedirá acceso a tus contactos cuando intentes buscar a un amigo, y pedirá acceso a la cámara cuando pulses el botón para hacer una foto.</p>
+</li>
+<li>
+<p>El usuario puede <strong>Aceptar</strong> o <strong>Denegar</strong> cada permiso individualmente. Como desarrolladores, debemos gestionar qué ocurre si un usuario deniega un permiso esencial.</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>Una vez configurada y con los permisos necesarios, la aplicación se encuentra en su estado normal de uso, interactuando con el usuario.</p>
+<hr>
+<h3 id="d-actualizacion-mejorando-contigo">D. Actualización: "Mejorando contigo"<a class="headerlink" href="#d-actualizacion-mejorando-contigo" title="Permanent link">¶</a></h3>
+<p>Una aplicación no es un producto estático. El software necesita evolucionar para seguir siendo útil y seguro.</p>
+<ul>
+<li>
+<p><strong>Motivos para una Actualización:</strong></p>
+<ul>
+<li>
+<p><strong>Nuevas Funcionalidades:</strong> Añadir características que los usuarios han pedido o que mejoran el producto.</p>
+</li>
+<li>
+<p><strong>Corrección de Errores (Bugs):</strong> Ningún software es perfecto. Las actualizaciones solucionan fallos y problemas de estabilidad.</p>
+</li>
+<li>
+<p><strong>Mejoras de Rendimiento:</strong> Optimizar el código para que la app sea más rápida o consuma menos batería.</p>
+</li>
+<li>
+<p><strong>Parches de Seguridad:</strong> Solucionar vulnerabilidades que podrían poner en riesgo los datos del usuario.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Proceso de Actualización:</strong></p>
+<ul>
+<li>
+<p><strong>Automáticas:</strong> Es el método más común. Las tiendas de aplicaciones descargan e instalan las nuevas versiones en segundo plano, generalmente cuando el dispositivo está conectado a una red Wi-Fi y cargando, para no molestar al usuario.</p>
+</li>
+<li>
+<p><strong>Manuales:</strong> El usuario puede ir a la sección "Mis aplicaciones" de la tienda y forzar la actualización de una o todas las apps pendientes.</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="e-borrado-desinstalacion-ha-sido-un-placer">E. Borrado (Desinstalación): "Ha sido un placer"<a class="headerlink" href="#e-borrado-desinstalacion-ha-sido-un-placer" title="Permanent link">¶</a></h3>
+<p>Llega un momento en que el usuario ya no necesita la aplicación. El proceso de desinstalación está diseñado para ser simple, pero es importante saber qué se elimina y qué puede quedar.</p>
+<ul>
+<li>
+<p><strong>Proceso Estándar:</strong> El usuario realiza una pulsación larga sobre el icono de la app y selecciona la opción "Desinstalar" o "Eliminar App".</p>
+</li>
+<li>
+<p><strong>¿Desinstalación Completa o Parcial?</strong></p>
+<ul>
+<li>
+<p>Generalmente, la desinstalación que realiza el usuario es <strong>completa</strong> desde el punto de vista de la aplicación en sí. El sistema operativo elimina:</p>
+<ol>
+<li>
+<p>El <strong>paquete de la aplicación</strong> (<code>.apk</code> / <code>.ipa</code>).</p>
+</li>
+<li>
+<p>El <strong>almacenamiento privado</strong> de la app (su "sandbox"). Aquí se guardan las configuraciones, bases de datos internas, caché y otros archivos que la app necesita para funcionar.</p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>¿Qué puede quedar (Datos Residuales)?</strong> A veces, la desinstalación no elimina el 100% de los datos asociados. Esto no es una "desinstalación parcial" que el usuario elige, sino una consecuencia de cómo funcionan los sistemas de archivos.</p>
+<ul>
+<li>
+<p><strong>Archivos en Almacenamiento Compartido:</strong> Si tu aplicación de edición de fotos guardó una imagen en la carpeta <code>DCIM/MisFotos</code>, ese archivo <strong>no se borrará</strong> al desinstalar la app. El sistema lo considera propiedad del usuario, no de la aplicación.</p>
+</li>
+<li>
+<p><strong>Datos en la Nube:</strong> Si el usuario creó una cuenta en tus servidores, esa cuenta y sus datos asociados (perfil, historial, etc.) <strong>permanecen en la nube</strong>. No se eliminan al borrar la app del teléfono. El usuario tendría que eliminar su cuenta explícitamente.</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="comparativa-de-ciclos-de-vida-web-vs-pwa-vs-nativa">Comparativa de Ciclos de Vida -- Web vs PWA vs Nativa<a class="headerlink" href="#comparativa-de-ciclos-de-vida-web-vs-pwa-vs-nativa" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Fase Ciclo Vida</th>
+<th>🌐 Web Tradicional</th>
+<th>🚀 Progressive Web App (PWA)</th>
+<th>📱 Aplicación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. <strong>Descubrimiento</strong></td>
+<td><strong>Máxima visibilidad</strong>. A través de buscadores (Google, etc.), enlaces, redes sociales. No depende de una tienda.</td>
+<td>Lo mejor de ambos mundos. Descubrible como una web (buscadores, enlaces) y potencialmente listada en tiendas de apps (ej. Google Play).</td>
+<td>Dependiente de la tienda. Principalmente a través de la App Store y Google Play. El ASO es crucial.</td>
+</tr>
+<tr>
+<td>2. <strong>Instalación</strong></td>
+<td><strong>Sin instalación</strong>. La principal ventaja. El usuario accede al instante. Cero fricción.</td>
+<td>Instalación opcional y ligera. El usuario puede "Añadir a la pantalla de inicio". Es un proceso casi instantáneo y no ocupa mucho espacio.</td>
+<td>Instalación obligatoria. El usuario debe ir a la tienda, descargar varios MB (o GB) y esperar a que se instale. Es el punto de mayor fricción.</td>
+</tr>
+<tr>
+<td>3.  <strong>Ejecución</strong></td>
+<td><strong>Dentro del navegador</strong>. Se ejecuta en una pestaña, con las limitaciones de la interfaz del navegador (barra de URL, etc.). Requiere conexión.</td>
+<td>Como una app. Se lanza desde su propio icono en la pantalla de inicio, a pantalla completa. Puede funcionar offline gracias al Service Worker.</td>
+<td>Directamente en el SO. Se lanza desde su icono. Ofrece la máxima integración, rendimiento y acceso completo al hardware del dispositivo (cámara, GPS, etc.).</td>
+</tr>
+<tr>
+<td>4. <strong>Actualización</strong></td>
+<td><strong>Transparente e instantánea</strong>. Cada vez que el usuario entra, recibe la última versión del servidor. No hay proceso de actualización.</td>
+<td>Automática y en segundo plano. El Service Worker busca y actualiza la app de forma silenciosa. El usuario tiene la nueva versión la próxima vez que la abre.</td>
+<td>Gestionada por la tienda. Puede ser automática o manual. Requiere descargar de nuevo el paquete completo o una parte, y un proceso de instalación.</td>
+</tr>
+<tr>
+<td>5. <strong>Borrado</strong></td>
+<td><strong>No existe</strong>. El usuario simplemente cierra la pestaña o borra el historial/caché del navegador.</td>
+<td>Sencillo. El usuario elimina el icono de la pantalla de inicio, igual que en una app nativa. Los datos se pueden borrar desde la configuración del navegador.</td>
+<td>Proceso manual. El usuario debe realizar una desinstalación explícita (pulsación larga, etc.) para liberar el espacio de almacenamiento.</td>
+</tr>
+</tbody>
+</table>
+<p>⚡ <strong>Análisis Detallado de las Diferencias</strong></p>
+<h5 id="friccion-en-la-entrada-la-gran-diferencia">Fricción en la Entrada: La Gran Diferencia<a class="headerlink" href="#friccion-en-la-entrada-la-gran-diferencia" title="Permanent link">¶</a></h5>
+<p>La principal ventaja de la web y las PWAs es la <strong>inmediatez</strong>. Piensa en cuántas veces has entrado a una web que no conocías frente a cuántas apps nuevas has instalado en el último mes. El proceso de ir a una tienda, esperar la descarga y la instalación es una barrera (<strong>fricción</strong>) que hace que muchos usuarios abandonen el proceso. Una PWA elimina casi por completo esa barrera, ofreciendo una experiencia similar a la nativa con la facilidad de acceso de una web.</p>
+<h5 id="capacidades-y-acceso-al-dispositivo">Capacidades y Acceso al Dispositivo<a class="headerlink" href="#capacidades-y-acceso-al-dispositivo" title="Permanent link">¶</a></h5>
+<p>Aquí es donde la <strong>aplicación nativa sigue siendo la reina</strong>.</p>
+<ul>
+<li>
+<p><strong>Web:</strong> Está limitada por el "sandbox" (caja de arena) del navegador. Tiene acceso limitado a sensores y hardware.</p>
+</li>
+<li>
+<p><strong>PWA:</strong> Mejora mucho respecto a la web. Gracias a las nuevas APIs, puede acceder a notificaciones push, ubicación, cámara y funcionamiento offline. Sin embargo, todavía tiene un acceso más restringido que una app nativa, especialmente en iOS.</p>
+</li>
+<li>
+<p><strong>Nativa:</strong> Tiene acceso total y de máximo rendimiento a todas las capacidades del dispositivo: NFC, Bluetooth avanzado, sensores, archivos del sistema, etc.</p>
+</li>
+</ul>
+<h5 id="el-proceso-de-actualizacion-control-vs-inmediatez">El Proceso de Actualización: Control vs. Inmediatez<a class="headerlink" href="#el-proceso-de-actualizacion-control-vs-inmediatez" title="Permanent link">¶</a></h5>
+<ul>
+<li>
+<p>El modelo <strong>nativo</strong> da al usuario (y al desarrollador) un mayor control sobre las versiones. A veces, los usuarios deciden no actualizar una app si no les gusta la nueva versión.</p>
+</li>
+<li>
+<p>El modelo <strong>web/PWA</strong> es mucho más ágil. Como desarrollador, te aseguras de que todos tus usuarios están utilizando siempre la última versión, lo que simplifica enormemente el mantenimiento y la corrección de errores. No tienes que dar soporte a versiones antiguas.</p>
+</li>
+</ul>
+<p>No hay una tecnología superior a las otras en todos los aspectos. La elección depende enteramente del <strong>propósito del proyecto</strong>.</p>
+<ul>
+<li>
+<p>Para una herramienta que necesita el <strong>máximo rendimiento</strong> y una integración profunda con el hardware (un juego, una app de edición de vídeo, una app que use Bluetooth intensivamente), el camino <strong>nativo</strong> es indiscutible.</p>
+</li>
+<li>
+<p>Para un blog, una tienda online o una herramienta de consulta donde la <strong>inmediatez y el alcance</strong> son lo más importante, una <strong>PWA</strong> es una solución fantástica, ya que combina la visibilidad de la web con una experiencia de usuario muy mejorada.</p>
+</li>
+<li>
+<p>Una <strong>web tradicional</strong> sigue siendo perfecta para contenido informativo simple o sitios donde la funcionalidad offline y las notificaciones no aportan un valor añadido significativo.</p>
+</li>
+</ul>
+<h2 id="android-el-sdk-de-android-y-sus-versiones">Android: El SDK de Android y sus Versiones<a class="headerlink" href="#android-el-sdk-de-android-y-sus-versiones" title="Permanent link">¶</a></h2>
+<hr>
+<p>En este apartado vamos a desmontar la "caja de herramientas" que nos permite construir aplicaciones para Android. Hablaremos del <strong>SDK</strong>, de sus componentes y de cómo entender el sistema de versiones de Android, que es crucial para garantizar que nuestras apps funcionen correctamente en la mayoría de dispositivos posibles.</p>
+<p>Pensemos en nosotros como chefs que quieren preparar un plato específico (nuestra app). El SDK sería nuestra cocina profesional: no solo nos da los ingredientes (las APIs), sino también los cuchillos, los fogones y los manuales de recetas (las herramientas y la documentación). Sin esta cocina, solo tendríamos ideas, pero no podríamos cocinar nada.</p>
+<hr>
+<h4 id="a-que-es-un-sdk-software-development-kit">A. ¿Qué es un SDK (Software Development Kit)?<a class="headerlink" href="#a-que-es-un-sdk-software-development-kit" title="Permanent link">¶</a></h4>
+<p>Un <strong>SDK</strong>, o Kit de Desarrollo de Software, es un conjunto de herramientas de software y programas proporcionados por un fabricante de hardware o software para permitir la creación de aplicaciones para una plataforma específica. En nuestro caso, Google nos proporciona el <strong>SDK de Android</strong> para que podamos crear apps para su sistema operativo.</p>
+<p>Un SDK típicamente incluye:</p>
+<ul>
+<li>
+<p><strong>Bibliotecas de código (APIs):</strong> Código preescrito que nos da acceso a las funcionalidades del dispositivo, como la cámara, el GPS o la interfaz de usuario.</p>
+</li>
+<li>
+<p><strong>Depurador (Debugger):</strong> Una herramienta para encontrar y corregir errores en nuestro código.</p>
+</li>
+<li>
+<p><strong>Documentación:</strong> Manuales, guías y ejemplos que nos enseñan a usar las herramientas y las bibliotecas.</p>
+</li>
+<li>
+<p><strong>Emuladores:</strong> Programas que nos permiten probar nuestra app en un dispositivo virtual sin necesidad de tener un teléfono físico.</p>
+</li>
+</ul>
+<p>En resumen, <strong>el SDK es el paquete TODO-EN-UNO indispensable para empezar a desarrollar</strong>.</p>
+<hr>
+<h3 id="b-los-componentes-del-sdk-de-android">B. Los Componentes del SDK de Android<a class="headerlink" href="#b-los-componentes-del-sdk-de-android" title="Permanent link">¶</a></h3>
+<p>Dentro de Android Studio, el SDK se gestiona a través del "SDK Manager" y se divide principalmente en dos pestañas: <strong>SDK Platforms</strong> y <strong>SDK Tools</strong>. Es vital entender la diferencia.</p>
+<h4 id="sdk-platforms"><strong>SDK Platforms</strong><a class="headerlink" href="#sdk-platforms" title="Permanent link">¶</a></h4>
+<p>Piensa en una "Platform" como una <strong>versión específica y completa del sistema operativo Android empaquetada para el desarrollador</strong>. Cada "Platform" corresponde a un nivel de API concreto (que veremos más adelante).</p>
+<p>Cada paquete de "SDK Platform" incluye:</p>
+<ul>
+<li>
+<p>El <strong><code>android.jar</code></strong>: Este es el archivo clave. Contiene todas las APIs y clases de esa versión de Android contra las que compilaremos nuestro código. Es nuestro "diccionario" de funcionalidades disponibles.</p>
+</li>
+<li>
+<p><strong>Imagen del Sistema (System Image):</strong> Es una copia del sistema operativo Android que se usa para ejecutar los emuladores. Si quieres probar tu app en un emulador de Android 14, necesitas descargar la "System Image" de Android 14.</p>
+</li>
+</ul>
+<p><strong>En resumen:</strong> Si quieres que tu app use funciones de Android 14 y probarla en un emulador de Android 14, <strong>necesitas descargar la "SDK Platform" para el nivel de API de Android 14.</strong></p>
+<h4 id="sdk-tools"><strong>SDK Tools</strong><a class="headerlink" href="#sdk-tools" title="Permanent link">¶</a></h4>
+<p>Estas son las herramientas <strong>independientes de la versión de Android</strong> que usamos para desarrollar, depurar y probar nuestra aplicación. Son la maquinaria de nuestra cocina. No importa si cocinamos una receta de 2020 o de 2024, los fogones y cuchillos son los mismos (aunque se afilen y mejoren de vez en cuando).</p>
+<p>Las herramientas más importantes aquí son:</p>
+<ul>
+<li>
+<p><strong>Android SDK Build-Tools:</strong> Un conjunto de herramientas que toman nuestro código y lo compilan y empaquetan en un archivo <code>.apk</code> o <code>.aab</code> instalable.</p>
+</li>
+<li>
+<p><strong>Android Emulator:</strong> El software que nos permite crear y ejecutar dispositivos virtuales.</p>
+</li>
+<li>
+<p><strong>Android SDK Platform-Tools:</strong> Incluye herramientas de línea de comandos esenciales como:</p>
+<ul>
+<li>
+<p><strong>ADB (Android Debug Bridge):</strong> El "puente" de comunicación entre nuestro ordenador y el dispositivo (físico o emulado). Nos permite instalar apps, depurar, ver logs, etc.</p>
+</li>
+<li>
+<p><strong>Fastboot:</strong> Para flashear el firmware del dispositivo.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>En resumen:</strong> Las <strong>SDK Tools</strong> son las herramientas generales para construir y probar, mientras que las <strong>SDK Platforms</strong> son los "ingredientes" específicos de cada versión de Android.</p>
+<hr>
+<h3 id="c-entendiendo-las-versiones-de-android-la-clave-esta-en-el-nivel-de-api">C. Entendiendo las Versiones de Android: ¡La Clave está en el Nivel de API!<a class="headerlink" href="#c-entendiendo-las-versiones-de-android-la-clave-esta-en-el-nivel-de-api" title="Permanent link">¶</a></h3>
+<p>Aquí es donde muchos estudiantes se lían. Google usa dos nombres para cada versión de Android, y es crucial saber cuál es el importante para nosotros, los desarrolladores.</p>
+<h4 id="nombre-comercial-y-postre"><strong>Nombre Comercial (y postre 🍰)</strong><a class="headerlink" href="#nombre-comercial-y-postre" title="Permanent link">¶</a></h4>
+<p>Es el nombre público y de marketing que Google utiliza para cada gran lanzamiento. Suelen ser nombres de postres o dulces en orden alfabético (aunque esta tradición se ha relajado en los últimos años).</p>
+<ul>
+<li><strong>Ejemplos:</strong> Android 8 (<strong>O</strong>reo), Android 9 (<strong>P</strong>ie), Android 10, Android 11, Android 12 (<strong>S</strong>now Cone).</li>
+</ul>
+<p>Este nombre es <strong>útil para los usuarios</strong>, pero <strong>casi irrelevante para los desarrolladores</strong>. Es una etiqueta de marketing.</p>
+<h4 id="nivel-de-api-api-level"><strong>Nivel de API (API Level)</strong><a class="headerlink" href="#nivel-de-api-api-level" title="Permanent link">¶</a></h4>
+<p>Este es el <strong>número que realmente nos importa</strong>. El Nivel de API es un <strong>único número entero</strong> que identifica de forma inequívoca la versión del framework de APIs que ofrece una plataforma Android.</p>
+<p>Cuando se lanzan nuevas funcionalidades para desarrolladores (por ejemplo, un nuevo tipo de notificación o un permiso de privacidad), Google incrementa el Nivel de API.</p>
+<p><strong>¿Por qué es tan importante?</strong> Porque nuestro código se escribe "contra" un nivel de API. Si usamos una función que se introdujo en el <strong>API Level 33 (Android 13)</strong>, nuestra aplicación <strong>no funcionará</strong> en un dispositivo con <strong>API Level 32 (Android 12L)</strong>, porque esa función simplemente no existe en ese sistema operativo. ¡La app "crasheará"!</p>
+<h3 id="d-listado-de-versiones-de-android">D. Listado de Versiones de Android<a class="headerlink" href="#d-listado-de-versiones-de-android" title="Permanent link">¶</a></h3>
+<p>Las versiones de Android incluyen nombres de dulces y postres como&nbsp;Cupcake, Donut, Eclair, Froyo, Gingerbread, Honeycomb, Ice Cream Sandwich, Jelly Bean, KitKat, Lollipop, Marshmallow, Nougat, Oreo y Pie.&nbsp;Posteriormente, a partir de Android 10, se han numerado las versiones (Android 10, 11, 12, 13, 14, 15, etc.).&nbsp;</p>
+<p>Versiones antiguas (con nombres de postres)&nbsp;</p>
+<ul>
+<li><strong>Android 1.5</strong>&nbsp;- Cupcake</li>
+<li><strong>Android 1.6</strong>&nbsp;- Donut</li>
+<li><strong>Android 2.0/2.1</strong>&nbsp;- Eclair</li>
+<li><strong>Android 2.2</strong>&nbsp;- Froyo</li>
+<li><strong>Android 2.3</strong>&nbsp;- Gingerbread</li>
+<li><strong>Android 3.0</strong>&nbsp;- Honeycomb</li>
+<li><strong>Android 4.0</strong>&nbsp;- Ice Cream Sandwich</li>
+<li><strong>Android 4.1 - 4.3</strong>&nbsp;- Jelly Bean</li>
+<li><strong>Android 4.4</strong>&nbsp;- KitKat</li>
+<li><strong>Android 5.0/5.1</strong>&nbsp;- Lollipop</li>
+<li><strong>Android 6.0</strong>&nbsp;- Marshmallow</li>
+<li><strong>Android 7.0/7.1</strong>&nbsp;- Nougat</li>
+<li><strong>Android 8.0/8.1</strong>&nbsp;- Oreo</li>
+<li><strong>Android 9.0</strong>&nbsp;- Pie</li>
+</ul>
+<p>Versiones recientes (numeradas)&nbsp;</p>
+<ul>
+<li><strong>Android 10</strong>&nbsp;- Fue la primera versión sin nombre de postre.</li>
+<li><strong>Android 11</strong>&nbsp;- Lanzada en 2020.</li>
+<li><strong>Android 12</strong>&nbsp;- Lanzada en 2021, con una variante optimizada para pantallas grandes llamada Android 12L.</li>
+<li><strong>Android 13</strong>&nbsp;- Lanzada en 2022.</li>
+<li><strong>Android 14</strong>&nbsp;- Lanzada en 2023.</li>
+<li><strong>Android 15</strong>&nbsp;- Lanzada en 2024.</li>
+<li><strong>Android 16</strong>&nbsp;- Lanzada en 2025.</li>
+</ul>
+<p>Cómo verificar la versión de Android en tu dispositivo&nbsp;</p>
+<ul>
+<li>Abre la aplicación Configuración o Ajustes.</li>
+<li>Desplázate hacia abajo y selecciona Acerca del teléfono o Acerca de la tablet.</li>
+<li>Busca la opción Versión de Android para ver la información de tu sistema operativo.</li>
+</ul>
+<p>ℹ️ Más información en: <a href="https://developer.android.com/about/versions?hl=es-419">Lista de versiones de Android</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2026-2027 Jesús García - Licencia CC BY-NC-SA
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="mailto:&lt;jssgarcia.docente@gmail.com&gt;" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 12.13c-.15.01-.29.06-.39.17l-1 1 2.05 2 1-1c.22-.21.22-.56 0-.77l-1.24-1.23a.56.56 0 0 0-.38-.17m-2 1.75L13 19.94V22h2.06l6.06-6.07M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v-.89l8.24-8.22c.47-.49 1.12-.76 1.8-.76.34 0 .68.06 1 .19V6c0-1.12-.92-2-2.04-2m0 4-8 5-8-5V6l8 5 8-5"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["header.autohide", "content.tabs.link", "content.code.copy", "content.code.select", "navigation.top", "content.code.annotate", "navigation.path", "content.tooltips"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

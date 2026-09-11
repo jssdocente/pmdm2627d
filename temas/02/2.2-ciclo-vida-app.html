@@ -1,0 +1,1941 @@
+<!DOCTYPE html><html lang="es" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://jssdocente.github.io/pmdm2627d/temas/02/2.2-ciclo-vida-app.html">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../imagenes/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>2.2 Ciclo de vida de una aplicación Android - 2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M17%2013h-4v4h-2v-4H7v-2h4V7h2v4h4m-5-9A10%2010%200%200%200%202%2012a10%2010%200%200%200%2010%2010%2010%2010%200%200%200%2010-10A10%2010%200%200%200%2012%202%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../extra/css/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="Teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#22-ciclo-de-vida-de-una-aplicacion-android" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../index.html" title="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" class="md-header__button md-logo" aria-label="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" data-md-component="logo">
+      
+  <img src="../../imagenes/logofp.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              2.2 Ciclo de vida de una aplicación Android
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="Teal" aria-label="Cambiar a modo noche" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo noche" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="light-blue" data-md-color-accent="Teal" aria-label="Cambiar a modo día" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo día" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" class="md-nav__button md-logo" aria-label="2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27" data-md-component="logo">
+      
+  <img src="../../imagenes/logofp.png" alt="logo">
+
+    </a>
+    2º DAM - Programación Multimedia y Desarrollo móvil - Curso 26/27
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Android
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Android
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    El lenguaje kotlin
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    El lenguaje kotlin
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introducción
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/11-variables-tipos-datos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/12-expresiones-vs-sentencias.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Expresiones vs Sentencias
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/12.1-when.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    When
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/13-funciones-lambdas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funciones y lambdas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/14-null-safety.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Null safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_7">
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_7" id="__nav_2_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Colecciones
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Colecciones
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/41-arrays.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arrays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/42-listas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/43-maps.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Maps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/44-sets.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/21-poo.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    POO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/22-objetos-anonimos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Objetos anónimos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/23-data-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data classes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/24-enum-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enum classes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/25-genericos.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Genéricos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/26-sealed-classes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clases selladas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/31-scope-functions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scope functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-kotlin/52-corrutinas-sencillo.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Corrutinas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3">
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Herramientas Proyecto Android
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Herramientas Proyecto Android
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-tools/01-gradle-agp-estructura.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gradle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-tools/02-build-gradle.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build-gradle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-tools/03-android-manifest.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fichero Manifest
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4">
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jetpack Compose
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Jetpack Compose
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introducción
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/21-composable-functions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funciones componibles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/22-state-management.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gestión del estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/23-listas-cuadriculas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/24-navegacion-rutas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navegación Rutas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/25-material-design.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Material Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-android/00-compose/99-glosario-android.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glosario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01/index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UT1 - Visión General y Entorno de desarrollo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#a-componentes-del-ciclo-de-vida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Componentes del ciclo de vida
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="A. Componentes del ciclo de vida">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-es-una-activity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué es una Activity?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#estados-de-una-actividad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estados de una actividad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodos-del-ciclo-de-vida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Métodos del ciclo de vida
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejemplo-de-ciclo-de-vida-de-una-actividad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejemplo de ciclo de vida de una actividad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#imagen-del-ciclo-de-vida-de-una-actividad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Imagen del ciclo de vida de una actividad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practicamos-etapas-del-ciclo-de-vida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚀 Prácticamos: Etapas del ciclo de vida
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="22-ciclo-de-vida-de-una-aplicacion-android"><strong>2.2 Ciclo de vida de una aplicación Android</strong><a class="headerlink" href="#22-ciclo-de-vida-de-una-aplicacion-android" title="Permanent link">¶</a></h1>
+<p>El ciclo de vida de una aplicación Android es el conjunto de estados por los que pasa una aplicación desde que se inicia hasta que se detiene. Comprender el ciclo de vida de una aplicación es fundamental para desarrollar aplicaciones robustas y eficientes en Android. </p>
+<h2 id="a-componentes-del-ciclo-de-vida"><strong>A. Componentes del ciclo de vida</strong><a class="headerlink" href="#a-componentes-del-ciclo-de-vida" title="Permanent link">¶</a></h2>
+<p>En Android, los componentes del ciclo de vida de una aplicación son actividades, fragmentos, servicios y receptores de difusión. Cada uno de estos componentes tiene su propio ciclo de vida y se comporta de manera diferente en función de los eventos que se producen en la aplicación.</p>
+<p>Vamos a centrarnos en las Actividades o <code>Activity</code>, que son los componentes principales de una aplicación Android y representan una única pantalla con la que el usuario puede interactuar. </p>
+<h3 id="que-es-una-activity">¿Qué es una Activity?<a class="headerlink" href="#que-es-una-activity" title="Permanent link">¶</a></h3>
+<p>Una <strong>Activity</strong> es uno de los componentes fundamentales de una aplicación de Android. En términos simples, una Activity representa una única pantalla con una interfaz de usuario (UI). Piensa en cualquier aplicación que uses: la lista de correos en Gmail, la pantalla para redactar un nuevo email, o la pantalla de configuración; cada una de estas es, generalmente, una Activity.</p>
+<p>Sin embargo, su función va más allá de ser solo un contenedor visual. Es el punto de entrada para la interacción del usuario y el lugar donde se aloja la lógica de la interfaz. Cada Activity es una clase en tu código que se encarga de:</p>
+<ul>
+<li>
+<p><strong>Dibujar la interfaz de usuario:</strong> Infla los layouts XML que definen la apariencia y la disposición de los elementos en pantalla (botones, texto, imágenes, etc.).</p>
+</li>
+<li>
+<p><strong>Gestionar eventos del usuario:</strong> Responde a las interacciones del usuario, como toques en botones, deslizamientos o entradas de texto.</p>
+</li>
+<li>
+<p><strong>Coordinar la lógica de la pantalla:</strong> Ejecuta el código necesario para que esa pantalla funcione como se espera.</p>
+</li>
+</ul>
+<p>Una aplicación suele estar compuesta por múltiples Activities que se comunican entre sí. Por ejemplo, una Activity puede iniciar otra para realizar una acción diferente. Cuando una nueva Activity se inicia, la anterior se detiene y se coloca en una pila (conocida como "back stack" o pila de retroceso). Esto permite al usuario navegar hacia atrás presionando el botón correspondiente. </p>
+<details class="info">
+<summary>Video: ¿Qué es una Activity en Android?</summary>
+<p><iframe width="780" height="440" src="https://www.youtube.com/embed/YDPHFl5LC34?list=PLrn69hTK5FByEfJEtLzJMEi0cKIwCVgJi" title="Curso Android desde cero - Qué es una Activity #11" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe></p>
+</details>
+<h3 id="estados-de-una-actividad">Estados de una actividad<a class="headerlink" href="#estados-de-una-actividad" title="Permanent link">¶</a></h3>
+<p>Las actividades en Android pueden estar en uno de los siguientes estados:</p>
+<ul>
+<li><strong>Created</strong>: La actividad ha sido creada pero aún no es visible para el usuario.</li>
+<li><strong>Started</strong>: La actividad es visible para el usuario pero no tiene el foco.</li>
+<li><strong>Resumed</strong>: La actividad está en primer plano y tiene el foco.</li>
+<li><strong>Paused</strong>: La actividad ha perdido el foco pero aún es visible para el usuario.</li>
+<li><strong>Stopped</strong>: La actividad ya no es visible para el usuario.</li>
+<li><strong>Destroyed</strong>: La actividad ha sido destruida y liberada de la memoria.</li>
+</ul>
+<h3 id="metodos-del-ciclo-de-vida">Métodos del ciclo de vida<a class="headerlink" href="#metodos-del-ciclo-de-vida" title="Permanent link">¶</a></h3>
+<p>En Android, cada actividad tiene una serie de métodos que se invocan en función de su estado en el ciclo de vida. Algunos de los métodos más comunes son:</p>
+<ul>
+<li><code>onCreate()</code>: Se llama cuando la actividad se crea por primera vez.</li>
+<li><code>onStart()</code>: Se llama cuando la actividad se hace visible para el usuario.</li>
+<li><code>onResume()</code>: Se llama cuando la actividad obtiene el foco y se convierte en activa.</li>
+<li><code>onPause()</code>: Se llama cuando la actividad pierde el foco pero aún es visible.</li>
+<li><code>onStop()</code>: Se llama cuando la actividad ya no es visible para el usuario.</li>
+<li><code>onDestroy()</code>: Se llama cuando la actividad es destruida y liberada de la memoria.</li>
+</ul>
+<h3 id="ejemplo-de-ciclo-de-vida-de-una-actividad">Ejemplo de ciclo de vida de una actividad<a class="headerlink" href="#ejemplo-de-ciclo-de-vida-de-una-actividad" title="Permanent link">¶</a></h3>
+<p>A continuación, se muestra un ejemplo del ciclo de vida de una actividad en Android:</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">class</span><span class="w"> </span><span class="nc">MainActivity</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">AppCompatActivity</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span><span class="w"> </span><span class="n">Bundle?</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="na">layout</span><span class="p">.</span><span class="na">activity_main</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="s">"MainActivity"</span><span class="p">,</span><span class="w"> </span><span class="s">"onCreate"</span><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onStart</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onStart</span><span class="p">()</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="s">"MainActivity"</span><span class="p">,</span><span class="w"> </span><span class="s">"onStart"</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onResume</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onResume</span><span class="p">()</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="s">"MainActivity"</span><span class="p">,</span><span class="w"> </span><span class="s">"onResume"</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onPause</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onPause</span><span class="p">()</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="s">"MainActivity"</span><span class="p">,</span><span class="w"> </span><span class="s">"onPause"</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onStop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onStop</span><span class="p">()</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="s">"MainActivity"</span><span class="p">,</span><span class="w"> </span><span class="s">"onStop"</span><span class="p">)</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onDestroy</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onDestroy</span><span class="p">()</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">        </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="s">"MainActivity"</span><span class="p">,</span><span class="w"> </span><span class="s">"onDestroy"</span><span class="p">)</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>En el ejemplo anterior, se define una actividad <code>MainActivity</code> con los métodos del ciclo de vida más comunes. Cada método imprime un mensaje de registro en la consola para indicar en qué estado se encuentra la actividad.</p>
+<h3 id="imagen-del-ciclo-de-vida-de-una-actividad">Imagen del ciclo de vida de una actividad<a class="headerlink" href="#imagen-del-ciclo-de-vida-de-una-actividad" title="Permanent link">¶</a></h3>
+<p>A continuación, se muestra una imagen que representa el ciclo de vida de una actividad en Android:</p>
+<p><a class="glightbox" data-type="image" data-width="100%" data-height="auto" href="https://developer.android.com/guide/components/images/activity_lifecycle.png?hl=es-419" data-desc-position="bottom"><img alt="Ciclo de vida de una actividad en Android" src="https://developer.android.com/guide/components/images/activity_lifecycle.png?hl=es-419"></a></p>
+<p>Cómo podemos observar, el ciclo de vida de una actividad en Android consta de varios estados y transiciones entre ellos. </p>
+<p>Es importante comprender estos estados para gestionar correctamente el ciclo de vida de una aplicación Android.</p>
+<h4 id="la-activity-el-contenedor-principal-de-tu-pantalla">La activity: El contenedor Principal de tu Pantalla<a class="headerlink" href="#la-activity-el-contenedor-principal-de-tu-pantalla" title="Permanent link">¶</a></h4>
+<p>Imagina una aplicación como una obra de teatro. La <strong>Activity</strong> sería el escenario principal donde se desarrolla un acto completo. En términos más técnicos, una <code>Activity</code> es un componente de la aplicación que proporciona una pantalla con la que los usuarios pueden interactuar para hacer algo, como marcar un número de teléfono, tomar una foto, enviar un correo electrónico o ver un mapa. Cada <code>Activity</code> recibe una ventana en la que puede dibujar su interfaz de usuario.</p>
+<p>Piensa en las aplicaciones que usas a diario. Cuando abres tu cliente de correo, la lista de correos es probablemente una <code>Activity</code>. Al hacer clic en un correo, se abre una nueva pantalla para leerlo; esa es otra <code>Activity</code>.</p>
+<p><strong>Ejemplo Práctico:</strong></p>
+<p>Supongamos que estamos creando una aplicación de notas simple. La pantalla principal que muestra la lista de todas las notas sería nuestra <code>MainActivity</code>.</p>
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// MainActivity.kt</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">import</span><span class="w"> </span><span class="nn">androidx.appcompat.app.AppCompatActivity</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">import</span><span class="w"> </span><span class="nn">android.os.Bundle</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kd">class</span><span class="w"> </span><span class="nc">MainActivity</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">AppCompatActivity</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span><span class="w"> </span><span class="n">Bundle?</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="na">layout</span><span class="p">.</span><span class="na">activity_main</span><span class="p">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="c1">// Aquí inicializaríamos la lista de notas, etc.</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Y su correspondiente layout en XML:</p>
+<div class="language-xml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">&lt;!-- activity_main.xml --&gt;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">&lt;LinearLayout</span><span class="w"> </span><span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="na">android:layout_height=</span><span class="s">"match_parent"</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="na">android:orientation=</span><span class="s">"vertical"</span><span class="nt">&gt;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">&lt;ListView</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="na">android:id=</span><span class="s">"@+id/notes_list"</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">        </span><span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="na">android:layout_height=</span><span class="s">"wrap_content"</span><span class="w"> </span><span class="nt">/&gt;</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="nt">&lt;/LinearLayout&gt;</span>
+</span></code></pre></div>
+<h3 id="practicamos-etapas-del-ciclo-de-vida">🚀 <strong>Prácticamos: Etapas del ciclo de vida</strong><a class="headerlink" href="#practicamos-etapas-del-ciclo-de-vida" title="Permanent link">¶</a></h3>
+<p>Para esta práctica, vamos a ejecutar una App, y probar cada una de las etapas del ciclo de vida..</p>
+<p>Para ello, realiza el siguiente <em>Codelab</em>:</p>
+<ul>
+<li>Etapas del ciclo de vida de la actividad <a href="https://developer.android.com/codelabs/basic-android-kotlin-compose-activity-lifecycle?hl=es-41#0">Codelab</a>.</li>
+</ul>
+<p><br></p>
+<h4 id="el-ciclo-de-vida-de-la-activity-nacer-vivir-y-morir">El Ciclo de Vida de la Activity: Nacer, Vivir y Morir<a class="headerlink" href="#el-ciclo-de-vida-de-la-activity-nacer-vivir-y-morir" title="Permanent link">¶</a></h4>
+<p>Una <code>Activity</code> no existe de forma estática; pasa por diferentes estados a lo largo de su existencia, desde que se crea hasta que se destruye. Este es el famoso <strong>ciclo de vida de la Activity</strong>, y entenderlo es absolutamente crucial para construir aplicaciones robustas y evitar errores, como fugas de memoria o fallos inesperados.</p>
+<p>El sistema operativo Android gestiona estos estados a través de una serie de métodos que puedes sobrescribir en tu clase <code>Activity</code>:</p>
+<ul>
+<li><strong><code>onCreate()</code></strong>: Es el primer método que se llama cuando se crea la <code>Activity</code>. Aquí es donde debes realizar toda la inicialización estática: crear vistas, vincular datos a listas, etc. Este método recibe un <code>Bundle</code> que contiene el estado previamente guardado de la actividad, si es que existe (por ejemplo, después de una rotación de pantalla).</li>
+<li><strong><code>onStart()</code></strong>: Se llama cuando la <code>Activity</code> está a punto de hacerse visible para el usuario.</li>
+<li><strong><code>onResume()</code></strong>: Se invoca cuando la <code>Activity</code> ya es visible y el usuario puede empezar a interactuar con ella. La <code>Activity</code> permanece en este estado hasta que algo interrumpe el foco, como una llamada telefónica entrante o la navegación a otra <code>Activity</code>.</li>
+<li><strong><code>onPause()</code></strong>: Es la contraparte de <code>onResume()</code>. Se llama cuando la <code>Activity</code> está a punto de pasar a segundo plano, pero aún es parcialmente visible. Aquí deberías detener operaciones que consuman muchos recursos y que no necesiten ejecutarse mientras la <code>Activity</code> no está en primer plano.</li>
+<li><strong><code>onStop()</code></strong>: Se llama cuando la <code>Activity</code> ya no es visible para el usuario. Esto puede ocurrir porque se ha iniciado una nueva <code>Activity</code> que la cubre por completo o porque el usuario ha vuelto a la pantalla de inicio.</li>
+<li><strong><code>onRestart()</code></strong>: Se invoca justo antes de que una <code>Activity</code> que estaba detenida (<code>onStop()</code>) vuelva a iniciarse.</li>
+<li><strong><code>onDestroy()</code></strong>: Es la llamada final antes de que la <code>Activity</code> sea destruida. Esto puede suceder porque la aplicación se está cerrando, o porque el sistema necesita liberar memoria.</li>
+</ul>
+<p>Visualízalo como el viaje de un personaje en nuestra obra de teatro: entra en escena (<code>onCreate</code>, <code>onStart</code>, <code>onResume</code>), interactúa con el público (<code>onResume</code>), otro personaje le quita el foco temporalmente (<code>onPause</code>), sale del escenario (<code>onStop</code>), y finalmente, termina su papel en la obra (<code>onDestroy</code>).</p>
+<div class="admonition question">
+<p class="admonition-title">¿Una Activity por cada Pantalla?.</p>
+<p>Esta es una pregunta importante y la respuesta ha evolucionado con el tiempo.</p>
+<p>En los inicios de Android, la respuesta habría sido un rotundo <strong>"sí"</strong>. Cada pantalla completa de tu aplicación se implementaba como una <code>Activity</code> separada. Por lo tanto, para una aplicación con 5 pantallas, tendrías 5 archivos de <code>Activity</code> (por ejemplo, <code>LoginActivity.kt</code>, <code>HomeActivity.kt</code>, <code>ProfileActivity.kt</code>, <code>SettingsActivity.kt</code>, <code>DetailActivity.kt</code>) y 5 archivos de layout XML correspondientes.</p>
+<p><strong>Sin embargo, esta no es la práctica recomendada hoy en día, ni siquiera en el mundo del XML.</strong></p>
+<p>La introducción de los <code>Fragment</code>s cambió las reglas del juego. La arquitectura moderna, incluso antes de Jetpack Compose, aboga por una <strong>Arquitectura de Actividad Única (Single Activity Architecture)</strong>.</p>
+</div>
+<p><strong>Arquitectura de Actividad Única (Single Activity Architecture)</strong></p>
+<p>Significa que tu aplicación podría tener una única <code>Activity</code> (por ejemplo, <code>MainActivity.kt</code>) que actúa como el contenedor principal, y las "pantallas" diferentes serían en realidad <code>Fragment</code>s distintos. La navegación entre pantallas consistiría en reemplazar un <code>Fragment</code> por otro dentro de la misma <code>Activity</code>.</p>
+<blockquote>
+<p>🎯 Revisa el siguiente cuadro para conocer cómo funciona el diseño de Android antes de Jetpack compose.</p>
+</blockquote>
+<details class="abstract">
+<summary>En profundidad. Desarrollo Android antes de Compose 🧩</summary>
+<p><strong>A: El Fragment: Piezas Modulares y Reutilizables de tu Interfaz</strong></p>
+<p>Ahora, volvamos a nuestro escenario teatral. Si la <code>Activity</code> es el acto completo, un <strong>Fragment</strong> sería un actor o un conjunto de actores con su propio guion y comportamiento. Un <code>Fragment</code> representa una porción reutilizable de la interfaz de usuario de tu aplicación. No puede existir por sí solo; debe ser alojado por una <code>Activity</code> u otro <code>Fragment</code>.</p>
+<p>Piensa en una aplicación de noticias en una tablet. Podrías tener una <code>Activity</code> principal que, en la parte izquierda, muestra una lista de titulares (un <code>Fragment</code>) y, en la parte derecha, muestra el contenido del titular seleccionado (otro <code>Fragment</code>). En un teléfono, debido al menor espacio, la <code>Activity</code> podría mostrar solo la lista de titulares. Al seleccionar uno, se reemplazaría el <code>Fragment</code> de la lista por el del contenido. ¡Es la misma lógica y código de <code>Fragment</code>, pero reutilizado en diferentes contextos!</p>
+<p><strong>Relación entre Activity y Fragment:</strong></p>
+<ul>
+<li><strong>Contenedor-Contenido</strong>: La <code>Activity</code> es el contenedor, y el <code>Fragment</code> es una parte de su contenido.</li>
+<li><strong>Ciclo de Vida Anidado</strong>: El ciclo de vida de un <code>Fragment</code> está directamente ligado al de su <code>Activity</code> anfitriona. Por ejemplo, cuando la <code>Activity</code> se pausa (<code>onPause()</code>), todos los <code>Fragment</code>s dentro de ella también reciben su llamada a <code>onPause()</code>. Sin embargo, el <code>Fragment</code> tiene métodos de ciclo de vida adicionales propios, como <code>onAttach()</code> (cuando se asocia a la <code>Activity</code>), <code>onCreateView()</code> (cuando dibuja su propia interfaz) y <code>onDetach()</code> (cuando se desvincula).</li>
+<li><strong>Comunicación</strong>: La <code>Activity</code> puede pasar datos a sus <code>Fragment</code>s, y los <code>Fragment</code>s pueden comunicarse con su <code>Activity</code> (y a través de ella, con otros <code>Fragments</code> ) para coordinar acciones.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Ventajas de la Arquitectura de Actividad Única con Fragments</p>
+<ol>
+<li><strong>Rendimiento y Eficiencia</strong>: Cambiar entre <code>Fragment</code>s es mucho más ligero y rápido que iniciar <code>Activities</code> completamente nuevas, que son componentes más pesados del sistema.</li>
+<li><strong>Facilidad para Compartir Datos</strong>: Es mucho más sencillo compartir datos y estados entre <code>Fragment</code>s que están en la misma <code>Activity</code> (usando un <code>ViewModel</code> compartido, por ejemplo) que pasar datos complejos entre <code>Activities</code>.</li>
+<li><strong>Experiencia de Usuario Fluida</strong>: Las transiciones y animaciones entre <code>Fragment</code>s son más fáciles de implementar y se sienten más integradas.</li>
+<li><strong>Modularidad</strong>: Fomenta la creación de componentes de UI reutilizables.</li>
+</ol>
+</div>
+<p>Entonces, para una aplicación de 5 pantallas, la aproximación moderna (XML) sería:</p>
+<ul>
+<li><strong>1 Activity</strong>: <code>MainActivity.kt</code> con su layout. Este layout tendría un contenedor, como un <code>FrameLayout</code> o un <code>FragmentContainerView</code>, donde se alojarán los <code>Fragment</code>s.</li>
+<li><strong>5 Fragments</strong>: Cada uno con su propio archivo de clase Kotlin y su archivo de layout. Por ejemplo, <code>LoginFragment.kt</code> con <code>fragment_login.xml</code>, <code>HomeFragment.kt</code> con <code>fragment_home.xml</code>, etc.</li>
+</ul>
+<p><strong>B: Ciclo de Vida en la arquitectura de Actividad única con Fragments</strong></p>
+<p>¿La pregunta lógica entonces sería? Si solo tengo una Actividad, ¿cúal sería su ciclo de vida? y ¿cómo afectaría si el usuario se desplaza de una pantalla a otra de la Aplicación?</p>
+<p>La respuesta corta y fundamental es: <strong>el ciclo de vida de la <code>Activity</code> ya no se ve afectado por la navegación <em>interna</em> de la aplicación, sino únicamente por eventos que afectan a la ventana de la aplicación en su totalidad.</strong></p>
+<p>Vamos a desglosarlo con detalle, manteniendo nuestra analogía del teatro.</p>
+<p>Nuestra <code>MainActivity</code> es el <strong>teatro entero</strong>. Los <code>Fragment</code>s son los <strong>actos o escenas</strong> que ocurren en su único escenario.</p>
+<hr>
+<p><strong>El Rol Inmutable del Ciclo de Vida de la Activity</strong></p>
+<p>En un modelo de Actividad Única, los métodos del ciclo de vida de tu <code>MainActivity</code> (<code>onCreate</code>, <code>onStart</code>, <code>onResume</code>, <code>onPause</code>, <code>onStop</code>, <code>onDestroy</code>) se seguirán llamando, pero las razones para que se llamen son diferentes y más simples de predecir.</p>
+<p><strong>Piensa en el ciclo de vida de la <code>Activity</code> como el estado del "teatro":</strong></p>
+<ul>
+<li><code>onCreate()</code>: El teatro se construye por primera vez. Esto pasa solo una vez al iniciar la app.</li>
+<li><code>onStart()</code> / <code>onResume()</code>: Se abren las puertas del teatro y las luces del escenario se encienden. El espectáculo está en curso y el público (el usuario) está prestando atención. La <code>Activity</code> está en primer plano y es interactiva.</li>
+<li><code>onPause()</code> / <code>onStop()</code>: Las luces del escenario se atenúan o se apagan. El espectáculo se detiene. Esto ocurre cuando <strong>algo externo interrumpe la aplicación</strong>. Por ejemplo:<ul>
+<li>El usuario presiona el botón "Home" del dispositivo.</li>
+<li>El usuario presiona el botón "Recientes" para cambiar a otra aplicación.</li>
+<li>Recibes una llamada telefónica que aparece sobre tu aplicación.</li>
+<li>Aparece un diálogo de permisos del sistema.</li>
+</ul>
+</li>
+<li><code>onDestroy()</code>: El teatro va a ser demolido. Esto sucede cuando el usuario cierra la aplicación o si el sistema operativo necesita recuperar memoria de forma agresiva.</li>
+</ul>
+<p>Como puedes ver, <strong>ninguno de estos eventos tiene que ver con cambiar de la "pantalla de lista" a la "pantalla de detalle"</strong>. El cambio entre <code>Fragment</code>s es un evento interno. Para el sistema operativo, el "teatro" (<code>MainActivity</code>) ha permanecido abierto, con las luces encendidas y el público atento todo el tiempo.</p>
+<hr>
+<p><strong>El Doble Ciclo de Vida en Acción: Activity vs. Fragment</strong></p>
+<p>Aquí es donde reside la magia y la clave de la pregunta. Cuando navegas de un <code>Fragment</code> a otro, estás operando con el <strong>ciclo de vida del <code>Fragment</code></strong>, mientras que el <strong>ciclo de vida de la <code>Activity</code> permanece estable</strong>.</p>
+<p>Veamos el escenario exacto:</p>
+<p>Tu aplicación está en <code>HomeFragment</code> y el usuario hace clic en un elemento para ir a <code>DetailFragment</code>.</p>
+<ol>
+<li>
+<p><strong>Estado Inicial:</strong></p>
+<ul>
+<li><strong><code>MainActivity</code></strong>: Está en el estado <code>RESUMED</code> (ha pasado por <code>onCreate</code>, <code>onStart</code>, <code>onResume</code>). Su estado no va a cambiar.</li>
+<li><strong><code>HomeFragment</code></strong>: También está en el estado <code>RESUMED</code> (ha pasado por su propio ciclo de vida: <code>onAttach</code>, <code>onCreate</code>, <code>onCreateView</code>, <code>onStart</code>, <code>onResume</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>El Usuario Inicia la Navegación (hace clic):</strong></p>
+<ul>
+<li>El <code>FragmentManager</code> (o la librería de Navegación de Jetpack) recibe la orden de reemplazar <code>HomeFragment</code> con <code>DetailFragment</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>El Ciclo de Vida de los Fragments se Activa:</strong></p>
+<ul>
+<li>
+<p><strong><code>HomeFragment</code> (el que se va):</strong> El sistema lo retira del escenario. Pasa por su ciclo de vida de "destrucción de vista":</p>
+<ul>
+<li><code>onPause()</code></li>
+<li><code>onStop()</code></li>
+<li><code>onDestroyView()</code> (¡Muy importante! Su lógica se va, pero su vista (el layout XML) es lo que se destruye).</li>
+<li>Si no se añade a la "pila de retroceso" (back stack), también pasará por <code>onDestroy()</code> y <code>onDetach()</code>. Si se añade, el objeto del fragmento permanece en memoria.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>DetailFragment</code> (el que llega):</strong> El sistema lo pone en el escenario. Pasa por su ciclo de vida de "creación":</p>
+<ul>
+<li><code>onAttach()</code> (se engancha a la <code>MainActivity</code>).</li>
+<li><code>onCreate()</code> (se inicializa el fragmento).</li>
+<li><code>onCreateView()</code> (infla su layout XML para convertirse en una vista).</li>
+<li><code>onStart()</code></li>
+<li><code>onResume()</code> (ahora es visible e interactivo para el usuario).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Estado Final (Temporal):</strong></p>
+<ul>
+<li><strong><code>MainActivity</code></strong>: Sigue en <code>RESUMED</code>. No se ha enterado del cambio a nivel de su propio ciclo de vida. Para ella, todo sigue igual.</li>
+<li><strong><code>HomeFragment</code></strong>: Su vista ha sido destruida.</li>
+<li><strong><code>DetailFragment</code></strong>: Está en el estado <code>RESUMED</code>.</li>
+</ul>
+</li>
+</ol>
+<p><strong>¿Qué pasa si el usuario presiona el botón "Atrás"?</strong> El proceso se invierte. <code>DetailFragment</code> es destruido y <code>HomeFragment</code> se vuelve a crear (pasa por <code>onCreateView</code> de nuevo) para mostrarse en pantalla. Y durante todo este proceso, <code>MainActivity</code> sigue felizmente en su estado <code>RESUMED</code>.</p>
+<div class="admonition bug">
+<p class="admonition-title">Las Reglas de Oro del Ciclo de Vida en una Actividad Única</p>
+<p>Para que te quede grabado, aquí tienes las reglas fundamentales:</p>
+<ol>
+<li><strong>El Ciclo de Vida de la <code>Activity</code> gestiona el estado de la ventana de la aplicación.</strong> ¿Está tu app en primer plano o en segundo plano? ¿La están interrumpiendo?</li>
+<li><strong>El Ciclo de Vida del <code>Fragment</code> gestiona el estado de una porción de la UI <em>dentro</em> de la ventana de la aplicación.</strong> ¿Está esta porción de UI visible en pantalla o no?</li>
+<li><strong>La <code>Activity</code> es la directora de orquesta; el <code>Fragment</code> es un músico.</strong> Cuando la directora (Activity) dice "pausa" (porque llega una llamada), todos los músicos (Fragments activos) también pausan. Pero un músico puede dejar de tocar y ser reemplazado por otro sin que la directora altere el tempo general de la orquesta.</li>
+</ol>
+<p>Entender esta separación es la clave para dominar el desarrollo moderno de Android (incluso en Compose, donde los conceptos de ciclo de vida siguen siendo vitales) y para crear aplicaciones eficientes, rápidas y sin fugas de memoria.</p>
+</div>
+</details>
+<!-- ## Sobre el contexto o `Context`
+
+El contexto o `Context` es un objeto que proporciona información sobre el entorno en el que se ejecuta una aplicación Android. 
+
+El contexto se utiliza para acceder a recursos de la aplicación, iniciar actividades, crear servicios y mucho más.
+
+En Android, el contexto se puede obtener a través de la clase `Context` o de una subclase de `Context`, como `Activity` o `Service`.
+
+### Obtener el contexto en Android
+
+En Android, puedes obtener el contexto de varias formas, dependiendo de la clase en la que te encuentres. Algunas de las formas más comunes de obtener el contexto son:
+
+- `this`: En una actividad, puedes utilizar `this` para hacer referencia al contexto de la actividad.
+- `getApplicationContext()`: En una actividad o un servicio, puedes utilizar `getApplicationContext()` para obtener el contexto de la aplicación.
+- `getContext()`: En una vista, puedes utilizar `getContext()` para obtener el contexto de la vista.
+
+!!! tip "Contexto en Compose"
+    Para obtener el contexto en un entorno de Compose, puedes utilizar el modificador `LocalContext.current`.
+
+## Usos comunes del contexto
+
+Algunos de los usos comunes del contexto en Android son:
+
+- Acceder a recursos de la aplicación, como cadenas, imágenes y estilos.
+- Iniciar actividades y servicios.
+- Crear notificaciones y alarmas.
+- Acceder a la base de datos de la aplicación.
+
+El contexto es fundamental para el desarrollo de aplicaciones Android y te permite interactuar con el sistema operativo y los servicios de la plataforma.
+
+## Toasts en Android
+
+Los toasts son mensajes breves que se muestran en la pantalla durante un corto período de tiempo. En Android, puedes utilizar la clase `Toast` para mostrar toasts en tu aplicación.
+
+A continuación, se muestra un ejemplo de cómo mostrar un toast en Android:
+
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">Toast</span><span class="p">.</span><span class="na">makeText</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="s">"Hola, mundo!"</span><span class="p">,</span><span class="w"> </span><span class="n">Toast</span><span class="p">.</span><span class="na">LENGTH_SHORT</span><span class="p">).</span><span class="na">show</span><span class="p">()</span>
+</span></code></pre></div>
+
+En el ejemplo anterior, se utiliza `Toast.makeText()` para crear un toast con el mensaje "Hola, mundo!" y `Toast.LENGTH_SHORT` para especificar la duración del toast.
+
+Los toasts son útiles para mostrar mensajes informativos o de confirmación al usuario de forma rápida y sencilla.
+
+## Snackbar en Android
+
+Los snackbar son mensajes breves que se muestran en la parte inferior de la pantalla y permiten al usuario realizar una acción o deshacer una acción.
+
+En Android, puedes utilizar la clase `Snackbar` de la biblioteca de diseño de materiales para mostrar snackbar en tu aplicación.
+
+A continuación, se muestra un ejemplo de cómo mostrar un snackbar en Android:
+
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">Snackbar</span><span class="p">.</span><span class="na">make</span><span class="p">(</span><span class="n">view</span><span class="p">,</span><span class="w"> </span><span class="s">"Mensaje de snackbar"</span><span class="p">,</span><span class="w"> </span><span class="n">Snackbar</span><span class="p">.</span><span class="na">LENGTH_SHORT</span><span class="p">)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="p">.</span><span class="na">setAction</span><span class="p">(</span><span class="s">"Deshacer"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="c1">// Acción al deshacer</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="p">.</span><span class="na">show</span><span class="p">()</span>
+</span></code></pre></div>
+
+En el ejemplo anterior, se utiliza `Snackbar.make()` para crear un snackbar con el mensaje "Mensaje de snackbar" y `Snackbar.LENGTH_SHORT` para especificar la duración del snackbar. Se utiliza `setAction()` para añadir un botón de deshacer al snackbar y `show()` para mostrar el snackbar en la pantalla.
+
+Los snackbar son útiles para mostrar mensajes informativos o de confirmación al usuario y permitirle realizar acciones adicionales.
+
+## Diálogos en Android
+
+Los diálogos son ventanas emergentes que se utilizan para mostrar información, solicitar confirmación al usuario o realizar una acción.
+
+En Android, puedes utilizar la clase `AlertDialog` para crear diálogos en tu aplicación.
+
+A continuación, se muestra un ejemplo de cómo mostrar un diálogo en Android:
+
+<div class="language-kotlin highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kd">val</span><span class="w"> </span><span class="nv">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AlertDialog</span><span class="p">.</span><span class="na">Builder</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">builder</span><span class="p">.</span><span class="na">setTitle</span><span class="p">(</span><span class="s">"Título del diálogo"</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">builder</span><span class="p">.</span><span class="na">setMessage</span><span class="p">(</span><span class="s">"Mensaje del diálogo"</span><span class="p">)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">builder</span><span class="p">.</span><span class="na">setPositiveButton</span><span class="p">(</span><span class="s">"Aceptar"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">dialog</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="o">-&gt;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="c1">// Acción al hacer clic en Aceptar</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">}</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">builder</span><span class="p">.</span><span class="na">setNegativeButton</span><span class="p">(</span><span class="s">"Cancelar"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">dialog</span><span class="p">,</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="o">-&gt;</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="c1">// Acción al hacer clic en Cancelar</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="p">}</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">builder</span><span class="p">.</span><span class="na">show</span><span class="p">()</span>
+</span></code></pre></div>
+
+En compose, puedes utilizar el componente `AlertDialog` para crear diálogos de forma declarativa.
+
+Los diálogos son útiles para interactuar con el usuario y solicitar su entrada o confirmación de forma clara y concisa.
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2026-2027 Jesús García - Licencia CC BY-NC-SA
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="mailto:&lt;jssgarcia.docente@gmail.com&gt;" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 12.13c-.15.01-.29.06-.39.17l-1 1 2.05 2 1-1c.22-.21.22-.56 0-.77l-1.24-1.23a.56.56 0 0 0-.38-.17m-2 1.75L13 19.94V22h2.06l6.06-6.07M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7v-.89l8.24-8.22c.47-.49 1.12-.76 1.8-.76.34 0 .68.06 1 .19V6c0-1.12-.92-2-2.04-2m0 4-8 5-8-5V6l8 5 8-5"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["header.autohide", "content.tabs.link", "content.code.copy", "content.code.select", "navigation.top", "content.code.annotate", "navigation.path", "content.tooltips"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
