@@ -124,7 +124,7 @@ Cualquier imagen insertada con sintaxis estándar `![Descripción](ruta/a/imagen
 ## 4. Despliegue Automatizado (CI/CD)
 
 El repositorio incluye un workflow en `.github/workflows/build-push-mkdocs.yml`:
-- Se activa ante un `push` a la rama `master` o mediante disparo manual (`workflow_dispatch`).
-- Instala `mkdocs` y `mkdocs-material` en Ubuntu.
-- Ejecuta `mkdocs build` generando los estáticos en `site/`.
-- Publica el directorio generado en la rama `gh-pages` utilizando `s0/git-publish-subdir-action`.
+- Se activa ante un `push` a la rama `main` o mediante disparo manual (`workflow_dispatch`).
+- Instala `mkdocs`, `mkdocs-material` y `mkdocs-glightbox`.
+- Ejecuta `mkdocs build` generando los archivos estáticos en `site/`.
+- Publica el sitio usando la acción nativa y oficial de GitHub Pages (`actions/upload-pages-artifact@v3` y `actions/deploy-pages@v4`) sin necesidad de gestionar ramas intermedias (`gh-pages`).
