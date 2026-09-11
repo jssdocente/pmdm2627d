@@ -1,582 +1,623 @@
-# **UT1. Evolución y Entornos de desarrollo**
+# **UT1. Evolución y Entornos de Desarrollo Móvil**
 
+---
 
-## 1. Limitaciones en el desarrollo móvil
----------------------------------------------------------------
+## 1. Limitaciones y Retos en el Desarrollo Móvil
 
-A menudo, cuando empezamos a programar, venimos de un mundo de desarrollo de escritorio o incluso web, donde los recursos parecen casi infinitos. Un ordenador de sobremesa moderno tiene gigabytes de RAM, procesadores de múltiples núcleos a altas velocidades, almacenamiento masivo y una conexión a internet estable y rápida. Los servidores que alojan aplicaciones web son aún más potentes.
+A menudo, cuando empezamos a programar venimos del entorno de desarrollo de escritorio o de servidores web, donde los recursos del sistema parecen prácticamente ilimitados: gigabytes de memoria RAM, procesadores multinúcleo a altas velocidades sin restricciones térmicas estrictas, almacenamiento masivo y una alimentación eléctrica constante.
 
-Sin embargo, el entorno móvil es un ecosistema completamente diferente. Un smartphone, por muy avanzado que sea, es un dispositivo que llevamos en el bolsillo, alimentado por una batería y sujeto a condiciones muy variables. Ignorar estas limitaciones no solo lleva a una mala calificación en esta asignatura, sino, lo que es peor, a crear aplicaciones que los usuarios desinstalarán por ser lentas, consumir su batería o no funcionar cuando más las necesitan.
+Sin embargo, el entorno móvil plantea un ecosistema radicalmente distinto. Un smartphone es un dispositivo de bolsillo, alimentado por una batería química finita y sujeto a condiciones de conectividad y temperatura muy variables. Ignorar estas limitaciones no solo conduce a un rendimiento deficiente, sino a la desinstalación inmediata de la aplicación por parte del usuario.
 
-Pensemos en un desarrollador de escritorio como el arquitecto de un gran rascacielos con cimientos profundos y acceso a la red eléctrica principal. En cambio, un desarrollador móvil es como el ingeniero de un coche de Fórmula 1: cada gramo de peso, cada gota de combustible y cada pieza de la aerodinámica cuentan. La optimización no es una opción; es una obligación.
+Pensemos en el desarrollador de escritorio o backend como el arquitecto de un rascacielos con cimientos profundos y acceso ilimitado a la red eléctrica; en cambio, el desarrollador móvil es como un **ingeniero de Fórmula 1**: cada gramo de peso, cada ciclo de reloj de la CPU, cada llamada a la red y cada milivatio de batería cuentan.
 
-A continuación, vamos a desglosar las principales áreas de restricción.
+```mermaid
+graph TD
+    subgraph Retos del Entorno Móvil
+        A[Batería Finita] --> R[Optimización Extrema]
+        B[Hardware y RAM Limitados] --> R
+        C[Conectividad Inestable / Móvil] --> R
+        D[Fragmentación Extrema] --> R
+        E[Ciclo de Vida Agresivo del SO] --> R
+    end
+```
 
-1. **Recursos de Hardware: La eterna dieta**
+### 1.1. Recursos de Hardware: La Eterna Dieta
 
-      A pesar de los impresionantes avances, los dispositivos móviles operan con recursos de hardware significativamente más modestos que sus homólogos de escritorio.
+A pesar de los enormes avances en microelectrónica móvil, los smartphones operan bajo restricciones físicas estrictas:
 
-      `Procesador (CPU)`: Las CPUs móviles están diseñadas con un objetivo principal: la eficiencia energética. Un procesador de escritorio puede permitirse consumir 100W o más y disipar el calor con grandes ventiladores. Una CPU móvil debe operar con un consumo mínimo para no agotar la batería en minutos y sobrecalentar el dispositivo. Esto implica velocidades de reloj más bajas y arquitecturas (como ARM) optimizadas para el bajo consumo, lo que se traduce en una menor capacidad de cómputo bruto. Tareas muy intensivas, como el renderizado de vídeo o cálculos complejos, deben ser abordadas con mucho más cuidado.
+- **Procesador (CPU y GPU):** Las CPUs móviles (basadas predominantemente en arquitecturas ARM y núcleos big.LITTLE) priorizan la eficiencia energética por encima de la potencia bruta continua. No disponen de ventiladores activos; si una aplicación satura la CPU durante periodos prolongados, el procesador entrará en *thermal throttling* (reducción automática de frecuencia para evitar daños térmicos), ralentizando el dispositivo.
+- **Memoria RAM y el Asesino Silencioso (Low Memory Killer):** A diferencia de un PC donde el sistema operativo utiliza memoria virtual (swap) en disco si la RAM se agota, en los sistemas operativos móviles la memoria swap intensiva está limitada para no degradar la memoria flash. Si el sistema detecta presión de memoria, el servicio **Low Memory Killer (LMK)** de Android destruirá procesos en segundo plano sin previo aviso. Nuestra aplicación debe estar preparada en todo momento para restaurar su estado tras ser eliminada de la memoria.
+- **Almacenamiento Flash:** Aunque la capacidad ha crecido, sigue siendo finita y compartida con fotos, vídeos y cachés del sistema. Las aplicaciones que superan cientos de megabytes sin justificación sufren mayores tasas de desinstalación.
 
-      `Memoria (RAM)`: Mientras que un PC de gama media actual puede tener 16 GB o 32 GB de RAM, un smartphone de gama alta puede tener 8 GB o 12 GB, y los de gama media, bastante menos. Además, el sistema operativo móvil (Android o iOS) es muy agresivo a la hora de gestionar esta memoria. Si tu aplicación consume demasiada RAM, el sistema no dudará en "matarla" (finalizar su proceso) sin previo aviso para liberar recursos para la aplicación que está en primer plano. Esto contrasta con un sistema de escritorio, donde las aplicaciones pueden permanecer en memoria durante días.
+### 1.2. La Batería: El Recurso Más Crítico
 
-      `Almacenamiento`: Aunque los dispositivos modernos ofrecen más almacenamiento, sigue siendo un recurso finito y, a menudo, no ampliable. Las aplicaciones deben ser ligeras. Una aplicación de escritorio puede ocupar varios gigabytes sin que el usuario se preocupe, pero una app móvil que ocupe ese espacio será una candidata clara a ser eliminada cuando el usuario necesite liberar espacio para sus fotos o vídeos.
+En un dispositivo móvil, cada byte transmitido por la antena celular, cada cálculo matemático y cada píxel iluminado en una pantalla OLED consume energía.
 
-2. **La Batería: El recurso más preciado**
+- **Impacto de las Antenas (Radio Móvil):** La antena celular (4G/5G) pasa por estados de energía (*Sleep*, *Idle*, *Active*). Realizar muchas peticiones de red pequeñas y espaciadas en el tiempo despierta la antena repetidamente impidiendo que entre en reposo, lo que dispara el consumo.
+- **Mecanismos del Sistema Operativo:** Android implementa políticas muy estrictas como **Doze Mode** y **App Standby**. Cuando el usuario deja el teléfono sobre la mesa con la pantalla apagada, el sistema entra en un sueño profundo, limitando el acceso a la red y posponiendo tareas en segundo plano. El desarrollador no puede pretender ejecutar hilos infinitos; debe delegar el trabajo diferible a herramientas del sistema como **WorkManager**.
 
-      Esta es, sin duda, la limitación más crítica y definitoria del desarrollo móvil. A diferencia del desarrollo web o de escritorio, donde la alimentación es constante, en el móvil cada ciclo de CPU, cada byte enviado por la red y cada píxel encendido en la pantalla consume una porción de un recurso muy limitado: la batería.
+### 1.3. Conectividad Móvil: Un Entorno Inestable
 
-      `Consumo energético`: El desarrollador debe ser consciente del impacto energético de su código. Dejar un sensor activo (como el GPS) innecesariamente, realizar operaciones de red con demasiada frecuencia (polling) o ejecutar procesos complejos en segundo plano son los caminos más rápidos para agotar la batería del usuario y ganarse una reseña de una estrella en la tienda de aplicaciones.
+Las aplicaciones móviles deben operar con la premisa de que la red es intrínsecamente hostil y cambiante:
 
-      `Optimización del sistema`: Los sistemas operativos móviles modernos implementan mecanismos muy estrictos para controlar el consumo, como Doze Mode y App Standby en Android. Estos modos ponen las aplicaciones en un estado de "sueño profundo", restringiendo su acceso a la red y a la CPU cuando el dispositivo no está en uso. El desarrollador ya no tiene control total sobre cuándo se ejecuta su código en segundo plano.
+- **Transiciones Constantes:** La app debe tolerar el cambio instantáneo entre una red Wi-Fi de alta velocidad, una conexión 5G con baja latencia, una cobertura 3G degradada en un túnel y la pérdida total de señal (*modo avión* o zonas sin cobertura).
+- **Enfoque Offline-First:** Las aplicaciones modernas deben diseñarse con una arquitectura *offline-first*, almacenando los datos en una base de datos local (como Room o SQLDelight) y sincronizando con la nube de manera transparente cuando la conectividad se restablezca.
 
-3. **Conectividad: Un mundo inestable y costoso**
+### 1.4. Fragmentación del Ecosistema
 
-      Las aplicaciones de escritorio y web suelen asumir una conexión a internet permanente, rápida y de bajo coste (Wi-Fi o Ethernet). En el mundo móvil, la realidad es muy diferente.
+La diversidad de dispositivos en el mercado Android es inmensa:
 
-      `Variabilidad de la red`: La aplicación debe funcionar de manera predecible en múltiples escenarios: una conexión Wi-Fi de alta velocidad, una red 5G, una conexión 4G inestable en un tren, una red 3G lenta en una zona rural, o incluso sin conexión alguna.
+- **Pantallas y Densidades:** Dispositivos que van desde 4 pulgadas hasta pantallas plegables de 8 pulgadas, tablets y pantallas de vehículos, con diferentes densidades de píxeles (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`) y relaciones de aspecto variadas (16:9, 19.5:9, 21:9).
+- **Variedad de Fabricantes (Capas de Personalización):** Samsung (One UI), Xiaomi (HyperOS), Google (Pixel UI), etc., cada uno con configuraciones de ahorro de batería agresivas y modificaciones sobre el comportamiento estándar de Android AOSP.
+- **Versiones de Android en el Mercado:** Conviven dispositivos con versiones que van desde Android 10 hasta Android 16. La aplicación debe fijar una versión mínima (`minSdk`) y verificar capacidades en tiempo de ejecución.
 
-      `Latencia y ancho de banda`: La latencia en redes móviles es generalmente mayor que en redes fijas. Las transferencias de datos deben minimizarse. No puedes permitirte descargar 50 MB de datos cada vez que el usuario abre la app. Debes implementar estrategias de caché, compresión de datos y sincronización inteligente.
+---
 
-      `Coste de los datos`: A diferencia del Wi-Fi, los datos móviles suelen tener un coste para el usuario. Una aplicación que consuma una cantidad excesiva del plan de datos de un usuario será desinstalada rápidamente. Debes ofrecer opciones para limitar el uso de datos (por ejemplo, descargar contenido pesado solo con Wi-Fi).
+## 2. Ecosistema de Opciones en el Desarrollo Móvil Actual
 
-4. **Fragmentación del Ecosistema**
+A la hora de crear una aplicación móvil existen distintas aproximaciones técnicas. La elección adecuada impactará directamente en el rendimiento, los costes de mantenimiento y el tiempo de comercialización (*time-to-market*).
 
-      Mientras que en el desarrollo de escritorio se trabaja con un conjunto relativamente estándar de resoluciones de pantalla y capacidades, y en la web se usan técnicas de "responsive design", en el móvil (especialmente en Android) nos enfrentamos a una fragmentación extrema.
+```mermaid
+graph TD
+    A[Enfoques de Desarrollo Móvil] --> B[Nativo Puro]
+    A --> C[Híbrido Tradicional / Web-Based]
+    A --> D[Multiplataforma de UI Propia]
+    A --> E[Kotlin Multiplatform - KMP]
+    A --> F[Progressive Web Apps - PWA]
 
-      `Diversidad de pantallas`: Existen miles de modelos de dispositivos con diferentes tamaños de pantalla, densidades de píxeles (DPI), y relaciones de aspecto. Tu interfaz de usuario (UI) debe adaptarse fluidamente a todas ellas, desde un teléfono pequeño hasta una tablet de gran formato.
+    B --> B1[Android: Kotlin / Jetpack Compose]
+    B --> B2[iOS: Swift / SwiftUI]
 
-      `Variedad de Hardware`: Más allá de la pantalla, te encontrarás con una enorme diversidad de CPUs, GPUs, cantidad de RAM y sensores disponibles (algunos tienen NFC, otros no; algunos tienen un barómetro, la mayoría no). Tu aplicación debe ser capaz de gestionar esta diversidad, ya sea adaptando su funcionalidad o informando al usuario de que una característica no está disponible en su dispositivo.
+    C --> C1[Capacitor / Ionic / Cordova]
 
-      `Versiones del Sistema Operativo`: Especialmente en Android, los usuarios tardan en actualizar sus dispositivos. No es raro tener que dar soporte a varias versiones del sistema operativo simultáneamente, cada una con sus propias APIs, características y bugs.
+    D --> D1[Flutter / Dart]
+    D --> D2[React Native / JS-TS]
 
-5. **Ciclo de Vida de la Aplicación y Restricciones del SO**
+    E --> E1[KMP: Lógica Compartida + UI Nativa]
+    E --> E2[Compose Multiplatform: Lógica + UI Compartida]
+```
+
+### A. Desarrollo Nativo Puro: Máxima Potencia e Integración
+
+Consiste en programar directamente contra las APIs oficiales de cada plataforma utilizando sus lenguajes y herramientas recomendadas.
+
+- **Android:** Lenguaje **Kotlin** (apoyado históricamente en Java), entorno **Android Studio**, interfaz declarativa con **Jetpack Compose**.
+- **iOS:** Lenguaje **Swift** (anteriormente Objective-C), entorno **Xcode** (exclusivo de macOS), interfaz declarativa con **SwiftUI**.
+
+!!! info "Ventajas e Inconvenientes del Enfoque Nativo"
+    - **Ventajas:** Rendimiento óptimo sin capas de traducción; acceso el primer día a cualquier nueva API del sistema operativo; integración de diseño al 100% con las guías de estilo de cada plataforma (Material 3 en Android, Human Interface Guidelines en iOS).
+    - **Inconvenientes:** Coste económico y de tiempo duplicado. Requiere mantener dos bases de código distintas y contar con dos equipos de ingenieros especializados.
+
+---
+
+### B. Frameworks Híbridos y Multiplataforma Tradicionales
+
+Surgen con el lema *"Write Once, Run Anywhere"* buscando abaratar costes unificando el código fuente.
+
+#### 1. Basados en WebView (Ionic / Capacitor)
+- Empaquetan una aplicación web (HTML5, CSS3, JavaScript/TypeScript) dentro de un contenedor nativo (*WebView*).
+- **Limitación:** El rendimiento gráfico y la fluidez son inferiores, existiendo latencia en animaciones complejas y un aspecto que delata que no es una aplicación nativa.
+
+#### 2. React Native (Meta)
+- Utiliza **JavaScript o TypeScript** con el paradigma declarativo de React.
+- **Funcionamiento:** En sus versiones modernas (con la nueva arquitectura *Fabric* y *TurboModules* con C++), sustituye el antiguo puente asíncrono (*bridge*) por la interfaz JSI (*JavaScript Interface*), renderizando componentes nativos reales de cada plataforma.
+- **Uso ideal:** Empresas con fuertes equipos frontend web que buscan reutilizar conocimientos para el mundo móvil.
+
+#### 3. Flutter (Google)
+- Utiliza el lenguaje **Dart**.
+- **Funcionamiento:** Flutter no utiliza los componentes de UI nativos del sistema. En su lugar, incluye su propio motor gráfico de alto rendimiento (**Impeller / Skia**) y dibuja cada botón, texto y animación directamente sobre un lienzo (*Canvas*).
+- **Ventajas:** Control absoluto sobre cada píxel de la pantalla e interfaces visualmente idénticas en todas las plataformas.
+- **Inconvenientes:** Mayor tamaño del ejecutable inicial y necesidad de aprender un lenguaje (Dart) con menor penetración fuera de Flutter.
+
+---
+
+## 3. Kotlin Multiplatform (KMP): La Revolución Multiplataforma
+
+**Kotlin Multiplatform (KMP)** no es un framework híbrido más: es una tecnología desarrollada por **JetBrains** y respaldada oficialmente por **Google** que replantea por completo la estrategia de código compartido en la industria del software.
+
+### 3.1. Filosofía de KMP: Código Compartido Donde Aporta Valor
+
+La premisa tradicional de los frameworks híbridos solía ser "comparte el 100% de la aplicación, incluida la interfaz, a costa de intermediarios y puentes". KMP introduce una perspectiva mucho más sensata:
+
+> **"Comparte la lógica de negocio que es idéntica en todas las plataformas, y decide libremente cuánta interfaz de usuario quieres compartir."**
+
+```mermaid
+graph TD
+    subgraph KMP Clásico: Lógica Compartida
+        CM[commonMain: Lógica de Negocio en Kotlin]
+        CM -->|Compilado a JVM Bytecode| AND[UI Android con Jetpack Compose]
+        CM -->|Compilado a Binario Nativo / Framework vía LLVM| IOS[UI iOS con SwiftUI / Swift]
+        CM -->|Compilado a JS / Wasm| WEB[Web Frontend]
+    end
+```
+
+A diferencia de React Native (que requiere un runtime de JavaScript en tiempo de ejecución) o Flutter (que empaqueta su propio motor de renderizado gráfico completo), **KMP se compila al formato nativo que cada plataforma espera**:
+- Para **Android**, Kotlin compila a **bytecode de la JVM/DEX**, integrándose como código nativo de primera clase.
+- Para **iOS**, el compilador de **Kotlin/Native** utiliza **LLVM** para generar un binario ejecutable o un `.framework` nativo de Apple que Swift consume sin wrappers ni penalización de rendimiento.
+
+---
+
+### 3.2. Adopción Oficial de Google en AndroidX
+
+Un hito decisivo en la consolidación de KMP fue el anuncio oficial de **Google** adoptando Kotlin Multiplatform como tecnología recomendada para compartir código entre Android e iOS.
+
+Librerías oficiales de **AndroidX** que ya tienen soporte oficial de KMP:
+- **Room KMP:** La base de datos relacional estándar de Android ahora corre sobre iOS usando el mismo código de entidades y DAOs.
+- **DataStore:** Almacenamiento clave-valor reactivo y transaccional compartido.
+- **Lifecycle & ViewModel:** Los `ViewModel` de Jetpack y sus estados ahora pueden residir en el módulo común y ser consumidos tanto por Compose como por SwiftUI.
+- **Paging:** Paginación eficiente de listas compartida.
+- **Annotations & Collections:** Colecciones optimizadas de Android disponibles en iOS y Desktop.
+
+---
+
+### 3.3. Estructura de un Proyecto KMP
+
+En un proyecto estándar de KMP, la estructura del código en el módulo compartido (habitualmente llamado `shared` o `composeApp`) organiza las fuentes por plataformas mediante los llamados **Source Sets**:
+
+```
+mi-proyecto-kmp/
+├── composeApp/ (o shared/)
+│   └── src/
+│       ├── commonMain/         <-- Código 100% compartido
+│       │   ├── kotlin/         <-- Modelos, Repositorios, Red, Casos de Uso
+│       │   └── resources/      <-- Strings, imágenes y fuentes comunes
+│       ├── androidMain/        <-- Código específico de Android (usa Android SDK)
+│       ├── iosMain/            <-- Código específico de iOS (usa APIs de Apple / Cocoa)
+│       ├── desktopMain/        <-- Código específico de JVM Desktop (Windows/Mac/Linux)
+│       └── wasmJsMain/         <-- Código para WebAssembly (Navegador)
+├── iosApp/                     <-- Proyecto Xcode de iOS (consume el framework de Kotlin)
+└── build.gradle.kts            <-- Configuración Gradle Multiplataforma
+```
+
+#### Configuración del `build.gradle.kts` Multiplataforma:
+
+```kotlin
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.composeMultiplatform)
+}
+
+kotlin {
+    // Objetivos de compilación (Targets)
+    androidTarget()
+    
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "SharedApp"
+            isStatic = true
+        }
+    }
+    
+    jvm("desktop")
+
+    // Configuración de dependencias por Source Set
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.ktor.client.core)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.koin.core)
+        }
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+    }
+}
+```
+
+---
+
+### 3.4. El Mecanismo Clave: `expect` y `actual`
+
+¿Qué ocurre cuando el código compartido en `commonMain` necesita acceder a una funcionalidad que solo existe en el hardware o en el sistema operativo concreto (por ejemplo, obtener el modelo del dispositivo, guardar en el Keychain/Keystore o consultar el nivel de batería)?
+
+Kotlin proporciona un patrón de diseño a nivel de compilador mediante las palabras clave **`expect`** y **`actual`**.
+
+```mermaid
+classDiagram
+    class CommonMain {
+        <<expect>>
+        +getPlatform(): Platform
+    }
+    class AndroidMain {
+        <<actual>>
+        +getPlatform(): Platform (Retorna "Android API " + Build.VERSION.SDK_INT)
+    }
+    class IosMain {
+        <<actual>>
+        +getPlatform(): Platform (Retorna UIDevice.currentDevice.systemName)
+    }
+    CommonMain <|-- AndroidMain : Implementa
+    CommonMain <|-- IosMain : Implementa
+```
+
+#### Paso 1: Declarar el contrato en `commonMain` (`expect`)
+
+```kotlin
+// Archivo: commonMain/kotlin/com/example/Platform.kt
+interface Platform {
+    val name: String
+    val osVersion: String
+}
+
+// Declaramos que esperamos que cada plataforma proporcione esta función
+expect fun getPlatform(): Platform
+```
+
+#### Paso 2: Implementar en `androidMain` (`actual`)
+
+En `androidMain`, tenemos acceso total a todo el SDK de Android (`android.os.Build`, `Context`, etc.):
+
+```kotlin
+// Archivo: androidMain/kotlin/com/example/Platform.android.kt
+import android.os.Build
+
+class AndroidPlatform : Platform {
+    override val name: String = "Android"
+    override val osVersion: String = "${Build.VERSION.SDK_INT}"
+}
+
+actual fun getPlatform(): Platform = AndroidPlatform()
+```
+
+#### Paso 3: Implementar en `iosMain` (`actual`)
+
+En `iosMain`, Kotlin nos permite importar directamente los frameworks de Apple (**Foundation**, **UIKit**, etc.) como si fueran clases de Kotlin:
+
+```kotlin
+// Archivo: iosMain/kotlin/com/example/Platform.ios.kt
+import platform.UIKit.UIDevice
+
+class IOSPlatform : Platform {
+    override val name: String = UIDevice.currentDevice.systemName()
+    override val osVersion: String = UIDevice.currentDevice.systemVersion
+}
+
+actual fun getPlatform(): Platform = IOSPlatform()
+```
+
+---
+
+### 3.5. Ecosistema de Librerías Estándar en KMP
+
+Para construir aplicaciones reales sin reinventar la rueda, el ecosistema KMP cuenta con un conjunto de bibliotecas de primer nivel respaldadas por la comunidad y grandes compañías:
+
+| Necesidad Arquitectónica | Librería KMP Estándar | Equivalente Tradicional en Android |
+| :--- | :--- | :--- |
+| **Cliente HTTP / Red** | **Ktor Client** | Retrofit / OkHttp |
+| **Serialización JSON** | **`kotlinx.serialization`** | Gson / Moshi / Jackson |
+| **Persistencia Local (BD)** | **Room KMP** / **SQLDelight** | Room (solo Android) / SQLite |
+| **Almacenamiento Clave-Valor** | **Multiplatform Settings** / **DataStore** | SharedPreferences / DataStore |
+| **Inyección de Dependencias** | **Koin** | Hilt / Dagger |
+| **Concurrencia Asíncrona** | **Kotlinx Coroutines & Flow** | RxJava / Threads / Handlers |
+| **Carga y Caché de Imágenes** | **Coil 3 (KMP)** / **Kamel** | Glide / Picasso / Coil 2 |
+| **Navegación Multiplataforma** | **Navigation Compose KMP** / **Voyager** | Jetpack Navigation |
+
+#### Ejemplo Práctico de Consumo de API en `commonMain`:
+
+```kotlin
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Game(val id: Int, val title: String, val rating: Double)
+
+class GameRepository(private val client: HttpClient) {
+    suspend fun fetchGames(): List<Game> {
+        return client.get("https://api.example.com/games").body()
+    }
+}
+```
+*Este único bloque de código se ejecuta idénticamente en Android, iOS, Windows, Mac y navegador web.*
+
+---
+
+### 3.6. Compose Multiplatform (CMP): Llevando la UI a Todas Partes
+
+Si bien KMP nació enfocado en la lógica compartida con UI nativa (Jetpack Compose en Android y SwiftUI en iOS), **JetBrains** dio el siguiente paso natural con **Compose Multiplatform (CMP)**.
+
+```mermaid
+graph LR
+    subgraph Compose Multiplatform
+        UI[Código Declarativo @Composable] --> ANDROID[Android: Render Nativo AndroidX]
+        UI --> IOS[iOS: Renderizado mediante Skiko / Metal]
+        UI --> DESK[Desktop: Renderizado mediante Skiko / DirectX / OpenGL]
+        UI --> WASM[Web: Renderizado mediante WebAssembly / Canvas]
+    end
+```
+
+- **¿Qué es CMP?** Es una extensión de Jetpack Compose que permite usar exactamente la misma sintaxis declarativa de Kotlin para describir la interfaz de usuario en Android, iOS, Escritorio y Web.
+- **¿Cómo funciona en iOS?** En iOS, Compose Multiplatform utiliza **Skiko** (un motor gráfico ligero basado en **Skia**, la misma tecnología gráfica que emplean Google Chrome y Flutter) para dibujar sobre una vista de Metal nativa a 60/120 FPS.
+- **Ventaja competitiva frente a Flutter:** No aprendes un lenguaje nuevo (todo es Kotlin), puedes integrar vistas SwiftUI nativas dentro de Compose cuando lo desees (`UIKitView`) y tienes acceso directo a todas las APIs de Apple sin necesidad de programar complejos "Method Channels".
+
+---
+
+### 3.7. Matriz Comparativa: KMP vs Flutter vs React Native vs Nativo Puro
+
+| Criterio | Nativo Puro | Kotlin Multiplatform (KMP/CMP) | Flutter | React Native |
+| :--- | :--- | :--- | :--- | :--- |
+| **Lenguaje** | Kotlin (Android) / Swift (iOS) | **Kotlin** | Dart | JavaScript / TypeScript |
+| **Rendimiento** | Máximo (100% nativo) | **Nativo en lógica y compilación** | Casi nativo (motor propio Skia) | Casi nativo (con JSI / Fabric) |
+| **Estrategia de UI** | Nativa independiente | **Flexible:** 100% nativa o CMP compartida | Compartida (dibuja su propio Canvas) | Componentes nativos mapeados |
+| **Interoperabilidad** | Innecesaria | **Total y directa** (compila a `.framework` en iOS) | Requiere puentes (*Platform Channels*) | Requiere módulos nativos puente |
+| **Curva de Adopción** | Requiere dos equipos | **Gradual:** Puedes empezar con un solo módulo | "Todo o nada" en la mayoría de casos | "Todo o nada" para la app |
+| **Soporte Corporativo** | Google / Apple | **JetBrains & Google** | Google | Meta (Facebook) |
+| **Ideal para...** | Apps con uso intensivo de APIs exclusivas | Proyectos que buscan maximizar código compartido sin perder potencia nativa | Apps con diseño idéntico muy estilizado | Equipos con fuerte base web React |
+
+---
+
+## 4. Evolución de los Paradigmas de Interfaz: De Imperativo a Declarativo
+
+Uno de los saltos cualitativos más importantes en el desarrollo de software moderno ha sido la transición del paradigma imperativo al paradigma declarativo en el diseño de interfaces.
+
+```mermaid
+graph TD
+    subgraph Paradigma Imperativo - Histórico
+        A1[El desarrollador programa el CÓMO] --> A2[Búsqueda manual: findViewById]
+        A2 --> A3[Mutación de propiedades: setText, setVisibility]
+        A3 --> A4[Riesgo de desincronización de estado]
+    end
+
+    subgraph Paradigma Declarativo - Moderno
+        B1[El desarrollador describe el QUÉ] --> B2[UI = f estado]
+        B2 --> B3[Cuando el estado cambia, la UI se recompone sola]
+        B3 --> B4[Código predecible, testeable y sin bugs de estado]
+    end
+```
+
+### 4.1. El Enfoque Imperativo Clásico (XML / Android Views)
+
+Durante más de una década, construir una pantalla en Android requería:
+1. Diseñar la estructura visual en un archivo XML (`activity_main.xml`).
+2. Enlazar los elementos desde la actividad en Java o Kotlin mediante `findViewById` o View Binding.
+3. Mutar manualmente cada vista cuando cambiaban los datos:
+   ```kotlin
+   // Enfoque imperativo: Nosotros manipulamos la vista paso a paso
+   val textView = findViewById<TextView>(R.id.tvMensaje)
+   val progressBar = findViewById<ProgressBar>(R.id.progressBar)
    
-      En un ordenador de escritorio, el usuario lanza una aplicación y esta se ejecuta hasta que él decide cerrarla. En un dispositivo móvil, el ciclo de vida es mucho más complejo y está gestionado de forma estricta por el sistema operativo.
+   if (cargando) {
+       progressBar.visibility = View.VISIBLE
+       textView.text = "Cargando datos..."
+   } else {
+       progressBar.visibility = View.GONE
+       textView.text = "Datos recibidos: ${datos.total}"
+   }
+   ```
+*Problema clásico:* Si el programador olvidaba ocultar la barra de progreso en uno de los muchos caminos de error, la vista quedaba en un estado inconsistente con la realidad interna de la aplicación.
+
+### 4.2. El Enfoque Declarativo Moderno (Jetpack Compose / SwiftUI)
+
+En el paradigma declarativo no manipulamos directamente los componentes gráficos. En su lugar, describimos **cómo debe verse la pantalla para cualquier estado posible**:
+
+$$\text{UI} = f(\text{Estado})$$
+
+```kotlin
+// Enfoque declarativo con Jetpack Compose: La UI es un reflejo reactivo del estado
+@Composable
+fun PantallaDatos(uiState: DatosUiState) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        if (uiState.isLoading) {
+            CircularProgressIndicator()
+            Text(text = "Cargando datos...")
+        } else {
+            Text(text = "Datos recibidos: ${uiState.total}")
+        }
+    }
+}
+```
+Cuando el estado (`DatosUiState`) cambia, el framework se encarga de calcular de forma inteligente qué partes de la pantalla han cambiado y redibujarlas automáticamente (**Recomposición**). Es imposible que la interfaz quede desincronizada con el estado.
+
+---
+
+## 5. El Ciclo de Vida de una Aplicación Móvil como Producto
+
+Una aplicación móvil no es un simple programa de ordenador: es un producto vivo que atraviesa distintas fases con las que el usuario y el sistema operativo interactúan a lo largo del tiempo.
+
+```mermaid
+journey
+    title Viaje de la Aplicación en el Dispositivo del Usuario
+    section Adquisición
+      Búsqueda en Google Play (ASO): 5: Usuario
+      Instalación y Verificación: 4: SO / Tienda
+    section Uso
+      Primer Arranque & Splash Screen: 4: App
+      Solicitud de Permisos en Runtime: 3: Usuario
+      Uso Regular & Segundo Plano: 5: App / SO
+    section Mantenimiento
+      Actualizaciones Automáticas: 5: Tienda
+      Optimización de Batería (Doze): 4: SO
+    section Fin
+      Desinstalación y Limpieza de Sandbox: 2: Usuario / SO
+```
+
+### 5.1. Fases del Ciclo de Vida
+
+1. **Descubrimiento (Marketing y ASO):**
+   - Las tiendas oficiales (**Google Play Store** y **Apple App Store**) son el principal canal.
+   - **ASO (App Store Optimization):** Estrategias para optimizar palabras clave, icono, capturas de pantalla y valoraciones con el fin de aparecer en las primeras posiciones de búsqueda.
+2. **Instalación y Seguridad:**
+   - **Tiendas Oficiales:** El sistema verifica la firma criptográfica del paquete (`.apk` / `.aab` o `.ipa`) y crea un directorio privado y aislado para la aplicación (**Sandbox**).
+   - **Sideloading (Fuentes desconocidas):** En Android es posible instalar paquetes directamente desde un navegador o tiendas alternativas (como F-Droid). Por seguridad, el sistema bloquea estas acciones por defecto exigiendo confirmación explícita del usuario.
+3. **Ejecución y Permisos en Tiempo de Ejecución (Runtime Permissions):**
+   - Desde Android 6.0 (API 23), los permisos sensibles (cámara, ubicación precisa, micrófono, notificaciones a partir de Android 13) ya no se conceden al instalar la app.
+   - La aplicación debe solicitarlos en el momento exacto en que va a utilizarlos, explicando el motivo al usuario y gestionando de forma elegante la posibilidad de que el usuario los rechace.
+4. **Actualización:**
+   - Se descargan mediante deltas (solo los bytes que han cambiado). El sistema operativo exige que la actualización esté firmada con exactamente la misma clave criptográfica privada que la versión anterior; de lo contrario, la instalación será bloqueada para evitar suplantaciones de identidad.
+5. **Desinstalación y Datos Residuales:**
+   - Al desinstalar la app, el sistema elimina por completo el ejecutable y el almacenamiento privado (*sandbox* interno: base de datos Room, preferencias y cachés).
+   - Los archivos guardados en carpetas públicas compartidas (como `DCIM/` o `Descargas/`) y los datos almacenados en servidores en la nube no se borran con la desinstalación local.
+
+---
+
+## 6. Arquitectura del Sistema Android y Entorno de Ejecución
+
+Para entender qué ocurre cuando pulsamos el botón "Run" en nuestro IDE, debemos conocer la maquinaria interna de Android.
+
+### 6.1. De Código Fuente a Código Máquina: El Proceso de Compilación
+
+A diferencia de una aplicación Java de escritorio convencional, Android no ejecuta directamente archivos `.class` ni empaqueta un archivo `.jar`.
+
+```mermaid
+graph LR
+    KT[Código Fuente Kotlin .kt] --> KTC[Compilador Kotlin kotlinc]
+    KTC --> CLASS[Bytecode Java .class]
+    CLASS --> D8[Compilador DEX / D8 y R8]
+    D8 --> DEX[Archivos DEX classes.dex]
+    RES[Recursos res/ y Manifest] --> AAPT2[AAPT2]
+    DEX --> PACK[Empaquetador APK / AAB]
+    AAPT2 --> PACK
+    PACK --> SIGN[Firma Criptográfica zipalign/apksigner]
+    SIGN --> FINAL[Artefacto Final APK / AAB]
+```
+
+1. **Compilación a Bytecode:** `kotlinc` compila los ficheros `.kt` a bytecode tradicional de la JVM (`.class`).
+2. **Desechado y Optimización con D8 / R8:** El compilador **D8** convierte el bytecode Java en formato **DEX (Dalvik Executable)**, optimizado específicamente para consumir la mínima memoria posible. La herramienta **R8** analiza el código, elimina clases y métodos no utilizados (*tree-shaking*), optimiza llamadas y ofusca el código renombrando identificadores para dificultar la ingeniería inversa.
+3. **Empaquetado de Recursos con AAPT2:** Compila los archivos XML, imágenes y recursos generando el binario compilado y la clase `R.java`.
+
+---
+
+### 6.2. La Máquina Virtual: De Dalvik a ART (Android Runtime)
 
-      `Estados de la aplicación`: Una aplicación móvil no está simplemente "abierta" o "cerrada". Pasa por múltiples estados (creada, iniciada, en primer plano, pausada, detenida, destruida). Por ejemplo, si entra una llamada mientras el usuario está usando tu app, esta pasará al estado de "pausada". Debes guardar el estado del usuario en ese momento para que, al volver, pueda continuar donde lo dejó.
+Históricamente, Android ejecutaba el código sobre la máquina virtual **Dalvik**, pero desde Android 5.0 (Lollipop) el sistema utiliza **ART (Android Runtime)**:
 
-      `Procesos en segundo plano (Background)`: Como mencionamos antes, la ejecución de código en segundo plano está severamente restringida. No puedes simplemente iniciar un hilo que se ejecute indefinidamente. Debes usar las APIs específicas proporcionadas por el sistema (como WorkManager en Android) que permiten al SO ejecutar tu tarea de la forma más eficiente posible (por ejemplo, agrupando tareas de varias apps para despertar al dispositivo una sola vez).
+- **Dalvik (Histórico):** Utilizaba compilación **JIT (Just-In-Time)**. Cada vez que el usuario abría una app, el código DEX se traducía a código máquina en tiempo real sobre la marcha. Esto consumía mucha CPU y drenaba la batería.
+- **ART (Moderno):** Utiliza un modelo híbrido extremadamente avanzado:
+  - **Compilación AOT (Ahead-Of-Time):** Durante la instalación o en periodos de inactividad mientras el teléfono carga, ART compila porciones críticas de código directamente a lenguaje máquina nativo (`.oat` / `.elf`).
+  - **Perfiles Guiados por el Uso (Profile-Guided Optimization - PGO):** El sistema analiza qué partes de la app utiliza con más frecuencia el usuario y compila de forma prioritaria solo esas rutinas.
+  - **Baseline Profiles:** Los desarrolladores pueden empaquetar un archivo de perfil en su app para que el dispositivo precompile la aplicación nada más instalarse, logrando arranques hasta un 40% más rápidos sin esperar al aprendizaje del sistema.
 
+---
 
-Desarrollar para dispositivos móviles es un desafío apasionante que requiere un cambio de mentalidad. No se trata de trasladar directamente las prácticas del desarrollo de escritorio o web, sino de abrazar las restricciones y convertirlas en una guía para la excelencia en la ingeniería de software.
+### 6.3. Formatos de Distribución: APK vs AAB (Android App Bundle)
 
-Una aplicación móvil exitosa no es la que más funcionalidades tiene, sino la que ofrece una experiencia fluida, es respetuosa con los recursos del usuario (batería, datos, almacenamiento) y funciona de manera fiable en un entorno impredecible. Recordad siempre: en el mundo móvil, la eficiencia no es una característica, es el cimiento sobre el que se construye todo lo demás.
+| Característica | APK (Android Package) | AAB (Android App Bundle) |
+| :--- | :--- | :--- |
+| **Definición** | Formato de instalación clásico (`.apk`). Contiene todos los recursos para todos los dispositivos posibles. | Formato de publicación moderno (`.aab`). Contiene el código completo pero no es directamente instalable. |
+| **Destino** | Emuladores, pruebas directas y tiendas alternativas (F-Droid). | **Obligatorio para publicar en Google Play Store**. |
+| **Tamaño en el Dispositivo** | Mayor (incluye imágenes para todas las resoluciones y librerías C++ para todas las arquitecturas de CPU). | **Hasta un 30-40% más ligero**. Google Play genera un *Split APK* personalizado que solo contiene los recursos exactos que necesita el teléfono que lo descarga. |
+| **Entrega Dinámica** | No soportada. | Permite descargar módulos de funcionalidades bajo demanda (*Play Feature Delivery*). |
 
-## 2. Desarrollo Móvil en la Actualidad: Un Ecosistema de Opciones
----------------------------------------------------------------
+---
 
-Hace una década, las opciones eran limitadas. Hoy, nos encontramos ante un ecosistema rico y diverso con diferentes enfoques, cada uno con sus propias filosofías, ventajas y desventajas. La elección de la tecnología es una de las decisiones más críticas que tomaréis como desarrolladores o arquitectos de software, ya que impactará directamente en el presupuesto del proyecto, el tiempo de desarrollo, el rendimiento de la aplicación y la experiencia final del usuario.
+## 7. El SDK de Android y la Tríada de Versiones en Gradle
 
-El objetivo de este documento es proporcionaros un mapa claro de este territorio. Analizaremos las tres grandes rutas que podemos tomar para construir una aplicación móvil: el desarrollo **Nativo**, el **Híbrido** y las **Progressive Web Apps (PWA)**. ¡Empecemos!
+El **SDK (Software Development Kit)** es la colección de herramientas, cabeceras y librerías que Google proporciona para desarrollar aplicaciones. En Android Studio se gestiona a través del **SDK Manager** dividiéndose en dos grandes apartados:
 
-* * * * *
+1. **SDK Platforms:** Versiones concretas del sistema operativo (que contienen el fichero esencial `android.jar` contra el que programamos y las imágenes de sistema para los emuladores).
+2. **SDK Tools:** Herramientas independientes de la versión del SO (compiladores, emulador, analizadores de rendimiento y herramientas de línea de comandos).
 
-### A. Desarrollo Nativo: La Vía de la Máxima Potencia y Experiencia
+---
 
-El desarrollo nativo consiste en construir una aplicación utilizando las herramientas, lenguajes y APIs (Application Programming Interfaces) que la propia plataforma provee de forma oficial. En esencia, se crea una aplicación específica y optimizada para un único sistema operativo.
+### 7.1. La Tríada Clave en Gradle: `minSdk`, `compileSdk` y `targetSdk`
 
-> 🔥 Esto significa que si queremos que nuestra app funcione en Android y en iOS, necesitaremos desarrollar **dos aplicaciones separadas**, una para cada plataforma, con sus respectivos códigos fuente.
+En todo archivo `build.gradle.kts` de un módulo Android encontraremos tres números esenciales que cualquier desarrollador debe comprender a la perfección:
 
-!!! info "Ventajas Clave"
+```kotlin
+android {
+    compileSdk = 35 // Android 15
 
-      -   **Rendimiento Insuperable:** La aplicación se compila a código máquina que se ejecuta directamente sobre el sistema operativo, sin capas intermedias. Esto garantiza la máxima velocidad, fluidez y capacidad de respuesta. Es la opción ideal para juegos, aplicaciones con gráficos intensivos o que realicen cálculos complejos.
+    defaultConfig {
+        applicationId = "com.docente.gamevault"
+        minSdk = 26     // Android 8.0 Oreo
+        targetSdk = 35  // Android 15
+        
+        versionCode = 1
+        versionName = "1.0.0"
+    }
+}
+```
 
-      -   **Acceso Total al Hardware y APIs:** Tienes acceso inmediato y completo a todas las capacidades del dispositivo: GPS, cámara, acelerómetro, NFC, ARKit (iOS), etc. Además, eres el primero en poder usar las nuevas funcionalidades que se lanzan con cada actualización del sistema operativo.
+```mermaid
+graph LR
+    MIN[minSdk: El Suelo] -->|Dispositivos permitidos| TARGET[targetSdk: La Promesa]
+    TARGET -->|Compatibilidad de comportamiento| COMPILE[compileSdk: El Techo del Compilador]
+```
 
-      -   **Experiencia de Usuario (UX) Perfecta:** La interfaz de usuario (UI) se construye con los componentes nativos de la plataforma. El resultado es una aplicación que se ve y se siente exactamente como el resto del sistema operativo, lo que la hace intuitiva y familiar para el usuario.
+#### 1. `compileSdk` (El Techo del Compilador)
+- Indica la versión del SDK de Android con la que el compilador comprobará tu código.
+- Define qué clases y métodos de la API de Android puedes invocar en tu código fuente. No afecta al comportamiento en tiempo de ejecución en el teléfono del usuario.
 
-      -   **Mayor Seguridad y Fiabilidad:** Al operar directamente sobre la plataforma, se aprovechan todas sus capas de seguridad y optimizaciones.
+#### 2. `minSdk` (El Suelo de Compatibilidad)
+- Define la versión **mínima** de Android que requiere un dispositivo para poder instalar y ejecutar la aplicación.
+- Si un usuario tiene un teléfono con una versión inferior a tu `minSdk`, Google Play ni siquiera le mostrará la aplicación en los resultados de búsqueda.
+- *Compromiso del desarrollador:* Un `minSdk` muy bajo (ej. API 21) permite llegar a más dispositivos antiguos, pero impide usar APIs modernas directamente y requiere código de compatibilidad adicional. Un `minSdk` razonable actual se sitúa habitualmente entre el API 24 (Android 7.0) y el API 26 (Android 8.0).
 
-#### Tecnologías y Lenguajes
+#### 3. `targetSdk` (La Promesa de Comportamiento al Sistema Operativo)
+- Indica a Android: *"He probado y diseñado mi app para comportarse según las reglas de seguridad y privacidad de esta versión de Android"*.
+- **Mecanismo de compatibilidad hacia atrás:** Si ejecutas tu app en un teléfono con Android 15 pero tu `targetSdk` es 33, Android activará modos de compatibilidad para no romper tu app aunque las políticas de permisos hayan cambiado en Android 15.
+- **Exigencia de Google Play:** Google obliga a que todas las aplicaciones publicadas o actualizadas en la Play Store tengan un `targetSdk` reciente (normalmente no superior a 1 año respecto a la última versión estable de Android).
 
-!!! debug "Para Android:"
+---
 
-    -   **Lenguajes:**
+### 7.2. Herramientas Esenciales de Línea de Comandos: ADB Práctico
 
-        -   **Kotlin:** Es el lenguaje moderno, conciso y seguro que Google recomienda oficialmente desde 2019. Es interoperable al 100% con Java.
+Dentro de las *SDK Platform-Tools*, la herramienta más versátil para el desarrollador es **ADB (Android Debug Bridge)**. Permite comunicar nuestro ordenador de desarrollo con cualquier dispositivo físico o emulador conectado por USB o Wi-Fi.
 
-        -   **Java:** Fue el lenguaje original para el desarrollo en Android. Sigue siendo muy utilizado, especialmente en proyectos más antiguos (legacy), pero Kotlin es la opción preferida para nuevos desarrollos.
+Principales comandos que todo desarrollador móvil debe dominar:
 
-    -   **Entorno de Desarrollo (IDE):** **Android Studio**. Es el IDE oficial de Google, basado en IntelliJ IDEA. Incluye todo lo necesario: editor de código, depurador, emuladores, analizadores de rendimiento, etc.
+```bash
+# 1. Comprobar qué dispositivos o emuladores están conectados y autorizados
+adb devices
 
-    -   **Recursos para profundizar:**
+# 2. Instalar una aplicación directamente (la opción -r reinstala manteniendo datos)
+adb install -r app-release.apk
 
-        -   [Android Developers (Oficial)](https://developer.android.com/) - El punto de partida para todo.
+# 3. Desinstalar una aplicación indicando su Application ID
+adb uninstall com.docente.gamevault
 
-        -   [Documentación de Kotlin](https://kotlinlang.org/docs/home.html) - Aprende el lenguaje que impulsa el desarrollo moderno de Android.
+# 4. Ver el flujo de registros (logs) del sistema en tiempo real
+adb logcat
 
-        -   [Descargar Android Studio](https://developer.android.com/studio)
+# 5. Filtrar el logcat solo para mostrar los logs de nuestra aplicación o una etiqueta concreta
+adb logcat -s "GameVaultTag"
 
-!!! note "Para iOS (Ecosistema Apple)"
+# 6. Abrir un terminal de comandos dentro del sistema operativo del dispositivo
+adb shell
 
-    -   **Lenguajes:**
+# 7. Copiar archivos entre el ordenador y el móvil
+adb push mi_archivo_local.json /sdcard/Download/
+adb pull /sdcard/Download/captura.png ./captura_en_pc.png
 
-        -   **Swift:** Es el lenguaje moderno, potente y seguro creado por Apple. Es la opción recomendada para cualquier aplicación nueva en el ecosistema de Apple (iOS, iPadOS, macOS, watchOS).
+# 8. Reiniciar el servidor daemon de ADB en caso de problemas de conexión
+adb kill-server
+adb start-server
+```
 
-        -   **Objective-C:** Es el lenguaje original de desarrollo para iOS. Aunque Swift lo ha superado en popularidad, todavía es fundamental para mantener proyectos existentes.
+---
 
-    -   **Entorno de Desarrollo (IDE):** **Xcode**. Es el IDE oficial de Apple, que se ejecuta exclusivamente en macOS. Proporciona todas las herramientas para desarrollar, depurar y publicar apps para todas las plataformas de Apple.
+### 7.3. Evolución de Versiones y Niveles de API de Android
 
-    -   **Recursos para profundizar:**
+| Versión de Android | Nombre Clave (Postre) | Nivel de API | Año de Lanzamiento | Hito Tecnológico Destacado |
+| :---: | :---: | :---: | :---: | :--- |
+| **Android 8.0 / 8.1** | Oreo | 26 / 27 | 2017 | Project Treble (modularización del SO) y límites a servicios en background. |
+| **Android 9.0** | Pie | 28 | 2018 | Soporte para navegación por gestos y restricciones a la cámara en segundo plano. |
+| **Android 10** | Quince Tart *(Fin de nombres públicos de postres)* | 29 | 2019 | Almacenamiento aislado (*Scoped Storage*) y soporte oficial para dispositivos plegables. |
+| **Android 11** | Red Velvet Cake | 30 | 2020 | Permisos de un solo uso y burbujas de conversación nativas. |
+| **Android 12 / 12L** | Snow Cone | 31 / 32 | 2021 | Rediseño radical **Material You (Material 3)** y Privacy Dashboard. |
+| **Android 13** | Tiramisu | 33 | 2022 | Permiso obligatorio de notificaciones (`POST_NOTIFICATIONS`) y selector de fotos seguro. |
+| **Android 14** | Upside Down Cake | 34 | 2023 | Mayor restricción a alarmas exactas y soporte avanzado para pantallas ultra HDR. |
+| **Android 15** | Vanilla Ice Cream | 35 | 2024 | Espacio privado (*Private Space*), mejoras en rendimiento de renderizado y edge-to-edge forzado. |
+| **Android 16** | Baklava | 36 | 2025 | Integración avanzada de modelos de IA locales (Gemini Nano) en el runtime del sistema. |
 
-        -   [Apple Developer (Oficial)](https://developer.apple.com/) - Tu puerta de entrada al desarrollo para iOS.
+---
 
-        -   [Documentación de Swift](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/) - La guía oficial y completa del lenguaje Swift.
+## 8. Resumen y Conclusiones
 
-        -   [Descargar Xcode](https://developer.apple.com/xcode/)
-
-* * * * *
-
-### B. Desarrollo Híbrido: Un Código para Gobernarlos a Todos
-
-El desarrollo híbrido, también conocido como multiplataforma, busca resolver el principal inconveniente del desarrollo nativo: la necesidad de mantener dos bases de código. La filosofía aquí es ***"escribe una vez, ejecuta en todas partes"*** (*write once, run anywhere*).
-
-Se utiliza un único lenguaje y un framework específico para generar aplicaciones que funcionen tanto en Android como en iOS.
-
-!!! info "Ventajas Clave"
-
-    -   **Eficiencia en Coste y Tiempo:** Es la ventaja más evidente. Se necesita un solo equipo de desarrollo y un único código base, lo que reduce drásticamente los tiempos y costes de desarrollo y mantenimiento.
-
-    -   **Lanzamiento Rápido al Mercado (Time-to-Market):** Al desarrollar para ambas plataformas simultáneamente, puedes lanzar tu producto mucho más rápido.
-
-    -   **Consistencia de Marca:** La aplicación tendrá una apariencia muy similar en ambas plataformas, lo que puede ser beneficioso para la identidad de marca.
-
-#### Tecnologías y Lenguajes
-
-Existen diferentes enfoques dentro del mundo híbrido, pero los más relevantes hoy en día son:
-
-!!! note "Flutter"
-
-    -   **Concepto:** Es un toolkit de UI desarrollado por Google que ha ganado una tracción inmensa. Flutter no utiliza los componentes nativos de la UI, sino que trae su propio motor de renderizado (Skia) para dibujar cada píxel en la pantalla. Esto le da un control total sobre la interfaz y permite animaciones complejas a 60/120 FPS.
-
-    -   **Lenguaje:** **Dart**. Un lenguaje moderno, orientado a objetos y optimizado para el desarrollo de UI.
-
-    -   **Ideal para:** Aplicaciones con una interfaz de usuario muy personalizada, expresiva y con muchas animaciones.
-
-    -   **Recursos para profundizar:**
-
-        -   [Flutter (Oficial)](https://flutter.dev/) - Descubre por qué es una de las tecnologías más queridas por los desarrolladores.
-
-        -   [Documentación de Dart](https://dart.dev/guides) - Aprende los fundamentos del lenguaje de Flutter.
-
-!!! quote "React Native"
-
-    -   **Concepto:** Creado por Meta (Facebook), React Native permite a los desarrolladores web usar sus conocimientos de JavaScript y React para crear aplicaciones móviles. A diferencia de Flutter, React Native utiliza un "puente" (bridge) para comunicarse con los componentes de la UI nativa de cada plataforma. Esto puede hacer que la app se sienta un poco más "nativa".
-
-    -   **Lenguaje:** **JavaScript** o **TypeScript** (una versión de JavaScript con tipado estático, muy recomendada).
-
-    -   **Ideal para:** Empresas con equipos de desarrollo web que quieran pasar al móvil, o para aplicaciones donde el aspecto nativo sea una prioridad.
-
-    -   **Recursos para profundizar:**
-
-        -   [React Native (Oficial)](https://reactnative.dev/) - La documentación oficial para empezar.
-
-!!! tip ".NET MAUI (Multi-platform App UI)"
-
-    -   **Concepto:** Es la evolución de Xamarin.Forms, impulsada por Microsoft. Permite a los desarrolladores del ecosistema .NET usar C# y XAML para crear aplicaciones para iOS, Android, Windows y macOS desde una única base de código.
-
-    -   **Lenguaje:** **C#**.
-
-    -   **Ideal para:** Organizaciones que ya tienen una fuerte inversión en tecnologías de Microsoft y .NET.
-
-    -   **Recursos para profundizar:**
-
-        -   [.NET MAUI (Oficial)](https://dotnet.microsoft.com/en-us/apps/maui) - La plataforma multiplataforma del ecosistema .NET.
-
-* * * * *
-
-
-### C. Kotlin Multiplatform (KMP): ¿Lo mejor de Ambos mundos? 
-
-Hemos analizado el desarrollo Nativo y el Híbrido como dos caminos separados. El primero nos da el máximo rendimiento y la mejor experiencia de usuario a costa de duplicar el trabajo. El segundo nos ofrece eficiencia y una base de código única, pero a veces con compromisos en rendimiento o en acceso a las últimas funcionalidades nativas.
-
-Pero, ¿y si existiera un enfoque que intentara combinar la eficiencia del código compartido con el poder del desarrollo nativo? Aquí es donde entra en juego **Kotlin Multiplatform (KMP)**.
-
-KMP no es otro framework híbrido como Flutter o React Native. Es un enfoque radicalmente diferente.
-
-**La Lógica Compartida, la UI Nativa**
-
-La filosofía de Kotlin Multiplatform, impulsado por JetBrains (los creadores de Kotlin y de IntelliJ), no es "escribe una vez, ejecuta en todas partes", sino más bien **"escribe la lógica de negocio una vez, y construye la interfaz de usuario de forma nativa"**.
-
-KMP permite a los desarrolladores escribir código en Kotlin que puede ser compilado para múltiples plataformas:
-
--   **JVM** (para aplicaciones Android y de servidor).
--   **JavaScript** (para aplicaciones web).
--   **Nativo** (utilizando la infraestructura del compilador LLVM para generar binarios para iOS, macOS, Windows, etc.).
-
-La idea central es identificar el código que es independiente de la interfaz de usuario ---la **lógica de negocio**--- y compartirlo entre plataformas.
-
-#### ¿Qué es la "Lógica de Negocio"?
-
-Piensa en todo lo que tu aplicación hace "detrás de las cámaras":
-
--   **Acceso a la red:** Realizar llamadas a una API REST o GraphQL.
--   **Gestión de la base de datos:** Guardar, leer y actualizar datos en una base de datos local (como SQLite).
--   **Modelos de datos:** Las clases que representan la información de tu app (Usuario, Producto, etc.).
--   **Validaciones:** Comprobar que un email tiene el formato correcto o que una contraseña cumple los requisitos.
--   **Algoritmos y cálculos:** Cualquier procesamiento de datos específico de tu aplicación.
-
-Todo este código, que suele ser el núcleo de la aplicación, no depende de si el botón en la pantalla es redondo o cuadrado. Por lo tanto, se puede escribir una sola vez en Kotlin y compartirlo.
-
-#### ¿Y qué pasa con la Interfaz de Usuario (UI)?
-
-Aquí es donde KMP brilla y se diferencia de los frameworks híbridos. La UI se construye de forma **100% nativa** en cada plataforma:
-
--   **En Android:** Creas tus vistas (layouts) y gestionas el ciclo de vida de las Activities y Fragments utilizando **Jetpack Compose** o las vistas XML tradicionales. Desde este código nativo, llamas a la lógica de negocio compartida en Kotlin.
-
--   **En iOS:** Desarrollas tu interfaz de usuario con **SwiftUI** o **UIKit**, exactamente como lo haría un desarrollador nativo de iOS. Desde tu código en Swift, puedes invocar directamente las funciones y clases del módulo de Kotlin compartido.
-
-!!! info "Ventajas Clave"
-
-    -   **Rendimiento Nativo:** Dado que la UI y toda la interacción con la plataforma se gestionan con código nativo, el rendimiento y la fluidez son idénticos a los de una aplicación puramente nativa. No hay "puentes" ni capas de abstracción que ralenticen la interfaz.
-
-    -   **UI/UX Perfecta:** La aplicación se ve, se siente y se comporta exactamente como el usuario espera en su dispositivo, ya que utilizas los componentes nativos de Android (Material Design) y de iOS (Human Interface Guidelines).
-
-    -   **Eficiencia sin Sacrificios:** Compartes una parte significativa del código (a menudo más del 50-60%), lo que reduce el tiempo de desarrollo, la duplicación de esfuerzos y la probabilidad de bugs, sin renunciar a las ventajas del desarrollo nativo.
-
-    -   **Acceso Inmediato a APIs Nativas:** Como estás escribiendo código nativo en la capa de UI, puedes acceder a las últimas APIs de cada sistema operativo desde el primer día, sin esperar a que un framework de terceros añada soporte.
-
-    -   **Adopción Gradual:** Puedes empezar a usar KMP en una pequeña parte de una aplicación existente, tanto en Android como en iOS, sin necesidad de reescribirla por completo.
-
-!!! warning "Desventajas y Consideraciones"
-
-    -   **Complejidad Inicial:** La configuración del proyecto puede ser más compleja que en otros enfoques. Requiere conocimientos tanto de desarrollo en Android (Gradle) como en iOS (Xcode, CocoaPods).
-
-    -   **Se Necesitan Habilidades Nativas:** A diferencia del desarrollo híbrido puro, no basta con un solo equipo de desarrolladores. Necesitas expertos que se sientan cómodos construyendo la UI en Android (Kotlin/Compose) y en iOS (Swift/SwiftUI).
-
-    -   **Ecosistema en Crecimiento:** Aunque está madurando rápidamente, el ecosistema de librerías multiplataforma todavía es más pequeño que el de plataformas como React Native o Flutter.
-
-#### Un Ecosistema en Evolución: Compose Multiplatform
-
-Para añadir una capa más, JetBrains está llevando Jetpack Compose (el moderno toolkit de UI declarativa de Android) al mundo multiplataforma con **Compose Multiplatform**.
-
-Compose Multiplatform permite compartir no solo la lógica de negocio, sino también la **interfaz de usuario**, utilizando el mismo código declarativo en Kotlin para describir la UI en Android, iOS , escritorio (Windows, macOS, Linux) y web (Wasm).
-
-Esto acerca a KMP al modelo de Flutter, donde tanto la lógica como la UI son compartidas, pero con la ventaja de estar construido sobre el lenguaje y el ecosistema de Kotlin.
-
--   **Recursos para profundizar:**
-
-    -   [Kotlin Multiplatform (Oficial)](https://www.jetbrains.com/compose-multiplatform/) - La documentación oficial y el mejor lugar para empezar.
-
-
-### D. Progressive Web Apps (PWA): La Web se Viste de App
-
-Las PWA no son aplicaciones móviles en el sentido tradicional. Son **aplicaciones web** que utilizan las tecnologías web más modernas para ofrecer una experiencia muy similar a la de una aplicación nativa. No se instalan desde una tienda de aplicaciones, sino que el usuario puede "añadirlas a la pantalla de inicio" directamente desde el navegador.
-
-!!! info "Ventajas Clave"
-
-    -   **Sin Tiendas de Aplicaciones:** No necesitas pasar por los procesos de revisión y publicación de la App Store de Apple o Google Play. La "instalación" es instantánea.
-
-    -   **Multiplataforma por Definición:** Funcionan en cualquier dispositivo que tenga un navegador web moderno (Android, iOS, Windows, macOS, etc.). El mismo código sirve para todo.
-
-    -   **Siempre Actualizadas:** Al ser una web, el usuario siempre tiene la última versión disponible sin necesidad de actualizar nada.
-
-    -   **Compartibles:** Se puede compartir la "app" simplemente enviando una URL.
-
-#### Tecnologías Clave y Lenguajes
-
-Las PWA se construyen sobre el estándar de la web.
-
--   **Lenguajes:** **HTML5, CSS3, JavaScript/TypeScript**.
-
--   **Componentes Esenciales:**
-
-    -   **HTTPS:** Es un requisito de seguridad indispensable.
-
-    -   **Service Worker:** Es un script que el navegador ejecuta en segundo plano. Es la tecnología que permite funcionalidades como el **trabajo offline** (acceder a la app sin conexión) y las **notificaciones push**.
-
-    -   **Web App Manifest:** Es un archivo JSON que le dice al navegador cómo debe verse y comportarse la aplicación cuando se "instala" (nombre, icono, pantalla de bienvenida, etc.).
-
--   **Recursos para profundizar:**
-
-    -   [web.dev by Google (PWA)](https://web.dev/progressive-web-apps/) - Una de las mejores guías para entender y construir PWAs.
-
-    -   [MDN Web Docs: Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) - Documentación técnica de referencia.
-
-
-!!! question "¿Qué tecnología y lenguaje elegir?"
-
-    <iframe width="560" height="315" src="https://www.youtube.com/embed//IrkJljILrzQ?t=50" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-
-## 3. El Ciclo de Vida de una Aplicación Móvil
----------------------------------------------------------------
-
-Pensemos en una aplicación no como un simple programa, sino como un producto con el que un usuario interactúa a lo largo del tiempo. Este viaje, desde que oye hablar de la app hasta que decide eliminarla de su teléfono, se conoce como su ciclo de vida. Entender cada fase nos permite tomar mejores decisiones para que nuestra app no solo sea útil, sino también exitosa.
-
-* * * * *
-
-### A. Descubrimiento: "¿Cómo me encuentran?"
-
-Esta es la fase de "marketing". Nuestra aplicación ya está terminada y publicada, pero para el usuario, todo empieza aquí. ¿Cómo llega un usuario a conocer nuestra existencia entre millones de aplicaciones?
-
--   **Tiendas de Aplicaciones (App Stores):** Son el principal escaparate.
-
-    -   **Google Play Store (Android)** y **Apple App Store (iOS)** son los mercados dominantes. Actúan como gigantescos centros comerciales donde los usuarios pueden buscar, explorar categorías (juegos, productividad, etc.), ver listas de éxitos ("Top Ventas", "Top Gratuitas"), y leer reseñas y valoraciones de otros usuarios.
-
-    -   **Búsqueda:** La mayoría de los descubrimientos ocurren a través del buscador de la tienda. Por eso, un buen nombre, un icono atractivo y una descripción clara (lo que se conoce como **ASO - App Store Optimization**) son cruciales.
-
-    -   **Recomendaciones Editoriales:** Ser destacado por los equipos editoriales de Google o Apple puede catapultar una aplicación a la fama.
-
--   **Otros Canales:** No todo ocurre en las tiendas.
-
-    -   **Buscadores Web:** Una búsqueda en Google puede llevar a la ficha de una aplicación en la tienda.
-
-    -   **Redes Sociales y "Boca a Boca":** Recomendaciones de amigos, influencers o publicidad en plataformas como Instagram, TikTok o X.
-
-    -   **Medios de Comunicación:** Artículos en blogs de tecnología o noticias que hablen de nuestra app.
-
-    -   **Publicidad Directa:** Un código QR en un cartel o un enlace en una web pueden llevar directamente a la página de instalación.
-
-* * * * *
-
-### B. Instalación: "Te quiero en mi móvil"
-
-Una vez descubierta la app, el usuario decide "adquirirla". Este proceso, aunque parece simple, tiene matices importantes, sobre todo en cuanto a seguridad.
-
--   **Desde Tiendas Oficiales:**
-
-    -   Este es el método **seguro y recomendado**.
-
-    -   El usuario pulsa el botón "Instalar" (en Google Play) o "Obtener" (en la App Store).
-
-    -   La tienda gestiona todo el proceso de forma segura: verifica la identidad del usuario, descarga el paquete de la aplicación (`.apk` en Android, `.ipa` en iOS) y lo instala en el dispositivo. El sistema operativo coloca el icono de la app en la pantalla de inicio o en el cajón de aplicaciones.
-
--   **Desde Fuentes Externas ("Sideloading"):**
-
-    -   Esta opción es prácticamente **exclusiva de Android**. Permite a los usuarios instalar aplicaciones descargando el archivo `.apk` directamente desde una página web o una tienda de aplicaciones alternativa (como F-Droid, que se especializa en software de código abierto).
-
-    -   **Riesgos de Seguridad:** El "sideloading" es la principal vía de entrada de **malware** en Android. La aplicación no ha pasado los controles de seguridad de Google Play, por lo que podría contener software malicioso.
-
-    -   Por defecto, Android bloquea estas instalaciones. El usuario debe conceder explícitamente permiso a la aplicación (por ejemplo, al navegador Chrome) para "instalar aplicaciones desconocidas", asumiendo el riesgo que conlleva.
-
-* * * * *
-
-### C. Ejecución: "¡A funcionar!"
-
-Una vez instalada, la aplicación está lista para ser utilizada. Al pulsar su icono por primera vez, ocurren varias cosas:
-
-1.  **Carga en Memoria:** El sistema operativo carga el código de la aplicación en la memoria RAM del dispositivo.
-
-2.  **Pantalla de Bienvenida (Splash Screen):** A menudo se muestra una pantalla de inicio con el logo de la app mientras se cargan los recursos necesarios en segundo plano.
-
-3.  **Solicitud de Permisos:** ¡Un paso fundamental! Las aplicaciones ya no reciben todos los permisos al instalarse. Ahora, deben solicitar acceso a funciones sensibles **en tiempo de ejecución**, es decir, la primera vez que necesitan usarlas.
-
-    -   **Ejemplo:** Una app de mensajería pedirá acceso a tus contactos cuando intentes buscar a un amigo, y pedirá acceso a la cámara cuando pulses el botón para hacer una foto.
-
-    -   El usuario puede **Aceptar** o **Denegar** cada permiso individualmente. Como desarrolladores, debemos gestionar qué ocurre si un usuario deniega un permiso esencial.
-
-Una vez configurada y con los permisos necesarios, la aplicación se encuentra en su estado normal de uso, interactuando con el usuario.
-
-* * * * *
-
-### D. Actualización: "Mejorando contigo"
-
-Una aplicación no es un producto estático. El software necesita evolucionar para seguir siendo útil y seguro.
-
--   **Motivos para una Actualización:**
-
-    -   **Nuevas Funcionalidades:** Añadir características que los usuarios han pedido o que mejoran el producto.
-
-    -   **Corrección de Errores (Bugs):** Ningún software es perfecto. Las actualizaciones solucionan fallos y problemas de estabilidad.
-
-    -   **Mejoras de Rendimiento:** Optimizar el código para que la app sea más rápida o consuma menos batería.
-
-    -   **Parches de Seguridad:** Solucionar vulnerabilidades que podrían poner en riesgo los datos del usuario.
-
--   **Proceso de Actualización:**
-
-    -   **Automáticas:** Es el método más común. Las tiendas de aplicaciones descargan e instalan las nuevas versiones en segundo plano, generalmente cuando el dispositivo está conectado a una red Wi-Fi y cargando, para no molestar al usuario.
-
-    -   **Manuales:** El usuario puede ir a la sección "Mis aplicaciones" de la tienda y forzar la actualización de una o todas las apps pendientes.
-
-* * * * *
-
-### E. Borrado (Desinstalación): "Ha sido un placer"
-
-Llega un momento en que el usuario ya no necesita la aplicación. El proceso de desinstalación está diseñado para ser simple, pero es importante saber qué se elimina y qué puede quedar.
-
--   **Proceso Estándar:** El usuario realiza una pulsación larga sobre el icono de la app y selecciona la opción "Desinstalar" o "Eliminar App".
-
--   **¿Desinstalación Completa o Parcial?**
-
-    -   Generalmente, la desinstalación que realiza el usuario es **completa** desde el punto de vista de la aplicación en sí. El sistema operativo elimina:
-
-        1.  El **paquete de la aplicación** (`.apk` / `.ipa`).
-
-        2.  El **almacenamiento privado** de la app (su "sandbox"). Aquí se guardan las configuraciones, bases de datos internas, caché y otros archivos que la app necesita para funcionar.
-
-    -   **¿Qué puede quedar (Datos Residuales)?** A veces, la desinstalación no elimina el 100% de los datos asociados. Esto no es una "desinstalación parcial" que el usuario elige, sino una consecuencia de cómo funcionan los sistemas de archivos.
-
-        -   **Archivos en Almacenamiento Compartido:** Si tu aplicación de edición de fotos guardó una imagen en la carpeta `DCIM/MisFotos`, ese archivo **no se borrará** al desinstalar la app. El sistema lo considera propiedad del usuario, no de la aplicación.
-
-        -   **Datos en la Nube:** Si el usuario creó una cuenta en tus servidores, esa cuenta y sus datos asociados (perfil, historial, etc.) **permanecen en la nube**. No se eliminan al borrar la app del teléfono. El usuario tendría que eliminar su cuenta explícitamente.
-
-
-### Comparativa de Ciclos de Vida -- Web vs PWA vs Nativa
-
-| Fase Ciclo Vida         | 🌐 Web Tradicional                 | 🚀 Progressive Web App (PWA)    | 📱 Aplicación  |
-|------------------------|-----------------------------------|---------------------------------|----------------|
-1. **Descubrimiento** |	**Máxima visibilidad**. A través de buscadores (Google, etc.), enlaces, redes sociales. No depende de una tienda. |	Lo mejor de ambos mundos. Descubrible como una web (buscadores, enlaces) y potencialmente listada en tiendas de apps (ej. Google Play). |Dependiente de la tienda. Principalmente a través de la App Store y Google Play. El ASO es crucial. |
-2. **Instalación**	| **Sin instalación**. La principal ventaja. El usuario accede al instante. Cero fricción. | Instalación opcional y ligera. El usuario puede "Añadir a la pantalla de inicio". Es un proceso casi instantáneo y no ocupa mucho espacio. | Instalación obligatoria. El usuario debe ir a la tienda, descargar varios MB (o GB) y esperar a que se instale. Es el punto de mayor fricción. |
-3.  **Ejecución** |	**Dentro del navegador**. Se ejecuta en una pestaña, con las limitaciones de la interfaz del navegador (barra de URL, etc.). Requiere conexión.| Como una app. Se lanza desde su propio icono en la pantalla de inicio, a pantalla completa. Puede funcionar offline gracias al Service Worker.	| Directamente en el SO. Se lanza desde su icono. Ofrece la máxima integración, rendimiento y acceso completo al hardware del dispositivo (cámara, GPS, etc.).|
-4. **Actualización**	| **Transparente e instantánea**. Cada vez que el usuario entra, recibe la última versión del servidor. No hay proceso de actualización.|	Automática y en segundo plano. El Service Worker busca y actualiza la app de forma silenciosa. El usuario tiene la nueva versión la próxima vez que la abre.|	Gestionada por la tienda. Puede ser automática o manual. Requiere descargar de nuevo el paquete completo o una parte, y un proceso de instalación.|
-5. **Borrado** |	**No existe**. El usuario simplemente cierra la pestaña o borra el historial/caché del navegador. |	Sencillo. El usuario elimina el icono de la pantalla de inicio, igual que en una app nativa. Los datos se pueden borrar desde la configuración del navegador. |	Proceso manual. El usuario debe realizar una desinstalación explícita (pulsación larga, etc.) para liberar el espacio de almacenamiento. |
-
-
-⚡ **Análisis Detallado de las Diferencias**
-
-##### Fricción en la Entrada: La Gran Diferencia
-
-La principal ventaja de la web y las PWAs es la **inmediatez**. Piensa en cuántas veces has entrado a una web que no conocías frente a cuántas apps nuevas has instalado en el último mes. El proceso de ir a una tienda, esperar la descarga y la instalación es una barrera (**fricción**) que hace que muchos usuarios abandonen el proceso. Una PWA elimina casi por completo esa barrera, ofreciendo una experiencia similar a la nativa con la facilidad de acceso de una web.
-
-##### Capacidades y Acceso al Dispositivo
-
-Aquí es donde la **aplicación nativa sigue siendo la reina**.
-
--   **Web:** Está limitada por el "sandbox" (caja de arena) del navegador. Tiene acceso limitado a sensores y hardware.
-
--   **PWA:** Mejora mucho respecto a la web. Gracias a las nuevas APIs, puede acceder a notificaciones push, ubicación, cámara y funcionamiento offline. Sin embargo, todavía tiene un acceso más restringido que una app nativa, especialmente en iOS.
-
--   **Nativa:** Tiene acceso total y de máximo rendimiento a todas las capacidades del dispositivo: NFC, Bluetooth avanzado, sensores, archivos del sistema, etc.
-
-##### El Proceso de Actualización: Control vs. Inmediatez
-
--   El modelo **nativo** da al usuario (y al desarrollador) un mayor control sobre las versiones. A veces, los usuarios deciden no actualizar una app si no les gusta la nueva versión.
-
--   El modelo **web/PWA** es mucho más ágil. Como desarrollador, te aseguras de que todos tus usuarios están utilizando siempre la última versión, lo que simplifica enormemente el mantenimiento y la corrección de errores. No tienes que dar soporte a versiones antiguas.
-
-
-No hay una tecnología superior a las otras en todos los aspectos. La elección depende enteramente del **propósito del proyecto**.
-
--   Para una herramienta que necesita el **máximo rendimiento** y una integración profunda con el hardware (un juego, una app de edición de vídeo, una app que use Bluetooth intensivamente), el camino **nativo** es indiscutible.
-
--   Para un blog, una tienda online o una herramienta de consulta donde la **inmediatez y el alcance** son lo más importante, una **PWA** es una solución fantástica, ya que combina la visibilidad de la web con una experiencia de usuario muy mejorada.
-
--   Una **web tradicional** sigue siendo perfecta para contenido informativo simple o sitios donde la funcionalidad offline y las notificaciones no aportan un valor añadido significativo.
-  
-
-
-## Android: El SDK de Android y sus Versiones
----------------------------------
-
-En este apartado vamos a desmontar la "caja de herramientas" que nos permite construir aplicaciones para Android. Hablaremos del **SDK**, de sus componentes y de cómo entender el sistema de versiones de Android, que es crucial para garantizar que nuestras apps funcionen correctamente en la mayoría de dispositivos posibles.
-
-Pensemos en nosotros como chefs que quieren preparar un plato específico (nuestra app). El SDK sería nuestra cocina profesional: no solo nos da los ingredientes (las APIs), sino también los cuchillos, los fogones y los manuales de recetas (las herramientas y la documentación). Sin esta cocina, solo tendríamos ideas, pero no podríamos cocinar nada.
-
-* * * * *
-
-#### A. ¿Qué es un SDK (Software Development Kit)?
-
-Un **SDK**, o Kit de Desarrollo de Software, es un conjunto de herramientas de software y programas proporcionados por un fabricante de hardware o software para permitir la creación de aplicaciones para una plataforma específica. En nuestro caso, Google nos proporciona el **SDK de Android** para que podamos crear apps para su sistema operativo.
-
-Un SDK típicamente incluye:
-
--   **Bibliotecas de código (APIs):** Código preescrito que nos da acceso a las funcionalidades del dispositivo, como la cámara, el GPS o la interfaz de usuario.
-
--   **Depurador (Debugger):** Una herramienta para encontrar y corregir errores en nuestro código.
-
--   **Documentación:** Manuales, guías y ejemplos que nos enseñan a usar las herramientas y las bibliotecas.
-
--   **Emuladores:** Programas que nos permiten probar nuestra app en un dispositivo virtual sin necesidad de tener un teléfono físico.
-
-En resumen, **el SDK es el paquete TODO-EN-UNO indispensable para empezar a desarrollar**.
-
-* * * * *
-
-### B. Los Componentes del SDK de Android
-
-Dentro de Android Studio, el SDK se gestiona a través del "SDK Manager" y se divide principalmente en dos pestañas: **SDK Platforms** y **SDK Tools**. Es vital entender la diferencia.
-
-#### **SDK Platforms**
-
-Piensa en una "Platform" como una **versión específica y completa del sistema operativo Android empaquetada para el desarrollador**. Cada "Platform" corresponde a un nivel de API concreto (que veremos más adelante).
-
-Cada paquete de "SDK Platform" incluye:
-
--   El **`android.jar`**: Este es el archivo clave. Contiene todas las APIs y clases de esa versión de Android contra las que compilaremos nuestro código. Es nuestro "diccionario" de funcionalidades disponibles.
-
--   **Imagen del Sistema (System Image):** Es una copia del sistema operativo Android que se usa para ejecutar los emuladores. Si quieres probar tu app en un emulador de Android 14, necesitas descargar la "System Image" de Android 14.
-
-**En resumen:** Si quieres que tu app use funciones de Android 14 y probarla en un emulador de Android 14, **necesitas descargar la "SDK Platform" para el nivel de API de Android 14.**
-
-#### **SDK Tools**
-
-Estas son las herramientas **independientes de la versión de Android** que usamos para desarrollar, depurar y probar nuestra aplicación. Son la maquinaria de nuestra cocina. No importa si cocinamos una receta de 2020 o de 2024, los fogones y cuchillos son los mismos (aunque se afilen y mejoren de vez en cuando).
-
-Las herramientas más importantes aquí son:
-
--   **Android SDK Build-Tools:** Un conjunto de herramientas que toman nuestro código y lo compilan y empaquetan en un archivo `.apk` o `.aab` instalable.
-
--   **Android Emulator:** El software que nos permite crear y ejecutar dispositivos virtuales.
-
--   **Android SDK Platform-Tools:** Incluye herramientas de línea de comandos esenciales como:
-
-    -   **ADB (Android Debug Bridge):** El "puente" de comunicación entre nuestro ordenador y el dispositivo (físico o emulado). Nos permite instalar apps, depurar, ver logs, etc.
-
-    -   **Fastboot:** Para flashear el firmware del dispositivo.
-
-**En resumen:** Las **SDK Tools** son las herramientas generales para construir y probar, mientras que las **SDK Platforms** son los "ingredientes" específicos de cada versión de Android.
-
-* * * * *
-
-### C. Entendiendo las Versiones de Android: ¡La Clave está en el Nivel de API!
-
-Aquí es donde muchos estudiantes se lían. Google usa dos nombres para cada versión de Android, y es crucial saber cuál es el importante para nosotros, los desarrolladores.
-
-#### **Nombre Comercial (y postre 🍰)**
-
-Es el nombre público y de marketing que Google utiliza para cada gran lanzamiento. Suelen ser nombres de postres o dulces en orden alfabético (aunque esta tradición se ha relajado en los últimos años).
-
--   **Ejemplos:** Android 8 (**O**reo), Android 9 (**P**ie), Android 10, Android 11, Android 12 (**S**now Cone).
-
-Este nombre es **útil para los usuarios**, pero **casi irrelevante para los desarrolladores**. Es una etiqueta de marketing.
-
-#### **Nivel de API (API Level)**
-
-Este es el **número que realmente nos importa**. El Nivel de API es un **único número entero** que identifica de forma inequívoca la versión del framework de APIs que ofrece una plataforma Android.
-
-Cuando se lanzan nuevas funcionalidades para desarrolladores (por ejemplo, un nuevo tipo de notificación o un permiso de privacidad), Google incrementa el Nivel de API.
-
-**¿Por qué es tan importante?** Porque nuestro código se escribe "contra" un nivel de API. Si usamos una función que se introdujo en el **API Level 33 (Android 13)**, nuestra aplicación **no funcionará** en un dispositivo con **API Level 32 (Android 12L)**, porque esa función simplemente no existe en ese sistema operativo. ¡La app "crasheará"!
-
-
-### D. Listado de Versiones de Android
-
-Las versiones de Android incluyen nombres de dulces y postres como Cupcake, Donut, Eclair, Froyo, Gingerbread, Honeycomb, Ice Cream Sandwich, Jelly Bean, KitKat, Lollipop, Marshmallow, Nougat, Oreo y Pie. Posteriormente, a partir de Android 10, se han numerado las versiones (Android 10, 11, 12, 13, 14, 15, etc.). 
-
-Versiones antiguas (con nombres de postres) 
-
--   **Android 1.5** - Cupcake
--   **Android 1.6** - Donut
--   **Android 2.0/2.1** - Eclair
--   **Android 2.2** - Froyo
--   **Android 2.3** - Gingerbread
--   **Android 3.0** - Honeycomb
--   **Android 4.0** - Ice Cream Sandwich
--   **Android 4.1 - 4.3** - Jelly Bean
--   **Android 4.4** - KitKat
--   **Android 5.0/5.1** - Lollipop
--   **Android 6.0** - Marshmallow
--   **Android 7.0/7.1** - Nougat
--   **Android 8.0/8.1** - Oreo
--   **Android 9.0** - Pie
-
-Versiones recientes (numeradas) 
-
--   **Android 10** - Fue la primera versión sin nombre de postre.
--   **Android 11** - Lanzada en 2020.
--   **Android 12** - Lanzada en 2021, con una variante optimizada para pantallas grandes llamada Android 12L.
--   **Android 13** - Lanzada en 2022.
--   **Android 14** - Lanzada en 2023.
--   **Android 15** - Lanzada en 2024.
--   **Android 16** - Lanzada en 2025.
-
-Cómo verificar la versión de Android en tu dispositivo 
-
--   Abre la aplicación Configuración o Ajustes.
--   Desplázate hacia abajo y selecciona Acerca del teléfono o Acerca de la tablet.
--   Busca la opción Versión de Android para ver la información de tu sistema operativo.
-
-ℹ️ Más información en: [Lista de versiones de Android](https://developer.android.com/about/versions?hl=es-419)
+1. **El desarrollo móvil exige un cambio de mentalidad:** Las restricciones severas de memoria, consumo de batería y variabilidad de la red obligan a diseñar pensando en la eficiencia y la arquitectura *offline-first*.
+2. **El paradigma declarativo es el estándar:** Tecnologías como **Jetpack Compose** y **SwiftUI** eliminan los problemas clásicos de desincronización de estado mediante la fórmula reactiva $\text{UI} = f(\text{Estado})$.
+3. **Kotlin Multiplatform (KMP) lidera la nueva era:** Permite compartir la lógica de negocio, networking y persistencia con rendimiento 100% nativo y adopción gradual, contando con el respaldo oficial conjunto de **JetBrains y Google**.
+4. **Compose Multiplatform (CMP) democratiza la UI compartida:** Ofrece una alternativa real a Flutter sin necesidad de abandonar el ecosistema ni el lenguaje de Kotlin.
+5. **Conocer el runtime es fundamental:** Dominar la tríada de Gradle (`minSdk`, `compileSdk`, `targetSdk`), el funcionamiento de ART y herramientas como ADB marca la diferencia entre un programador novato y un ingeniero de software móvil cualificado.
