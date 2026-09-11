@@ -1,12 +1,12 @@
-version: '3'
+version: "3"
 services:
   mkdocs:
     image: jssdocente/mkdocs-daw
     build:
       context: ./.docker
       dockerfile: dockerfile
-      
-    container_name: Mkdocs-pmdm2526
+
+    container_name: Mkdocs-pmdm2627
     ports:
       - "8005:8000"
     volumes:
