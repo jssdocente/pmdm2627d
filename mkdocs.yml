@@ -6,6 +6,8 @@ nav:
   - "Inicio": "index.md"
   - "Android":
       - "Inicio": temas/00-android/index.md
+      - "Entorno de desarrollo (IDE)":
+          - "IntelliJ IDEA para Móvil": temas/00-android/00-ide-intellij/index.md
       - "El lenguaje kotlin":
           - "Introducción": temas/00-android/00-kotlin/index.md
           - "Variables": temas/00-android/00-kotlin/11-variables-tipos-datos.md
@@ -30,6 +32,7 @@ nav:
           - "Gradle": "temas/00-android/00-tools/01-gradle-agp-estructura.md"
           - "Build-gradle": "temas/00-android/00-tools/02-build-gradle.md"
           - "Fichero Manifest": "temas/00-android/00-tools/03-android-manifest.md"
+          - "Matriz de Compatibilidad": "temas/00-android/00-tools/04-matriz-compatibilidad.md"
 
       - "Jetpack Compose":
           - "Introducción": temas/00-android/00-compose/index.md

@@ -402,7 +402,7 @@ Durante más de una década, construir una pantalla en Android requería:
 
 En el paradigma declarativo no manipulamos directamente los componentes gráficos. En su lugar, describimos **cómo debe verse la pantalla para cualquier estado posible**:
 
-$$\text{UI} = f(\text{Estado})$$
+> **UI = f(Estado)**
 
 ```kotlin
 // Enfoque declarativo con Jetpack Compose: La UI es un reflejo reactivo del estado
@@ -617,7 +617,7 @@ adb start-server
 ## 8. Resumen y Conclusiones
 
 1. **El desarrollo móvil exige un cambio de mentalidad:** Las restricciones severas de memoria, consumo de batería y variabilidad de la red obligan a diseñar pensando en la eficiencia y la arquitectura *offline-first*.
-2. **El paradigma declarativo es el estándar:** Tecnologías como **Jetpack Compose** y **SwiftUI** eliminan los problemas clásicos de desincronización de estado mediante la fórmula reactiva $\text{UI} = f(\text{Estado})$.
+2. **El paradigma declarativo es el estándar:** Tecnologías como **Jetpack Compose** y **SwiftUI** eliminan los problemas clásicos de desincronización de estado mediante la fórmula reactiva **UI = f(Estado)**.
 3. **Kotlin Multiplatform (KMP) lidera la nueva era:** Permite compartir la lógica de negocio, networking y persistencia con rendimiento 100% nativo y adopción gradual, contando con el respaldo oficial conjunto de **JetBrains y Google**.
 4. **Compose Multiplatform (CMP) democratiza la UI compartida:** Ofrece una alternativa real a Flutter sin necesidad de abandonar el ecosistema ni el lenguaje de Kotlin.
 5. **Conocer el runtime es fundamental:** Dominar la tríada de Gradle (`minSdk`, `compileSdk`, `targetSdk`), el funcionamiento de ART y herramientas como ADB marca la diferencia entre un programador novato y un ingeniero de software móvil cualificado.
