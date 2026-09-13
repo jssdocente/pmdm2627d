@@ -29,10 +29,11 @@ nav:
           - "Scope functions": temas/00-android/00-kotlin/31-scope-functions.md
           - "Corrutinas": temas/00-android/00-kotlin/52-corrutinas-sencillo.md
       - "Herramientas Proyecto Android":
+          - "Terminal Avanzada (Warp + Shell)": "temas/00-android/00-tools/05-terminal-warp.md"
           - "Gradle": "temas/00-android/00-tools/01-gradle-agp-estructura.md"
           - "Build-gradle": "temas/00-android/00-tools/02-build-gradle.md"
-          - "Fichero Manifest": "temas/00-android/00-tools/03-android-manifest.md"
           - "Matriz de Compatibilidad": "temas/00-android/00-tools/04-matriz-compatibilidad.md"
+          - "Fichero Manifest": "temas/00-android/00-tools/03-android-manifest.md"
 
       - "Jetpack Compose":
           - "Introducción": temas/00-android/00-compose/index.md

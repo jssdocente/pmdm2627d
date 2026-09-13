@@ -119,6 +119,39 @@ Cualquier imagen insertada con sintaxis estándar `![Descripción](ruta/a/imagen
   ```
   1. Inyección de dependencia gestionada por Koin.
 
+### 3.6. Reglas Críticas de Formato de Listas en Python-Markdown
+
+El motor de renderizado `Python-Markdown` exige un formato estricto para no colapsar elementos en una sola línea:
+
+1. **Línea en blanco obligatoria antes de cualquier lista:**
+   ```markdown
+   <!-- ❌ INCORRECTO (Se unirá todo en un solo párrafo): -->
+   Instala los siguientes paquetes:
+   - Android SDK Build-Tools
+   - Android Emulator
+
+   <!-- ✅ CORRECTO: -->
+   Instala los siguientes paquetes:
+
+   - Android SDK Build-Tools
+   - Android Emulator
+   ```
+
+2. **Sublistas anidadas con 4 espacios:**
+   ```markdown
+   <!-- ✅ CORRECTO (Línea en blanco + 4 espacios de indentación): -->
+   1. Paso principal con sublista:
+
+       - Sub-elemento A
+       - Sub-elemento B
+   ```
+
+3. **Separación entre elementos numerados complejos (`1.`, `2.`, `3.`):**
+   Dejar siempre una línea en blanco entre pasos numerados que contengan explicaciones, sublistas o código para forzar el renderizado espaciado (loose list).
+
+4. **Preferencia por guiones (`-`):**
+   Utilizar siempre `-` en lugar de `*` para evitar confusiones sintácticas con el formato de cursiva/negrita.
+
 ---
 
 ## 4. Despliegue Automatizado (CI/CD)

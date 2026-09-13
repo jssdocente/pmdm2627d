@@ -1,160 +1,204 @@
 # El Fichero de Construcción: `build.gradle.kts`
 
-En el corazón de la compilación de tu aplicación Android se encuentra el fichero `build.gradle.kts` (o `build.gradle` si usas Groovy, aunque el estándar moderno es **Kotlin DSL**).
+---
 
-Este fichero define **CÓMO** se debe construir tu aplicación: desde qué versión de Android soporta, hasta qué librerías externas utiliza.
+## 1. El Corazón de tu Módulo: `build.gradle.kts`
 
-!!! note "Project vs Module"
-    Recuerda que existen dos niveles de `build.gradle`:
-    
-    1.  **Project-level (`build.gradle.kts` raíz):** Define configuración global para *todos* los módulos (normalmente solo plugins comunes).
-    2.  **Module-level (`app/build.gradle.kts`):** Es donde pasarás el 99% del tiempo. Define la configuración específica de tu app (o módulo). **Nos centraremos en este.**
+En el corazón de la compilación de cualquier aplicación Android se encuentra el archivo `app/build.gradle.kts`. Aunque históricamente se escribía en Groovy (`build.gradle`), hoy en día el estándar indiscutible de la industria es **Kotlin DSL** (`.kts`), que ofrece tipado estático, comprobación de errores en tiempo de edición y autocompletado nativo.
+
+Este fichero define **CÓMO** se debe construir tu aplicación: qué SDK de Android soporta, qué plugins intervienen, qué librerías externas consume y qué optimizaciones de seguridad o rendimiento se aplican en cada variante.
+
+```mermaid
+graph TD
+    B["app/build.gradle.kts"] --> P["1. plugins { }<br>Herramientas: Android, Kotlin, Compose, KSP"]
+    B --> A["2. android { }<br>SDKs, Compose, Java 17, BuildTypes (Debug/Release)"]
+    B --> D["3. dependencies { }<br>Librerías externas, BOM, KSP y Tests"]
+
+    style B fill:#f9f,stroke:#333,stroke-width:2px
+    style P fill:#bbf,stroke:#333,stroke-width:2px
+    style A fill:#dfd,stroke:#333,stroke-width:2px
+    style D fill:#ffd,stroke:#333,stroke-width:2px
+```
 
 ---
 
-## Estructura Anatómica
+## 2. Anatomía Completa de un `build.gradle.kts` Profesional
 
-Un fichero `build.gradle.kts` de módulo típico tiene esta estructura:
-
-```kotlin
-plugins {
-    // 1. Plugins
-}
-
-android {
-    // 2. Configuración Android
-}
-
-dependencies {
-    // 3. Dependencias externas
-}
-```
-
-Vamos a diseccionar cada parte.
-
-### 1. Bloque `plugins`
-
-Los plugins son extensiones que "enseñan" a Gradle cómo hacer cosas nuevas. Por defecto, Gradle no sabe qué es una "App Android". Necesitamos aplicarle el plugin de Android.
+A continuación se muestra la estructura recomendada para proyectos modernos de **2º DAM**, configurada para **Jetpack Compose**, **Kotlin 2.0+** y **Java 17**:
 
 ```kotlin
+// 1. PLUGINS APLICADOS
 plugins {
-    // Le dice a Gradle: "Este módulo es una Aplicación Android"
     alias(libs.plugins.android.application)
-    
-    // Le dice a Gradle: "Vamos a usar Kotlin en Android"
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler) // Imprescindible desde Kotlin 2.0+
+    alias(libs.plugins.ksp) optional true // Procesador moderno de anotaciones (Room)
 }
-```
 
-!!! tip "Version Catalogs (`libs.*`)"
-    Fíjate en el uso de `alias(libs...)`. Esto es **Version Catalogs**. En lugar de escribir el ID del plugin y la versión "a fuego" (hardcoded), referenciamos una definición centralizada en el fichero `libs.versions.toml`. ¡Es mucho más limpio y fácil de mantener!
-
-### 2. Bloque `android`
-
-Aquí configuramos todo lo relacionado con el SDK de Android.
-
-#### Namespace y Compilación
-```kotlin
+// 2. CONFIGURACIÓN DEL ECOSISTEMA ANDROID
 android {
-    // Identificador único de tu paquete (sustituye al antiguo 'package' en Manifest)
-    namespace = "com.ejemplo.miapp"
-    
-    // La versión del SDK que usas para COMPILAR el código.
-    // Te permite usar las APIs más nuevas de esa versión en tu código.
-    compileSdk = 35 
-    
-    // ...
-}
-```
+    namespace = "com.ejemplo.gamevault"
+    compileSdk = 35 // Android 15 (APIs disponibles durante la compilación)
 
-#### Default Config
-La configuración base que se aplica a todas las versiones de tu app (debug, release, etc.).
-
-```kotlin
     defaultConfig {
-        // ID único de la aplicación en la Play Store.
-        applicationId = "com.ejemplo.miapp"
-        
-        // Mínima versión de Android donde funciona tu app.
-        // Si pones 24 (Android 7.0), nadie con Android 6.0 podrá instalarla.
-        minSdk = 24
-        
-        // Versión objetivo. Le dice a Android: "He probado mi app hasta esta versión".
-        // Permite que el sistema active optimizaciones o comportamientos nuevos.
-        // Lo ideal es: targetSdk == compileSdk
-        targetSdk = 35
-        
-        // Versionado para la tienda (interno y visible).
-        versionCode = 1
-        versionName = "1.0"
-        
-        // Runner para los tests instrumentados
+        applicationId = "com.ejemplo.gamevault"
+        minSdk = 24 // Android 7.0 (compatibilidad con el 95%+ de dispositivos)
+        targetSdk = 35 // Versión para la que se ha diseñado y probado la app
+        versionCode = 1 // Número incremental para la Play Store
+        versionName = "1.0.0" // Versión visible para los usuarios
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-```
 
-#### Build Types (Tipos de Construcción)
-Define perfiles de compilación. Por defecto siempre tienes `debug` y `release`.
-
-```kotlin
     buildTypes {
         release {
-            // ¿Activamos minificación (R8)? (Borrar código no usado, ofuscar...)
-            isMinifyEnabled = false 
-            
-            // Reglas de ProGuard para la ofuscación
+            isMinifyEnabled = true // R8: Ofuscación y eliminación de código muerto
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
-        // El bloque 'debug' existe implícitamente aunque no lo escribas.
+        debug {
+            applicationIdSuffix = ".debug" // Permite instalar ambas variantes a la vez en el móvil
+            isDebuggable = true
+        }
     }
-```
 
-#### Opciones de Compilación
-Configuramos la versión de Java que usaremos. Hoy en día, Java 11 o 17 son el estándar para desarrollo Android moderno.
+    // Activación de características modernas
+    buildFeatures {
+        compose = true // Habilita el soporte para Jetpack Compose
+        buildConfig = true // Genera la clase BuildConfig con variables de compilación
+    }
 
-```kotlin
+    // Estándar de compilación para la JVM
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
-```
+}
 
-### 3. Bloque `dependencies`
-
-Aquí listamos las librerías externas que nuestra app necesita para funcionar.
-
-```kotlin
+// 3. DECLARACIÓN DE DEPENDENCIAS
 dependencies {
-    // Dependencias 'core' (se compilan y empaquetan con la app)
+    // Core y ciclo de vida
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    
-    // Dependencias SOLO para Tests Unitarios (JUnit local)
-    // No se empaquetan en la APK final.
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+
+    // Jetpack Compose mediante BOM (Bill of Materials)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+
+    // Herramientas de depuración (solo se empaquetan en Debug)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Tests unitarios locales y en dispositivo
     testImplementation(libs.junit)
-    
-    // Dependencias puramente de Tests Instrumentados (Android)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    
-    // Herramientas de debug (solo en builds debug)
-    // debugImplementation(libs.leakcanary)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
 }
 ```
 
-#### Tipos de dependencia comunes
-*   **`implementation`**: La más común. La librería está disponible en compilación y ejecución.
-*   **`testImplementation`**: Solo disponible dentro de `src/test` (tests unitarios locales).
-*   **`androidTestImplementation`**: Solo disponible dentro de `src/androidTest` (tests en dispositivo).
-*   **`ksp` (o `kapt`)**: Para procesadores de anotaciones (como Room o Dagger/Hilt).
-*   **`debugImplementation`**: Solo se incluye en la variante `debug`.
+---
 
-!!! warning "Cuidado con las versiones"
-    Evita mezclar versiones de librerías relacionadas (como las de `androidx.lifecycle` o `kotlinx.coroutines`). Usar el **Version Catalog** (`libs.versions.toml`) ayuda mucho a mantener la coherencia, ya que defines la versión en un solo lugar.
+## 3. Disección de los Bloques Clave
+
+### 3.1. Plugins y el nuevo compilador de Compose
+En versiones anteriores a Kotlin 2.0, el compilador de Compose requería configurar manualmente el bloque `composeOptions { kotlinCompilerExtensionVersion = "..." }`. 
+
+Hoy en día, el compilador de Compose se integra directamente como un plugin de Kotlin:
+```kotlin
+plugins {
+    alias(libs.plugins.compose.compiler)
+}
+```
+Esto elimina los problemas históricos de desincronización entre la versión de Kotlin y la extensión de Compose.
+
+---
+
+### 3.2. Versiones del SDK: `compileSdk` vs `minSdk` vs `targetSdk`
+
+Es uno de los conceptos que más dudas genera en los exámenes y prácticas:
+
+| Propiedad | Función | Ejemplo recomendado |
+| :--- | :--- | :--- |
+| **`compileSdk`** | ¿Con qué APIs compila Android Studio? Define los métodos y clases disponibles en tu código Kotlin. | `35` (Android 15) |
+| **`minSdk`** | ¿Cuál es el teléfono más antiguo que puede instalar la app? Si un usuario tiene una versión inferior, Google Play no le dejará instalarla. | `24` (Android 7.0) |
+| **`targetSdk`** | ¿Para qué versión has certificado el comportamiento de tu app? Activa las restricciones de seguridad y permisos modernos del sistema operativo. | `35` (Debe coincidir con `compileSdk`) |
+
+---
+
+### 3.3. Bloque `buildFeatures`
+
+Permite activar o desactivar generadores de código para que Gradle no consuma memoria innecesaria:
+
+```kotlin
+buildFeatures {
+    compose = true      // Obligatorio para proyectos con UI declarativa Compose
+    buildConfig = true  // Permite acceder a BuildConfig.APPLICATION_ID o variables secretas
+}
+```
+
+!!! tip "Inyección de variables seguras (`buildConfigField`)"
+    Si tu aplicación consume una API REST externa, **nunca escribas la URL o la clave directamente en el código de Kotlin**. Puedes inyectarla desde Gradle según la variante:
+    
+    ```kotlin
+    buildTypes {
+        debug {
+            buildConfigField("String", "API_BASE_URL", "\"https://dev.api.midominio.com/\"")
+        }
+        release {
+            buildConfigField("String", "API_BASE_URL", "\"https://api.midominio.com/\"")
+        }
+    }
+    ```
+    En tu código Kotlin podrás acceder a ella de forma limpia con `BuildConfig.API_BASE_URL`.
+
+---
+
+### 3.4. Tipos de Dependencias (Ámbitos o Scopes)
+
+En el bloque `dependencies { }`, cada palabra clave determina en qué momento del ciclo de vida estará disponible esa librería:
+
+| Ámbito | ¿Se incluye en el APK final? | Propósito principal | Ejemplo |
+| :--- | :---: | :--- | :--- |
+| **`implementation`** | ✅ Sí | Dependencia estándar de producción. | `libs.material3`, `libs.retrofit` |
+| **`debugImplementation`**| ⚠️ Solo en Debug | Herramientas de inspección visual o rendimiento. No engorda la APK de producción. | `libs.ui.tooling` (Preview de Compose) |
+| **`ksp`** | ❌ No | Procesador de símbolos en tiempo de compilación. Genera código automático para bases de datos o inyección. | `libs.room.compiler` |
+| **`testImplementation`** | ❌ No | Pruebas unitarias que se ejecutan en la máquina del desarrollador (rápidas, sin móvil). | `libs.junit`, `libs.mockk` |
+| **`androidTestImplementation`** | ⚠️ Solo en APK de test | Pruebas de integración o UI que se ejecutan sobre un emulador o teléfono real. | `libs.espresso.core` |
+
+!!! warning "¿KSP o KAPT?"
+    Históricamente se utilizaba `kapt` (*Kotlin Annotation Processing Tool*). Hoy en día, **`kapt` está en mantenimiento** y su uso ralentiza las compilaciones. Para librerías como **Room** o **Moshi**, el estándar de Google es **KSP** (*Kotlin Symbol Processing*), que compila hasta un **50% más rápido**.
+
+---
+
+## 4. Ejecutar Tareas de Gradle desde la Terminal
+
+Cualquier bloque definido en `build.gradle.kts` genera tareas que puedes lanzar directamente desde **Warp**:
+
+### Compilar e instalar la app en el emulador
+```bash
+./gradlew installDebug
+# o con nuestro atajo de Warp:
+gw installDebug
+```
+
+### Comprobar las dependencias del proyecto y buscar conflictos
+```bash
+./gradlew app:dependencies
+```
+
+### Ejecutar todas las pruebas unitarias locales
+```bash
+./gradlew testDebugUnitTest
+# o con el atajo:
+gw-test
+```

@@ -92,3 +92,9 @@ Cuando interactúes en este repositorio, actúas como **Asistente Técnico y Ped
    - Emplear tabs (`=== "Kotlin"`, `=== "Groovy/Gradle"`) cuando existan alternativas técnicas.
    - Emplear diagramas ````mermaid```` para flujos de datos, arquitectura de estados o ciclos de vida.
 5. **Idioma:** Español neutro/académico, con terminología técnica estándar de la industria (composable, state hoisting, coroutine scope, etc.).
+6. **Formato Estricto de Listas en Python-Markdown (Evitar Concatención en una Línea):**
+   - **Línea en blanco previa obligatoria:** Antes de iniciar cualquier lista (no ordenada `-` o numerada `1.`), debe existir SIEMPRE una línea en blanco respecto al párrafo o encabezado anterior. Sin ella, Python-Markdown unirá los elementos en una sola línea continua.
+   - **Sublistas anidadas:** Las sublistas (`-`) que cuelguen de un elemento numerado o con viñeta DEBEN tener una línea en blanco antes y estar indentadas con 4 espacios (u 8 espacios si están dentro de una pestaña `=== "..."`).
+   - **Separación entre elementos numerados (`1.`, `2.`, `3.`):** En pasos explicativos, recetas o tutoriales, dejar siempre una línea en blanco entre cada número (`1.` / `2.` / `3.`) para garantizar legibilidad y evitar que el contenido se comprima.
+   - **Bloques de código en listas:** Si un paso contiene un bloque de código, debe tener una línea en blanco previa e indentarse 4 espacios para no romper la lista ordenada `<ol>`, o transformarse en un subtítulo `###`.
+   - **Estándar de viñetas:** Usar siempre el guion `-` para listas no ordenadas en lugar de `*` para evitar ambigüedades con negritas o cursivas.

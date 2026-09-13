@@ -11,6 +11,7 @@ A menudo se confunden, pero son cosas distintas que trabajan juntas.
 ### Gradle: El Motor de Construcción
 
 **Gradle** es un sistema de automatización de compilación de código abierto. Es agnóstico a la plataforma; se usa para Java, C++, Python, etc. Piensa en Gradle como un **gestor de tareas muy potente**. Sabe cómo:
+
 - Descargar librerías de internet.
 - Compilar código fuente.
 - Ejecutar pruebas.
@@ -24,6 +25,33 @@ AGP es un plugin que se "enchufa" a Gradle y le enseña cómo construir aplicaci
 !!! note "Gradle Wrapper"
     En tu proyecto verás archivos `gradlew` (Linux/Mac) y `gradlew.bat` (Windows). Este es el **Wrapper**.
     **Siempre** usa el wrapper (`./gradlew build`) en lugar de instalar Gradle globalmente. Esto garantiza que todo el equipo (y el servidor de integración continua) use **exactamente la misma versión** de Gradle definida en `gradle/wrapper/gradle-wrapper.properties`.
+
+### 1.3. ¿Configuro en IntelliJ o en Gradle? La "Única Fuente de Verdad"
+
+Uno de los mayores dolores de cabeza en el aula surge ante la duda: *¿Añado la librería en las opciones de IntelliJ IDEA o la escribo en los archivos de Gradle?*
+
+La regla de oro es rotunda: **SIEMPRE en Gradle (Single Source of Truth)**.
+
+#### 1. El "Efecto Sobreescritura" de Gradle Sync
+IntelliJ IDEA es únicamente un editor inteligente y un visor de tu código. Cada vez que pulsas el botón del elefante (**Sync Project with Gradle Files**), **IntelliJ descarta su configuración gráfica interna y la regenera leyendo los archivos `.gradle.kts`**.
+
+Si vas a los menús de IntelliJ (`File > Project Structure`) y añades una librería o cambias la versión de Java a mano, funcionará unos minutos... hasta que el siguiente *Sync* borre tus cambios silenciosamente.
+
+#### 2. El problema del "En mi ordenador funciona"
+Las ventanas de configuración del IDE guardan sus preferencias en la carpeta local oculta `.idea/`, que está en el `.gitignore` y **nunca se sube a GitHub**. 
+
+Cuando el profesor descarga tu práctica o se compila en un servidor automatizado (CI/CD), **IntelliJ no existe**; solo se ejecuta Gradle. Si algo no está escrito en código dentro de Gradle, el proyecto no compilará.
+
+#### Tabla de Responsabilidades: ¿Dónde se toca cada cosa?
+
+| Configuración | Dónde se realiza | Archivo o Menú | Motivo técnico |
+| :--- | :---: | :--- | :--- |
+| **Librerías y Dependencias** | 🐘 **Gradle** | `gradle/libs.versions.toml` | Se borrarían de IntelliJ tras el primer Sync. |
+| **Versiones de Android (`compileSdk`, `minSdk`)** | 🐘 **Gradle** | `app/build.gradle.kts` | Definen las restricciones reales de la app. |
+| **Versión de Java del código (`jvmTarget`)** | 🐘 **Gradle** | `app/build.gradle.kts` | Debe ser idéntica para todo el equipo. |
+| **Plugins (`compose`, `ksp`)** | 🐘 **Gradle** | `build.gradle.kts` | Solo Gradle sabe cómo descargarlos y aplicarlos. |
+| **Ruta del Android SDK en disco** | 💻 **IntelliJ** | `Settings ➔ Languages ➔ Android SDK` | Ruta física de TU ordenador (`C:\Users\...`). |
+| **Qué JDK arranca Gradle (Gradle JVM)** | 💻 **IntelliJ** | `Settings ➔ Build Tools ➔ Gradle` | Le indica al IDE qué Java local usar para correr Gradle. |
 
 ---
 
@@ -55,9 +83,10 @@ Estructura de `libs.versions.toml`:
 ```toml
 [versions]
 # 1. Aquí definimos los NÚMEROS de las versiones
-kotlin = "1.9.0"
-coreKtx = "1.10.1"
-retrofit = "2.9.0"
+agp = "8.7.0"
+kotlin = "2.0.21"
+coreKtx = "1.15.0"
+retrofit = "2.11.0"
 
 [libraries]
 # 2. Aquí definimos las LIBRERÍAS (Ingredientes básicos)
@@ -75,6 +104,8 @@ networking = ["retrofit", "retrofit-gson"]
 [plugins]
 # 4. Aquí definimos los PLUGINS (Herramientas de construcción)
 androidApplication = { id = "com.android.application", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ```
 
 ### Ejemplo Práctico: ¿Cómo añado una librería nueva?
@@ -124,34 +155,34 @@ El BOM es una "super-librería" vacía que solo contiene una lista de versiones 
 
 **Ejemplo con Compose:**
 
-1.  En `libs.versions.toml` defines el BOM con versión, y las librerías **sin versión**.
+1. En `libs.versions.toml` defines el BOM con versión, y las librerías **sin versión**:
 
-```toml
-[versions]
-composeBom = "2023.08.00"
+    ```toml
+    [versions]
+    composeBom = "2024.10.01"
 
-[libraries]
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+    [libraries]
+    androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 
-# Fíjate que aquí NO hay 'version.ref'
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-```
+    # Fíjate que aquí NO hay 'version.ref'
+    androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+    androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+    ```
 
-2.  En `build.gradle.kts` importas el BOM como `platform` y luego las librerías.
+2. En `build.gradle.kts` importas el BOM como `platform` y luego las librerías:
 
-```kotlin
-dependencies {
-    // Importamos la PLATAFORMA (el BOM)
-    implementation(platform(libs.androidx.compose.bom))
+    ```kotlin
+    dependencies {
+        // Importamos la PLATAFORMA (el BOM)
+        implementation(platform(libs.androidx.compose.bom))
 
-    // Importamos las librerías sin preocuparnos de la versión
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.material3)
-}
-```
+        // Importamos las librerías sin preocuparnos de la versión
+        implementation(libs.androidx.ui)
+        implementation(libs.androidx.material3)
+    }
+    ```
 
-Esto garantiza que si actualizas el BOM a `2023.10.00`, *todas* las librerías de Compose se actualizarán automáticamente a las versiones probadas y compatibles de esa release.
+Esto garantiza que si actualizas el BOM a `2024.10.01`, *todas* las librerías de Compose se actualizarán automáticamente a las versiones probadas y compatibles de esa release.
 
 ### ¿Qué librerías funcionan con BOM?
 
@@ -172,9 +203,11 @@ El BOM se usa principalmente en ecosistemas grandes donde hay múltiples módulo
 
 No hay una "regla mágica", pero aquí tienes 3 formas de saberlo:
 
-1.  **Documentación Oficial (La mejor)**: Cuando vas a la página de "Setup" o "Install" de Compose o Firebase, lo **primero** que te recomiendan es usar el BOM. Si la documentación te da directamente la línea `implementation("com.example:lib:1.0.0")`, es que probablemente no tenga BOM.
-2.  **Maven Repository**: Si buscas la librería en Maven Central, a veces verás un artefacto que termina en `-bom` (ej. `compose-bom`).
-3.  **El sentido común**: Si la librería es "una sola cosa" (ej. un calendario), no necesita BOM. Si es una "plataforma" (ej. Firebase), seguramente lo tenga.
+1. **Documentación Oficial (La mejor)**: Cuando vas a la página de "Setup" o "Install" de Compose o Firebase, lo **primero** que te recomiendan es usar el BOM. Si la documentación te da directamente la línea `implementation("com.example:lib:1.0.0")`, es que probablemente no tenga BOM.
+
+2. **Maven Repository**: Si buscas la librería en Maven Central, a veces verás un artefacto que termina en `-bom` (ej. `compose-bom`).
+
+3. **El sentido común**: Si la librería es "una sola cosa" (ej. un calendario), no necesita BOM. Si es una "plataforma" (ej. Firebase), seguramente lo tenga.
 
 ### Resumen: Mezclando todo en un mismo proyecto
 
@@ -186,12 +219,12 @@ En un proyecto real, **siempre** tendrás una mezcla de ambas cosas. No hay conf
 ```toml
 [versions]
 # --- Versiones para BOMs ---
-composeBom = "2023.08.00"
-firebaseBom = "32.2.0"
+composeBom = "2024.10.01"
+firebaseBom = "33.5.1"
 
 # --- Versiones para Librerías Normales ---
-retrofit = "2.9.0"
-coil = "2.4.0"
+retrofit = "2.11.0"
+coil = "2.7.0"
 
 [libraries]
 # --- BOMs ---
@@ -205,7 +238,7 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 
 # --- Librerías NORMALES (CON versión) ---
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 ```
 
 #### 2. `app/build.gradle.kts`
@@ -258,60 +291,63 @@ include(":app") // <--- Aquí decimos: "Este proyecto tiene un módulo llamado '
 ```
 
 ### 4.2. `gradle/libs.versions.toml` (El catálogo)
-Aquí definimos nuestros ingredientes.
+Aquí definimos nuestros ingredientes para una app moderna con **Jetpack Compose**:
 
 ```toml
 [versions]
-agp = "8.1.1"
-kotlin = "1.9.0"
-coreKtx = "1.10.1"
-appcompat = "1.6.1"
-material = "1.9.0"
-constraintlayout = "2.1.4"
+agp = "8.7.0"
+kotlin = "2.0.21"
+coreKtx = "1.15.0"
+composeBom = "2024.10.01"
+activityCompose = "1.9.3"
 junit = "4.13.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ```
 
 ### 4.3. `build.gradle.kts` (Nivel Proyecto)
-Hoy en día es muy simple, solo registra los plugins para usarlos en los hijos.
+Hoy en día es muy simple, solo registra los plugins para que los módulos hijos los consuman.
 
 ```kotlin
 // Build script de nivel superior (Top-level)
 plugins {
-    // Usamos 'apply false' porque solo queremos cargar las clases del plugin,
-    // pero no aplicarlas a este proyecto raíz (se aplicarán en 'app').
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.kotlinAndroid) apply false
+    alias(libs.plugins.composeCompiler) apply false
 }
 ```
 
 ### 4.4. `app/build.gradle.kts` (Nivel Módulo)
-Aquí es donde ocurre la magia de la configuración de la app.
+Aquí se define la configuración de la app móvil con soporte nativo para **Jetpack Compose**:
 
 ```kotlin
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.composeCompiler) // Plugin oficial de Compose en Kotlin 2.0+
 }
 
 android {
     namespace = "com.example.mysimpleapp"
-    compileSdk = 33 // Versión del SDK usada para compilar (headers, nuevas APIs)
+    compileSdk = 35 // Android 15 (versión del SDK usada para compilar)
 
     defaultConfig {
         applicationId = "com.example.mysimpleapp"
-        minSdk = 24 // Versión mínima de Android donde instalaremos la app (Android 7.0)
-        targetSdk = 33 // Versión para la que hemos probado y diseñado la app
+        minSdk = 24 // Versión mínima (Android 7.0)
+        targetSdk = 35 // Versión recomendada y probada
         versionCode = 1
         versionName = "1.0"
 
@@ -325,22 +361,32 @@ android {
         }
     }
     
-    // Necesario para usar características nuevas de Java/Kotlin
+    // Activar Jetpack Compose
+    buildFeatures {
+        compose = true
+    }
+
+    // Estándar moderno de compilación en Android con Java 17
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
 dependencies {
-    // Referenciamos las librerías usando el catálogo (libs)
+    // Core KTX
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.activity.compose)
+
+    // Jetpack Compose gestionado mediante BOM
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
 
     // Tests unitarios
     testImplementation(libs.junit)
@@ -357,27 +403,36 @@ Esta estructura modular y centralizada parece verbosa al principio para un proye
 Para terminar, aquí tienes tres conceptos que usarás a diario y que suelen confundir al principio.
 
 ### 5.1. "Sync" vs "Build" (Sincronizar vs Construir)
-*   **Sync (Sincronizar)**: Es rápido. Ocurre cuando cambias un archivo `.gradle.kts` o `.toml`. Gradle lee la configuración, descarga librerías nuevas y actualiza los índices de Android Studio. **No compila tu código Kotlin.**
-    *   *Cuándo hacerlo*: Siempre que toques algo de la configuración de Gradle. Verás una barrita amarilla o un elefante con flechas azules.
-*   **Build (Construir)**: Es lento. Compila todo tu código Kotlin, procesa los recursos y genera el APK.
-    *   *Cuándo hacerlo*: Cuando le das al botón de "Play" (Run).
+
+- **Sync (Sincronizar)**: Es rápido. Ocurre cuando cambias un archivo `.gradle.kts` o `.toml`. Gradle lee la configuración, descarga librerías nuevas y actualiza los índices de Android Studio. **No compila tu código Kotlin.**
+    - *Cuándo hacerlo*: Siempre que toques algo de la configuración de Gradle. Verás una barrita amarilla o un elefante con flechas azules.
+- **Build (Construir)**: Es lento. Compila todo tu código Kotlin, procesa los recursos y genera el APK.
+    - *Cuándo hacerlo*: Cuando le das al botón de "Play" (Run).
 
 ### 5.2. Clean & Rebuild (El "apagar y encender")
-A veces, Android Studio "se lía". Te marca errores en rojo en código que sabes que está bien, o la app falla de forma rara.
-*   **Build > Clean Project**: Borra la carpeta `build/` (los archivos temporales de compilación).
-*   **Build > Rebuild Project**: Hace un Clean y luego un Build completo desde cero.
-    *   *Truco del experto*: Si algo no tiene sentido, haz un `Clean Project`. Soluciona el 90% de los problemas "fantasmas".
+
+A veces, Android Studio "se lía". Te marca errores en rojo en código que sabes que está bien, o la app falla de forma rara:
+
+- **Build > Clean Project**: Borra la carpeta `build/` (los archivos temporales de compilación).
+    - *Equivalente en terminal*: `./gradlew clean` (o con nuestro atajo de Warp: `gw-clean`).
+- **Build > Rebuild Project**: Hace un Clean y luego un Build completo desde cero.
+    - *Equivalente en terminal*: `./gradlew clean build` (o `./gradlew assembleDebug` para generar la APK).
+    - *Truco del experto*: Si algo no tiene sentido tras cambiar ramas de Git o actualizar dependencias, un `clean` soluciona el 90% de los problemas "fantasmas".
 
 ### 5.3. Build Variants: Debug vs Release
-Por defecto, cuando le das al Play, estás instalando la variante **Debug**.
-*   **Debug**:
-    *   SE PUEDE depurar (breakpoints).
-    *   No está optimizada (es más lenta).
-    *   Se firma con una clave de prueba insegura.
-*   **Release**:
-    *   NO se puede depurar (normalmente).
-    *   Está optimizada y ofuscada (R8/Proguard).
-    *   Se firma con tu clave real para subirla a Google Play.
+
+Por defecto, cuando le das al Play, estás instalando la variante **Debug**:
+
+- **Debug**:
+    - SE PUEDE depurar (breakpoints).
+    - No está optimizada (compilación rápida).
+    - Se firma con una clave de prueba insegura interna (`debug.keystore`).
+    - *Compilar desde terminal*: `./gradlew assembleDebug` (o `gw-debug`).
+- **Release**:
+    - NO se puede depurar (normalmente).
+    - Está optimizada y ofuscada (R8/Proguard).
+    - Se firma con tu clave real para subirla a Google Play.
+    - *Compilar desde terminal*: `./gradlew assembleRelease`.
 
 Puedes cambiar de variante en la pestaña **Build Variants** (normalmente a la izquierda-abajo en Android Studio). ¡No intentes subir una build Debug a la Play Store!
 
@@ -405,15 +460,20 @@ Hay **dos** configuraciones de Java que debes distinguir:
     ```kotlin
     android {
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
         }
         kotlinOptions {
-            jvmTarget = "1.8"
+            jvmTarget = "17"
         }
     }
     ```
-    *Nota: A partir de AGP 8, por defecto suele ser Java 17, aunque muchos proyectos siguen en 1.8 (Java 8) para máxima compatibilidad con móviles antiguos.*
+    *En proyectos Kotlin modernos, también es muy común usar la toolchain unificada:*
+    ```kotlin
+    kotlin {
+        jvmToolchain(17) // Configura el JDK de compilación automáticamente
+    }
+    ```
 
 2.  **Java para ejecutar Gradle (Gradle Daemon)**:
     Es la versión de Java que usa tu ordenador para *correr* el proceso de construcción.

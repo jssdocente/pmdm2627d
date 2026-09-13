@@ -2,101 +2,113 @@
 
 ---
 
-## 1. El Gran Desafío: La Cadena de Construcción en Android
+## 1. El Gran Misterio: ¿Por qué mi proyecto no compila si no he tocado nada?
 
-Uno de los mayores obstáculos a los que se enfrenta cualquier estudiante o desarrollador novato en Android no es programar la lógica o la interfaz, sino conseguir que el proyecto **compile y sincronice correctamente** cuando se abren proyectos descargados de internet o se actualizan dependencias.
+Uno de los mayores choques culturales para los alumnos de 2º de DAM al comenzar con Android es descubrir que un proyecto recién descargado de GitHub o creado en clase **puede fallar estrepitosamente antes de escribir una sola línea de código**.
 
-Es muy habitual toparse con mensajes de error intimidantes como:
+En 1º de DAM estábamos acostumbrados a un modelo con **un único compilador**:
+> *"Instalo el JDK, abro IntelliJ, pulso 'Play' y mi programa Java o C# funciona. Si falla, el error está en mi código."*
+
+En Android, sin embargo, nos encontramos con errores intimidantes como:
+
 - `Unsupported class file major version 65`
-- `This version of the Android Support plugin for IntelliJ IDEA cannot open the Gradle project...`
-- `This version (X) of the Compose Compiler requires Kotlin version (Y)...`
 - `Android Gradle plugin requires Java 17 to run. You are currently using Java 11.`
+- `This version of the Android Support plugin cannot open this project...`
+- `This version (X) of the Compose Compiler requires Kotlin version (Y)...`
 
-Todos estos errores tienen un origen común: **incompatibilidad entre las piezas del ecosistema de compilación**. 
+¿Por qué ocurre esto? La respuesta es sencilla: **Google no es dueña de todas las herramientas**.
 
-A diferencia de otros entornos donde un único compilador se encarga de todo, en Android moderno conviven **cinco tecnologías independientes** que deben estar perfectamente coordinadas:
+---
+
+## 2. La Metáfora: La Línea de Montaje de Cuatro Empresas Independientes
+
+Para compilar una aplicación Android moderna, cuatro fabricantes independientes deben colaborar en perfecta armonía:
 
 ```mermaid
 graph TD
-    A[1. JDK en tu equipo: Java 17 / 21] -->|Ejecuta a| B[2. Gradle Wrapper: 8.x]
-    B -->|Carga el plugin| C[3. AGP - Android Gradle Plugin: 8.x]
-    C -->|Exige un mínimo de| D[4. compileSdk: API 34 / 35]
-    B -->|Compila código con| E[5. Kotlin Compiler: 1.9 / 2.0 / 2.1]
-    E -->|Coordina con| F[6. Compose Compiler Plugin]
+    subgraph Ecosistema[La Fábrica de Compilación de Android]
+        A["1. Oracle / OpenJDK / Eclipse<br><b>El JDK (Java 17 / 21)</b><br>La electricidad que alimenta la nave"] 
+        B["2. Gradle Inc.<br><b>El Motor Gradle (8.x)</b><br>La cinta transportadora de tareas"]
+        C["3. Google<br><b>Android Gradle Plugin (AGP 8.x)</b><br>Los robots especializados en crear APKs"]
+        D["4. Google Android SDK<br><b>compileSdk 35 (Android 15)</b><br>Las piezas oficiales del vehículo"]
+        E["5. JetBrains<br><b>Kotlin (2.0+) y Compose</b><br>Los operarios y su lenguaje moderno"]
+    end
 
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#dfd,stroke:#333,stroke-width:2px
-    style E fill:#ffd,stroke:#333,stroke-width:2px
+    A -->|Alimenta y ejecuta a| B
+    B -->|Mueve y coordina a| C
+    C -->|Instala y exige| D
+    B -->|Compila usando| E
+
+    style A fill:#ea4335,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#02303a,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#34a853,stroke:#333,stroke-width:2px,color:#fff
+    style D fill:#4285f4,stroke:#333,stroke-width:2px,color:#fff
+    style E fill:#7f52ff,stroke:#333,stroke-width:2px,color:#fff
 ```
 
----
+- **El JDK (Java Development Kit):** Es la máquina virtual en tu ordenador que ejecuta el proceso de construcción. Si la versión de Java es demasiado moderna o antigua, la cinta de Gradle no sabrá cómo arrancar.
+- **Gradle:** Es el orquestador agnóstico de tareas. No sabe qué es un móvil; solo sabe descargar librerías de internet y procesar tareas paso a paso.
+- **AGP (Android Gradle Plugin):** Es el plugin creado por Google que se "enchufa" a Gradle para enseñarle cómo empaquetar un APK, procesar recursos o generar archivos DEX para teléfonos.
+- **Kotlin y Compose:** Es el lenguaje de programación y el compilador de interfaz gráfica de JetBrains que traduce tu código declarativo a bytecode ejecutable.
 
-## 2. La "Cadena de Mando": ¿Qué Controla a Qué?
-
-Para resolver cualquier conflicto de versiones, primero debemos entender el rol de cada eslabón de la cadena:
-
-### 1. El JDK (Java Development Kit)
-Es la máquina virtual y entorno de desarrollo de Java instalado en tu ordenador que **ejecuta el propio proceso de Gradle**.
-- No confundir con la versión de Java que soporta tu teléfono: es la versión de Java que tu ordenador usa para compilar.
-- **Regla actual:** Desde AGP 8.0, es **obligatorio utilizar Java 17 como mínimo** (y Java 21 en versiones recientes). Intentar compilar con Java 8 o Java 11 provocará un fallo inmediato.
-
-### 2. Gradle (El Motor de Tareas)
-Es el sistema agnóstico que orquesta la compilación, gestiona dependencias y ejecuta tareas.
-- Se define en el proyecto mediante el **Gradle Wrapper** (`gradle/wrapper/gradle-wrapper.properties`).
-- Cada versión de Gradle solo sabe ejecutarse sobre ciertas versiones de JDK. Por ejemplo, Gradle 8.0 no soporta Java 21; para usar Java 21 necesitas Gradle 8.5+.
-
-### 3. AGP (Android Gradle Plugin)
-Es el plugin desarrollado por Google (`com.android.application` o `com.android.library`) que le enseña a Gradle las reglas específicas de Android (procesar recursos XML, empaquetar APKs/AABs, compilar DEX).
-- **Relación estricta:** Cada versión de AGP exige una versión mínima de Gradle. Si intentas usar AGP 8.6 con un Gradle 7.5 antiguo, la sincronización fallará.
-
-### 4. `compileSdk` (El Nivel de API de Android)
-Es la versión del SDK de Android contra la que se compila tu aplicación (por ejemplo, API 34 para Android 14 o API 35 para Android 15).
-- Para poder compilar contra una versión moderna de `compileSdk`, necesitas un AGP que conozca esa versión. No puedes usar `compileSdk = 35` con un AGP 7.x de hace varios años.
-
-### 5. Compilador de Kotlin
-El compilador (`org.jetbrains.kotlin.android`) que traduce tus archivos `.kt` a bytecode.
-- Debe ser compatible con la versión de Gradle utilizada y con el compilador de Jetpack Compose.
+!!! warning "La Ley de Oro de la Compatibilidad"
+    **Un robot moderno de Google (AGP 8.7) no sabe funcionar en una cinta antigua de Gradle de hace dos años (Gradle 7.2), ni Gradle 8.0 sabe ejecutarse sobre la electricidad moderna de Java 21.**
+    
+    Todas las piezas deben pertenecer a épocas compatibles.
 
 ---
 
-## 3. La Revolución de Kotlin 2.0 y el Compilador de Compose
+## 3. El "Combo Infalible" para el Curso 2026/2027
 
-Durante años, la relación entre Kotlin y Jetpack Compose fue el mayor quebradero de cabeza para la comunidad de desarrolladores.
+Antes de analizar proyectos antiguos o tablas complejas, grábate esta combinación. **Si tus proyectos respetan esta receta, compilarán a la primera sin ningún tipo de fricción:**
 
-### El Pasado (Antes de Kotlin 2.0): El Infierno de Versiones
-Históricamente, el compilador de Compose era desarrollado por Google en un repositorio separado del de Kotlin. Esto obligaba a que **cada versión exacta de Kotlin exigiera una versión exacta del compilador de Compose**:
+| Componente | Versión Recomendada para 2º DAM | Dónde se define |
+| :--- | :--- | :--- |
+| **JDK en el equipo (Gradle JVM)** | **Java 17 LTS** (o Java 21 LTS) | En Warp con Scoop/SDKMAN y en los ajustes del IDE |
+| **Gradle Wrapper** | **Gradle 8.9 o superior** | `gradle/wrapper/gradle-wrapper.properties` |
+| **Android Plugin (AGP)** | **8.7.x** | `gradle/libs.versions.toml` |
+| **SDK de Compilación (`compileSdk`)** | **35** (Android 15) | `app/build.gradle.kts` |
+| **Kotlin + Compilador de Compose** | **2.0.21** (o superior) | `gradle/libs.versions.toml` |
+
+---
+
+## 4. La Revolución de Kotlin 2.0: El Fin del Dolor de Cabeza con Compose
+
+Durante años, la relación entre Kotlin y Jetpack Compose fue la principal causa de abandono y frustración entre desarrolladores noveles.
+
+### El Pasado (Kotlin 1.9 o inferior): El "Mismatch" Permanente
+Google publicaba el compilador de Compose en un repositorio independiente. Esto obligaba a que cada subversión exacta de Kotlin requiriese una versión idéntica de la extensión de Compose:
 
 ```kotlin
-// ANTES (En desuso, requiere alineación milimétrica):
+// ❌ ENFOQUE ANTIGUO (Propenso a fallos graves):
 android {
     composeOptions {
-        // Si subías Kotlin a 1.9.23 y aquí tenías 1.5.8, la compilación EXPLOTABA
+        // Si subías Kotlin a 1.9.23 y dejabas 1.5.8 aquí, ¡el proyecto crasheaba!
         kotlinCompilerExtensionVersion = "1.5.10"
     }
 }
 ```
-Si querías actualizar Kotlin para aprovechar una mejora del lenguaje, estabas bloqueado hasta que Google publicaba la versión correspondiente de `kotlinCompilerExtensionVersion`.
 
-### El Presente (A partir de Kotlin 2.0): Unificación y Simplicidad
-A partir de **Kotlin 2.0.0**, JetBrains y Google unificaron el compilador. El compilador de Compose ahora se desarrolla **dentro del propio compilador de Kotlin**:
+### El Presente (A partir de Kotlin 2.0): Unificación Total
+A partir de **Kotlin 2.0**, Google y JetBrains unificaron esfuerzos: el compilador de Compose ahora se desarrolla **dentro del propio compilador de Kotlin**.
 
 ```kotlin
-// AHORA (Enfoque moderno oficial con Kotlin 2.0+):
+// ✅ ENFOQUE MODERNO (Oficial en Kotlin 2.0+):
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose) // <-- Plugin oficial unificado
+    alias(libs.plugins.compose.compiler) // <-- Sincronizado automáticamente con Kotlin
 }
 ```
-!!! success "Fin del Mismatch de Compose"
-    Al usar el plugin `org.jetbrains.kotlin.plugin.compose`, la versión del compilador de Compose **se sincroniza automáticamente** con la versión de Kotlin definida en tu proyecto. Ya no es necesario configurar `kotlinCompilerExtensionVersion`.
+
+!!! success "Ventaja Directa para el Alumno"
+    Al usar `alias(libs.plugins.compose.compiler)`, la versión del compilador de Compose **se sincroniza automáticamente** con la versión de Kotlin definida en tu catálogo. Ya no existe la propiedad `kotlinCompilerExtensionVersion`.
 
 ---
 
-## 4. Tabla Maestra de Compatibilidad (Chuleta de Referencia)
+## 5. Tabla Maestra de Compatibilidad
 
-Esta tabla resume las combinaciones oficiales compatibles que debes utilizar en tus proyectos:
+Utiliza esta tabla como referencia de consulta cuando abras proyectos de cursos anteriores, repositorios de internet o tras actualizar tu entorno:
 
 | Versión de Android Objetivo | `compileSdk` | Versión de AGP Requerida | Versión de Gradle Recomendada | Versión de JDK (Gradle JVM) | Versión de Kotlin |
 | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -107,101 +119,92 @@ Esta tabla resume las combinaciones oficiales compatibles que debes utilizar en 
 
 ---
 
-## 5. Dónde se Configura Cada Elemento en el Proyecto
+## 6. Dónde se Configura Cada Pieza en tu Proyecto
 
-Para tener el control absoluto de las versiones, estos son los **cuatro archivos clave** que debes inspeccionar:
+Para tener el control total, solo necesitas revisar **cuatro archivos clave**:
 
-### 1. La Versión de Gradle: `gradle/wrapper/gradle-wrapper.properties`
-
-```properties
-distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-# Aquí se define qué versión de Gradle se descargará y usará automáticamente:
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-bin.zip
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
+```text
+mi-proyecto/
+├── gradle/
+│   ├── wrapper/
+│   │   └── gradle-wrapper.properties    <-- 1. Versión de Gradle Wrapper
+│   └── libs.versions.toml               <-- 2. Versiones de AGP, Kotlin y Compose
+├── app/
+│   └── build.gradle.kts                 <-- 3. compileSdk, minSdk y Java Target
+└── (Ajustes de IntelliJ / Warp)         <-- 4. Gradle JVM (JDK del sistema)
 ```
 
-### 2. Las Versiones de Plugins y Librerías: `gradle/libs.versions.toml`
+### 1. `gradle/wrapper/gradle-wrapper.properties` (Gradle)
+```properties
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-bin.zip
+```
 
-En el catálogo de versiones centralizado definimos las versiones de AGP y Kotlin:
-
+### 2. `gradle/libs.versions.toml` (Plugins y Lenguaje)
 ```toml
 [versions]
-agp = "8.6.1"
+agp = "8.7.0"
 kotlin = "2.0.21"
-coreKtx = "1.13.1"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ```
 
-### 3. Las Versiones del SDK y Compatibilidad Java: `app/build.gradle.kts`
-
+### 3. `app/build.gradle.kts` (SDK de Android y JVM Target)
 ```kotlin
 android {
-    namespace = "com.docente.gamevault"
-    compileSdk = 35 // Nivel de API para compilar
+    compileSdk = 35 // Android 15
 
     defaultConfig {
-        applicationId = "com.docente.gamevault"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-    buildFeatures {
-        compose = true
-    }
 }
 ```
 
-### 4. El JDK Utilizado por el IDE (IntelliJ IDEA o Android Studio)
-
-En tu entorno de desarrollo, ve a:
-👉 `Settings (o Preferences)` → `Build, Execution, Deployment` → `Build Tools` → `Gradle`
-
-Localiza la opción **Gradle JVM**:
-- Debe apuntar a un **JDK 17** o **JDK 21** (como el *jbr-17* embebido de JetBrains o un JDK instalado como Temurin/Corretto).
-- Si seleccionas accidentalmente un Java 8 o Java 11 antiguo de tu sistema, la sincronización fallará de inmediato.
+### 4. Ajustes del IDE: `Settings ➔ Build Tools ➔ Gradle`
+Comprueba que el campo **Gradle JVM** apunte a tu **JDK 17** (o Java 21). Si apunta por error a Java 8 o Java 11 antiguo, Gradle no podrá arrancar el plugin de Android.
 
 ---
 
-## 6. Guía de Diagnóstico de Errores Típicos ("Troubleshooting")
+## 7. Guía de Diagnóstico Rápido: ¿Qué falla cuando tocas qué?
 
-Cuando un proyecto no compile por problemas de versiones, consulta esta guía rápida de resolución:
+Cuando veas un error rojo durante la sincronización, usa esta guía para localizar la causa en 10 segundos:
 
-### Error 1: `Unsupported class file major version XX`
-- **Causa:** Tu versión de Gradle es demasiado antigua para el JDK que estás utilizando.
-  - Versión 65 = Java 21
-  - Versión 61 = Java 17
-  - Versión 55 = Java 11
-- **Solución:**
-  1. O actualizas Gradle en `gradle-wrapper.properties` a una versión moderna (ej. Gradle 8.9).
-  2. O en los ajustes de tu IDE cambias la `Gradle JVM` a Java 17.
+```mermaid
+graph TD
+    E1["Error: 'Unsupported class file major version XX'"] --> S1["Causa: Tu Gradle es muy viejo para tu Java.<br><b>Solución:</b> Sube la versión en gradle-wrapper.properties a 8.9+"]
+    E2["Error: 'AGP requires Java 17 to run'"] --> S2["Causa: Tu IDE está ejecutando Gradle con Java 11 o inferior.<br><b>Solución:</b> Cambia Gradle JVM a JDK 17 en Ajustes del IDE"]
+    E3["Error: 'This version of Android Support plugin cannot open...'"] --> S3["Causa: Tu IDE es más antiguo que el AGP del proyecto.<br><b>Solución:</b> Actualiza tu IntelliJ/Android Studio o baja el AGP a 8.6"]
+    E4["Error: 'Compose Compiler requires Kotlin version...'"] --> S4["Causa: Desajuste de versiones en Kotlin 1.9.<br><b>Solución:</b> Actualiza a Kotlin 2.0+ con el plugin org.jetbrains.kotlin.plugin.compose"]
 
-### Error 2: `Android Gradle plugin requires Java 17 to run`
-- **Causa:** Tienes AGP 8+ configurado en tu proyecto, pero tu IDE tiene configurado un JDK 11 o inferior para ejecutar Gradle.
-- **Solución:** Ve a `Settings` → `Build Tools` → `Gradle` y cambia **Gradle JVM** a una versión 17+.
+    style E1 fill:#ffebee,stroke:#c62828,stroke-width:1px
+    style E2 fill:#ffebee,stroke:#c62828,stroke-width:1px
+    style E3 fill:#ffebee,stroke:#c62828,stroke-width:1px
+    style E4 fill:#ffebee,stroke:#c62828,stroke-width:1px
 
-### Error 3: `This version of the Android Support plugin cannot open this project`
-- **Causa:** El proyecto utiliza una versión de AGP más moderna que la que soporta tu versión de IntelliJ IDEA.
-- **Solución:** 
-  1. Actualiza IntelliJ IDEA a la última versión disponible mediante JetBrains Toolbox.
-  2. O baja temporalmente la versión de AGP en `libs.versions.toml` a una que tu versión actual del IDE soporte.
+    style S1 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style S2 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style S3 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style S4 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+```
 
-### Error 4: `This version (X) of the Compose Compiler requires Kotlin version (Y)`
-- **Causa:** Estás en Kotlin 1.9.x y las versiones de `kotlin` y `kotlinCompilerExtensionVersion` no coinciden exactamente.
-- **Solución:**
-  1. Consulta la tabla oficial de Compose to Kotlin Compatibility Map de Google.
-  2. **La mejor solución:** Migra el proyecto a **Kotlin 2.0+** adoptando el plugin `org.jetbrains.kotlin.plugin.compose`.
+### Protocolo de Supervivencia en el Aula (3 Pasos):
+
+1. **Paso 1 (Comprobar la versión de Java):** En el 80% de los casos en clase, el problema es que el ordenador del instituto tiene un Java 8 o Java 11 antiguo seleccionado en `Settings ➔ Build Tools ➔ Gradle ➔ Gradle JVM`. Cámbialo a **Java 17**.
+
+2. **Paso 2 (Revisar el Wrapper):** Si abres un proyecto antiguo de GitHub, abre `gradle-wrapper.properties` y sube la versión a `gradle-8.9-bin.zip`.
+
+3. **Paso 3 (Limpiar la caché):** Abre Warp y ejecuta:
+
+    ```bash
+    ./gradlew clean --refresh-dependencies
+    # o con nuestro atajo:
+    gw clean
+    ```

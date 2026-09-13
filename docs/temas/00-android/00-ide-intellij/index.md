@@ -66,10 +66,11 @@ pie title Reparto de Memoria RAM en una Sesión Típica de Desarrollo Móvil (16
 - **Un disco de estado sólido (SSD NVMe o SATA) es estrictamente necesario.**
   Gradle realiza miles de operaciones de lectura y escritura de archivos pequeños durante cada compilación. En un disco duro mecánico tradicional (HDD), una compilación que en SSD tarda 15 segundos puede demorarse más de 2 o 3 minutos.
 - **Espacio libre necesario:** Reserva un mínimo de **30 a 50 GB de espacio libre** en disco para:
-  - Instalación del IDE y plugins (~3 GB).
-  - Android SDK, Command-line Tools y Build-Tools (~10-15 GB).
-  - Imágenes del sistema para el emulador AVD (cada imagen de Android ocupa entre 3 y 6 GB).
-  - Caché local de Gradle y dependencias Maven (`~/.gradle/caches/`, que crece rápidamente).
+
+    - Instalación del IDE y plugins (~3 GB).
+    - Android SDK, Command-line Tools y Build-Tools (~10-15 GB).
+    - Imágenes del sistema para el emulador AVD (cada imagen de Android ocupa entre 3 y 6 GB).
+    - Caché local de Gradle y dependencias Maven (`~/.gradle/caches/`, que crece rápidamente).
 
 ---
 
@@ -178,16 +179,22 @@ Para que IntelliJ IDEA pueda compilar proyectos de Android y ejecutar comandos d
 ### 6.1. Descargar el SDK desde IntelliJ IDEA
 
 1. Abre IntelliJ IDEA y ve a `Settings` → `Languages & Frameworks` → **Android SDK**.
+
 2. En **Android SDK Location**, pulsa en *Edit* si no tienes ninguna ruta configurada.
+
 3. El IDE te sugerirá una ruta predeterminada:
-   - **Windows:** `C:\Users\<TuUsuario>\AppData\Local\Android\Sdk`
-   - **macOS:** `/Users/<TuUsuario>/Library/Android/sdk`
-   - **Linux:** `/home/<TuUsuario>/Android/Sdk`
+
+    - **Windows:** `C:\Users\<TuUsuario>\AppData\Local\Android\Sdk`
+    - **macOS:** `/Users/<TuUsuario>/Library/Android/sdk`
+    - **Linux:** `/home/<TuUsuario>/Android/Sdk`
+
 4. En la pestaña **SDK Platforms**, selecciona la última versión estable (por ejemplo, **Android 15 - API 35**).
+
 5. En la pestaña **SDK Tools**, asegúrate de marcar:
-   - *Android SDK Build-Tools*
-   - *Android Emulator*
-   - *Android SDK Platform-Tools* (contiene la utilidad `adb`)
+
+    - *Android SDK Build-Tools*
+    - *Android Emulator*
+    - *Android SDK Platform-Tools* (contiene la utilidad `adb`)
 
 ---
 
@@ -234,15 +241,22 @@ Configurar las variables de entorno permite que cualquier terminal o script (y h
 
 === "Windows (Variables de Entorno del Sistema)"
     1. Pulsa la tecla `Windows`, escribe **"variables de entorno"** y pulsa en *Editar las variables de entorno del sistema*.
+
     2. Pulsa en el botón **Variables de entorno...**.
+
     3. En **Variables de usuario** (o del sistema), pulsa en **Nueva...**:
-       - **Nombre de variable:** `ANDROID_HOME`
-       - **Valor de variable:** `C:\Users\<TuUsuario>\AppData\Local\Android\Sdk`
+
+        - **Nombre de variable:** `ANDROID_HOME`
+        - **Valor de variable:** `C:\Users\<TuUsuario>\AppData\Local\Android\Sdk`
+
     4. Localiza en la lista la variable **`Path`**, selecciónala y pulsa en **Editar...**.
+
     5. Pulsa en **Nuevo** y añade una a una estas tres rutas:
-       - `%ANDROID_HOME%\platform-tools`
-       - `%ANDROID_HOME%\emulator`
-       - `%ANDROID_HOME%\cmdline-tools\latest\bin`
+
+        - `%ANDROID_HOME%\platform-tools`
+        - `%ANDROID_HOME%\emulator`
+        - `%ANDROID_HOME%\cmdline-tools\latest\bin`
+
     6. Pulsa en **Aceptar** en todas las ventanas y reinicia cualquier terminal que tuvieras abierta.
 
 #### Verificación en Terminal:
@@ -261,13 +275,23 @@ Si la salida muestra `Android Debug Bridge version X.X.X`, la configuración se 
 
 Para asegurarte de que el proyecto compila:
 1. Abre tu proyecto en IntelliJ.
+
 2. Ve a `Settings` → `Build, Execution, Deployment` → `Build Tools` → **Gradle**.
+
 3. Revisa el desplegable **Gradle JVM**:
-   - Debe apuntar a un **JDK 17** o **JDK 21** (puedes seleccionar la opción de descargar automáticamente *Amazon Corretto 17*, *Eclipse Temurin 17* o usar el *JetBrains Runtime* embebido).
+
+    - Debe apuntar a un **JDK 17** o **JDK 21** (puedes seleccionar la opción de descargar automáticamente *Amazon Corretto 17*, *Eclipse Temurin 17* o usar el *JetBrains Runtime* embebido).
 
 !!! note "Guía Completa de Versiones y Compatibilidad"
     Para entender exactamente qué versión de Gradle, AGP, Java y compilador de Kotlin debes combinar en tus proyectos para evitar que el proyecto "crashee" al sincronizar, consulta nuestra guía dedicada:  
     👉 [**Matriz de Compatibilidad en Android: JDK, Gradle, AGP y Kotlin**](../00-tools/04-matriz-compatibilidad.md).
+
+!!! warning "¡No añadas librerías ni versiones desde los menús de IntelliJ!"
+    En 1º de DAM era habitual añadir librerías `.jar` o configurar la versión de Java desde `File ➔ Project Structure`. 
+    
+    **En Android esto provocará fallos constantes:** cada vez que pulses el botón del elefante (*Gradle Sync*), IntelliJ descartará cualquier cambio hecho en sus ventanas gráficas y lo sobreescribirá con lo que indiquen los archivos de Gradle.  
+    
+    👉 Consulta la regla de [**Gradle como Única Fuente de Verdad**](../00-tools/01-gradle-agp-estructura.md#13-configuro-en-intellij-o-en-gradle-la-unica-fuente-de-verdad).
 
 ---
 
@@ -284,21 +308,32 @@ graph LR
 
 ### 8.1. Creación de un Emulador Virtual (AVD - Android Virtual Device)
 1. En el panel lateral derecho o barra de herramientas superior, abre el icono de **Device Manager**.
+
 2. Pulsa en **Create Device** (`+`).
+
 3. Elige un modelo de hardware (por ejemplo, *Pixel 8* o *Pixel 7*).
+
 4. Selecciona la imagen del sistema operativo:
-   - Descarga una imagen con **Google Play** para disponer de servicios de autenticación y mapas.
-   - En equipos Intel/AMD, selecciona la pestaña **x86_64**.
-   - En equipos Apple Silicon (Mac M1-M4), selecciona la pestaña **arm64-v8a**.
+
+    - Descarga una imagen con **Google Play** para disponer de servicios de autenticación y mapas.
+    - En equipos Intel/AMD, selecciona la pestaña **x86_64**.
+    - En equipos Apple Silicon (Mac M1-M4), selecciona la pestaña **arm64-v8a**.
+
 5. Finaliza el asistente y pulsa el icono de **Play** (▶) para arrancar el dispositivo virtual.
 
 ### 8.2. Uso de un Teléfono Físico Real por USB
 Si tu ordenador tiene recursos de memoria limitados, utilizar tu propio móvil es la mejor alternativa:
+
 1. En tu smartphone, ve a `Ajustes` → `Acerca del teléfono` (o `Información de software`).
+
 2. Localiza el campo **Número de compilación** y pulsa **7 veces seguidas** sobre él. Aparecerá el mensaje: *"¡Ahora eres desarrollador!"*.
+
 3. Vuelve al menú principal de Ajustes y entra en la nueva sección **Opciones de desarrollador**.
+
 4. Activa la casilla **Depuración por USB**.
+
 5. Conecta el teléfono por cable al ordenador. En la pantalla del móvil aparecerá un aviso: *"¿Permitir depuración por USB desde este equipo?"*; marca la casilla *Permitir siempre* y pulsa **Aceptar**.
+
 6. En IntelliJ IDEA, verás cómo tu modelo de teléfono aparece automáticamente en el selector de dispositivos de la barra superior.
 
 ---
