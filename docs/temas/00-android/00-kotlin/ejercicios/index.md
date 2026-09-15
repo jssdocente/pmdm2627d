@@ -69,36 +69,45 @@ Haz clic en el icono del elefante de Gradle con la flecha azul (o pulsa `Ctrl + 
 
 ---
 
-## 🚦 Niveles de Dificultad y Metodología
+## 🚦 Niveles de Dificultad y Metodología de Andamiaje Cognitivo
 
 Cada módulo temático contiene una amplia batería graduada de actividades para adaptarse al ritmo de cada estudiante:
 
 - 🟢 **Nivel Básico (Consolidación):** Ejercicios guiados para mecanizar la sintaxis idiomática de Kotlin, el tipado y notar la diferencia respecto a Java.
 - 🟡 **Nivel Intermedio (Aplicación):** Problemas de lógica que requieren aplicar inmutabilidad, control de nulos, funciones de orden superior o transformaciones funcionales sin código repetitivo.
-- 🔴 **Nivel Avanzado (Ampliación y Reto Lúdico):** Pequeños programas completos y casos reales pensados para afianzar conceptos clave de Compose y arquitectura.
+- 🔴 **Nivel Avanzado (Reto Lúdico Incremental):** Cada bloque culmina con un **juego interactivo** que ensambla todas las piezas vistas hasta ese momento. Cada reto incluye:
+    - 📊 **Diagrama Mermaid** (flujo de control o arquitectura de datos) para enseñar al alumno a modelar el problema antes de escribir código.
+    - 🧠 **Preguntas de reflexión previa** para desarrollar pensamiento crítico y algorítmico.
+    - 💡 **Pistas progresivas desplegables** que guían la resolución paso a paso sin desvelar la solución de golpe.
 
 !!! tip "Cómo ejecutar cada ejercicio de forma independiente"
     Cada archivo `.kt` incluye su propia función `fun main()`. En IntelliJ IDEA, verás un **icono verde de reproducción (▶)** en el margen izquierdo junto a `fun main()`. Puedes ejecutar cualquier ejercicio individualmente sin interferir con los demás.
 
 ---
 
-## 📚 Itinerario de Módulos Prácticos
+## 📚 Itinerario de Módulos Prácticos y Retos Incrementales
 
 1. **[Bloque 1: Fundamentos, Inmutabilidad y Control de Flujo](./01-fundamentos-inmutabilidad.md)**  
-   *Paquete:* `b01_fundamentos`
+   *Paquete:* `b01_fundamentos`  
+   🎮 **Reto Lúdico:** *Combate RPG por Turnos: Héroe vs Dragón Carmesí* (Diagrama de Estados)
 
 2. **[Bloque 2: Funciones, Lambdas y Null Safety](./02-funciones-lambdas-nullsafety.md)**  
-   *Paquete:* `b02_funciones_lambdas`
+   *Paquete:* `b02_funciones_lambdas`  
+   🎮 **Reto Lúdico:** *El Juego del Ahorcado Funcional (Hangman)* (Diagrama de Flujo Puro)
 
 3. **[Bloque 3: POO, Data Classes y Tipos Sellados (UiState)](./03-poo-sealed-types.md)**  
-   *Paquete:* `b03_poo_sealed`
+   *Paquete:* `b03_poo_sealed`  
+   🎮 **Reto Lúdico:** *El Motor de Wordle en Consola* (Diagrama de Clases y Dominio)
 
 4. **[Bloque 4: Colecciones Funcionales y Scope Functions](./04-colecciones-scope-functions.md)**  
-   *Paquete:* `b04_colecciones`
+   *Paquete:* `b04_colecciones`  
+   🎮 **Reto Lúdico:** *Deck Builder RPG: Saqueo y Forja de Cartas* (Diagrama de Pipeline Funcional)
 
 5. **[Bloque 5: Programación Asíncrona con Corrutinas y Flows](./05-concurrencia-corrutinas.md)**  
-   *Paquete:* `b05_corrutinas`
+   *Paquete:* `b05_corrutinas`  
+   🎮 **Reto Lúdico:** *Carrera Espacial Galáctica en Tiempo Real* (Diagrama de Concurrencia y StateFlow)
 
 6. **[Bloque 6: Proyecto Integrador Final ("El Juego del Calamar")](./06-proyecto-integrador.md)**  
-   *Paquete:* `b06_proyecto_integrador`
+   *Paquete:* `b06_proyecto_integrador`  
+   🦑 **Reto Acumulativo:** *Simulador "Luz Roja, Luz Verde" - 50m* (Clean Architecture + Flow Engine)
 

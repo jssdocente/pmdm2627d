@@ -768,9 +768,48 @@ Login erróneo -> Error 401: Credenciales inválidas
 
 Construirás el motor de validación de intentos para el juego de palabras **Wordle** aplicando `enum class`, `data class`, extensiones y colecciones inmutables.
 
-#### 2. Requisitos Funcionales
+El reto te enseñará a estructurar modelos de datos desacoplados de la interfaz gráfica, tal y como se diseñan los estados de pantalla (**UiState**) en aplicaciones Android reales con Jetpack Compose.
 
-1. Modela el estado de cada letra con un `enum class EstadoLetra`:
+#### 2. Modelo Mental del Reto (Diagrama de Clases y Dominio)
+
+Analiza las relaciones entre el estado del juego, las evaluaciones de celda y los tipos enumerados:
+
+```mermaid
+classDiagram
+    class EstadoLetra {
+        <<enum>>
+        VERDE : "🟩"
+        AMARILLO : "🟨"
+        GRIS : "⬛"
+        +String icono
+    }
+
+    class EvaluacionLetra {
+        <<data class>>
+        +Char caracter
+        +EstadoLetra estado
+    }
+
+    class PartidaWordle {
+        <<data class>>
+        +String palabraSecreta
+        +Int intentosMaximos
+        +List~List~EvaluacionLetra~~ intentosRealizados
+    }
+
+    PartidaWordle *-- EvaluacionLetra : contiene matriz de intentos
+    EvaluacionLetra --> EstadoLetra : calificada con
+```
+
+#### 3. Preguntas de Reflexión (Aprender a Pensar)
+
+- **¿Por qué asociar el icono visual (`"🟩"`) directamente al `enum class`?** De esta forma, el `enum` encapsula tanto el significado lógico como su representación gráfica, evitando largos `when` o `if-else` en la capa de presentación.
+- **¿Por qué `data class EvaluacionLetra`?** En Compose, cada celda de la cuadrícula es un componente independiente. Tener un objeto inmutable con el carácter y su estado facilita renderizar una fila mediante un simple `Row { ... }`.
+- **¿Cómo comparar las letras eficientemente?** Utilizando `intento.mapIndexed { index, char -> ... }`. La posición `index` permite comprobar si coincide exactamente con `palabraSecreta[index]` (Verde), y el operador `in palabraSecreta` comprueba si la letra existe en otra posición (Amarillo).
+
+#### 4. Requisitos Funcionales
+
+1. Modela el estado de cada letra con un `enum class EstadoLetra(val icono: String)`:
 
     - `VERDE("🟩")`: Letra correcta en la posición correcta.
 
@@ -780,11 +819,39 @@ Construirás el motor de validación de intentos para el juego de palabras **Wor
 
 2. Modela una celda con `data class EvaluacionLetra(val caracter: Char, val estado: EstadoLetra)`.
 
-3. Modela el estado de la partida con `data class PartidaWordle(val palabraSecreta: String, val intentosMaximos: Int = 6, val intentosRealizados: List<List<EvaluacionLetra>> = emptyList())`.
+3. Modela el estado de la partida con:
+   `data class PartidaWordle(val palabraSecreta: String, val intentosMaximos: Int = 6, val intentosRealizados: List<List<EvaluacionLetra>> = emptyList())`.
 
 4. Implementa la función `evaluarIntento(palabraSecreta: String, intento: String): List<EvaluacionLetra>` que compare letra a letra y devuelva la lista de evaluaciones correspondiente.
 
-#### 3. Salida de Ejemplo en Consola
+#### 5. Pistas Progresivas de Ayuda
+
+??? tip "💡 Pista 1: Validación previa con `require`"
+    Asegúrate de que la palabra enviada tenga la misma longitud que la palabra secreta para evitar errores `IndexOutOfBoundsException`:
+    ```kotlin
+    require(secreta.length == intento.length) { "La longitud debe coincidir exactamente." }
+    ```
+
+??? tip "💡 Pista 2: Mapeo posicional con `mapIndexed`"
+    Kotlin ofrece `mapIndexed` para iterar conociendo el índice y el valor a la vez:
+    ```kotlin
+    return intento.mapIndexed { i, c ->
+        val estado = when {
+            c == secreta[i] -> EstadoLetra.VERDE
+            c in secreta -> EstadoLetra.AMARILLO
+            else -> EstadoLetra.GRIS
+        }
+        EvaluacionLetra(c, estado)
+    }
+    ```
+
+??? tip "💡 Pista 3: Detección de Victoria con `.all`"
+    Para saber si el turno actual es ganador, comprueba si todas las celdas evaluadas están en verde:
+    ```kotlin
+    val victoria = evaluacion.all { it.estado == EstadoLetra.VERDE }
+    ```
+
+#### 6. Salida de Ejemplo en Consola
 
 ```text
 === WORDLE KOTLIN CLI ===
@@ -801,8 +868,8 @@ Intento 3: C O M P O S E
 ¡ENHORABUENA! 🎉 Has resuelto el Wordle en 3 intentos.
 ```
 
-#### 4. Solución Comentada
-??? tip "Ver solución comentada"
+#### 7. Solución Comentada
+??? tip "Ver solución comentada paso a paso"
     ```kotlin
     package b03_poo_sealed
 

@@ -674,3 +674,191 @@ Dada una lista con al menos 8 registros de sesiones de diferentes usuarios y jue
         }
     }
     ```
+
+---
+
+### Reto 4.13: Deck Builder RPG (*Simulador de Saqueo y Forja de Mazo*)
+📄 **Archivo:** `Reto04_DeckBuilder.kt`
+
+#### 1. Contexto y Objetivos
+
+Vas a programar el motor de gestión de cartas para un juego de construcción de mazos (*Deck Builder RPG*). El reto consiste en procesar el botín obtenido al derrotar a varios jefes de mazmorra, transformando, limpiando, agrupando y seleccionando las mejores cartas **mediante pipelines 100% funcionales (sin un solo bucle `for` tradicional)**.
+
+#### 2. Modelo Mental del Reto (Pipeline Funcional de Transformación)
+
+Visualiza el flujo continuo de datos por el que viajan las cartas desde los cofres hasta el mazo definitivo:
+
+```mermaid
+flowchart TD
+    Cofres["3 Cofres de Botín<br/><i>(List&lt;List&lt;Carta&gt;&gt;)</i>"] --> FlatMap["<b>flatMap</b><br/>Aplanar a lista única"]
+    FlatMap --> Distinct["<b>distinctBy { it.id }</b><br/>Eliminar duplicados"]
+    Distinct --> Filter["<b>filter { it.poder &gt; 0 }</b><br/>Descartar cartas malditas o rotas"]
+    Filter --> Partition["<b>partition { it.esAtaque }</b><br/>Dividir en Ofensivas y Defensivas"]
+    
+    Partition --> Ofensivas["Cartas de Ataque"]
+    Partition --> Defensivas["Cartas de Escudo/Curación"]
+    
+    Ofensivas --> GroupBy["<b>groupBy { it.elemento }</b><br/>Calcular sinergias elementales"]
+    GroupBy --> MazoFinal["<b>take(3) Ofensivas + take(2) Defensivas</b><br/>Mazo Activo (5 Cartas)"]
+    MazoFinal --> ApplyAlso["<b>apply + also</b><br/>Configurar Mazo e imprimir Log"]
+```
+
+#### 3. Preguntas de Reflexión (Aprender a Pensar)
+
+- **¿Por qué `flatMap` y no `map`?** Si usas `map`, obtendrás una `List<List<Carta>>`. `flatMap` extrae los elementos internos concatenándolos en una única secuencia plana `List<Carta>`.
+- **¿Por qué `distinctBy`?** Dos cartas pueden tener el mismo identificador si cayeron en cofres distintos. `distinctBy { it.id }` asegura unicidad sin tener que implementar `.equals()` y `.hashCode()` manualmente.
+- **¿Cómo reemplazar un bucle acumulador de daño?** La función `.sumOf { it.poder }` suma valores numéricos de una colección de forma idiomática y sin variables acumuladoras mutables.
+
+#### 4. Requisitos Funcionales
+
+1. Modela una carta:
+   `data class Carta(val id: String, val nombre: String, val elemento: String, val poder: Int, val esAtaque: Boolean)`
+
+2. Recibe 3 cofres (listas de cartas) con al menos 9 cartas en total, incluyendo duplicados por ID y al menos una carta maldita con `poder <= 0`.
+
+3. Aplica un pipeline funcional que:
+
+    - Aplane los 3 cofres en una única lista mediante **`flatMap`**.
+
+    - Elimine duplicados con **`distinctBy { it.id }`**.
+
+    - Descarte cartas con `poder <= 0` mediante **`filter`**.
+
+    - Divida las cartas en dos grupos (**Ofensivas** y **Defensivas**) mediante **`partition`**.
+
+    - Agrupe las cartas ofensivas por su `elemento` (**`groupBy`**) y calcule la suma total de daño por cada elemento (`sumOf`).
+
+4. Selecciona las 3 mejores cartas ofensivas y las 2 mejores defensivas (ordenadas por poder descendente) y combínalas en el **Mazo de Combate (5 cartas)**.
+
+5. Empaqueta el mazo en una clase `MazoCombate` configurada mediante **`apply`** y muestra una traza de auditoría con **`also`**.
+
+#### 5. Pistas Progresivas de Ayuda
+
+??? tip "💡 Pista 1: Aplanar colecciones anidadas con `flatMap`"
+    Si tienes `val cofres = listOf(cofre1, cofre2, cofre3)`, puedes aplanarlos directamente:
+    ```kotlin
+    val todasLasCartas = cofres.flatMap { it }
+    ```
+
+??? tip "💡 Pista 2: Agrupación y Sumas con `sumOf`"
+    Para calcular el poder total por cada elemento a partir de un mapa agrupado:
+    ```kotlin
+    val sinergias = ofensivas.groupBy { it.elemento }.mapValues { (_, cartas) ->
+        cartas.sumOf { it.poder }
+    }
+    ```
+
+??? tip "💡 Pista 3: Construcción del Mazo con `apply` y `also`"
+    Combina las listas filtradas y envuélvelas:
+    ```kotlin
+    val mazoDefinitivo = (topOfensivas + topDefensivas).also {
+        println("[LOG AUDITORÍA]: Mazo de 5 cartas sellado para la batalla.")
+    }
+    ```
+
+#### 6. Salida Esperada en Consola
+
+```text
+=== SIMULADOR DE SAQUEO: DECK BUILDER RPG ===
+Botín inicial recogido en 3 cofres: 9 cartas.
+Tras eliminar duplicados y cartas malditas: 7 cartas válidas.
+
+--- ANÁLISIS DE SINERGIAS ELEMENTALES (ATAQUE) ---
+Elemento Fuego: 155 pts de daño total (2 cartas)
+Elemento Hielo: 65 pts de daño total (1 cartas)
+Elemento Rayo: 80 pts de daño total (1 cartas)
+
+[LOG AUDITORÍA]: Mazo de 5 cartas sellado y validado con éxito.
+
+--- MAZO FINAL DE COMBATE (TOP 5) ---
+1. [ATAQUE - Fuego] Meteoro Ígneo (Poder: 90)
+2. [ATAQUE - Rayo] Rayo Fulminante (Poder: 80)
+3. [ATAQUE - Fuego] Bola de Fuego (Poder: 65)
+4. [DEFENSA - Hielo] Muro de Hielo (Poder: 70)
+5. [DEFENSA - Luz] Escudo Divino (Poder: 50)
+Poder total del mazo: 355 pts
+```
+
+#### 7. Solución Comentada
+??? tip "Ver solución comentada paso a paso"
+    ```kotlin
+    package b04_colecciones
+
+    data class Carta(
+        val id: String,
+        val nombre: String,
+        val elemento: String,
+        val poder: Int,
+        val esAtaque: Boolean
+    )
+
+    class MazoCombate {
+        var cartas: List<Carta> = emptyList()
+        val poderTotal: Int
+            get() = cartas.sumOf { it.poder }
+    }
+
+    fun main() {
+        println("=== SIMULADOR DE SAQUEO: DECK BUILDER RPG ===")
+
+        // 3 cofres de botín
+        val cofre1 = listOf(
+            Carta("C-01", "Bola de Fuego", "Fuego", 65, true),
+            Carta("C-02", "Muro de Hielo", "Hielo", 70, false),
+            Carta("C-03", "Maldición Oscura", "Sombra", -20, true) // Maldita
+        )
+
+        val cofre2 = listOf(
+            Carta("C-01", "Bola de Fuego", "Fuego", 65, true), // Duplicada
+            Carta("C-04", "Rayo Fulminante", "Rayo", 80, true),
+            Carta("C-05", "Meteoro Ígneo", "Fuego", 90, true)
+        )
+
+        val cofre3 = listOf(
+            Carta("C-06", "Escudo Divino", "Luz", 50, false),
+            Carta("C-07", "Ventisca Glacial", "Hielo", 65, true),
+            Carta("C-08", "Poción Rota", "Neutro", 0, false) // Rota
+        )
+
+        val todosLosCofres = listOf(cofre1, cofre2, cofre3)
+        println("Botín inicial recogido en 3 cofres: ${todosLosCofres.sumOf { it.size }} cartas.")
+
+        // PIPELINE FUNCIONAL:
+        val cartasValidas = todosLosCofres
+            .flatMap { it }
+            .distinctBy { it.id }
+            .filter { it.poder > 0 }
+
+        println("Tras eliminar duplicados y cartas malditas: ${cartasValidas.size} cartas válidas.\n")
+
+        // Dividimos en ataque y defensa en una pasada
+        val (ofensivas, defensivas) = cartasValidas.partition { it.esAtaque }
+
+        // Sinergias por elemento
+        println("--- ANÁLISIS DE SINERGIAS ELEMENTALES (ATAQUE) ---")
+        val porElemento = ofensivas.groupBy { it.elemento }
+        porElemento.forEach { (elem, lista) ->
+            val totalPoder = lista.sumOf { it.poder }
+            println("Elemento $elem: $totalPoder pts de daño total (${lista.size} cartas)")
+        }
+
+        // Selección del Top 3 de ataque y Top 2 de defensa
+        val topAtaque = ofensivas.sortedByDescending { it.poder }.take(3)
+        val topDefensa = defensivas.sortedByDescending { it.poder }.take(2)
+
+        // Ensamblado del mazo con Scope Functions: apply y also
+        val mazo = MazoCombate().apply {
+            cartas = topAtaque + topDefensa
+        }.also {
+            println("\n[LOG AUDITORÍA]: Mazo de ${it.cartas.size} cartas sellado y validado con éxito.")
+        }
+
+        println("\n--- MAZO FINAL DE COMBATE (TOP 5) ---")
+        mazo.cartas.forEachIndexed { i, c ->
+            val rol = if (c.esAtaque) "ATAQUE" else "DEFENSA"
+            println("${i + 1}. [$rol - ${c.elemento}] ${c.nombre} (Poder: ${c.poder})")
+        }
+        println("Poder total del mazo: ${mazo.poderTotal} pts")
+    }
+    ```
+

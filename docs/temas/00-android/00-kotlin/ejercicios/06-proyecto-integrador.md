@@ -45,6 +45,39 @@ Ubicación en tu proyecto: `src/main/kotlin/b06_proyecto_integrador/`
 
 ---
 
+## 🧠 Modelo Mental de la Simulación (Diagrama Reactivo)
+
+Antes de programar cada archivo, observa cómo interactúan la Muñeca Robot (productor reactivo de `Flow`), los jugadores concurrentes y el estado global de la partida:
+
+```mermaid
+flowchart TD
+    subgraph EmisorFlow ["MunecaSensorFlow (Emisor Reactivo)"]
+        Verde["🟢 LUZ VERDE<br/>(Canta 1.0 - 2.5s)"]
+        Roja["🔴 LUZ ROJA<br/>(Escaneo Sensores 1.0s)"]
+        Verde -->|delay no bloqueante| Roja
+        Roja -->|delay no bloqueante| Verde
+    end
+
+    subgraph Orquestador ["SimuladorJuegoCalamar (Motor Central)"]
+        FlowCollect["<b>MunecaSensorFlow.collect { luz -&gt; ... }</b>"]
+        GestionJugadores["<b>Luz Verde:</b> Avanzan 5-15m<br/><b>Luz Roja:</b> Escaneo sensor (Elimina infractores)"]
+        ActualizarUiState["<b>_estado.update { PartidaUiState.EnCurso(...) }</b>"]
+    end
+
+    subgraph Presentacion ["Renderizado en Consola (Capa UI)"]
+        Marcador["Renderizar pistas de 50m con barras ASCII<br/><i>(j.posicionMetros / 2)</i>"]
+        FinPartida["Evaluar: ¿Todos eliminados o en meta?<br/><i>-&gt; PartidaUiState.Finalizada</i>"]
+    end
+
+    EmisorFlow -->|Emite EstadoLuz| FlowCollect
+    FlowCollect --> GestionJugadores
+    GestionJugadores --> ActualizarUiState
+    ActualizarUiState --> Marcador
+    Marcador --> FinPartida
+```
+
+---
+
 ## 🏗️ Arquitectura Modular Propuesta
 
 ```text

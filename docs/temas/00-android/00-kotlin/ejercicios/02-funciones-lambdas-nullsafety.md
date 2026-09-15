@@ -217,25 +217,31 @@ Edad para juego pegi 18: No cumple el requisito de edad
 
 ---
 
-### Ejercicio 2.6: Funciones de Orden Superior Propias
+### Ejercicio 2.6: Funciones de Orden Superior Propias y Callbacks
 📄 **Archivo:** `E06_FuncionOrdenSuperiorPropia.kt`
 
 #### 1. Enunciado y Requisitos
 
-1. Crea tu propia función de orden superior `filtrarTitulos(titulos: List<String>, criterio: (String) -> Boolean): List<String>`.
+Una función de orden superior es aquella que recibe otra función como parámetro o devuelve una función. Este patrón es la base de las operaciones en Android (como reintentar peticiones a un servidor o responder a eventos de interfaz).
 
-2. La función debe recorrer la lista y devolver una nueva lista solo con aquellos elementos que hagan que la lambda `criterio` devuelva `true`.
+1. Crea una función `ejecutarConReintentos(maxIntentos: Int, operacion: (intentoActual: Int) -> Boolean): Boolean`.
 
-3. Invócala para filtrar títulos que comiencen por la letra `'Z'`.
+2. La función debe ejecutar en un bucle la lambda `operacion` pasándole el número de intento actual (`1..maxIntentos`).
 
-4. Invócala para filtrar títulos con más de 10 caracteres.
+3. Si la lambda devuelve `true`, imprime un mensaje de éxito y devuelve `true` inmediatamente.
+
+4. Si agota todos los intentos sin éxito, imprime un mensaje de error y devuelve `false`.
+
+5. En `main()`, simula una conexión de red que falla en los intentos 1 y 2 pero tiene éxito en el intento 3.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Catálogo completo: [Zelda, Metroid, Xenoblade, Zork, Celeste]
-Empiezan por 'Z': [Zelda, Zork]
-Más de 7 letras: [Xenoblade, Celeste]
+Iniciando operación con máximo 3 intentos...
+[Intento 1/3]: Fallo de conexión de red. Reintentando...
+[Intento 2/3]: Fallo de conexión de red. Reintentando...
+[Intento 3/3]: ¡Conexión establecida con éxito!
+Resultado final: Operación completada con éxito.
 ```
 
 #### 3. Solución Comentada
@@ -243,25 +249,38 @@ Más de 7 letras: [Xenoblade, Celeste]
     ```kotlin
     package b02_funciones_lambdas
 
-    fun filtrarTitulos(titulos: List<String>, criterio: (String) -> Boolean): List<String> {
-        val resultado = mutableListOf<String>()
-        for (t in titulos) {
-            if (criterio(t)) {
-                resultado.add(t)
+    fun ejecutarConReintentos(
+        maxIntentos: Int,
+        operacion: (intentoActual: Int) -> Boolean
+    ): Boolean {
+        for (intento in 1..maxIntentos) {
+            val exito = operacion(intento)
+            if (exito) {
+                return true
             }
         }
-        return resultado.toList()
+        println("[ERROR]: Se han agotado los $maxIntentos intentos permitidos.")
+        return false
     }
 
     fun main() {
-        val juegos = listOf("Zelda", "Metroid", "Xenoblade", "Zork", "Celeste")
-        println("Catálogo completo: $juegos")
+        println("Iniciando operación con máximo 3 intentos...")
 
-        val conZ = filtrarTitulos(juegos) { it.startsWith("Z") }
-        println("Empiezan por 'Z': $conZ")
+        val resultado = ejecutarConReintentos(maxIntentos = 3) { intento ->
+            if (intento < 3) {
+                println("[Intento $intento/3]: Fallo de conexión de red. Reintentando...")
+                false
+            } else {
+                println("[Intento $intento/3]: ¡Conexión establecida con éxito!")
+                true
+            }
+        }
 
-        val largos = filtrarTitulos(juegos) { it.length > 7 }
-        println("Más de 7 letras: $largos")
+        if (resultado) {
+            println("Resultado final: Operación completada con éxito.")
+        } else {
+            println("Resultado final: No se pudo conectar al servidor.")
+        }
     }
     ```
 
@@ -274,17 +293,24 @@ Más de 7 letras: [Xenoblade, Celeste]
 
 #### 1. Enunciado y Requisitos
 
-1. Crea una lista inmutable de nombres de monstruos: `listOf("Goblin", "Orco", "Dragón", "Esqueleto", "Slime")`.
+Cuando una expresión lambda tiene **exactamente un parámetro**, Kotlin permite omitir su declaración explícita y su flecha `->`. El compilador genera automáticamente una variable implícita llamada **`it`**.
 
-2. Utiliza la función de extensión `.filter` empleando la variable implícita `it` para conservar los que tengan más de 5 caracteres.
+1. Declara una función `transformarTexto(entrada: String, transformador: (String) -> String): String`.
 
-3. Encadena un `.map` usando `it` para convertir los nombres a mayúsculas.
+2. La función debe devolver el resultado de aplicar la lambda `transformador` sobre la cadena `entrada`.
+
+3. En `main()`, invoca a `transformarTexto` dos veces utilizando la sintaxis concisa de `it`:
+
+    - Una para convertir el texto a mayúsculas: `{ it.uppercase() }`.
+
+    - Otra para rodear el texto con corchetes de diseño: `{ "[[ $it ]]" }`.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Monstruos originales: [Goblin, Orco, Dragón, Esqueleto, Slime]
-Monstruos épicos: [GOBLIN, DRAGÓN, ESQUELETO]
+Texto original: 'gamevault'
+Transformación a mayúsculas: 'GAMEVAULT'
+Transformación con marco: '[[ gamevault ]]'
 ```
 
 #### 3. Solución Comentada
@@ -292,15 +318,20 @@ Monstruos épicos: [GOBLIN, DRAGÓN, ESQUELETO]
     ```kotlin
     package b02_funciones_lambdas
 
+    fun transformarTexto(entrada: String, transformador: (String) -> String): String {
+        return transformador(entrada)
+    }
+
     fun main() {
-        val monstruos = listOf("Goblin", "Orco", "Dragón", "Esqueleto", "Slime")
+        val original = "gamevault"
+        println("Texto original: '$original'")
 
-        val epicos = monstruos
-            .filter { it.length > 5 }
-            .map { it.uppercase() }
+        // 'it' hace referencia al único parámetro que recibe la lambda:
+        val mayusculas = transformarTexto(original) { it.uppercase() }
+        val enmarcado = transformarTexto(original) { "[[ $it ]]" }
 
-        println("Monstruos originales: $monstruos")
-        println("Monstruos épicos: $epicos")
+        println("Transformación a mayúsculas: '$mayusculas'")
+        println("Transformación con marco: '$enmarcado'")
     }
     ```
 
@@ -579,136 +610,281 @@ Precio del pase de batalla: 19.99 €
 
 ## 🔴 Nivel Avanzado (Reto Lúdico)
 
-### Reto 2.14: El Juego del Ahorcado Funcional (*Hangman*)
+### Reto 2.14: El Juego del Ahorcado Funcional (*Hangman con Callbacks y Null Safety*)
 📄 **Archivo:** `Reto02_AhorcadoJuego.kt`
 
-#### 1. Contexto y Objetivos
+#### 1. Contexto y Misión
 
-Construirás la lógica central del clásico juego del Ahorcado aplicando **inmutabilidad de estados**, conjuntos (`Set`), funciones de extensión y tipos sellados (`sealed interface`).
+En este reto construirás la lógica central del clásico juego de palabras **El Ahorcado**, aplicando el paradigma funcional de Kotlin y los mecanismos de **Null Safety** aprendidos en el Bloque 2.
+
+La meta formativa es trasladar la arquitectura de eventos y estado de **Jetpack Compose** a un ejercicio puro de consola:
+
+- Funciones de extensión para enriquecer tipos existentes (`String`).
+- Funciones de orden superior que delegan el resultado de eventos a través de lambdas (*callbacks*).
+- Operadores de seguridad ante nulos (`?.`, operador Elvis `?:`, retorno anticipado seguro).
+- Tipos básicos inmutables (`String`, `Char`, `Int`, `Boolean`), **sin utilizar colecciones (`Set`/`List`) ni clases personalizadas**.
+
+##### 🎮 La Dinámica del Juego Explicada
+
+El jugador debe descubrir una palabra secreta oculta adivinando sus letras una a una antes de agotar sus **6 vidas disponibles**.
+
+###### A. Componentes y Recursos de la Partida
+
+| Elemento | Tipo de Dato | Función en el Juego |
+| :--- | :--- | :--- |
+| **Palabra Secreta** | `val palabraSecreta: String` | La palabra oculta a resolver (ej. `"KOTLIN"`). |
+| **Letras Probadas** | `var letrasProbadas: String` | Cadena inmutable acumuladora con todas las letras intentadas. |
+| **Marcador de Vidas** | `var vidasRestantes: Int` | Inicia en `6`. Cada fallo resta `1`. Si llega a `0`, se pierde. |
+| **Máscara de Visualización** | Obtenida con `.enmascarar()` | Muestra las letras acertadas y guiones bajos `_` en las ocultas. |
+
+###### B. Ciclo de Vida de Cada Intento (Paso a Paso)
+
+En cada ronda, el jugador propone una letra (`letraInput: Char?`). Dado que la entrada puede proceder de un teclado, formulario o sensor, este carácter es potencialmente nulo. La función de orden superior `procesarIntento(...)` analiza la jugada y ejecuta la respuesta adecuada mediante callbacks:
+
+1. **Fase 1 — Validación con Null Safety (Cláusula de Guarda):**  
+   Si `letraInput` es nulo (`null`), se invoca de inmediato el callback **`alErrorInput()`** y la ejecución finaliza con un `return`. El turno no penaliza al jugador con pérdida de vidas.
+
+2. **Fase 2 — Normalización y Comprobación de Repetición:**  
+   La letra se normaliza a mayúsculas (`uppercaseChar()`). Si la letra ya existe dentro de `letrasProbadas` (`letra in letrasProbadas`), se invoca el callback **`alRepetir(letra)`** informando al jugador, sin modificar las vidas ni las letras probadas.
+
+3. **Fase 3 — Resolución del Intento (Acierto o Fallo):**  
+   Si la letra es nueva, se concatena a la cadena de intentos (`nuevasProbadas = letrasProbadas + letra`):
+
+    - **Acierto:** Si la letra está en la palabra secreta (`letra in palabraSecreta`), se invoca el callback **`alAcertar(letra, nuevasProbadas)`**. Las vidas se mantienen intactas.
+
+    - **Fallo:** Si la letra no pertenece a la palabra secreta, se decrementa el contador de vidas (`vidasRestantes - 1`) y se invoca el callback **`alFallar(letra, nuevasProbadas, vidasRestantes)`**.
+
+4. **Fase 4 — Comprobación de Fin de Partida:**  
+   Tras cada intento, se evalúa si la partida ha alcanzado una condición terminal:
+
+    - **🏆 Victoria:** Si la función de extensión `.estaAdivinada(letrasProbadas)` devuelve `true`, significa que todas las letras de la palabra secreta están descubiertas.
+
+    - **💀 Derrota:** Si `vidasRestantes <= 0`, el ahorcado se completa y la partida termina en derrota.
+
+---
 
 #### 2. Requisitos Funcionales
 
-1. Modela el estado de la partida con una clase inmutable:
+Para completar el reto de forma rigurosa respetando el nivel pedagógico del Bloque 2:
 
-    ```kotlin
-    data class PartidaAhorcado(
-        val palabraSecreta: String,
-        val letrasProbadas: Set<Char> = emptySet(),
-        val vidasRestantes: Int = 6
-    )
+1. **RF-01 (Prohibición de Clases y Colecciones Avanzadas):** Queda terminantemente prohibido el uso de `class`, `data class`, `List`, `Set` o `Map`. El estado debe gestionarse exclusivamente con cadenas inmutables (`String`) y tipos primitivos.
+
+2. **RF-02 (Función de Extensión de Enmascaramiento):** Implementa `fun String.enmascarar(probadas: String): String` que devuelva la palabra formateada con las letras acertadas visibles y las no probadas sustituidas por un guion bajo `'_'`, separadas por espacios (ej. `"_ O _ _ _ _"`).
+
+3. **RF-03 (Función de Extensión de Verificación de Victoria):** Implementa `fun String.estaAdivinada(probadas: String): Boolean` que determine si la totalidad de los caracteres de la palabra están presentes en `probadas`.
+
+4. **RF-04 (Función de Orden Superior con 4 Callbacks Tipados):** Define `fun procesarIntento(...)` recibiendo los parámetros de estado y 4 funciones lambda para los eventos:
+
+    - `alAcertar: (letra: Char, nuevasProbadas: String) -> Unit`
+
+    - `alFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit`
+
+    - `alRepetir: (letra: Char) -> Unit`
+
+    - `alErrorInput: () -> Unit`
+
+5. **RF-05 (Manejo Estricto de Null Safety):** Extrae el carácter seguro utilizando llamada segura y operador Elvis (`letraInput?.uppercaseChar() ?: run { ...; return }`).
+
+6. **RF-06 (Simulación Completa de Partida en `main()`):** Ejecuta una partida simulada que cubra obligatoriamente los cuatro posibles caminos de ejecución: un acierto, un fallo, una letra repetida, una entrada nula (`null`) y una secuencia final que culmine en victoria.
+
+---
+
+??? info "📊 Ver Modelo Mental del Reto (Diagrama de Flujo con Lambdas)"
+    ```mermaid
+    flowchart TD
+        Entrada(["letraInput: Char?"]) --> NullCheck{"¿letraInput != null?<br/>(letraInput?.uppercaseChar())"}
+        
+        NullCheck -- "Es null" --> CallbackError["Invocar lambda: alErrorInput()"]
+        NullCheck -- "Válido" --> YaProbada{"¿letra in letrasProbadas?"}
+        
+        YaProbada -- "Sí" --> CallbackRepetir["Invocar lambda: alRepetir(letra)"]
+        YaProbada -- "No" --> Acierto{"¿letra in palabraSecreta?"}
+        
+        Acierto -- "Sí" --> CallbackAcierto["Invocar lambda: alAcertar(letra, probadas + letra)"]
+        Acierto -- "No" --> CallbackFallo["Invocar lambda: alFallar(letra, probadas + letra, vidas - 1)"]
     ```
 
-2. Crea una función de extensión `String.ocultar(probadas: Set<Char>): String` que sustituya por un guion bajo `'_'` cualquier letra que aún no haya sido adivinada, separando los caracteres con espacios.
+??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
+    Antes de examinar la solución o las pistas, reflexiona sobre estos principios de diseño funcional:
 
-3. Define un `sealed interface IntentoResultado`:
+    - **¿Cómo acumulamos letras sin utilizar un `Set<Char>`?**  
+      En Kotlin, un `String` es una secuencia inmutable de caracteres. Puedes acumular letras en una variable `var letrasProbadas = ""` y concatenar nuevas letras con `letrasProbadas += letra`. El operador `in` comprueba pertenencia de un `Char` en un `String` de forma instantánea.
 
-    - `data class LetraAcertada(val nuevaPartida: PartidaAhorcado) : IntentoResultado`
+    - **¿Por qué emplear callbacks en lugar de retornar códigos de estado enteros (ej. 0 = OK, 1 = Error)?**  
+      En interfaces reactivas modernas como Jetpack Compose o Flutter, los componentes no consultan códigos de retorno, sino que emiten eventos hacia arriba (*event bubbling*) mediante lambdas (`onClick`, `onValueChange`). Este patrón desacopla la lógica del juego de la presentación.
 
-    - `data class LetraFallada(val nuevaPartida: PartidaAhorcado) : IntentoResultado`
+    - **¿Por qué la cláusula de guarda con Elvis utiliza `?: run { ... return }`?**  
+      Permite ejecutar un bloque de código secundario (el callback de error) y forzar la salida inmediata de la función sin anidar bloques `if-else` profundos, manteniendo el código plano y legible.
 
-    - `data object YaProbada : IntentoResultado`
+??? tip "💡 Pistas Progresivas de Ayuda (Abrir solo si te atascas)"
+    === "Pista 1: Enmascarar caracteres sobre String"
+        Un `String` se puede mapear directamente carácter a carácter y unirse con `.joinToString(" ")`:
+        ```kotlin
+        fun String.enmascarar(probadas: String): String =
+            this.map { c -> if (c in probadas) c else '_' }.joinToString(" ")
+        ```
 
-    - `data class Victoria(val palabra: String) : IntentoResultado`
+    === "Pista 2: Validación con Null Safety y Elvis"
+        Usa el operador Elvis para capturar si la entrada es nula antes de procesar:
+        ```kotlin
+        val letra = letraInput?.uppercaseChar() ?: run {
+            alErrorInput()
+            return
+        }
+        ```
 
-    - `data class Derrota(val palabra: String) : IntentoResultado`
+    === "Pista 3: Comprobación de Victoria con `.all`"
+        Para saber si el jugador ha adivinado la palabra completa de forma declarativa:
+        ```kotlin
+        fun String.estaAdivinada(probadas: String): Boolean =
+            this.all { c -> c in probadas }
+        ```
 
-4. Implementa la función `procesarLetra(partida: PartidaAhorcado, letra: Char): IntentoResultado` que genere una nueva instancia de `partida` con `.copy()` sin mutar la anterior.
+??? example "🖥️ Ver Salida Esperada en Consola (Ejemplo de Partida)"
+    ```text
+    === EL AHORCADO KOTLIN (LAMBDAS & NULL SAFETY) ===
+    Palabra: _ _ _ _ _ _ | Vidas: 6 | Letras probadas: ''
 
-#### 3. Salida de Ejemplo en Consola
+    -> Intentando con 'O'...
+    ¡Acierto! La letra 'O' está en la palabra.
+    Palabra: _ O _ _ _ _ | Vidas: 6 | Letras probadas: 'O'
 
-```text
-=== EL AHORCADO KOTLIN ===
-Palabra: _ _ _ _ _ _ | Vidas: 6 | Letras probadas: []
--> Turno 1: Probamos 'O'... ¡Acierto!
-Palabra: _ O _ _ _ _ | Vidas: 6 | Letras probadas: [O]
--> Turno 2: Probamos 'Z'... ¡Fallo! Pierdes 1 vida.
-Palabra: _ O _ _ _ _ | Vidas: 5 | Letras probadas: [O, Z]
--> Turno 3: Probamos 'K', 'T', 'L', 'I', 'N'...
-¡VICTORIA! 🎉 Has adivinado la palabra: KOTLIN
-```
+    -> Intentando con 'Z'...
+    ¡Fallo! La letra 'Z' no está. Vidas restantes: 5
+    Palabra: _ O _ _ _ _ | Vidas: 5 | Letras probadas: 'OZ'
 
-#### 4. Solución Comentada
-??? tip "Ver solución comentada paso a paso"
+    -> Intentando con null (entrada no válida)...
+    [ALERTA NULL]: No se ha introducido ninguna letra válida.
+
+    -> Intentando con 'K', 'T', 'L', 'I', 'N'...
+    ¡VICTORIA! 🎉 Has completado la palabra secreta: KOTLIN
+    ```
+
+??? tip "💻 Ver Solución Comentada Paso a Paso"
     ```kotlin
     package b02_funciones_lambdas
 
-    data class PartidaAhorcado(
-        val palabraSecreta: String,
-        val letrasProbadas: Set<Char> = emptySet(),
-        val vidasRestantes: Int = 6
-    )
-
-    fun String.ocultar(probadas: Set<Char>): String {
+    // 1. Función de extensión sobre String para ocultar caracteres
+    fun String.enmascarar(probadas: String): String {
         return this.map { c -> if (c in probadas) c else '_' }.joinToString(" ")
     }
 
-    sealed interface IntentoResultado {
-        data class LetraAcertada(val nuevaPartida: PartidaAhorcado) : IntentoResultado
-        data class LetraFallada(val nuevaPartida: PartidaAhorcado) : IntentoResultado
-        data object YaProbada : IntentoResultado
-        data class Victoria(val palabra: String) : IntentoResultado
-        data class Derrota(val palabra: String) : IntentoResultado
+    // 2. Función de extensión sobre String para comprobar condición de victoria
+    fun String.estaAdivinada(probadas: String): Boolean {
+        return this.all { c -> c in probadas }
     }
 
-    fun procesarLetra(partida: PartidaAhorcado, letraRaw: Char): IntentoResultado {
-        val letra = letraRaw.uppercaseChar()
-
-        if (letra in partida.letrasProbadas) {
-            return IntentoResultado.YaProbada
+    // 3. Función de orden superior con lambdas y Null Safety estricto
+    fun procesarIntento(
+        letraInput: Char?,
+        palabraSecreta: String,
+        letrasProbadas: String,
+        vidasActuales: Int,
+        alAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
+        alFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
+        alRepetir: (letra: Char) -> Unit,
+        alErrorInput: () -> Unit
+    ) {
+        // Cláusula de guarda con Null Safety: safe call y elvis con return
+        val letra = letraInput?.uppercaseChar() ?: run {
+            alErrorInput()
+            return
         }
 
-        val nuevasLetras = partida.letrasProbadas + letra
-        val acierto = letra in partida.palabraSecreta
+        if (letra in letrasProbadas) {
+            alRepetir(letra)
+            return
+        }
 
-        val nuevaPartida = if (acierto) {
-            partida.copy(letrasProbadas = nuevasLetras)
+        val nuevasProbadas = letrasProbadas + letra
+
+        if (letra in palabraSecreta) {
+            alAcertar(letra, nuevasProbadas)
         } else {
-            partida.copy(
-                letrasProbadas = nuevasLetras,
-                vidasRestantes = partida.vidasRestantes - 1
-            )
-        }
-
-        val todasAdivinadas = partida.palabraSecreta.all { it in nuevaPartida.letrasProbadas }
-
-        return when {
-            todasAdivinadas -> IntentoResultado.Victoria(partida.palabraSecreta)
-            nuevaPartida.vidasRestantes <= 0 -> IntentoResultado.Derrota(partida.palabraSecreta)
-            acierto -> IntentoResultado.LetraAcertada(nuevaPartida)
-            else -> IntentoResultado.LetraFallada(nuevaPartida)
+            val nuevasVidas = vidasActuales - 1
+            alFallar(letra, nuevasProbadas, nuevasVidas)
         }
     }
 
     fun main() {
-        println("=== EL AHORCADO KOTLIN ===")
-        var partida = PartidaAhorcado(palabraSecreta = "KOTLIN")
-        println("Palabra: ${partida.palabraSecreta.ocultar(partida.letrasProbadas)} | Vidas: ${partida.vidasRestantes} | Letras probadas: ${partida.letrasProbadas}")
+        println("=== EL AHORCADO KOTLIN (LAMBDAS & NULL SAFETY) ===")
 
-        println("-> Turno 1: Probamos 'O'... ¡Acierto!")
-        when (val res = procesarLetra(partida, 'O')) {
-            is IntentoResultado.LetraAcertada -> {
-                partida = res.nuevaPartida
-                println("Palabra: ${partida.palabraSecreta.ocultar(partida.letrasProbadas)} | Vidas: ${partida.vidasRestantes} | Letras probadas: ${partida.letrasProbadas}")
-            }
-            else -> {}
+        val palabraSecreta = "KOTLIN"
+        var letrasProbadas = ""
+        var vidasRestantes = 6
+
+        println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Letras probadas: '$letrasProbadas'")
+
+        // Intento 1: Acierto
+        println("\n-> Intentando con 'O'...")
+        procesarIntento(
+            letraInput = 'O',
+            palabraSecreta = palabraSecreta,
+            letrasProbadas = letrasProbadas,
+            vidasActuales = vidasRestantes,
+            alAcertar = { letra, nuevasProbadas ->
+                letrasProbadas = nuevasProbadas
+                println("¡Acierto! La letra '$letra' está en la palabra.")
+            },
+            alFallar = { _, nuevasProbadas, nuevasVidas ->
+                letrasProbadas = nuevasProbadas
+                vidasRestantes = nuevasVidas
+            },
+            alRepetir = { println("La letra '$it' ya había sido probada.") },
+            alErrorInput = { println("[ERROR]: Letra nula") }
+        )
+        println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Letras probadas: '$letrasProbadas'")
+
+        // Intento 2: Fallo
+        println("\n-> Intentando con 'Z'...")
+        procesarIntento(
+            letraInput = 'Z',
+            palabraSecreta = palabraSecreta,
+            letrasProbadas = letrasProbadas,
+            vidasActuales = vidasRestantes,
+            alAcertar = { _, nuevasProbadas -> letrasProbadas = nuevasProbadas },
+            alFallar = { letra, nuevasProbadas, nuevasVidas ->
+                letrasProbadas = nuevasProbadas
+                vidasRestantes = nuevasVidas
+                println("¡Fallo! La letra '$letra' no está. Vidas restantes: $nuevasVidas")
+            },
+            alRepetir = { println("La letra '$it' ya había sido probada.") },
+            alErrorInput = { println("[ERROR]: Letra nula") }
+        )
+        println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Letras probadas: '$letrasProbadas'")
+
+        // Intento 3: Entrada Nula
+        println("\n-> Intentando con null (entrada no válida)...")
+        procesarIntento(
+            letraInput = null,
+            palabraSecreta = palabraSecreta,
+            letrasProbadas = letrasProbadas,
+            vidasActuales = vidasRestantes,
+            alAcertar = { _, _ -> },
+            alFallar = { _, _, _ -> },
+            alRepetir = {},
+            alErrorInput = { println("[ALERTA NULL]: No se ha introducido ninguna letra válida.") }
+        )
+
+        // Intento 4: Secuencia de letras ganadoras
+        println("\n-> Intentando con 'K', 'T', 'L', 'I', 'N'...")
+        val letrasRestantes = "KTLIN"
+        for (i in 0 until letrasRestantes.length) {
+            val charActual = letrasRestantes[i]
+            procesarIntento(
+                letraInput = charActual,
+                palabraSecreta = palabraSecreta,
+                letrasProbadas = letrasProbadas,
+                vidasActuales = vidasRestantes,
+                alAcertar = { _, nuevasProbadas -> letrasProbadas = nuevasProbadas },
+                alFallar = { _, _, _ -> },
+                alRepetir = {},
+                alErrorInput = {}
+            )
         }
 
-        println("-> Turno 2: Probamos 'Z'... ¡Fallo! Pierdes 1 vida.")
-        when (val res = procesarLetra(partida, 'Z')) {
-            is IntentoResultado.LetraFallada -> {
-                partida = res.nuevaPartida
-                println("Palabra: ${partida.palabraSecreta.ocultar(partida.letrasProbadas)} | Vidas: ${partida.vidasRestantes} | Letras probadas: ${partida.letrasProbadas}")
-            }
-            else -> {}
-        }
-
-        println("-> Turno 3: Probamos 'K', 'T', 'L', 'I', 'N'...")
-        listOf('K', 'T', 'L', 'I', 'N').forEach { l ->
-            when (val res = procesarLetra(partida, l)) {
-                is IntentoResultado.LetraAcertada -> partida = res.nuevaPartida
-                is IntentoResultado.Victoria -> println("¡VICTORIA! 🎉 Has adivinado la palabra: ${res.palabra}")
-                else -> {}
-            }
+        if (palabraSecreta.estaAdivinada(letrasProbadas)) {
+            println("¡VICTORIA! 🎉 Has completado la palabra secreta: $palabraSecreta")
         }
     }
     ```

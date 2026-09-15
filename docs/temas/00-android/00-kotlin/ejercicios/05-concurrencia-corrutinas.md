@@ -716,3 +716,214 @@ Sincronizando con backend en segundo plano...
         }
     }
     ```
+
+---
+
+### Reto 5.13: Carrera Espacial Galáctica (*Space Grand Prix*)
+📄 **Archivo:** `Reto05_CarreraEspacial.kt`
+
+#### 1. Contexto y Objetivos
+
+Vas a construir un simulador de carreras galácticas en consola donde varias naves espaciales compiten en paralelo para alcanzar una baliza a **50 años luz**.
+
+Este reto une **todas las piezas del Bloque 5**: múltiples corrutinas concurrentes (`launch`), pausas asíncronas no bloqueantes (`delay`), un **`StateFlow`** que actúa como fuente única de verdad para las posiciones del circuito, y un **`SharedFlow`** para eventos efímeros como la activación de *Turbos Hiperespaciales*.
+
+#### 2. Modelo Mental del Reto (Arquitectura Reactiva Concurrente)
+
+Analiza cómo interactúan los productores concurrentes de datos con el estado centralizado y la capa de presentación:
+
+```mermaid
+flowchart TD
+    subgraph CorrutinasConcurrentes ["3 Corrutinas Concurrentes (launch)"]
+        Nave1["Nave 1: Halcón Milenario<br/>(Avanza 5-15 AL)"]
+        Nave2["Nave 2: USS Enterprise<br/>(Avanza 5-15 AL)"]
+        Nave3["Nave 3: Arwing<br/>(Avanza 5-15 AL)"]
+    end
+    
+    subgraph GestionEstado ["Gestión Centralizada (ViewModel Fake)"]
+        EstadoCarrera["<b>MutableStateFlow&lt;Map&lt;String, Int&gt;&gt;</b><br/>Posiciones Actuales (0-50 AL)"]
+        BusEventos["<b>MutableSharedFlow&lt;String&gt;</b><br/>Eventos Efímeros (Turbos/Averías)"]
+    end
+    
+    subgraph CapaPresentacion ["Capa de Presentación (Simulador Compose)"]
+        UIRender["<b>collect { posiciones -&gt; ... }</b><br/>Renderiza las 3 pistas en consola"]
+        UIEventos["<b>collect { evento -&gt; ... }</b><br/>Muestra alertas puntuales (Toast/SnackBar)"]
+    end
+
+    Nave1 -->|Actualiza posición| EstadoCarrera
+    Nave2 -->|Actualiza posición| EstadoCarrera
+    Nave3 -->|Actualiza posición| EstadoCarrera
+    
+    Nave1 -.->|Si avance &gt;= 14| BusEventos
+    Nave2 -.->|Si avance &gt;= 14| BusEventos
+    Nave3 -.->|Si avance &gt;= 14| BusEventos
+    
+    EstadoCarrera -->|Emite nuevo estado| UIRender
+    BusEventos -->|Emite evento puntual| UIEventos
+```
+
+#### 3. Preguntas de Reflexión (Aprender a Pensar)
+
+- **¿Por qué `StateFlow` para las posiciones y `SharedFlow` para los turbos?** Las posiciones representan un **estado continuo** (la pantalla necesita saber dónde está cada nave en todo momento, incluso si rota o se recomone). Los avisos de turbo son **eventos efímeros** que solo deben mostrarse una vez y no persistir en pantalla.
+- **¿Por qué `launch` en lugar de llamadas secuenciales?** Si llamas secuencialmente a una función con `delay(200)`, una nave esperará a que la anterior termine. Con `launch`, las 3 naves avanzan a la vez de forma verdaderamente concurrente.
+- **¿Cómo evitar carreras de datos (*race conditions*)?** El método `.update { anterior -> ... }` de `MutableStateFlow` es atómico y seguro ante concurrencia.
+
+#### 4. Requisitos Funcionales
+
+1. Modela una lista inmutable con los nombres de las 3 naves:
+   `val naves = listOf("Halcón", "Enterprise", "Arwing")`
+
+2. Modela una clase `CarreraManager`:
+
+    - Una propiedad privada `_posiciones = MutableStateFlow(naves.associateWith { 0 })` expuesta como `val posiciones: StateFlow<Map<String, Int>>`.
+
+    - Una propiedad privada `_eventos = MutableSharedFlow<String>()` expuesta como `val eventos: SharedFlow<String>`.
+
+    - Un método `suspend fun actualizarNave(nombre: String, avance: Int)`.
+
+3. Lanza una corrutina por cada nave que, en un bucle mientras nadie haya llegado a la meta (`50 AL`), espere entre `150` y `300` ms con `delay()` y avance entre `4` y `12` años luz.
+
+4. Si una nave avanza `11` o más años luz en un solo turno, emite un evento al `SharedFlow`: `"⚡ ¡TURBO HIPERESPACIAL ACTIVADO POR $nombre!"`.
+
+5. En el recolector principal, dibuja las pistas en consola con barras horizontales hasta que una de las naves cruce la meta.
+
+#### 5. Pistas Progresivas de Ayuda
+
+??? tip "💡 Pista 1: Actualización Atómica de StateFlow"
+    Usa `.update` para derivar un nuevo mapa inmutable sin alterar el anterior:
+    ```kotlin
+    _posiciones.update { mapaActual ->
+        val posActual = mapaActual[nombre] ?: 0
+        mapaActual + (nombre to (posActual + avance).coerceAtMost(50))
+    }
+    ```
+
+??? tip "💡 Pista 2: Cancelación de corrutinas observadoras al terminar"
+    Las corrutinas que observan `StateFlow` y `SharedFlow` con `.collect` son infinitas (*hot streams*). Para finalizar el programa cuando haya ganador, guarda su `Job` y cancela:
+    ```kotlin
+    observadorJob.cancel()
+    ```
+
+??? tip "💡 Pista 3: Esperar a que los competidores terminen con `joinAll`"
+    Guarda los trabajos de las naves en una lista `val jobs = naves.map { launch { ... } }` y espera:
+    ```kotlin
+    jobs.joinAll()
+    ```
+
+#### 6. Salida Esperada en Consola
+
+```text
+==================================================
+      🚀 GRAN PREMIO ESPACIAL: 50 AÑOS LUZ 🚀      
+==================================================
+
+Halcón     : =====> [10/50 AL]
+Enterprise : =======> [14/50 AL]
+Arwing     : ====> [8/50 AL]
+
+⚡ [ALERTA TELEMETRÍA]: ¡TURBO HIPERESPACIAL ACTIVADO POR Enterprise!
+
+Halcón     : ============> [24/50 AL]
+Enterprise : ==================> [36/50 AL]
+Arwing     : =============> [26/50 AL]
+
+...
+
+==================================================
+           🏆 ¡TENEMOS GANADOR GALÁCTICO! 🏆       
+La nave 'Enterprise' ha cruzado la meta estelar (50 AL).
+==================================================
+```
+
+#### 7. Solución Comentada
+??? tip "Ver solución comentada paso a paso"
+    ```kotlin
+    package b05_corrutinas
+
+    import kotlinx.coroutines.*
+    import kotlinx.coroutines.flow.*
+
+    class CarreraManager(val nombresNaves: List<String>) {
+        private val _posiciones = MutableStateFlow<Map<String, Int>>(
+            nombresNaves.associateWith { 0 }
+        )
+        val posiciones: StateFlow<Map<String, Int>> = _posiciones.asStateFlow()
+
+        private val _eventos = MutableSharedFlow<String>()
+        val eventos: SharedFlow<String> = _eventos.asSharedFlow()
+
+        suspend fun moverNave(nombre: String, avance: Int) {
+            _posiciones.update { mapaActual ->
+                val posActual = mapaActual[nombre] ?: 0
+                val nuevaPos = (posActual + avance).coerceAtMost(50)
+                mapaActual + (nombre to nuevaPos)
+            }
+
+            if (avance >= 11) {
+                _eventos.emit("⚡ ¡TURBO HIPERESPACIAL ACTIVADO POR $nombre! (+$avance AL)")
+            }
+        }
+
+        fun hayGanador(): String? {
+            return _posiciones.value.entries.firstOrNull { it.value >= 50 }?.key
+        }
+    }
+
+    fun main() = runBlocking {
+        println("""
+            ==================================================
+                  🚀 GRAN PREMIO ESPACIAL: 50 AÑOS LUZ 🚀      
+            ==================================================
+        """.trimIndent())
+
+        val naves = listOf("Halcón", "Enterprise", "Arwing")
+        val manager = CarreraManager(naves)
+
+        // Corrutina observadora de Eventos Efímeros (SharedFlow)
+        val jobEventos = launch {
+            manager.eventos.collect { aviso ->
+                println("\n$aviso\n")
+            }
+        }
+
+        // Corrutina observadora de Estado de Pantalla (StateFlow)
+        val jobRender = launch {
+            manager.posiciones.collect { mapa ->
+                println("--- CIRCUITO ESTELAR ---")
+                mapa.forEach { (nave, pos) ->
+                    val barra = "=".repeat(pos / 2)
+                    println("${nave.padEnd(11)}: $barra> [$pos/50 AL]")
+                }
+                println()
+                delay(200)
+            }
+        }
+
+        // Lanzamos las 3 naves concurrentemente
+        val jobsNaves = naves.map { nave ->
+            launch {
+                while (manager.hayGanador() == null) {
+                    delay((150..300).random().toLong())
+                    val avance = (4..12).random()
+                    manager.moverNave(nave, avance)
+                }
+            }
+        }
+
+        // Esperamos a que todas las naves finalicen su bucle
+        jobsNaves.joinAll()
+
+        // Detenemos los observadores reactivos
+        jobEventos.cancel()
+        jobRender.cancel()
+
+        val ganador = manager.hayGanador()
+        println("""
+            ==================================================
+                       🏆 ¡TENEMOS GANADOR GALÁCTICO! 🏆       
+            La nave '$ganador' ha cruzado la meta estelar (50 AL).
+            ==================================================
+        """.trimIndent())
+    }
+    ```
+

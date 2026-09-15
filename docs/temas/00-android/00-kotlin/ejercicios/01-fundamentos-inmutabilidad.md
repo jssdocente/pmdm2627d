@@ -428,9 +428,10 @@ Día 9 -> Número de día no válido
     }
 
     fun main() {
-        listOf(2, 6, 9).forEach { d ->
+        for (d in 1..7) {
             println("Día $d -> ${tipoDeDia(d)}")
         }
+        println("Día 9 -> ${tipoDeDia(9)}")
     }
     ```
 
@@ -484,27 +485,28 @@ Resultado: Acceso estándar concedido a zona general.
 
 #### 1. Enunciado y Requisitos
 
-En tableros de juegos 2D (matrices), cuando encontramos la casilla objetivo queremos detener inmediatamente el bucle externo sin usar banderas booleanas `encontrado = true`.
+En videojuegos, al escanear una cuadrícula 2D (por ejemplo, filas y columnas de un mapa de baldosas), cuando encontramos la casilla objetivo queremos detener inmediatamente la búsqueda sin banderas booleanas complejas (`encontrado = true`).
 
-1. Declara una matriz de 3x3 representada como una lista de listas de enteros:
-   `listOf(listOf(1, 2, 3), listOf(4, 99, 6), listOf(7, 8, 9))`
+1. Itera sobre una cuadrícula de coordenadas del `1` al `4` para filas (`f`) y del `1` al `4` para columnas (`c`) usando bucles `for` anidados con rangos.
 
-2. Recorre las filas y columnas buscando el número secreto `99`.
+2. En cada casilla, calcula un código de balda con `val codigoSector = f * 10 + c` (ej. `11`, `12`, `13`...).
 
-3. Utiliza una etiqueta **`searchLoop@`** en el bucle exterior para realizar un **`break@searchLoop`** en cuanto encuentres el número.
+3. Utiliza una etiqueta **`searchLoop@`** en el bucle exterior para realizar un **`break@searchLoop`** en cuanto encuentres el sector secreto `23`.
 
-4. Imprime las coordenadas (fila y columna) donde fue hallado.
+4. Imprime las coordenadas donde fue hallado y comprueba que no se siguen evaluando las filas posteriores.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Buscando en matriz 3x3...
-Examinando [0,0] = 1
-Examinando [0,1] = 2
-Examinando [0,2] = 3
-Examinando [1,0] = 4
-Examinando [1,1] = 99 -> ¡Tesoro encontrado! Abortando búsqueda.
-Objetivo hallado en fila 1, columna 1.
+Escaneando cuadrícula 4x4...
+Sector [1,1] -> Código 11
+Sector [1,2] -> Código 12
+Sector [1,3] -> Código 13
+Sector [1,4] -> Código 14
+Sector [2,1] -> Código 21
+Sector [2,2] -> Código 22
+Sector [2,3] -> ¡SECTOR SECRETO ENCONTRADO! Abortando escaneo.
+Objetivo hallado en Fila 2, Columna 3.
 ```
 
 #### 3. Solución Comentada
@@ -513,33 +515,26 @@ Objetivo hallado en fila 1, columna 1.
     package b01_fundamentos
 
     fun main() {
-        val tablero = listOf(
-            listOf(1, 2, 3),
-            listOf(4, 99, 6),
-            listOf(7, 8, 9)
-        )
+        println("Escaneando cuadrícula 4x4...")
 
-        var posX = -1
-        var posY = -1
+        var filaObjetivo = -1
+        var colObjetivo = -1
 
-        println("Buscando en matriz 3x3...")
-
-        // Etiqueta para controlar el bucle exterior
-        searchLoop@ for (f in tablero.indices) {
-            for (c in tablero[f].indices) {
-                val valor = tablero[f][c]
-                print("Examinando [$f,$c] = $valor")
-                if (valor == 99) {
-                    println(" -> ¡Tesoro encontrado! Abortando búsqueda.")
-                    posX = f
-                    posY = c
-                    break@searchLoop // Sale directamente de ambos bucles
+        // Etiqueta 'searchLoop@' para controlar el bucle exterior
+        searchLoop@ for (f in 1..4) {
+            for (c in 1..4) {
+                val codigoSector = f * 10 + c
+                if (codigoSector == 23) {
+                    println("Sector [$f,$c] -> ¡SECTOR SECRETO ENCONTRADO! Abortando escaneo.")
+                    filaObjetivo = f
+                    colObjetivo = c
+                    break@searchLoop // Detiene ambos bucles de golpe
                 }
-                println()
+                println("Sector [$f,$c] -> Código $codigoSector")
             }
         }
 
-        println("Objetivo hallado en fila $posX, columna $posY.")
+        println("Objetivo hallado en Fila $filaObjetivo, Columna $colObjetivo.")
     }
     ```
 
@@ -607,30 +602,34 @@ Base de datos: SQLITE_ACTIVA
 
 ## 🔴 Nivel Avanzado (Gotchas de Memoria y Reto Integrador)
 
-### Ejercicio 1.13: Demostración de la Matriz de Mutabilidad (Los 4 Cuadrantes)
-📄 **Archivo:** `E13_MatrizMutabilidad.kt`
+### Ejercicio 1.13: Inmutabilidad de Cadenas y Derivación de Estados
+📄 **Archivo:** `E13_InmutabilidadCadenasEstado.kt`
 
 #### 1. Enunciado y Requisitos
 
-1. Reproduce mediante código ejecutable los 4 cuadrantes explicados en la teoría:
+En Kotlin, los objetos `String` son **estrictamente inmutables**: una vez creados en memoria, sus caracteres internos no pueden modificarse jamás. Cualquier transformación genera un nuevo objeto en memoria.
 
-    - **Cuadrante 1 (`val` + `listOf`):** Referencia inmutable a colección inmutable.
+1. Declara una cadena inmutable `val tituloBase: String = "The Legend of Zelda"`.
 
-    - **Cuadrante 2 (`val` + `mutableListOf`):** Referencia inmutable a colección mutable (*La trampa habitual*).
+2. Aplica sobre ella `.uppercase()` y almacena el resultado en `val tituloMayus: String`.
 
-    - **Cuadrante 3 (`var` + `listOf`):** Referencia mutable a colección inmutable (*Patrón Compose/State*).
+3. Concatena `tituloBase + " : Echoes of Wisdom"` en `val tituloCompleto: String`.
 
-    - **Cuadrante 4 (`var` + `mutableListOf`):** Doble mutabilidad (anti-patrón).
+4. Imprime `tituloBase` y comprueba que permanece 100% inalterado (inmutabilidad).
 
-2. En cada cuadrante, intenta reasignar la referencia o modificar los elementos y documenta con comentarios qué permite el compilador y qué prohíbe.
+5. Modela un patrón de estado de pantalla con `var estadoActual: String = "CARGANDO"`. Simula el avance del juego reasignándole un nuevo estado inmutable: `estadoActual = "JUGANDO"`.
+
+6. Comprueba con el operador de identidad referencial **`===`** que cada estado es un objeto diferente en memoria.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Cuadrante 1 (val + listOf): [Zelda]
-Cuadrante 2 (val + mutableListOf): [Zelda, Metroid]
-Cuadrante 3 (var + listOf): [Zelda, Mario]
-Cuadrante 4 (var + mutableListOf): [Pokemon]
+Título base (inalterado): The Legend of Zelda
+Título mayúsculas (nuevo objeto): THE LEGEND OF ZELDA
+Título completo (nuevo objeto): The Legend of Zelda : Echoes of Wisdom
+Estado inicial: CARGANDO
+Estado derivado: JUGANDO
+¿El estado derivado es un objeto diferente (===)? true
 ```
 
 #### 3. Solución Comentada
@@ -639,116 +638,357 @@ Cuadrante 4 (var + mutableListOf): [Pokemon]
     package b01_fundamentos
 
     fun main() {
-        // Cuadrante 1: Máxima seguridad
-        val listaA = listOf("Zelda")
-        // listaA.add("Mario") // Error compilación
-        // listaA = listOf("Pokemon") // Error compilación
-        println("Cuadrante 1 (val + listOf): $listaA")
+        val tituloBase: String = "The Legend of Zelda"
 
-        // Cuadrante 2: Trampa frecuente (referencia fija, pero contenido muta)
-        val listaB = mutableListOf("Zelda")
-        listaB.add("Metroid") // Permitido
-        // listaB = mutableListOf("Mario") // Error compilación
-        println("Cuadrante 2 (val + mutableListOf): $listaB")
+        // Las transformaciones no alteran el String original, devuelven uno nuevo:
+        val tituloMayus: String = tituloBase.uppercase()
+        val tituloCompleto: String = tituloBase + " : Echoes of Wisdom"
 
-        // Cuadrante 3: Patrón Compose (generamos un estado completamente nuevo)
-        var listaC = listOf("Zelda")
-        listaC = listaC + "Mario" // Deriva una nueva lista inmutable y reasigna
-        println("Cuadrante 3 (var + listOf): $listaC")
+        println("Título base (inalterado): $tituloBase")
+        println("Título mayúsculas (nuevo objeto): $tituloMayus")
+        println("Título completo (nuevo objeto): $tituloCompleto")
 
-        // Cuadrante 4: Anti-patrón caótico
-        var listaD = mutableListOf("Zelda")
-        listaD.add("Kirby")
-        listaD = mutableListOf("Pokemon")
-        println("Cuadrante 4 (var + mutableListOf): $listaD")
+        // Derivación de nuevo estado inmutable (patrón base de Compose):
+        var estadoActual: String = "CARGANDO"
+        println("Estado inicial: $estadoActual")
+
+        val estadoAnterior = estadoActual
+        estadoActual = "JUGANDO" // Reasignamos la referencia a una nueva cadena inmutable
+        println("Estado derivado: $estadoActual")
+
+        println("¿El estado derivado es un objeto diferente (===)? ${estadoActual !== estadoAnterior}")
     }
     ```
 
 ---
 
-### Reto 1.14: Simulador de Checkout de Tienda Digital
-📄 **Archivo:** `Reto01_CheckoutTienda.kt`
+### Reto 1.14: Combate RPG por Turnos (*Héroe vs Dragón Carmesí*)
+📄 **Archivo:** `Reto01_CombateRpg.kt`
 
-#### 1. Contexto
+#### 1. Contexto y Misión
 
-Vas a implementar el motor de cálculo de precios para un carrito de compras digital en una tienda de videojuegos móviles.
+El reino de Kotlinia se encuentra bajo la amenaza del temible **Dragón Carmesí**, una criatura milenaria que asola las fortalezas del norte. Tu misión como desarrollador es programar el motor central de combate por turnos (*Battle Loop*) para un juego de rol (RPG) en consola, donde el **Héroe** deberá medir su ingenio táctico contra la bestia.
+
+Este reto representa el proyecto culminante del Bloque 1. En él pondrás a prueba, de forma integrada, **todos los fundamentos aprendidos**:
+
+- Declaración inmutable (`val`) frente a estado mutable (`var`).
+- Control de flujo sin efectos secundarios (`when` e `if` evaluados como expresiones).
+- Ciclos indeterminados de ejecución (`while`).
+- *String Templates* y manipulación inmutable de texto (`.repeat()`, `.padEnd()`).
+- Operadores seguros de rango y funciones de acotación matemática (`.coerceAtLeast()`, `.coerceAtMost()`).
+
+##### 🎮 La Dinámica del Combate Explicada
+
+El combate se disputa en un **duelo directo frente a frente** cerrado en un bucle continuo por turnos.
+
+!!! info "ℹ️ Aclaración sobre el Combate (Sin Posiciones Espaciales ni Tablero)"
+    En este reto **no existen posiciones físicas, coordenadas ni movimiento en una cuadrícula o mapa**. Los dos contendientes están situados cara a cara. Lo que evoluciona en cada asalto no es su posición en el espacio, sino sus **recursos numéricos**: sus puntos de vida, su reserva de energía y su inventario de botiquines curativos.
+
+###### A. Los Combatientes y sus Recursos
+
+| Combatiente | Puntos de Vida (HP) | Reserva de Energía (Maná) | Inventario de Curación |
+| :--- | :--- | :--- | :--- |
+| **Héroe de Kotlinia** | **100 HP** iniciales / máx. | **30 Puntos de Energía** | **2 Pociones Curativas** en su zurrón |
+| **Dragón Carmesí** | **150 HP** iniciales / máx. | Inagotable (fuerza bruta, coste 0) | Escamas blindadas (gran resistencia) |
+
+###### B. Glosario de Conceptos Clave del Juego
+
+Para que la mecánica del juego se entienda a la perfección:
+
+1. **Puntos de Vida (HP - *Health Points*):**  
+   Miden la salud restante del combatiente. El Héroe comienza con 100 HP y el Dragón con 150 HP. Cada impacto recibido resta vida. Si la vida de cualquiera de los dos cae a 0, el combate termina inmediatamente.
+
+2. **Energía (tradicionalmente llamada *Maná* en los juegos de rol):**  
+   Es el combustible o reserva especial que tiene el Héroe para ejecutar su ataque mágico demoledor (*Lanza de Hielo*).
+
+    - El Héroe comienza con **30 puntos de energía**.
+
+    - Cada lanzamiento de *Lanza de Hielo* consume **15 puntos de energía**.
+
+    - Por tanto, el Héroe solo puede usar este ataque un máximo de **2 veces** en toda la partida ($30 / 15 = 2$).
+
+    - Una vez agotada la energía (o si le quedan menos de 15 puntos), ya no puede lanzar magia y debe recurrir a su espada básica, que no consume energía.
+
+3. **Pociones Curativas (Botiquines de Emergencia):**  
+   Son dosis medicinales de un solo uso que el Héroe lleva en su zurrón:
+
+    - El Héroe parte con un inventario limitado de **2 pociones**.
+
+    - **Efecto:** Al tomar una poción, recupera de inmediato **+35 HP** de vida, con un tope de seguridad: la vida nunca puede sobrepasar los 100 HP iniciales (no existe la sobrecuración).
+
+    - **Gasto:** Cada uso gasta una poción (`pociones--`). Si el contador llega a `0`, las existencias se agotan y ya no podrá curarse en lo que reste de batalla.
+
+    - **Criterio de uso:** El Héroe es previsor y solo recurre a una poción cuando su salud es crítica (**40 HP o menos**) y todavía le quedan existencias.
+
+###### C. Ciclo de Vida de Cada Turno (Paso a Paso)
+
+Cada iteración del bucle de combate ejecuta cronológicamente las siguientes fases:
+
+1. **Apertura y Panel de Estado (HUD):**  
+   Al arrancar cada turno se imprime en consola el estado visual de ambos contrincantes: barras de salud proporcionales dibujadas en bloques ASCII (ej. `[████████  ]`), vida numérica actual/máxima, energía restante y pociones en bolsa.
+
+2. **Fase de Decisión y Acción del Héroe:**  
+   El Héroe dispone de un repertorio de 3 tácticas posibles. Para esta simulación, el motor de combate evalúa su situación mediante una expresión `when` que aplica una toma de decisiones estratégica:
+
+    - **Opción 1: Beber Poción Curativa (Prioridad Supervivencia):** Si la vida del héroe cae a **40 HP o menos** y aún conserva pociones (`pociones > 0`), bebe una de ellas: recupera de golpe **+35 HP** (acotada al máximo de 100 HP) y gasta una unidad de su zurrón.
+
+    - **Opción 2: Lanza de Hielo (Ataque Mágico con Gasto de Energía):** Si la salud del héroe es segura y dispone de al menos **15 puntos de energía**, invoca este hechizo: consume **15 de energía** e inflige un daño crítico masivo aleatorio de **35 a 45 HP** al Dragón.
+
+    - **Opción 3: Golpe de Espada (Ataque Físico Básico):** Si la vida es estable pero no hay energía suficiente, asesta un mandoble con su espada: coste 0 de energía e inflige entre **18 y 25 HP** de daño aleatorio al Dragón.
+
+3. **Fase de Comprobación de Impacto (Regla Crucial del Juego):**  
+   Inmediatamente tras el golpe del héroe, se verifica la vida del Dragón. Si los puntos de vida del dragón llegan a **0 HP o menos**, ¡el dragón ha muerto! En ese instante se cancela el turno: **el dragón derrotado NO contraataca** y la partida concluye.
+
+4. **Fase de Contraataque del Dragón:**  
+   Si el Dragón continúa con vida tras recibir el ataque, ruge ferozmente y desata su **Aliento Ígneo**, reduciendo la vida del héroe en un valor aleatorio de **15 a 22 HP**.
+
+5. **Fase de Cierre y Avance de Turno:**  
+   Se verifica si el Héroe sigue en pie. Si ambos contrincantes tienen más de 0 HP, se incrementa el contador de asaltos (`turno++`) y se inicia la siguiente ronda.
+
+###### D. Desenlace Final (Condiciones de Victoria y Derrota)
+
+El bucle termina automáticamente en el momento en que uno de los dos combatientes agota su salud:
+
+- **🏆 Victoria Heroica:** Si la vida del dragón llega a 0, se imprime un cartel de triunfo indicando el número total de asaltos que duró la batalla.
+
+- **💀 Derrota en Batalla:** Si la vida del héroe llega a 0, se imprime un cartel de derrota anunciando la caída del adalid.
+
+---
 
 #### 2. Requisitos Funcionales
 
-1. Recibe el precio base de un carrito (ej. `89.90 €`), el número de artículos adquiridos (ej. `3`), y un cupón de descuento en texto (ej. `"VERANO20"` o `null`).
+Para que el simulador funcione con precisión, tu código debe ceñirse a los siguientes requisitos técnicos (sin emplear colecciones ni clases del Bloque 2 en adelante):
 
-2. **Reglas de Descuento (evaluadas con `when` exhaustivo):**
+1. **RF-01 (Inmutabilidad y Constantes de Reglas):** Declara como constantes inmutables (`val`) las reglas invariables del combate: `maxHeroeHp = 100`, `maxDragonHp = 150`, `maxHeroeEnergia = 30` y `costeEnergiaHechizo = 15`.
 
-    - Si el cupón es `"VERANO20"`, aplica un 20% de descuento sobre el total.
+2. **RF-02 (Estado Vivo Mutable):** Declara como variables mutables (`var`) exclusivamente los estados que varían asalto a asalto: `heroeHp`, `heroeEnergia`, `pociones`, `dragonHp` y `turno`.
 
-    - Si el cupón es `"BIENVENIDA"`, aplica un 10% de descuento.
+3. **RF-03 (Motor de Batalla con Bucle Indeterminado):** Controla el combate mediante un bucle `while (heroeHp > 0 && dragonHp > 0)`.
 
-    - Si el cupón es `null` o desconocido, no aplica descuento por cupón (0%).
+4. **RF-04 (Estrategia de IA con when sin Argumento):** Determina el código de acción del héroe (`1`, `2` o `3`) mediante un `when` que evalúe las condiciones booleanas de prioridad (vida crítica $\le 40$ con pociones disponibles, energía suficiente $\ge 15$, o espada por defecto).
 
-3. **Descuento Adicional por Volumen:** Si compra más de 2 artículos, aplica un 5% adicional acumulable sobre el precio con descuento.
+5. **RF-05 (Modificación Segura de Recursos):** Emplea un segundo `when (accion)` para aplicar la deducción de energía (`heroeEnergia -= costeEnergiaHechizo`), el decremento de existencias de pociones (`pociones--`) y los impactos de daño en la vida.
 
-4. **Cálculo de IVA:** Añade un 21% de IVA sobre el subtotal final.
+6. **RF-06 (Tiradas Aleatorias de Daño):** Genera los valores de daño dentro de los rangos oficiales mediante `(min..max).random()`: espada `18..25`, hechizo `35..45` y dragón `15..22`.
 
-5. Imprime el ticket de compra desglosado utilizando cadenas multilínea inmutables.
+7. **RF-07 (Blindaje de Límites Numéricos):** Evita vidas negativas usando `.coerceAtLeast(0)` en los cálculos de daño, y evita la sobrecuración por encima de 100 HP usando `.coerceAtMost(maxHeroeHp)` al beber pociones.
 
-#### 3. Salida Esperada en Consola
+8. **RF-08 (HUD con Manipulación Inmutable de Cadenas):** Genera las barras gráficas calculando el número de bloques sólidos con regla de tres entera `(hp * tamañoBarra) / maxHp` y aplicando `.repeat(bloques).padEnd(tamañoBarra, ' ')`.
 
-```text
-========================================
-       TICKET DE COMPRA GAMEVAULT       
-========================================
-Artículos en cesta: 3
-Precio base: 89.90 €
-Cupón aplicado: VERANO20 (-20%)
-Descuento volumen (>2 uds): -5% adicional
-Subtotal con descuentos: 68.32 €
-IVA (21%): 14.35 €
-----------------------------------------
-TOTAL FINAL A COBRAR: 82.67 €
-========================================
-```
+9. **RF-09 (Resolución y Veredicto):** Al finalizar el bucle, evalúa mediante una expresión `if (heroeHp > 0)` el mensaje final de victoria o derrota.
 
-#### 4. Solución Comentada
-??? tip "Ver solución comentada"
+---
+
+??? info "📊 Ver Modelo Mental del Juego (Diagrama de Flujo del Combate)"
+    ```mermaid
+    flowchart TD
+        Inicio(["Inicio: Inicializar HP, Energía y Pociones"]) --> Bucle{"¿Ambos siguen con vida?<br/>(Héroe y Dragón HP > 0)"}
+        Bucle -- "Sí" --> HUD["Mostrar HUD: Barras ASCII, Vida y Energía"]
+        HUD --> Decision{"Evaluar Táctica con when"}
+        
+        Decision -- "Vida crítica (<= 40) y con pociones" --> Pocion["Beber Poción (+35 HP, -1 Poción)"]
+        Decision -- "Energía disponible (>= 15)" --> Magia["Lanza de Hielo (-15 Energía, Daño 35-45)"]
+        Decision -- "Por defecto" --> Espada["Golpe de Espada (Coste 0, Daño 18-25)"]
+        
+        Pocion --> CheckDragon{"¿Dragón derrotado?<br/>(Dragón HP <= 0)"}
+        Magia --> CheckDragon
+        Espada --> CheckDragon
+        
+        CheckDragon -- "Sí: Dragón cae" --> Victoria(["🏆 Victoria Heroica"])
+        CheckDragon -- "No: Sigue vivo" --> AtaqueDragon["Aliento Ígneo del Dragón (Daño 15-22)"]
+        
+        AtaqueDragon --> CheckHeroe{"¿Héroe sobrevive?<br/>(Héroe HP > 0)"}
+        CheckHeroe -- "Sí: En pie" --> SigTurno["Incrementar Turno (turno++)"] --> Bucle
+        CheckHeroe -- "No: Cae en batalla" --> Derrota(["💀 Derrota en Batalla"])
+        
+        Bucle -- "No" --> Fin(["Fin del Combate"])
+    ```
+
+??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
+    Antes de mirar el código o las pistas, reflexiona sobre estas cuestiones de diseño:
+
+    - **¿Por qué la vida del Héroe debe ser `var` pero su vida máxima debe ser `val`?**  
+      La vida máxima es una regla fija de las mecánicas del juego; si la hicieras mutable, un error en un cálculo de daño podría alterar el tope de la partida accidentalmente.
+
+    - **¿Cómo evitar que la vida del dragón muestre valores negativos como `-12 HP`?**  
+      En lugar de un `if (hp < 0) hp = 0`, Kotlin provee `hp.coerceAtLeast(0)`, que acota el valor inferior de forma concisa.
+
+    - **¿Por qué un `while` y no un `for`?**  
+      Un bucle `for` se usa cuando sabemos el número exacto de iteraciones (ej. 10 veces). La duración de una batalla es indeterminada: depende de las tiradas aleatorias de daño y de la estrategia, por lo que `while` con condición de parada es la estructura natural.
+
+??? tip "💡 Pistas Progresivas de Ayuda (Abrir solo si te atascas)"
+    === "Pista 1: Generación de Valores Aleatorios"
+        En Kotlin puedes obtener un entero aleatorio dentro de un rango sin librerías externas:
+        ```kotlin
+        val danoEspada = (18..25).random()
+        val danoMagia = (35..45).random()
+        val danoDragon = (15..22).random()
+        ```
+    === "Pista 2: Dibujar las Barras de Vida"
+        Puedes calcular cuántos bloques sólidos dibujar con una regla de tres simple y `.repeat()`:
+        ```kotlin
+        val bloquesHeroe = (heroeHp * 10) / maxHeroeHp
+        val barraHeroe = "█".repeat(bloquesHeroe).padEnd(10, ' ')
+        ```
+    === "Pista 3: Esqueleto del Bucle Principal"
+        La estructura básica del combate tiene esta forma:
+        ```kotlin
+        while (heroeHp > 0 && dragonHp > 0) {
+            println("\n=== TURNO #$turno ===")
+            // 1. Dibujar barras con vida y energía
+            // 2. when con la acción del héroe
+            // 3. if (dragonHp > 0) -> contraataque dragón
+            turno++
+        }
+        ```
+
+??? example "🖥️ Ver Salida Esperada en Consola (Ejemplo de Partida)"
+    ```text
+    ==================================================
+            ⚔️ BATALLA: HÉROE VS DRAGÓN CARMESÍ ⚔️     
+    ==================================================
+
+    === TURNO #1 ===
+    HÉROE  [██████████] 100/100 HP | Energía: 30/30 | Pociones: 2
+    DRAGÓN [███████████████] 150/150 HP
+    -> Héroe lanza Ataque Especial 'Lanza de Hielo' (-15 Energía) -> ¡41 de daño crítico al Dragón!
+    -> Dragón contraataca con Aliento Ígneo -> ¡Héroe recibe 19 de daño!
+
+    === TURNO #2 ===
+    HÉROE  [████████  ] 81/100 HP | Energía: 15/30 | Pociones: 2
+    DRAGÓN [██████████     ] 109/150 HP
+    -> Héroe lanza Ataque Especial 'Lanza de Hielo' (-15 Energía) -> ¡38 de daño crítico al Dragón!
+    -> Dragón contraataca con Aliento Ígneo -> ¡Héroe recibe 21 de daño!
+
+    === TURNO #3 ===
+    HÉROE  [██████    ] 60/100 HP | Energía: 0/30 | Pociones: 2
+    DRAGÓN [███████        ] 71/150 HP
+    -> Héroe asesta Golpe de Espada -> ¡22 de daño al Dragón!
+    -> Dragón contraataca con Aliento Ígneo -> ¡Héroe recibe 20 de daño!
+
+    === TURNO #4 ===
+    HÉROE  [████      ] 40/100 HP | Energía: 0/30 | Pociones: 2
+    DRAGÓN [█████          ] 49/150 HP
+    -> Héroe bebe una Poción Curativa (+35 HP). Pociones restantes: 1
+    -> Dragón contraataca con Aliento Ígneo -> ¡Héroe recibe 17 de daño!
+
+    === TURNO #5 ===
+    HÉROE  [█████     ] 58/100 HP | Energía: 0/30 | Pociones: 1
+    DRAGÓN [█████          ] 49/150 HP
+    -> Héroe asesta Golpe de Espada -> ¡25 de daño al Dragón!
+    -> Dragón contraataca con Aliento Ígneo -> ¡Héroe recibe 18 de daño!
+
+    === TURNO #6 ===
+    HÉROE  [████      ] 40/100 HP | Energía: 0/30 | Pociones: 1
+    DRAGÓN [██             ] 24/150 HP
+    -> Héroe bebe una Poción Curativa (+35 HP). Pociones restantes: 0
+    -> Dragón contraataca con Aliento Ígneo -> ¡Héroe recibe 16 de daño!
+
+    === TURNO #7 ===
+    HÉROE  [█████     ] 59/100 HP | Energía: 0/30 | Pociones: 0
+    DRAGÓN [██             ] 24/150 HP
+    -> Héroe asesta Golpe de Espada -> ¡24 de daño al Dragón!
+
+    ==================================================
+                  🏆 ¡VICTORIA HEROICA! 🏆            
+    El temible Dragón Carmesí ha sido derrotado en 7 turnos.
+    ==================================================
+    ```
+
+??? tip "💻 Ver Solución Comentada Paso a Paso"
     ```kotlin
     package b01_fundamentos
 
     fun main() {
-        val precioBase = 89.90
-        val cantidadArticulos = 3
-        val cupon: String? = "VERANO20"
+        println("""
+            ==================================================
+                    ⚔️ BATALLA: HÉROE VS DRAGÓN CARMESÍ ⚔️     
+            ==================================================
+        """.trimIndent())
 
-        // 1. Porcentaje de descuento por cupón mediante expresión when
-        val porcentajeCupon = when (cupon) {
-            "VERANO20" -> 0.20
-            "BIENVENIDA" -> 0.10
-            else -> 0.00
+        // 1. Constantes inmutables de combate (reglas fijas)
+        val maxHeroeHp = 100
+        val maxDragonHp = 150
+        val maxHeroeEnergia = 30 // Reserva de combustible para habilidades especiales
+        val costeEnergiaHechizo = 15 // Cada uso consume 15 puntos de energía
+
+        // 2. Variables mutables de estado vivo (cambian en cada turno)
+        var heroeHp = maxHeroeHp
+        var heroeEnergia = maxHeroeEnergia
+        var pociones = 2 // Inventario limitado de botiquines curativos (2 dosis en total)
+        var dragonHp = maxDragonHp
+        var turno = 1
+
+        // 3. Bucle de combate que continúa mientras ambos sigan vivos
+        while (heroeHp > 0 && dragonHp > 0) {
+            println("\n=== TURNO #$turno ===")
+
+            // Renderizado de barras de vida proporcionales usando .repeat()
+            val bloquesHeroe = (heroeHp * 10) / maxHeroeHp
+            val barraHeroe = "█".repeat(bloquesHeroe).padEnd(10, ' ')
+
+            val bloquesDragon = (dragonHp * 15) / maxDragonHp
+            val barraDragon = "█".repeat(bloquesDragon).padEnd(15, ' ')
+
+            println("HÉROE  [$barraHeroe] $heroeHp/$maxHeroeHp HP | Energía: $heroeEnergia/$maxHeroeEnergia | Pociones: $pociones")
+            println("DRAGÓN [$barraDragon] $dragonHp/$maxDragonHp HP")
+
+            // 4. Decisión táctica evaluada con when sin argumento (Bloque 1 puro)
+            val accion = when {
+                heroeHp <= 40 && pociones > 0 -> 3 // Prioridad 1: Curarse si la vida baja de 40 y quedan pociones
+                heroeEnergia >= costeEnergiaHechizo -> 2 // Prioridad 2: Ataque especial con energía mientras alcance
+                else -> 1                          // En otro caso: Golpe básico de espada (coste 0)
+            }
+
+            // 5. Ejecución de la acción seleccionada
+            when (accion) {
+                1 -> {
+                    val danoEspada = (18..25).random()
+                    dragonHp = (dragonHp - danoEspada).coerceAtLeast(0)
+                    println("-> Héroe asesta Golpe de Espada -> ¡$danoEspada de daño al Dragón!")
+                }
+                2 -> {
+                    if (heroeEnergia >= costeEnergiaHechizo) {
+                        heroeEnergia -= costeEnergiaHechizo
+                        val danoMagico = (35..45).random()
+                        dragonHp = (dragonHp - danoMagico).coerceAtLeast(0)
+                        println("-> Héroe lanza Ataque Especial 'Lanza de Hielo' (-$costeEnergiaHechizo Energía) -> ¡$danoMagico de daño crítico al Dragón!")
+                    } else {
+                        println("-> ¡Héroe intenta lanzar ataque especial sin energía suficiente y pierde el turno!")
+                    }
+                }
+                3 -> {
+                    if (pociones > 0) {
+                        pociones--
+                        val curacion = 35
+                        heroeHp = (heroeHp + curacion).coerceAtMost(maxHeroeHp)
+                        println("-> Héroe bebe una Poción Curativa (+35 HP). Pociones restantes: $pociones")
+                    } else {
+                        println("-> ¡Héroe busca en su bolsa pero no le quedan pociones!")
+                    }
+                }
+            }
+
+            // 6. Contraataque del Dragón (solo si sigue con vida tras el ataque del héroe)
+            if (dragonHp > 0) {
+                val danoDragon = (15..22).random()
+                heroeHp = (heroeHp - danoDragon).coerceAtLeast(0)
+                println("-> Dragón contraataca con Aliento Ígneo -> ¡Héroe recibe $danoDragon de daño!")
+            }
+
+            turno++
         }
 
-        // 2. Descuento por volumen
-        val porcentajeVolumen = if (cantidadArticulos > 2) 0.05 else 0.00
-
-        // 3. Cálculos de importes (100% inmutables)
-        val precioTrasCupon = precioBase * (1 - porcentajeCupon)
-        val subtotalConDescuentos = precioTrasCupon * (1 - porcentajeVolumen)
-        val iva = subtotalConDescuentos * 0.21
-        val totalFinal = subtotalConDescuentos + iva
-
-        val ticket = """
-            ========================================
-                   TICKET DE COMPRA GAMEVAULT       
-            ========================================
-            Artículos en cesta: $cantidadArticulos
-            Precio base: ${"%.2f".format(precioBase)} €
-            Cupón aplicado: ${cupon ?: "Ninguno"} (-${(porcentajeCupon * 100).toInt()}%)
-            Descuento volumen (>2 uds): -${(porcentajeVolumen * 100).toInt()}% adicional
-            Subtotal con descuentos: ${"%.2f".format(subtotalConDescuentos)} €
-            IVA (21%): ${"%.2f".format(iva)} €
-            ----------------------------------------
-            TOTAL FINAL A COBRAR: ${"%.2f".format(totalFinal)} €
-            ========================================
-        """.trimIndent()
-
-        println(ticket)
+        // 7. Desenlace del combate al salir del bucle
+        println("\n==================================================")
+        if (heroeHp > 0) {
+            println("              🏆 ¡VICTORIA HEROICA! 🏆            ")
+            println("El temible Dragón Carmesí ha sido derrotado en $turno turnos.")
+        } else {
+            println("              💀 ¡HAS SIDO DERROTADO! 💀          ")
+            println("El Héroe ha caído en batalla frente al Dragón Carmesí.")
+        }
+        println("==================================================")
     }
     ```
+
