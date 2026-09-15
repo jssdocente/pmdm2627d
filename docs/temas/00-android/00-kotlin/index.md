@@ -27,6 +27,21 @@ Este bloque formativo está diseñado específicamente para alumnos de 2º de DA
 - **[Listas y Operaciones Funcionales](./42-listas.md):** Listas inmutables `List` vs `MutableList`, adición funcional (`+`), transformaciones con `map`, `filter`, `groupBy`.
 - **[Colecciones Asociativas (Mapas y Sets)](./43-maps.md):** Almacenamiento clave-valor y conjuntos únicos.
 - **[Programación Asíncrona con Corrutinas](./51-corrutinas.md):** La analogía del camarero, ANR, funciones `suspend`, constructores `launch`/`async` y Dispatchers en Android.
+- **[Flujos Asíncronos y Reactivos (Flow y StateFlow)](./52-flows.md):** Flujos fríos vs calientes, `StateFlow` en Android, emisión reactiva hacia Compose y Room.
+
+---
+
+## 🎯 Laboratorio Práctico (`pmdm-kotlin-lab`)
+
+Accede al bloque de ejercicios estructurados en un único proyecto de IntelliJ IDEA con soluciones comentadas y retos lúdicos graduados:
+
+- **[Laboratorio de Actividades de Kotlin](./ejercicios/index.md):** Guía de configuración del proyecto en IntelliJ IDEA y mapa de retos.
+    - [1. Fundamentos e Inmutabilidad](./ejercicios/01-fundamentos-inmutabilidad.md)
+    - [2. Funciones, Lambdas y el Ahorcado](./ejercicios/02-funciones-lambdas-nullsafety.md)
+    - [3. POO, Sealed Types y Wordle](./ejercicios/03-poo-sealed-types.md)
+    - [4. Colecciones, Mappers y Scope Functions](./ejercicios/04-colecciones-scope-functions.md)
+    - [5. Corrutinas Asíncronas y Flows](./ejercicios/05-concurrencia-corrutinas.md)
+    - [6. Proyecto Final: El Juego del Calamar](./ejercicios/06-proyecto-integrador.md)
 
 ---
 

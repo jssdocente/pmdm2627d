@@ -28,6 +28,15 @@ nav:
           - "Tipos sellados (UI State)": temas/00-android/00-kotlin/26-sealed-classes.md
           - "Scope functions": temas/00-android/00-kotlin/31-scope-functions.md
           - "Corrutinas": temas/00-android/00-kotlin/51-corrutinas.md
+          - "Flujos Asíncronos (Flow y StateFlow)": temas/00-android/00-kotlin/52-flows.md
+          - "Actividades Prácticas (Ejercicios)":
+              - "Laboratorio de Kotlin": temas/00-android/00-kotlin/ejercicios/index.md
+              - "1. Fundamentos e Inmutabilidad": temas/00-android/00-kotlin/ejercicios/01-fundamentos-inmutabilidad.md
+              - "2. Funciones, Lambdas y Ahorcado": temas/00-android/00-kotlin/ejercicios/02-funciones-lambdas-nullsafety.md
+              - "3. POO, Sealed Types y Wordle": temas/00-android/00-kotlin/ejercicios/03-poo-sealed-types.md
+              - "4. Colecciones, Mappers y Scopes": temas/00-android/00-kotlin/ejercicios/04-colecciones-scope-functions.md
+              - "5. Corrutinas y Flows": temas/00-android/00-kotlin/ejercicios/05-concurrencia-corrutinas.md
+              - "6. Proyecto Final (El Juego del Calamar)": temas/00-android/00-kotlin/ejercicios/06-proyecto-integrador.md
       - "Herramientas Proyecto Android":
           - "Terminal Avanzada (Warp + Shell)": "temas/00-android/00-tools/05-terminal-warp.md"
           - "Gradle": "temas/00-android/00-tools/01-gradle-agp-estructura.md"
