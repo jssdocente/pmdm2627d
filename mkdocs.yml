@@ -9,27 +9,28 @@ nav:
       - "Entorno de desarrollo (IDE)":
           - "IntelliJ IDEA para Móvil": temas/00-android/00-ide-intellij/index.md
       - "El lenguaje kotlin":
-          - "Introducción": temas/00-android/00-kotlin/index.md
-          - "Variables e Inmutabilidad": temas/00-android/00-kotlin/11-variables-tipos-datos.md
-          - "Expresiones vs Sentencias": temas/00-android/00-kotlin/12-expresiones-vs-sentencias.md
-          - "When": temas/00-android/00-kotlin/12.1-when.md
-          - "Funciones y lambdas (Compose)": temas/00-android/00-kotlin/13-funciones-lambdas.md
-          - "Null safety": temas/00-android/00-kotlin/14-null-safety.md
-          - "Colecciones":
-              - "Arrays": temas/00-android/00-kotlin/41-arrays.md
-              - "Listas": temas/00-android/00-kotlin/42-listas.md
-              - "Maps": temas/00-android/00-kotlin/43-maps.md
-              - "Sets": temas/00-android/00-kotlin/44-sets.md
-          - "POO": temas/00-android/00-kotlin/21-poo.md
-          - "Singletons y Companion Object": temas/00-android/00-kotlin/22-objetos-anonimos.md
-          - "Data classes": temas/00-android/00-kotlin/23-data-classes.md
-          - "Enum classes": temas/00-android/00-kotlin/24-enum-classes.md
-          - "Genéricos": temas/00-android/00-kotlin/25-genericos.md
-          - "Tipos sellados (UI State)": temas/00-android/00-kotlin/26-sealed-classes.md
-          - "Scope functions": temas/00-android/00-kotlin/31-scope-functions.md
-          - "Corrutinas": temas/00-android/00-kotlin/51-corrutinas.md
-          - "Flujos Asíncronos (Flow y StateFlow)": temas/00-android/00-kotlin/52-flows.md
-          - "Actividades Prácticas (Ejercicios)":
+          - "Apuntes":
+              - "Introducción": temas/00-android/00-kotlin/index.md
+              - "Variables e Inmutabilidad": temas/00-android/00-kotlin/11-variables-tipos-datos.md
+              - "Expresiones vs Sentencias": temas/00-android/00-kotlin/12-expresiones-vs-sentencias.md
+              - "When": temas/00-android/00-kotlin/12.1-when.md
+              - "Funciones y lambdas (Compose)": temas/00-android/00-kotlin/13-funciones-lambdas.md
+              - "Null safety": temas/00-android/00-kotlin/14-null-safety.md
+              - "Colecciones":
+                  - "Arrays": temas/00-android/00-kotlin/41-arrays.md
+                  - "Listas": temas/00-android/00-kotlin/42-listas.md
+                  - "Maps": temas/00-android/00-kotlin/43-maps.md
+                  - "Sets": temas/00-android/00-kotlin/44-sets.md
+              - "POO": temas/00-android/00-kotlin/21-poo.md
+              - "Singletons y Companion Object": temas/00-android/00-kotlin/22-objetos-anonimos.md
+              - "Data classes": temas/00-android/00-kotlin/23-data-classes.md
+              - "Enum classes": temas/00-android/00-kotlin/24-enum-classes.md
+              - "Genéricos": temas/00-android/00-kotlin/25-genericos.md
+              - "Tipos sellados (UI State)": temas/00-android/00-kotlin/26-sealed-classes.md
+              - "Scope functions": temas/00-android/00-kotlin/31-scope-functions.md
+              - "Corrutinas": temas/00-android/00-kotlin/51-corrutinas.md
+              - "Flujos Asíncronos (Flow y StateFlow)": temas/00-android/00-kotlin/52-flows.md
+          - "Actividades":
               - "Laboratorio de Kotlin": temas/00-android/00-kotlin/ejercicios/index.md
               - "1. Fundamentos e Inmutabilidad": temas/00-android/00-kotlin/ejercicios/01-fundamentos-inmutabilidad.md
               - "2. Funciones, Lambdas y Ahorcado": temas/00-android/00-kotlin/ejercicios/02-funciones-lambdas-nullsafety.md
