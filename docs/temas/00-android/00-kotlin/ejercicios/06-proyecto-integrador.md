@@ -12,9 +12,13 @@ Ubicación en tu proyecto: `src/main/kotlin/b06_proyecto_integrador/`
 ## 🎯 Objetivos de Aprendizaje Demostrados
 
 1. **Modelado Inmutable:** Representación de entidades y estados mediante `data class` y `copy()`.
+
 2. **Jerarquía Sellada (UiState):** Control exhaustivo del estado global mediante `sealed interface`.
+
 3. **Flujos Asíncronos Reactivos (Flow):** Emisión continua de eventos de la Muñeca (canto y escaneo).
+
 4. **Concurrencia con Corrutinas:** Simulación de múltiples jugadores corriendo en paralelo mediante `launch`.
+
 5. **Colecciones y Operaciones Funcionales:** Filtrado de eliminados, transformaciones y estadísticas.
 
 ---
@@ -22,14 +26,22 @@ Ubicación en tu proyecto: `src/main/kotlin/b06_proyecto_integrador/`
 ## 📜 Reglas de la Simulación
 
 1. **El Terreno:** Hay una pista de **50 metros**. Los jugadores parten de la posición `0m` y ganan si alcanzan o superan los `50m`.
+
 2. **La Muñeca Robot:**
-   - Canta *"Jugaremos, muévete luz verde..."* durante un tiempo aleatorio entre 1 y 2.5 segundos (**Estado `LuzVerde`**).
-   - De repente, se detiene y se gira (**Estado `LuzRoja`**). Durante 1 segundo, cualquier jugador que intente avanzar en ese intervalo es detectado por los sensores y queda **eliminado inmediatamente**.
+
+    - Canta *"Jugaremos, muévete luz verde..."* durante un tiempo aleatorio entre 1 y 2.5 segundos (**Estado `LuzVerde`**).
+
+    - De repente, se detiene y se gira (**Estado `LuzRoja`**). Durante 1 segundo, cualquier jugador que intente avanzar en ese intervalo es detectado por los sensores y queda **eliminado inmediatamente**.
+
 3. **Los Jugadores (Corrutinas Concurrentes):**
-   - Se crea un grupo de jugadores (ej. 8 participantes).
-   - Cada jugador avanza ráfagas de 5 a 15 metros mientras la luz está verde. Algunos jugadores arriesgan más que otros, aumentando la probabilidad de moverse cuando la muñeca se gira.
+
+    - Se crea un grupo de jugadores (ej. 8 participantes).
+
+    - Cada jugador avanza ráfagas de 5 a 15 metros mientras la luz está verde. Algunos jugadores arriesgan más que otros, aumentando la probabilidad de moverse cuando la muñeca se gira.
+
 4. **Condición de Fin de Juego:**
-   - La partida termina cuando todos los jugadores han cruzado la meta o han sido eliminados.
+
+    - La partida termina cuando todos los jugadores han cruzado la meta o han sido eliminados.
 
 ---
 
@@ -310,5 +322,7 @@ Bajas totales (3): [Deok-su (#6), Il-nam (#4), Sang-woo (#2)]
 Si terminas la simulación básica y quieres llevar tu código al siguiente nivel:
 
 1. **Personalidades y Probabilidades:** Añade un campo `perfilRiesgo: Double` (entre 0.0 y 1.0) a cada jugador para que los más cautos (como Il-nam) avancen menos metros pero raramente sean eliminados, y los más agresivos (como Deok-su) avancen más metros con alto riesgo.
+
 2. **Segundo Juego (El Puente de Cristal):** Implementa una segunda fase donde los supervivientes deban cruzar un puente de 8 peldaños dobles (uno de cristal templado y otro de cristal frágil) usando una lista de tuplas `Pair<Boolean, Boolean>`.
+
 3. **Exportación de Estadísticas:** Utiliza funciones de extensión de colecciones (`groupBy`, `average`) para mostrar un informe final con los metros promedio recorridos antes de morir y la velocidad media de los ganadores.
