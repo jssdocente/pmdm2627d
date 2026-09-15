@@ -1,139 +1,177 @@
+# Genéricos en Kotlin (Generics)
 
+Los **genéricos** permiten definir clases, interfaces y funciones con **parámetros de tipo**, haciendo que el código sea reutilizable, flexible y estricto respecto a la seguridad de tipos (*Type Safety*), evitando los peligrosos casteos manuales en tiempo de ejecución.
 
-# Genéricos en Kotlin
+Como estudiantes de 2º DAM, ya conocéis los genéricos en Java (`List<String>`, `ArrayList<T>`). Kotlin comparte esa misma base pero introduce mejoras sustanciales, especialmente en el manejo de la **varianza de tipos** en el sitio de declaración (*Declaration-Site Variance* con `out` e `in`).
 
-En Kotlin, puedes utilizar genéricos para crear clases, funciones e interfaces que trabajen con tipos de datos de forma genérica. Los genéricos te permiten escribir código que es reutilizable y flexible, ya que puedes definir clases y funciones que trabajen con cualquier tipo de datos.
+---
 
-!!! info "Video explicativo en YouTube"
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/XPVa1vTJQts?si=ZmmU6D0RHGs84G5O" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+## 1. Clases Genéricas
 
-
-## Clases genéricas
-
-En Kotlin, puedes crear clases genéricas utilizando la palabra clave `class` seguida de los parámetros de tipo entre corchetes `<>`. Los parámetros de tipo se utilizan para definir los tipos de datos que la clase puede manejar.
+Para crear una clase genérica, se especifica uno o más parámetros de tipo entre corchetes angulares `<>` tras el nombre de la clase:
 
 ```kotlin
+// 'T' representa un tipo genérico que se concretará al instanciar la clase
 class Caja<T>(val contenido: T) {
     fun obtenerContenido(): T {
         return contenido
     }
 }
 
-val cajaEntero = Caja(10)
-val cajaCadena = Caja("Hola")
+fun main() {
+    // El compilador infiere los tipos automáticamente a partir del argumento:
+    val cajaNumero = Caja(42)            // Tipo inferido: Caja<Int>
+    val cajaTexto = Caja("Elden Ring")   // Tipo inferido: Caja<String>
 
-val entero: Int = cajaEntero.obtenerContenido()
-val cadena: String = cajaCadena.obtenerContenido()
+    val valorNumero: Int = cajaNumero.obtenerContenido()
+    val valorTexto: String = cajaTexto.obtenerContenido()
+
+    println("Caja numérica: $valorNumero | Caja textual: $valorTexto")
+}
 ```
 
-En el ejemplo anterior, se define una clase genérica `Caja` que tiene un parámetro de tipo `T`. La clase `Caja` tiene una propiedad `contenido` de tipo `T` y un método `obtenerContenido` que devuelve el contenido de la caja.
+---
 
-Se crean dos instancias de la clase `Caja` con tipos de datos diferentes: una con un entero y otra con una cadena. Se obtiene el contenido de cada caja y se asigna a variables de tipo `Int` y `String`.
+## 2. Funciones Genéricas
 
-## Funciones genéricas
-
-En Kotlin, puedes crear funciones genéricas utilizando la palabra clave `fun` seguida de los parámetros de tipo entre corchetes `<>`. Los parámetros de tipo se utilizan para definir los tipos de datos que la función puede manejar.
+Las funciones también pueden declarar sus propios parámetros de tipo antes del nombre de la función:
 
 ```kotlin
-fun <T> imprimirElemento(elemento: T) {
-    println(elemento)
+fun <T> imprimirElemento(etiqueta: String, elemento: T) {
+    println("[$etiqueta]: $elemento (Tipo: ${elemento?.let { it::class.simpleName } ?: "Null"})")
 }
 
-imprimirElemento(10)
-imprimirElemento("Hola")
+fun main() {
+    imprimirElemento("PUNTUACION", 9500)
+    imprimirElemento("USUARIO", "Admin")
+    imprimirElemento("FLAG", true)
+}
 ```
 
-En el ejemplo anterior, se define una función genérica `imprimirElemento` que toma un parámetro de tipo `T` y lo imprime en la consola. La función `imprimirElemento` se llama dos veces con un entero y una cadena como argumentos.
+---
 
-## Interfaces genéricas
+## 3. Restricciones de Tipo (*Upper Bounds*)
 
-En Kotlin, puedes crear interfaces genéricas utilizando la palabra clave `interface` seguida de los parámetros de tipo entre corchetes `<>`. Los parámetros de tipo se utilizan para definir los tipos de datos que la interfaz puede manejar.
+A veces no deseamos aceptar absolutamente cualquier tipo (`Any?`), sino restringir el tipo genérico a una familia concreta de clases que cumplan una condición o implementen una interfaz.
+
+Para ello se utiliza la sintaxis `<T : TipoLimite>`:
 
 ```kotlin
-interface Contenedor<T> {
-    fun obtenerContenido(): T
+// Restringimos 'T' para que deba ser un tipo que implemente Comparable
+fun <T : Comparable<T>> obtenerMayor(a: T, b: T): T {
+    return if (a > b) a else b
 }
 
-class Caja<T>(val contenido: T) : Contenedor<T> {
-    override fun obtenerContenido(): T {
-        return contenido
+fun main() {
+    // Funciona con números porque Int implementa Comparable<Int>
+    println("Mayor numérico: ${obtenerMayor(15, 42)}") // 42
+
+    // Funciona con textos porque String implementa Comparable<String> (orden alfabético)
+    println("Mayor alfabético: ${obtenerMayor("Zelda", "Mario")}") // Zelda
+}
+```
+
+---
+
+## 4. Varianza en Kotlin: Covarianza (`out`) y Contravarianza (`in`)
+
+En Java, los genéricos son invariantes (`List<String>` no es subtipo de `List<Object>`), lo que obliga a utilizar los complejos comodines de uso (*use-site variance*) como `<? extends T>` o `<? super T>`.
+
+Kotlin simplifica esto permitiendo declarar la varianza en la propia definición de la clase o interfaz (**Declaration-Site Variance**):
+
+### 4.1. Covarianza con `out` (Productores de datos)
+Si una clase genérica **solo produce o devuelve datos de tipo `T`** (solo en posiciones de retorno, nunca como argumentos de entrada en sus métodos), se marca con **`out`**. 
+
+Esto hace que `Contenedor<String>` sea tratado como subtipo de `Contenedor<Any>`:
+
+```kotlin
+// 'out T': T solo sale de la interfaz, nunca entra como parámetro
+interface FuenteDatos<out T> {
+    fun emitirDato(): T
+}
+
+class EmisorTexto : FuenteDatos<String> {
+    override fun emitirDato(): String = "Datos descargados"
+}
+
+fun main() {
+    val emisorEspecifico: FuenteDatos<String> = EmisorTexto()
+    // ¡Permitido gracias a 'out'! FuenteDatos<String> se asigna a FuenteDatos<Any>
+    val emisorGenerico: FuenteDatos<Any> = emisorEspecifico
+
+    println(emisorGenerico.emitirDato())
+}
+```
+
+### 4.2. Contravarianza con `in` (Consumidores de datos)
+Si una clase genérica **solo consume datos de tipo `T`** (solo como parámetros de entrada de sus métodos, nunca como valor de retorno), se marca con **`in`**:
+
+```kotlin
+// 'in T': T solo entra a los métodos para ser consumido
+interface ConsumidorLog<in T> {
+    fun registrar(item: T)
+}
+
+class ImpresorGeneral : ConsumidorLog<Any> {
+    override fun registrar(item: Any) {
+        println("[REGISTRO]: ${item.toString()}")
     }
 }
 
-val cajaEntero = Caja(10)
-val entero: Int = cajaEntero.obtenerContenido()
+fun main() {
+    val impresorGeneral: ConsumidorLog<Any> = ImpresorGeneral()
+    // ¡Permitido gracias a 'in'! Un ConsumidorLog<Any> puede actuar como ConsumidorLog<String>
+    val impresorTextos: ConsumidorLog<String> = impresorGeneral
+
+    impresorTextos.registrar("Mensaje de prueba de la app")
+}
 ```
 
-En el ejemplo anterior, se define una interfaz genérica `Contenedor` que tiene un parámetro de tipo `T`. La interfaz `Contenedor` define un método `obtenerContenido` que devuelve el contenido del contenedor.
+!!! tip "Regla mnemotécnica (PECS en Kotlin)"
+    - **`out` = Productor (Produce / Salida):** El tipo `T` se devuelve. Permite asignar `Subtipo` a `SuperTipo`.
+    - **`in` = Consumidor (Consume / Entrada):** El tipo `T` entra como parámetro. Permite asignar `SuperTipo` a `Subtipo`.
 
-Se crea una clase `Caja` que implementa la interfaz `Contenedor` con un tipo de dato `T`. Se crea una instancia de la clase `Caja` con un entero y se obtiene el contenido de la caja.
+---
 
-## Variance en genéricos
+## 5. Retos Prácticos
 
-En Kotlin, puedes utilizar la anotación `in` y `out` para especificar la variabilidad de los parámetros de tipo en clases y funciones genéricas.
+### 🟢 Reto 1: Repositorio genérico en memoria (Básico)
+Crea una clase genérica `AlmacenEnMemoria<T>` que mantenga una lista interna privada `MutableList<T>` con métodos `guardar(item: T)`, `obtenerTodos(): List<T>` y `tamano(): Int`. Pruébala guardando cadenas y enteros.
 
-- `in`: Indica que el parámetro de tipo solo se utiliza en posiciones de entrada (como parámetros de métodos).
-- `out`: Indica que el parámetro de tipo solo se utiliza en posiciones de salida (como valores de retorno de métodos).
+??? tip "Ver solución"
+    ```kotlin
+    class AlmacenEnMemoria<T> {
+        private val elementos = mutableListOf<T>()
 
-```kotlin
-interface Contenedor<out T> {
-    fun obtenerContenido(): T
-}
+        fun guardar(item: T) {
+            elementos.add(item)
+        }
 
-class Caja<in T>(val contenido: T) {
-    fun ponerContenido(nuevoContenido: T) {
-        // ...
+        fun obtenerTodos(): List<T> = elementos.toList() // Retorna copia inmutable
+
+        fun tamano(): Int = elementos.size
     }
-}
-```
 
-En el ejemplo anterior, se define una interfaz `Contenedor` con un parámetro de tipo `T` que solo se utiliza en posiciones de salida. La clase `Caja` tiene un parámetro de tipo `T` que solo se utiliza en posiciones de entrada.
-
-## Restricciones en genéricos
-
-En Kotlin, puedes utilizar restricciones para limitar los tipos de datos que se pueden utilizar en clases y funciones genéricas. Puedes utilizar restricciones para garantizar que los tipos de datos cumplan ciertos requisitos.
-
-```kotlin
-fun <T : Number> sumar(a: T, b: T): T {
-    return a + b
-}
-
-val resultadoEntero = sumar(1, 2)
-val resultadoFlotante = sumar(1.5, 2.5)
-```
-
-En el ejemplo anterior, se define una función `sumar` que toma dos parámetros de tipo `T` que deben ser subtipos de `Number`. La función `sumar` devuelve la suma de los dos parámetros.
-
-Se llama a la función `sumar` con un entero y un flotante como argumentos, y se asigna el resultado a variables de tipo `Int` y `Float`.
-
-## Genéricos en clases y funciones
-
-En Kotlin, los genéricos te permiten escribir código que es reutilizable y flexible, ya que puedes definir clases y funciones que trabajen con cualquier tipo de datos. Puedes utilizar genéricos en clases, funciones e interfaces para crear código genérico y flexible.
-
-```kotlin
-class Caja<T>(val contenido: T) {
-    fun obtenerContenido(): T {
-        return contenido
+    fun main() {
+        val repoJuegos = AlmacenEnMemoria<String>()
+        repoJuegos.guardar("Portal 2")
+        repoJuegos.guardar("Chrono Trigger")
+        println("Juegos en almacén (${repoJuegos.tamano()}): ${repoJuegos.obtenerTodos()}")
     }
-}
+    ```
 
-fun <T> imprimirElemento(elemento: T) {
-    println(elemento)
-}
+### 🟡 Reto 2: Función genérica con filtro y límite (Intermedio)
+Escribe una función genérica `filtrarMayoresQue<T : Comparable<T>>(lista: List<T>, umbral: T): List<T>` que reciba una lista de cualquier tipo comparable y devuelva una lista con solo los elementos estrictamente mayores que el umbral.
 
-interface Contenedor<T> {
-    fun obtenerContenido(): T
-}
+??? tip "Ver solución"
+    ```kotlin
+    fun <T : Comparable<T>> filtrarMayoresQue(lista: List<T>, umbral: T): List<T> {
+        return lista.filter { it > umbral }
+    }
 
-fun <T : Number> sumar(a: T, b: T): T {
-    return a + b
-}
-```
-
-En el ejemplo anterior, se muestran ejemplos de clases genéricas, funciones genéricas e interfaces genéricas en Kotlin. Puedes utilizar genéricos para escribir código que sea reutilizable y flexible, ya que puedes definir clases y funciones que trabajen con cualquier tipo de datos.
-
-## Recursos adicionales
-
-- [Documentación oficial de Kotlin sobre genéricos](https://kotlinlang.org/docs/generics.html)
-- [Tutorial de Kotlin sobre genéricos](https://play.kotlinlang.org/byExample/01_introduction/06_Generics)
-- [Ejemplos de genéricos en Kotlin](https://github.com/resuadam2/kotlin-apuntes/blob/main/src/main/kotlin/p2_oop/Generics.kt)
+    fun main() {
+        val notas = listOf(4.5, 7.0, 9.2, 3.8, 8.0)
+        val aprobadosAltos = filtrarMayoresQue(notas, 7.0)
+        println("Notas superiores a 7.0: $aprobadosAltos") // [9.2, 8.0]
+    }
+    ```

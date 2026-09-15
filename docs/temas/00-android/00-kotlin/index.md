@@ -1,48 +1,37 @@
-# El lenguaje Kotlin
+# El Lenguaje Kotlin: De Java al Desarrollo Móvil Moderno
 
-Kotlin es un lenguaje de programación moderno, conciso y seguro que se ejecuta en la máquina virtual de Java (JVM) y también se puede compilar a JavaScript o nativo. Fue desarrollado por JetBrains y Google en 2011 y se ha convertido en el lenguaje de programación oficial para el desarrollo de aplicaciones Android.
+Kotlin es un lenguaje de programación moderno, conciso y seguro que se ejecuta en la Máquina Virtual de Java (JVM) y se compila también a JavaScript o código nativo (Kotlin Multiplatform). Desarrollado por JetBrains y adoptado por Google en 2017 como el **lenguaje preferido (*Kotlin-First*) para el desarrollo de aplicaciones Android**, Kotlin sitúa a la **inmutabilidad**, la **seguridad contra nulos** y el **paradigma declarativo** en el núcleo de su arquitectura.
 
-## Características de Kotlin
+Este bloque formativo está diseñado específicamente para alumnos de 2º de DAM que ya poseen una base sólida en Java y Programación Orientada a Objetos, guiando la transición hacia la sintaxis idiomática requerida por **Jetpack Compose**, **Corrutinas** y la arquitectura recomendada por Google.
 
-- **Interoperabilidad con Java**: Kotlin es 100% interoperable con Java, lo que significa que puedes usar todas las bibliotecas de Java en tus proyectos de Kotlin y viceversa. 
+---
 
-- **Seguridad nula**: Kotlin tiene un sistema de tipos que elimina la posibilidad de errores de puntero nulo en tiempo de ejecución.
+## 🧭 Mapa de Contenidos
 
-- **Concisión y legibilidad**: Kotlin es un lenguaje conciso y fácil de leer. Puedes escribir menos código y hacer más cosas.   
+### Fundamentos y Seguridad
+- **[Variables, Tipos de Datos e Inmutabilidad](./11-variables-tipos-datos.md):** `val` vs `var`, por qué la inmutabilidad es crítica en entornos móviles, tipos numéricos, String templates y `lateinit` vs `by lazy`.
+- **[Control de Flujo: Expresiones y When](./12.1-when.md):** `if` como expresión, `when` exhaustivo, smart casting y comprobación de rangos.
+- **[Funciones y Lambdas (El Motor de Compose)](./13-funciones-lambdas.md):** Tipos de función, trailing lambdas, elevación del estado (*State Hoisting*) y lambdas con receptor.
+- **[Seguridad contra Nulos (Null Safety)](./14-null-safety.md):** Eliminación del `NullPointerException`, operadores `?.`, `?:`, `as?` y el modismo `objeto?.let { ... }`.
 
-- **Programación funcional**: Kotlin admite programación funcional y orientada a objetos. Puedes escribir funciones de orden superior, funciones lambda y mucho más.    
+### Programación Orientada a Objetos y Modelado
+- **[POO Idiomática en Kotlin](./21-poo.md):** Constructores primarios en cabecera, bloque `init`, propiedades con `field`, clases `open` y `final` por defecto.
+- **[Singletons, Companion Object y Objetos Anónimos](./22-objetos-anonimos.md):** Declaraciones de objeto (`object`), sustitución de `static` con `companion object` y expresiones anónimas.
+- **[Clases de Datos (Data Classes)](./23-data-classes.md):** Modelado de entidades, generación de `copy()` y derivación de estados inmutables.
+- **[Clases de Enumeración (Enum Classes)](./24-enum-classes.md):** Constantes con métodos, propiedad moderna `.entries` y `when` exhaustivo.
+- **[Tipos Sellados e Interfaces (Patrón UI State)](./26-sealed-classes.md):** `sealed interface`, `data object` y modelado arquitectural del estado de pantalla en Android.
+- **[Genéricos y Varianza](./25-genericos.md):** Clases y funciones genéricas, restricciones (`<T : Comparable<T>>`) y varianza `out` / `in`.
 
-- **Extensiones de funciones**: Kotlin te permite agregar nuevas funciones a las clases existentes sin heredar de ellas.    
+### Idiomática y Concurrencia
+- **[Funciones de Ámbito (Scope Functions)](./31-scope-functions.md):** Guía comparativa de `let`, `apply`, `also`, `run` y `with` con casos de uso en Android.
+- **[Listas y Operaciones Funcionales](./42-listas.md):** Listas inmutables `List` vs `MutableList`, adición funcional (`+`), transformaciones con `map`, `filter`, `groupBy`.
+- **[Colecciones Asociativas (Mapas y Sets)](./43-maps.md):** Almacenamiento clave-valor y conjuntos únicos.
+- **[Programación Asíncrona con Corrutinas](./51-corrutinas.md):** La analogía del camarero, ANR, funciones `suspend`, constructores `launch`/`async` y Dispatchers en Android.
 
-- **Clases de datos**: Kotlin tiene una sintaxis especial para crear clases de datos que contienen solo datos y no tienen comportamiento.   
+---
 
-- **Corrutinas**: Kotlin tiene soporte para corutinas, que te permiten escribir código asincrónico de manera secuencial.    
+## 🔗 Recursos Oficiales y de Práctica
 
-- **Jetpack Compose**: Kotlin es el lenguaje oficial para el desarrollo de aplicaciones Android con Jetpack Compose, un marco de trabajo moderno para la creación de interfaces de usuario. 
-
-## Apartados
-
-- [Variables y tipos de datos](./11-variables-tipos-datos.md)
-- [Expresiones vs. sentencias](./12-expresiones-vs-sentencias.md)
-- [Funciones y lambdas](./13-funciones-lambdas.md)
-- [Null Safety](./14-null-safety.md)
-- [Clases y objetos](./21-poo.md)
-- [Objetos anónimos](./22-objetos-anonimos.md)
-- [Data classes](./23-data-classes.md)
-- [Enum classes](./24-enum-classes.md)
-- [Genéricos](./25-genericos.md)
-- [Sealed classes](./26-sealed-classes.md)
-- [Scope functions](./31-scope-functions.md)
-- [Arrays en Kotlin](./41-arrays.md)
-- [Colecciones en Kotlin](./42-listas.md)
-- [Mapas en Kotlin](./43-maps.md)
-- [Sets en Kotlin](./44-sets.md)
-- [Corrutinas en Kotlin](./51-corrutinas.md)
-
-## Recursos
-
-- [Kotlin Playground](https://play.kotlinlang.org/): Un entorno de programación en línea para probar y aprender Kotlin.
-
-- [Apuntes Kotlin](https://github.com/resuadam2/kotlin-apuntes): Un repositorio con apuntes y ejemplos de Kotlin.
-
-- [Codelabs introductorios de Android](https://developer.android.com/courses/android-basics-compose/unit-1?hl=es-419): Codelabs introductorios de Android con Jetpack Compose.
+- **[Kotlin Playground](https://play.kotlinlang.org/):** Entorno de programación en línea oficial para probar y experimentar con fragmentos de código Kotlin sin instalar nada.
+- **[Documentación Oficial de Kotlin](https://kotlinlang.org/docs/home.html):** Manual de referencia oficial de JetBrains.
+- **[Android Basics with Compose](https://developer.android.com/courses/android-basics-compose/unit-1?hl=es-419):** Curso interactivo oficial de Google para el desarrollo moderno en Android.

@@ -1,271 +1,259 @@
+# Programación Orientada a Objetos Idiomática en Kotlin
 
+Como estudiantes de 2º de DAM, ya domináis los fundamentos de la Programación Orientada a Objetos en Java: encapsulación, herencia, interfaces y polimorfismo. Sin embargo, en Java estos conceptos conllevan una gran cantidad de código repetitivo (*boilerplate*): declaraciones redundantes de atributos, constructores extensos, y decenas de métodos *getter* y *setter*.
 
-# Programación orientada a objetos en Kotlin
+Kotlin conserva toda la potencia de la POO, pero reduce drásticamente el código necesario y adopta decisiones de diseño más seguras y modernas.
 
-La programación orientada a objetos (POO) es un paradigma de programación que se basa en el concepto de "objetos", que pueden contener datos en forma de campos (también conocidos como atributos) y código en forma de procedimientos (también conocidos como métodos).    
+---
 
-En Kotlin, puedes crear clases y objetos para modelar entidades del mundo real y encapsular datos y comportamientos relacionados. Kotlin es un lenguaje de programación orientado a objetos y admite todas las características tradicionales de la programación orientada a objetos, como la herencia, el polimorfismo, la encapsulación y la abstracción.  
+## 1. Clases y Constructor Primario Idiomático
 
-## Clases y objetos
-
-En Kotlin, puedes definir una clase utilizando la palabra clave `class` seguida del nombre de la clase y el cuerpo de la clase entre llaves `{}`. 
+En Kotlin, el **constructor primario** forma parte directa de la cabecera de la clase. Al declarar los parámetros con `val` o `var` en la propia cabecera, Kotlin crea automáticamente las propiedades y las inicializa con los valores recibidos:
 
 ```kotlin
-class Persona {
-    var nombre: String = ""
-    var edad: Int = 0
+// Sintaxis idiomática en una sola línea:
+// Declara la clase, define 2 propiedades (una inmutable, una mutable) y su constructor
+class Videojuego(val titulo: String, var precio: Double, val plataforma: String = "Android")
+
+fun main() {
+    // No existe la palabra clave 'new' en Kotlin
+    val juego = Videojuego("Hollow Knight", 14.99)
+
+    println(juego.titulo) // Acceso directo: Hollow Knight
+    juego.precio = 9.99   // Modificación permitida porque es 'var'
+    // juego.titulo = "Otro" // ERROR: 'titulo' es 'val'
 }
 ```
 
-En el ejemplo anterior, se define una clase `Persona` con dos propiedades `nombre` y `edad`. Las propiedades de la clase se inicializan con valores predeterminados.
+!!! info "Comparativa con Java"
+    El código anterior en Java requeriría aproximadamente 25 líneas: 3 atributos privados, un constructor de 3 argumentos y 5 métodos `getters`/`setters`. En Kotlin se expresa de forma concisa y segura en una única línea.
 
-Para crear un objeto de una clase en Kotlin, puedes utilizar la palabra clave `val` o `var` seguida del nombre del objeto, el operador de asignación `=` y la invocación del constructor de la clase.
+---
 
-```kotlin
-val persona = Persona()
-persona.nombre = "Juan"
-persona.edad = 30
-```
+## 2. El Bloque de Inicialización: `init`
 
-En el ejemplo anterior, se crea un objeto `persona` de la clase `Persona` y se inicializan las propiedades `nombre` y `edad` del objeto.
-
-## Propiedades y métodos
-
-En Kotlin, puedes definir propiedades y métodos en una clase utilizando la palabra clave `var` o `val` seguida del nombre de la propiedad o el método y el tipo de dato de la propiedad o el método.
+Dado que el constructor primario no puede contener código ejecutable (solo declara parámetros), cualquier lógica de validación o inicialización que deba ejecutarse al instanciar el objeto se coloca dentro de uno o varios bloques `init`:
 
 ```kotlin
-class Persona {
-    var nombre: String = ""
-    var edad: Int = 0
+class Personaje(val nombre: String, var puntosVida: Int) {
 
-    fun saludar() {
-        println("Hola, soy $nombre")
+    init {
+        require(nombre.isNotBlank()) { "El nombre del personaje no puede estar vacío." }
+        require(puntosVida > 0) { "Los puntos de vida iniciales deben ser mayores que cero." }
+        println("-> Personaje '$nombre' instanciado con $puntosVida PV.")
     }
 }
 ```
 
-En el ejemplo anterior, se define una clase `Persona` con dos propiedades `nombre` y `edad`, y un método `saludar` que imprime un mensaje de saludo con el nombre de la persona.
-
-Para acceder a las propiedades y métodos de un objeto en Kotlin, puedes utilizar el operador de acceso `.` seguido del nombre de la propiedad o el método.
-
-```kotlin
-val persona = Persona()
-persona.nombre = "Juan"
-persona.edad = 30
-persona.saludar()
-```
-
-En el ejemplo anterior, se crea un objeto `persona` de la clase `Persona` y se inicializan las propiedades `nombre` y `edad` del objeto. Luego, se llama al método `saludar` en el objeto `persona` para imprimir un mensaje de saludo con el nombre de la persona.
-
-!!! info "Diferencias con Java"
-    A diferencia de Java, en Kotlin, las propiedades y los métodos de una clase son públicos por defecto, lo que significa que se pueden acceder desde cualquier parte del código.
-
-
-## Encapsulación
-
-En Kotlin, puedes encapsular propiedades y métodos en una clase utilizando los modificadores de acceso `public`, `protected`, `private` y `internal`.
-
-- `public`: Las propiedades y métodos públicos son accesibles desde cualquier parte del código.
-- `protected`: Las propiedades y métodos protegidos son accesibles desde la clase actual y las clases derivadas.
-- `private`: Las propiedades y métodos privados son accesibles solo desde la clase actual.
-- `internal`: Las propiedades y métodos internos son accesibles desde el módulo actual.
+### Constructores Secundarios
+Si se necesitan constructores alternativos, pueden declararse con la palabra clave `constructor`. En Kotlin, **todo constructor secundario debe delegar obligatoriamente en el constructor primario** mediante `this(...)`:
 
 ```kotlin
-class Persona {
-    var nombre: String = ""
-        private set
-    var edad: Int = 0
-        private set
+class Enemigo(val tipo: String, var daño: Int) {
 
-    fun saludar() {
-        println("Hola, soy $nombre")
+    // Constructor secundario que asigna daño por defecto según dificultad
+    constructor(tipo: String) : this(tipo, daño = 10) {
+        println("Enemigo básico creado con daño estándar.")
     }
 }
 ```
 
-En el ejemplo anterior, se define una clase `Persona` con dos propiedades `nombre` y `edad` que se han encapsulado con el modificador de acceso `private`. Esto significa que las propiedades `nombre` y `edad` solo se pueden acceder y modificar dentro de la clase `Persona`.
+---
 
-Para acceder a las propiedades de una clase en Kotlin, puedes utilizar los métodos de acceso `get` y `set` para obtener y establecer el valor de una propiedad.
+## 3. Propiedades y Acceso (`field`)
 
-```kotlin
-val persona = Persona()
-persona.nombre = "Juan"
-persona.edad = 30
-persona.saludar()
-```
+En Kotlin, **todas las propiedades son públicas por defecto**, pero no accedes directamente al campo de memoria, sino a través de *getters* y *setters* generados de forma transparente por el compilador:
 
-En el ejemplo anterior, se crea un objeto `persona` de la clase `Persona` y se inicializan las propiedades `nombre` y `edad` del objeto. 
+- Para propiedades `val`: se genera automáticamente un *getter*.
+- Para propiedades `var`: se generan automáticamente un *getter* y un *setter*.
 
-Sin embargo, al intentar modificar las propiedades `nombre` y `edad` desde fuera de la clase `Persona`, se produce un error de compilación debido a que las propiedades están encapsuladas con el modificador de acceso `private`.
-
-### Setters y Getters personalizados
-
-En Kotlin, puedes definir setters y getters personalizados para las propiedades de una clase utilizando la palabra clave `set` y `get` seguida de la lógica personalizada para establecer y obtener el valor de la propiedad.
+### Getters y Setters Personalizados
+Si necesitas añadir validación o formateo al leer o modificar una propiedad, puedes implementar tu propio `get()` o `set()`. Dentro del setter, la palabra reservada `field` (*Backing Field*) representa el valor real almacenado en memoria:
 
 ```kotlin
-class Persona {
-    var nombre: String = ""
-        set(value) {
-            field = value.capitalize()
-        }
-    var edad: Int = 0
-        set(value) {
-            field = if (value >= 0) value else 0
+class CuentaBancaria {
+    var saldo: Double = 0.0
+        set(nuevoValor) {
+            if (nuevoValor >= 0) {
+                field = nuevoValor // 'field' evita una recursión infinita
+            } else {
+                println("Error: El saldo no puede ser negativo.")
+            }
         }
 
-    fun saludar() {
-        println("Hola, soy $nombre")
+    // Propiedad calculada (no almacena valor en memoria, solo calcula al pedirla)
+    val tieneFondos: Boolean
+        get() = saldo > 0.0
+}
+```
+
+---
+
+## 4. Modificadores de Visibilidad
+
+Kotlin ofrece cuatro modificadores de visibilidad:
+
+| Modificador | En Clases y Miembros | En Archivos (Nivel Superior) |
+| :--- | :--- | :--- |
+| **`public` (por defecto)** | Visible desde cualquier parte del proyecto. | Visible en todo el proyecto. |
+| **`private`** | Visible únicamente dentro de la clase que lo declara. | Visible solo dentro del mismo archivo `.kt`. |
+| **`protected`** | Visible en la clase y en sus subclases. | *No aplicable a nivel de archivo.* |
+| **`internal`** | **Visible en todo el módulo actual.** | **Visible en todo el módulo actual.** |
+
+!!! tip "El modificador `internal` en Android"
+    El modificador `internal` es sumamente útil en la arquitectura modular de Android (cuando una app se divide en módulos Gradle como `:core`, `:database`, `:feature-login`). Permite que las clases se comuniquen libremente dentro del mismo módulo sin exponer detalles internos al resto de la aplicación.
+
+---
+
+## 5. Herencia: `final` por Defecto y la Palabra Clave `open`
+
+En Java, las clases son heredables y los métodos son sobrescribibles a menos que se use la palabra `final`. 
+
+En la ingeniería de software moderna, esto suele provocar problemas de acoplamiento. Siguiendo el principio de diseño de Joshua Bloch (*"Diseña y documenta para la herencia, o prohíbela"*), **en Kotlin todas las clases y métodos son `final` por defecto**:
+
+- Para permitir que una clase pueda ser heredada, debes marcarla explícitamente como **`open`**.
+- Para permitir que un método pueda ser sobrescrito, debes marcarlo como **`open`**.
+- La subclase que sobrescribe el método debe indicar obligatoriamente **`override`**.
+
+```kotlin
+// Clase base abierta a la herencia
+open class Vehiculo(val marca: String, val modelo: String) {
+    open fun acelerar() {
+        println("El vehículo está acelerando...")
+    }
+}
+
+// Subclase que hereda e invoca el constructor de la clase base
+class Coche(marca: String, modelo: String, val puertas: Int) : Vehiculo(marca, modelo) {
+
+    override fun acelerar() {
+        super.acelerar()
+        println("El coche $marca acelera con motor de combustión.")
+    }
+}
+
+fun main() {
+    val miCoche = Coche("Toyota", "Corolla", 5)
+    miCoche.acelerar()
+}
+```
+
+---
+
+## 6. Clases Abstractas e Interfaces
+
+### Clases Abstractas (`abstract`)
+No pueden instanciarse directamente y pueden contener tanto métodos abstractos (sin cuerpo) como métodos implementados:
+
+```kotlin
+abstract class FormaGeometrica {
+    abstract fun calcularArea(): Double
+
+    fun imprimirDescripcion() {
+        println("Área calculada: ${calcularArea()} cm²")
     }
 }
 ```
 
-En el ejemplo anterior, se define una clase `Persona` con dos propiedades `nombre` y `edad` que tienen setters personalizados. El setter de la propiedad `nombre` capitaliza el valor de la propiedad, y el setter de la propiedad `edad` establece el valor de la propiedad en `0` si es menor que `0`.
-
-Para acceder a las propiedades de una clase en Kotlin, puedes utilizar los métodos de acceso `get` y `set` para obtener y establecer el valor de una propiedad.
-
-```kotlin
-val persona = Persona()
-persona.nombre = "juan"
-persona.edad = -10
-persona.saludar()
-```
-
-En el ejemplo anterior, se crea un objeto `persona` de la clase `Persona` y se inicializan las propiedades `nombre` y `edad` del objeto.
-
-## Constructores
-
-En Kotlin, puedes definir un constructor primario utilizando la palabra clave `constructor` seguida de los parámetros del constructor. 
-
-Sin embargo, en Kotlin, puedes omitir la palabra clave `constructor` y definir los parámetros del constructor directamente en la declaración de la clase.
+### Interfaces (`interface`)
+Definen contratos que las clases deben cumplir. En Kotlin, **las interfaces pueden contener implementaciones por defecto** para sus métodos:
 
 ```kotlin
-class Persona(nombre: String, edad: Int) {
-    var nombre: String = nombre
-    var edad: Int = edad
-}
-```
+interface Reproducible {
+    fun reproducir() // Método abstracto
 
-En el ejemplo anterior, se define una clase `Persona` con un constructor primario que toma dos parámetros `nombre` y `edad`. Las propiedades de la clase se inicializan con los valores de los parámetros del constructor.
-
-Para crear un objeto de una clase con un constructor primario en Kotlin, puedes utilizar la palabra clave `val` o `var` seguida del nombre del objeto, el operador de asignación `=` y la invocación del constructor de la clase con los argumentos del constructor.
-
-```kotlin
-val persona = Persona("Juan", 30)
-```
-
-En el ejemplo anterior, se crea un objeto `persona` de la clase `Persona` utilizando el constructor primario y se inicializan las propiedades `nombre` y `edad` del objeto.
-
-### Constructores secundarios
-
-En Kotlin, puedes definir constructores secundarios utilizando la palabra clave `constructor` seguida de los parámetros del constructor. 
-
-```kotlin
-class Persona {
-    var nombre: String = ""
-    var edad: Int = 0
-
-    constructor(nombre: String, edad: Int) {
-        this.nombre = nombre
-        this.edad = edad
-    }
-}
-```
-
-En el ejemplo anterior, se define una clase `Persona` con un constructor secundario que toma dos parámetros `nombre` y `edad`. Las propiedades de la clase se inicializan con los valores de los parámetros del constructor secundario.
-
-Para crear un objeto de una clase con un constructor secundario en Kotlin, puedes utilizar la palabra clave `val` o `var` seguida del nombre del objeto, el operador de asignación `=` y la invocación del constructor secundario de la clase con los argumentos del constructor.
-
-```kotlin
-val persona = Persona("Juan", 30)
-```
-
-En el ejemplo anterior, se crea un objeto `persona` de la clase `Persona` utilizando el constructor secundario y se inicializan las propiedades `nombre` y `edad` del objeto.
-
-## Herencia
-
-En Kotlin, puedes crear una clase que herede de otra clase utilizando la palabra clave `:` seguida del nombre de la clase base.
-
-```kotlin
-open class Persona {
-    var nombre: String = ""
-    var edad: Int = 0
-}
-
-class Empleado : Persona() {
-    var salario: Double = 0.0
-}
-```
-
-En el ejemplo anterior, se define una clase `Persona` con dos propiedades `nombre` y `edad`, y una clase `Empleado` que hereda de la clase `Persona` y agrega una propiedad `salario`.
-
-Para crear un objeto de una clase derivada en Kotlin, puedes utilizar la palabra clave `val` o `var` seguida del nombre del objeto, el operador de asignación `=` y la invocación del constructor de la clase derivada.
-
-```kotlin
-val empleado = Empleado()
-empleado.nombre = "Juan"
-empleado.edad = 30
-empleado.salario = 1000.0
-```
-
-En el ejemplo anterior, se crea un objeto `empleado` de la clase `Empleado` y se inicializan las propiedades `nombre`, `edad` y `salario` del objeto.
-
-## Polimorfismo
-
-En Kotlin, puedes utilizar el polimorfismo para tratar un objeto de una clase derivada como un objeto de la clase base.
-
-```kotlin
-open class Persona {
-    open fun saludar() {
-        println("Hola, soy una persona")
+    fun pausar() {   // Implementación por defecto opcional
+        println("Reproducción pausada por defecto.")
     }
 }
 
-class Empleado : Persona() {
-    override fun saludar() {
-        println("Hola, soy un empleado")
+class Cancion(val titulo: String) : Reproducible {
+    override fun reproducir() {
+        println("Reproduciendo pista musical: $titulo")
     }
+    // No está obligada a implementar pausar(), usará la implementación por defecto
 }
 ```
 
-En el ejemplo anterior, se define una clase `Persona` con un método `saludar` y una clase `Empleado` que hereda de la clase `Persona` y sobrescribe el método `saludar`.
+---
 
-!!! tip "La palabra reservada open"
-    La palabra reservada `open` se utiliza para marcar una clase o un miembro de una clase como "sobreseíble", lo que significa que puede ser heredado y sobrescrito por clases derivadas. 
+## 7. Retos Prácticos
 
+### 🟢 Reto 1: Entidad de Dominio (Básico)
+Crea una clase `Usuario` con constructor primario que contenga `id: Long`, `email: String` y `esAdmin: Boolean = false`. Añade un bloque `init` que verifique que el correo electrónico contiene el carácter `'@'`.
 
-Para utilizar el polimorfismo en Kotlin, puedes crear un objeto de la clase derivada y asignarlo a una variable de la clase base.
-
-```kotlin
-val persona: Persona = Empleado()
-persona.saludar()
-```
-
-En el ejemplo anterior, se crea un objeto `empleado` de la clase `Empleado` y se asigna a una variable `persona` de la clase `Persona`. Al llamar al método `saludar` en la variable `persona`, se ejecuta la implementación del método `saludar` de la clase `Empleado`.
-
-## Abstracción
-
-En Kotlin, puedes utilizar la abstracción para definir una clase base con métodos abstractos que deben ser implementados por las clases derivadas.
-
-```kotlin
-abstract class Persona {
-    abstract fun saludar()
-}
-
-class Empleado : Persona() {
-    override fun saludar() {
-        println("Hola, soy un empleado")
+??? tip "Ver solución"
+    ```kotlin
+    class Usuario(val id: Long, val email: String, val esAdmin: Boolean = false) {
+        init {
+            require(email.contains("@")) { "El formato del email es incorrecto." }
+        }
     }
-}
-```
 
-En el ejemplo anterior, se define una clase `Persona` con un método abstracto `saludar` y una clase `Empleado` que hereda de la clase `Persona` e implementa el método `saludar`.
+    fun main() {
+        val user1 = Usuario(1L, "admin@empresa.com", esAdmin = true)
+        println("Usuario creado: ${user1.email}")
+    }
+    ```
 
-Para utilizar la abstracción en Kotlin, puedes crear un objeto de la clase derivada y asignarlo a una variable de la clase base.
+### 🟡 Reto 2: Encapsulación con `field` (Intermedio)
+Diseña una clase `Termostato` con una propiedad `temperatura` en grados Celsius. El setter debe impedir que la temperatura se ajuste a valores inferiores a -50°C o superiores a 60°C, imprimiendo una advertencia si se intenta. Añade una propiedad calculada `temperaturaFahrenheit`.
 
-```kotlin
-val persona: Persona = Empleado()
-persona.saludar()
-```
+??? tip "Ver solución"
+    ```kotlin
+    class Termostato(temperaturaInicial: Double = 20.0) {
+        var temperatura: Double = temperaturaInicial
+            set(valor) {
+                if (valor in -50.0..60.0) {
+                    field = valor
+                } else {
+                    println("Advertencia: Temperatura fuera de rango operativo seguro.")
+                }
+            }
 
-En el ejemplo anterior, se crea un objeto `empleado` de la clase `Empleado` y se asigna a una variable `persona` de la clase `Persona`. Al llamar al método `saludar` en la variable `persona`, se ejecuta la implementación del método `saludar` de la clase `Empleado`.
+        val temperaturaFahrenheit: Double
+            get() = (temperatura * 9 / 5) + 32
+    }
 
+    fun main() {
+        val t = Termostato(22.0)
+        println("Temperatura actual: ${t.temperatura}°C (${t.temperaturaFahrenheit}°F)")
+        t.temperatura = 100.0 // Rango no permitido
+    }
+    ```
+
+### 🔴 Reto 3: Jerarquía polimórfica para GameVault (Avanzado)
+Diseña una clase base abierta `ItemInventario(val nombre: String, val peso: Double)` con un método abierto `usar()`. Crea dos clases derivadas: `Pocion(nombre: String, peso: Double, val curacion: Int)` y `Arma(nombre: String, peso: Double, val daño: Int)`. Crea una lista polimórfica `List<ItemInventario>` y recórrela invocando el método `usar()` de cada elemento.
+
+??? tip "Ver solución"
+    ```kotlin
+    open class ItemInventario(val nombre: String, val peso: Double) {
+        open fun usar() {
+            println("Usando objeto genérico: $nombre")
+        }
+    }
+
+    class Pocion(nombre: String, peso: Double, val curacion: Int) : ItemInventario(nombre, peso) {
+        override fun usar() {
+            println("Bebiendo $nombre: ¡Recuperas $curacion puntos de vida!")
+        }
+    }
+
+    class Arma(nombre: String, peso: Double, val daño: Int) : ItemInventario(nombre, peso) {
+        override fun usar() {
+            println("Blandiendo $nombre: ¡Infliges $daño puntos de daño!")
+        }
+    }
+
+    fun main() {
+        val inventario: List<ItemInventario> = listOf(
+            Pocion("Poción de Salud Menor", 0.5, 50),
+            Arma("Espada Maestra", 3.2, 120),
+            Pocion("Elixir de Maná", 0.4, 30)
+        )
+
+        for (item in inventario) {
+            item.usar() // Polimorfismo en acción
+        }
+    }
+    ```

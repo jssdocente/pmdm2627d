@@ -1,198 +1,325 @@
+# Variables, Tipos de Datos e Inmutabilidad en Kotlin
 
+En Kotlin, el diseño del sistema de tipos busca **concisión, seguridad en tiempo de compilación y predictibilidad**. A diferencia de Java, Kotlin prescinde de las palabras clave para primitivos (`int`, `boolean`), trata todos los tipos como objetos de primera clase y sitúa a la **inmutabilidad** en el centro de su arquitectura.
 
-# Tipos de variables y datos en Kotlin
+---
 
-En Kotlin las variables pueden declararse de dos formas, de forma explícita o de forma implícita. En el caso de las variables explícitas, se debe indicar el tipo de dato que almacenará la variable, mientras que en las variables implícitas, el tipo de dato se infiere automáticamente por el compilador.
+## 1. Declaración de Variables: `val` vs `var`
 
-!!! warning "Sobre la inferencia de tipos"
-    Que el tipo de dato se infiera automáticamente no quiere decir que Kotlin sea un lenguaje de tipado dinámico, ya que una vez que se asigna un tipo de dato a una variable, no se puede cambiar.
+Kotlin ofrece dos palabras clave para declarar variables:
 
-
-## Variables explícitas
-
-Para declarar una variable de forma explícita en Kotlin, se debe indicar el tipo de dato que almacenará la variable seguido del nombre de la variable y opcionalmente de su valor inicial.
-
-```kotlin   
-val nombre: String = "Ejemplo"
-val edad: Int = 25
-```
-
-En el ejemplo anterior, se declaran dos variables de forma explícita, una de tipo `String` llamada `nombre` y otra de tipo `Int` llamada `edad`.
-
-## Variables implícitas
-
-Para declarar una variable de forma implícita en Kotlin, se debe utilizar la palabra clave `val` o `var` seguida del nombre de la variable y opcionalmente de su valor inicial. En este caso, el tipo de dato se infiere automáticamente por el compilador.
+- **`val` (Value / Inmutable):** Define una referencia de solo lectura. Una vez asignado su valor, **no puede reasignarse**. Equivale a una variable `final` en Java.
+- **`var` (Variable / Mutable):** Define una referencia cuyo valor puede cambiar a lo largo del tiempo mediante reasignación.
 
 ```kotlin
-val nombre = "Ejemplo"
-val edad = 25
+val identificador: Int = 101 // No puede cambiar de valor
+// identificador = 102        // ERROR de compilación: Val cannot be reassigned
+
+var contador: Int = 0        // Puede reasignarse
+contador += 1                // Válido
 ```
 
-En el ejemplo anterior, se declaran dos variables de forma implícita, una de tipo `String` llamada `nombre` y otra de tipo `Int` llamada `edad`.
+!!! tip "Regla de oro idiomática"
+    En Kotlin y en el desarrollo Android moderno, **usa `val` por defecto siempre**. Utiliza `var` únicamente cuando exista una justificación clara de cambio de estado continuo (por ejemplo, contadores o acumuladores en bucles locales).
 
-## Tipos de datos primitivos
+---
 
-En Kotlin, los tipos de datos primitivos son los mismos que en Java, pero con algunas diferencias en la forma en que se declaran.
+## 2. Inferencia de Tipos
 
-- **Byte**: Almacena números enteros de 8 bits.
-- **Short**: Almacena números enteros de 16 bits.
-- **Int**: Almacena números enteros de 32 bits.
-- **Long**: Almacena números enteros de 64 bits.
-- **Float**: Almacena números de punto flotante de 32 bits.
-- **Double**: Almacena números de punto flotante de 64 bits.
-- **Char**: Almacena caracteres Unicode de 16 bits.
-- **Boolean**: Almacena valores booleanos (`true` o `false`).
+Kotlin es un lenguaje de **tipado estático**. Sin embargo, su compilador es capaz de deducir (*inferir*) el tipo de dato analizando el valor de la asignación inicial:
 
 ```kotlin
-val entero: Int = 10
-val flotante: Float = 10.5f
-val caracter: Char = 'A'
-val booleano: Boolean = true
+// Declaración explícita (innecesariamente verbosa en este caso)
+val nombre: String = "Link"
+val nivel: Int = 50
+
+// Declaración con inferencia de tipos (preferida)
+val alias = "Zelda" // El compilador infiere String
+val puntuacion = 9800 // El compilador infiere Int
+val factorMultiplicador = 1.75 // El compilador infiere Double
 ```
 
-## Tipos de datos compuestos
+!!! warning "Inferencia no significa tipado dinámico"
+    Una vez que el compilador asigna un tipo a una variable (ya sea explícito o inferido), ese tipo queda fijado para siempre. No es posible asignar un tipo diferente a posteriori:
+    ```kotlin
+    var edad = 20
+    // edad = "veinte" // ERROR de compilación: Type mismatch. Required: Int, Found: String
+    ```
 
-Además de los tipos de datos primitivos, Kotlin también tiene tipos de datos compuestos que permiten almacenar colecciones de datos.
+---
 
-- **Array**: Almacena una colección de elementos del mismo tipo.
-- **List**: Almacena una colección de elementos ordenados.
-- **Set**: Almacena una colección de elementos únicos.
-- **Map**: Almacena una colección de pares clave-valor.
+## 3. La Inmutabilidad en el Desarrollo Moderno
+
+En la programación tradicional en Java es habitual crear objetos mutables y alterar sus propiedades mediante *setters* en cualquier parte del código. Aunque parece cómodo, este enfoque es una de las mayores fuentes de errores (*bugs*) en aplicaciones móviles.
+
+### 3.1. Inmutabilidad de la Referencia vs Inmutabilidad del Objeto
+
+Uno de los errores más comunes al iniciarse en Kotlin es confundir una variable declarada con `val` con una estructura de datos inmutable:
 
 ```kotlin
-val numeros = arrayOf(1, 2, 3, 4, 5)
-val nombres = listOf("Juan", "María", "Pedro")
-val colores = setOf("Rojo", "Verde", "Azul")
-val edades = mapOf("Juan" to 25, "María" to 30, "Pedro" to 35)
+// 1. Variable 'val' con objeto MUTABLE
+val usuariosConectados = mutableListOf("Ana", "Carlos")
+usuariosConectados.add("Elena") // ¡VÁLIDO! El contenido de la lista ha mutado.
+// usuariosConectados = mutableListOf() // ERROR: La referencia 'val' no se puede reasignar.
+
+// 2. Variable 'val' con objeto INMUTABLE (Solo lectura)
+val rolesPermitidos = listOf("ADMIN", "USER", "GUEST")
+// rolesPermitidos.add("SUPERADMIN") // ERROR: listOf() no dispone de método add()
 ```
 
-## Conversión de tipos
+Podemos clasificar el estado según esta matriz:
 
-En Kotlin, la conversión de tipos se realiza de forma segura y explícita utilizando funciones específicas para cada tipo de dato.
+| Variable | Objeto / Contenido | ¿Se puede reasignar la variable? | ¿Se pueden modificar los datos internos? | Ejemplo en Kotlin |
+| :--- | :--- | :--- | :--- | :--- |
+| **`val`** | Inmutable | ❌ No | ❌ No | `val lista = listOf(1, 2)` |
+| **`val`** | Mutable | ❌ No | ✅ Sí | `val lista = mutableListOf(1, 2)` |
+| **`var`** | Inmutable | ❌ Sí | ❌ No | `var lista = listOf(1, 2)` |
+| **`var`** | Mutable | ✅ Sí | ✅ Sí | `var lista = mutableListOf(1, 2)` |
+
+### 3.2. ¿Por qué la inmutabilidad es crítica en entornos móviles?
+
+1. **Eliminación de efectos secundarios (*Side Effects*):**
+   Cuando una función recibe un objeto inmutable, tenemos la certeza absoluta de que ninguna otra parte del sistema podrá alterar sus datos mientras se procesa. El código se vuelve determinista y predecible.
+2. **Seguridad en Concurrencia (*Thread Safety* sin bloqueos):**
+   En Android, la aplicación ejecuta constantemente tareas en segundo plano (peticiones de red con Retrofit/Ktor, lecturas de base de datos con Room, sensores) mientras el hilo principal dibuja la interfaz a 60/120 fps. Si dos hilos acceden al mismo dato mutable, se producen **condiciones de carrera (*Race Conditions*)** que requieren bloqueos pesados (`synchronized`, semáforos) capaces de congelar la pantalla. Los datos inmutables pueden leerse desde 100 hilos concurrentes simultáneamente sin riesgo alguno.
+3. **Facilidad de Depuración y Pruebas Unitarias:**
+   Un estado inmutable representa una instantánea fija de la aplicación en un instante de tiempo. Esto permite reproducir errores con total fidelidad en los tests unitarios.
+
+!!! info "Anticipo: Inmutabilidad y Jetpack Compose"
+    En el bloque de **Jetpack Compose** comprobaremos que la inmutabilidad es el motor que permite la **recomposición reactiva**: Compose solo actualiza la pantalla si detecta que la instancia del estado ha cambiado. Si mutamos una propiedad interna de un objeto, Compose no se percatará del cambio y la interfaz parecerá "congelada".
+
+---
+
+## 4. Tipos de Datos en Kotlin
+
+En Kotlin no existen tipos primitivos con sintaxis especial como `int` o `double` en Java. **Todo en Kotlin es un objeto** con métodos y propiedades. En tiempo de compilación, el compilador de Kotlin optimiza estos tipos y los mapea a los primitivos eficientes de la máquina virtual Java (JVM) siempre que es posible.
+
+### 4.1. Tipos Numéricos
+
+| Tipo | Tamaño en memoria | Rango aproximado | Ejemplo |
+| :--- | :--- | :--- | :--- |
+| **`Byte`** | 8 bits | -128 a 127 | `val b: Byte = 100` |
+| **`Short`** | 16 bits | -32.768 a 32.767 | `val s: Short = 20000` |
+| **`Int`** | 32 bits | -2³¹ a 2³¹ - 1 (aprox. 2.100 millones) | `val i = 42` |
+| **`Long`** | 64 bits | -2⁶³ a 2⁶³ - 1 | `val l = 1000L` |
+| **`Float`** | 32 bits (precisión simple) | ~6-7 dígitos decimales | `val f = 3.14f` |
+| **`Double`** | 64 bits (doble precisión) | ~15-16 dígitos decimales | `val d = 3.1415926535` |
 
 ```kotlin
-val numero: Int = 10
-val texto: String = numero.toString()
-
-val texto: String = "10"
-val numero: Int = texto.toInt()
+// Los números admiten guiones bajos para mejorar la legibilidad visual
+val unMillon = 1_000_000
+val tarjetaCredito = 1234_5678_9012_3456L
 ```
 
-En el primer ejemplo, se convierte un número entero a una cadena de texto utilizando la función `toString()`. En el segundo ejemplo, se convierte una cadena de texto a un número entero utilizando la función `toInt()`.   
+### 4.2. Caracteres y Booleanos
 
-## Sobre las variables mutables e inmutables
-
-En Kotlin, las variables se pueden declarar como `val` (inmutables) o `var` (mutables). Las variables inmutables no pueden cambiar su valor una vez asignado, mientras que las variables mutables pueden cambiar su valor en cualquier momento.
+- **`Char`:** Representa un carácter Unicode individual de 16 bits delimitado por comillas simples (`'`). A diferencia de Java, un `Char` no puede tratarse directamente como un número entero sin conversión explícita.
+- **`Boolean`:** Representa valores de verdad lógica: `true` o `false`.
 
 ```kotlin
-val nombre: String = "Ejemplo" // Variable inmutable
-var edad: Int = 25 // Variable mutable
+val letra: Char = 'A'
+val activado: Boolean = true
 ```
 
-En el ejemplo anterior, la variable `nombre` es inmutable, por lo que su valor no puede cambiar una vez asignado. La variable `edad`, en cambio, es mutable, por lo que su valor puede cambiar en cualquier momento.    
+---
 
-### Sobre la mutabilidad y la inmutabilidad
+## 5. Cadenas de Texto (`String`)
 
-La inmutabilidad es una característica importante en Kotlin, ya que ayuda a prevenir los errores de programación al evitar que los valores de las variables cambien de forma inesperada. Al utilizar variables inmutables, se puede escribir código más seguro y predecible, lo que facilita la depuración y el mantenimiento del código.   
+En Kotlin, al igual que en Java, las cadenas `String` son **completamente inmutables**. Cualquier operación de transformación (como concatenar o reemplazar) devuelve una nueva instancia en memoria.
 
-Cuándo trabajamos con listas o arrays, podemos modificar los elementos de la lista, pero no podemos cambiar la referencia de la lista. 
+### 5.1. Plantillas de Cadenas (*String Templates*)
+
+En lugar de recurrir a la concatenación tradicional con el operador `+`, Kotlin permite interpolar variables y expresiones directamente dentro del literal de cadena mediante el símbolo `$`:
 
 ```kotlin
-val lista = mutableListOf(1, 2, 3, 4, 5)
-lista[0] = 10 // Modifica el elemento en la posición 0
-lista = mutableListOf(6, 7, 8, 9, 10) // Error de compilación
+val usuario = "Sofía"
+val intentos = 3
+
+// Interpolación simple de variable
+println("Bienvenida, $usuario. Te quedan $intentos intentos.")
+
+// Interpolación de expresiones arbitrarias con llaves ${ ... }
+val precio = 19.99
+val unidades = 3
+println("Total a pagar: ${precio * unidades} €")
+println("Longitud del nombre: ${usuario.length}")
 ```
 
-En el ejemplo anterior, se modifica el elemento en la posición `0` de la lista `lista`, pero no se puede cambiar la referencia de la lista. Si se intenta asignar una nueva lista a la variable `lista`, se produce un error de compilación.
+### 5.2. Cadenas Multilínea (*Raw Strings*)
 
-Podemos ver también un ejemplo de lista mutable pero cuyo contenido no puede ser modificado.
+Delimitadas por tres comillas dobles (`"""`), preservan saltos de línea y caracteres especiales sin necesidad de escapar con `\n` ni `\"`. El método `.trimIndent()` elimina la sangría común del bloque:
 
 ```kotlin
-val lista = listOf(1, 2, 3, 4, 5)
-lista[0] = 10 // Error de compilación
+val querySql = """
+    SELECT id, titulo, calificacion
+    FROM videojuegos
+    WHERE plataforma = 'Android'
+    ORDER BY calificacion DESC
+""".trimIndent()
+
+println(querySql)
 ```
 
-En el ejemplo anterior, se intenta modificar el elemento en la posición `0` de la lista `lista`, pero como la lista es inmutable, se produce un error de compilación.
+### 5.3. Igualdad Estructural (`==`) vs Referencial (`===`)
 
-Esto nos deja claro que la inmutabilidad no solo se refiere a la variable en sí, sino también a los elementos que contiene la variable.
+En Java, comparar dos strings con `==` suele ser un error habitual porque compara punteros de memoria, obligando a usar `.equals()`. En Kotlin:
 
-Podemos entonces tener cuatro situaciones posibles:
-
-- Variable inmutable y elementos inmutables: No se puede cambiar ni la variable ni los elementos.
-- Variable inmutable y elementos mutables: No se puede cambiar la variable, pero sí los elementos.
-- Variable mutable y elementos inmutables: Se puede cambiar la variable, pero no los elementos.
-- Variable mutable y elementos mutables: Se puede cambiar tanto la variable como los elementos.
-
-!!! tip "Las variables inmutables y la programación funcional"
-    Las variables inmutables son una característica fundamental de la programación funcional, ya que permiten escribir código más seguro y predecible al evitar los efectos secundarios y las mutaciones de estado. 
-
-    Al utilizar variables inmutables, se puede escribir código más conciso, legible y mantenible, lo que facilita la depuración y el mantenimiento del código.
-
-## Sobre las variables nulas
-
-En Kotlin, las variables pueden ser nulas si se declara con el operador `?`. Esto permite que una variable pueda contener un valor nulo en lugar de un valor no nulo.
+- **`==` (Igualdad estructural):** Invoca internamente a `.equals()` de forma segura ante nulos. Compara si el contenido de ambos objetos es idéntico.
+- **`===` (Igualdad referencial):** Compara si ambas variables apuntan exactamente a la misma posición de memoria física.
 
 ```kotlin
-val nombre: String? = null
+val s1 = String(charArrayOf('H', 'o', 'l', 'a'))
+val s2 = String(charArrayOf('H', 'o', 'l', 'a'))
+
+println(s1 == s2)  // true -> El contenido es idéntico
+println(s1 === s2) // false -> Son dos instancias distintas en el heap
 ```
 
-En el ejemplo anterior, la variable `nombre` se declara como nula utilizando el operador `?`. Esto significa que la variable `nombre` puede contener un valor nulo en lugar de un valor no nulo.
+---
 
-!!! info "Sobre la seguridad de nulos en Kotlin"
-    El manejo de nulos en Kotlin es una de las características más importantes del lenguaje, ya que ayuda a prevenir los errores de referencia nula que son comunes en otros lenguajes de programación.
+## 6. Conversión Explícita de Tipos
 
-    Más adelante veremos cómo manejar los valores nulos de forma segura en Kotlin.
-
-## Sobre las variables declaradas como const
-
-En Kotlin, las variables se pueden declarar como `const` para indicar que su valor es constante en tiempo de compilación. Las variables `const` deben ser de tipo `val` y deben estar en el ámbito de un objeto o de un compañero de clase.
+Kotlin **no realiza conversiones implícitas de ensanchamiento numérico** para evitar pérdidas sutiles de precisión y errores en tiempo de ejecución. Cada tipo numérico proporciona funciones de conversión directa:
 
 ```kotlin
-const val PI = 3.14159
+val entero: Int = 100
+// val largo: Long = entero // ERROR de compilación: Type mismatch
+
+val largo: Long = entero.toLong() // Válido y explícito
+val decimal: Double = entero.toDouble()
+val texto: String = entero.toString()
+
+val textoNumero = "250"
+val numeroParseado: Int = textoNumero.toInt()
 ```
 
-En el ejemplo anterior, se declara una constante `PI` con un valor de `3.14159`. Esta constante es accesible en tiempo de compilación y su valor no puede cambiar en tiempo de ejecución.   
+---
 
-## Sobre las Strings en Kotlin
+## 7. Inicialización Especial: `lateinit` vs `by lazy`
 
-En Kotlin, las cadenas de texto se pueden declarar utilizando comillas simples (`'`) o comillas dobles (`"`). Las cadenas de texto declaradas con comillas simples son de tipo `Char`, mientras que las declaradas con comillas dobles son de tipo `String`.
+En el ciclo de vida de componentes Android (como `Activity` o `Fragment`), las variables frecuentemente no pueden inicializarse en el momento de instanciar la clase, sino en métodos del ciclo de vida como `onCreate()` o cuando se consuman por primera vez.
+
+### `lateinit var` (Inicialización Tardía)
+Se utiliza para variables mutables que garantizamos que se inicializarán antes de su primer uso. Evita tener que declararlas como tipos anulables (`String? = null`).
 
 ```kotlin
-val caracter: Char = 'A'
-val texto: String = "Ejemplo"
+class PerfilActivity {
+    // Garantizamos que se inicializará antes de leerse
+    lateinit var idSesion: String
+
+    fun onCreate() {
+        idSesion = "TOKEN_XYZ_123"
+    }
+
+    fun mostrarId() {
+        if (::idSesion.isInitialized) {
+            println(idSesion)
+        }
+    }
+}
 ```
 
-En el ejemplo anterior, se declara una variable `caracter` de tipo `Char` con el valor `'A'` y una variable `texto` de tipo `String` con el valor `"Ejemplo"`.
-
-Las Strings en Kotlin se pueden comparar utilizando el operador `==` para comparar el contenido de las cadenas y el operador `===` para comparar las referencias de las cadenas.
-
-```kotlin   
-val texto1 = "Hola"
-val texto2 = "Hola"
-
-println(texto1 == texto2) // true
-println(texto1 === texto2) // true
-```
-
-En el ejemplo anterior, se comparan dos cadenas de texto `texto1` y `texto2` utilizando los operadores `==` y `===`. Ambas comparaciones devuelven `true` ya que las cadenas son iguales en contenido y referencia. 
-
-A diferencia de Java, en Kotlin las cadenas de texto son inmutables, lo que significa que una vez que se crea una cadena de texto, no se puede modificar su contenido. Para modificar una cadena de texto en Kotlin, se debe crear una nueva cadena con el contenido modificado.
+### `by lazy` (Inicialización Perezosa)
+Se utiliza para variables de solo lectura (`val`). El bloque lambda no se ejecuta hasta que la variable se lee por primera vez en el código. A partir de ese momento, el resultado queda cacheado:
 
 ```kotlin
-val texto = "Hola"
-val nuevoTexto = texto + " Mundo"
+val conexionBaseDatos: String by lazy {
+    println("Configurando conexión pesada...")
+    "CONEXION_ACTIVA_SQLITE"
+}
+
+// En este punto, 'conexionBaseDatos' aún no se ha evaluado.
+println(conexionBaseDatos) // Imprime mensaje y retorna valor.
+println(conexionBaseDatos) // Solo retorna el valor cacheado (sin volver a evaluar).
 ```
 
-En el ejemplo anterior, se crea una nueva cadena de texto `nuevoTexto` concatenando la cadena `texto` con la cadena `" Mundo"`. La cadena `texto` no se modifica, sino que se crea una nueva cadena con el contenido modificado.    
+---
 
-Sin embargo, si comparamos una string con un caracter, Kotlin no permite la comparación directa, ya que son tipos de datos diferentes.
+## 8. Errores Frecuentes (*Gotchas*)
 
-```kotlin
-val texto = "H"
-val caracter = 'H'
+!!! danger "Gotcha 1: Confundir inmutabilidad de variable con inmutabilidad de colección"
+    Declarar `val lista = ArrayList<String>()` no impide que cualquiera añada elementos con `lista.add("hack")`. Si quieres una colección verdaderamente inmutable, usa `listOf(...)`.
 
-println(texto == caracter) // Error de compilación
-```
+!!! danger "Gotcha 2: Desbordamiento en conversión numérica"
+    Kotlin no avisa si conviertes un número grande a un tipo menor si sobrepasa su rango:
+    ```kotlin
+    val numeroGrande: Int = 300
+    val byteTruncado: Byte = numeroGrande.toByte() // Se produce desbordamiento (44)
+    ```
 
-En el ejemplo anterior, se intenta comparar una cadena de texto `texto` con un caracter `caracter`, lo cual produce un error de compilación ya que los tipos de datos son diferentes.   
+---
 
+## 9. Retos Prácticos
+
+### 🟢 Reto 1: Conversión y plantillas (Básico)
+Declara una variable inmutable con tu nombre, otra con el año de nacimiento (entero) y calcula tu edad aproximada en una cadena de texto multilínea que muestre tu perfil formateado utilizando *String Templates*.
+
+??? tip "Ver solución"
+    ```kotlin
+    fun main() {
+        val nombre = "Lucía"
+        val anioNacimiento = 2004
+        val anioActual = 2026
+
+        val perfil = """
+            =========================
+            FICHA DE ALUMNO/A
+            Nombre: $nombre
+            Año Nacimiento: $anioNacimiento
+            Edad aproximada: ${anioActual - anioNacimiento} años
+            =========================
+        """.trimIndent()
+
+        println(perfil)
+    }
+    ```
+
+### 🟡 Reto 2: Inmutabilidad defensiva (Intermedio)
+Dada una lista mutable de calificaciones de un estudiante, escribe un bloque de código que garantice que la vista pública exponga una versión de solo lectura que impida modificaciones externas accidentales.
+
+??? tip "Ver solución"
+    ```kotlin
+    fun main() {
+        // Estado interno privado modificable
+        val notasInternas = mutableListOf(8.5, 9.0, 7.2)
+
+        // Exposición pública de solo lectura (Casting hacia List inmutable)
+        val notasPublicas: List<Double> = notasInternas
+
+        // notasPublicas.add(10.0) // ERROR de compilación: add no existe en List
+        notasInternas.add(9.8) // Solo el propietario del estado interno puede mutar
+
+        println("Notas visibles: $notasPublicas")
+    }
+    ```
+
+### 🔴 Reto 3: Inicialización segura en Android (Avanzado)
+Diseña una clase `ConfiguracionJuego` que cargue la configuración pesada desde una cadena simulada usando inicialización perezosa (`by lazy`), y que posea una propiedad `lateinit` para el identificador del jugador actual que verifique si está inicializado antes de imprimir un informe.
+
+??? tip "Ver solución"
+    ```kotlin
+    class ConfiguracionJuego {
+        lateinit var idJugador: String
+
+        val recursosGraficos: String by lazy {
+            println("-> Cargando texturas 3D en memoria...")
+            "TEXTURAS_4K_CARGADAS"
+        }
+
+        fun mostrarEstado() {
+            if (::idJugador.isInitialized) {
+                println("Jugador: $idJugador")
+            } else {
+                println("Advertencia: Jugador aún no autenticado.")
+            }
+            println("Estado de recursos: $recursosGraficos")
+        }
+    }
+
+    fun main() {
+        val juego = ConfiguracionJuego()
+        juego.mostrarEstado() // Avisa que no está autenticado y carga recursos por primera vez
+        juego.idJugador = "Player_One"
+        juego.mostrarEstado() // Ya está autenticado; recursos ya estaban en memoria
+    }
+    ```

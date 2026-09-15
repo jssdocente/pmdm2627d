@@ -1,346 +1,389 @@
+# Funciones, Lambdas y el Paradigma Declarativo en Kotlin
 
+En Kotlin, las funciones son **ciudadanos de primera clase** (*First-Class Citizens*). Esto significa que las funciones pueden asignarse a variables, pasarse como argumentos a otras funciones, retornarse desde funciones y almacenarse en estructuras de datos, exactamente igual que cualquier otro valor como un `Int` o un `String`.
 
-# Funciones y lambdas en Kotlin
+Comprender en profundidad las lambdas y las funciones de orden superior en Kotlin es **el requisito más importante para dominar Jetpack Compose** y el desarrollo moderno en Android.
 
-En Kotlin, las funciones son ciudadanos de primera clase, lo que significa que puedes tratarlas como cualquier otro tipo de dato, como un `Int` o un `String`. Esto te permite pasar funciones como argumentos a otras funciones, devolver funciones de otras funciones y almacenar funciones en variables. 
+---
 
-Las funciones en Kotlin se definen utilizando la palabra clave `fun`, seguida del nombre de la función, los parámetros de entrada y el tipo de retorno. 
+## 1. Declaración de Funciones
+
+La sintaxis básica emplea la palabra clave `fun`, seguida del nombre, parámetros entre paréntesis con su tipo correspondiente y el tipo de retorno:
 
 ```kotlin
-fun suma(a: Int, b: Int): Int {
+fun sumar(a: Int, b: Int): Int {
     return a + b
 }
 ```
 
-En el ejemplo anterior, se define una función `suma` que toma dos parámetros de tipo `Int` y devuelve un valor de tipo `Int`. La función suma los dos parámetros de entrada y devuelve el resultado.
-
-## Funciones de orden superior
-
-En Kotlin, puedes pasar funciones como argumentos a otras funciones. Estas funciones se conocen como funciones de orden superior y te permiten escribir código más conciso y reutilizable. 
+Si una función no retorna ningún valor útil, su tipo de retorno es `Unit` (equivalente a `void` en Java, pero siendo un objeto real en Kotlin). Puede omitirse la declaración explícita de `Unit`:
 
 ```kotlin
-fun operacion(a: Int, b: Int, funcion: (Int, Int) -> Int): Int {
-    return funcion(a, b)
+fun registrarEvento(mensaje: String): Unit {
+    println("[LOG]: $mensaje")
 }
 
-fun suma(a: Int, b: Int): Int {
-    return a + b
-}
-
-fun resta(a: Int, b: Int): Int {
-    return a - b
-}
-
-val resultadoSuma = operacion(10, 5, ::suma)
-val resultadoResta = operacion(10, 5, ::resta)
-```
-
-En el ejemplo anterior, se define una función `operacion` que toma dos parámetros de tipo `Int` y una función de orden superior que toma dos parámetros de tipo `Int` y devuelve un valor de tipo `Int`. La función `operacion` aplica la función de orden superior a los dos parámetros de entrada y devuelve el resultado.
-
-## Funciones lambda
-
-En Kotlin, puedes definir funciones anónimas conocidas como funciones lambda. Las funciones lambda son funciones sin nombre que puedes pasar como argumentos a otras funciones. 
-
-```kotlin
-val suma = { a: Int, b: Int -> a + b }
-val resta = { a: Int, b: Int -> a - b }
-
-val resultadoSuma = suma(10, 5)
-val resultadoResta = resta(10, 5)
-```
-
-En el ejemplo anterior, se definen dos funciones lambda `suma` y `resta` que toman dos parámetros de tipo `Int` y devuelven un valor de tipo `Int`. Las funciones lambda se asignan a variables y se pueden utilizar como cualquier otra función.
-
-## Los parámetros en Kotlin
-
-A diferencia de Java, en Kotlin los parámetros de una función son inmutables por defecto, lo que significa que no se pueden modificar dentro de la función. Si necesitas modificar un parámetro dentro de una función, debes declararlo como una variable `var`.
-
-```kotlin
-fun duplicar(numero: Int): Int {
-    var resultado = numero
-    resultado *= 2
-    return resultado
+// Equivalente simplificado
+fun registrarEventoSimple(mensaje: String) {
+    println("[LOG]: $mensaje")
 }
 ```
 
-En el ejemplo anterior, se define una función `duplicar` que toma un parámetro de tipo `Int` y devuelve un valor de tipo `Int`. El parámetro `numero` se declara como una variable `var` para poder modificar su valor dentro de la función.
+### 1.1. Inmutabilidad de los Parámetros
 
-### Parámetros con valores por defecto
-
-Los parámetros de una función en Kotlin pueden tener valores por defecto, lo que te permite llamar a la función sin proporcionar todos los argumentos.
-
-```kotlin
-fun saludar(nombre: String = "Mundo") {
-    println("Hola, $nombre!")
-}
-
-saludar() // Hola, Mundo!
-saludar("Juan") // Hola, Juan!
-```
-
-En el ejemplo anterior, se define una función `saludar` que toma un parámetro de tipo `String` con un valor por defecto de `"Mundo"`. Si no se proporciona un argumento al llamar a la función, se utiliza el valor por defecto.
-
-!!! tip "Funciones con valores por defecto y su no obligatoriedad, su uso en Compose"
-    Las funciones con valores por defecto son muy útiles en Jetpack Compose, ya que te permiten definir componentes con valores por defecto y llamar a esos componentes sin proporcionar todos los argumentos.
-
-    Por ejemplo, puedes definir un botón con un texto por defecto y un color por defecto, y luego llamar a ese botón sin proporcionar el texto o el color si deseas utilizar los valores por defecto.
-
+!!! danger "¡Atención: Diferencia fundamental con Java!"
+    En Kotlin, **los parámetros de una función son siempre inmutables (`val`) por definición**. El compilador prohíbe taxativamente la reasignación de parámetros dentro del cuerpo de la función y no permite anteponer `var` en la firma:
     ```kotlin
-    @Composable
-    fun Boton(texto: String = "Aceptar", color: Color = Color.Blue) {
-        Button(onClick = { /* Acción al hacer clic */ }) {
-            Text(texto, color = color)
+    fun duplicar(numero: Int): Int {
+        // numero = numero * 2 // ERROR de compilación: Val cannot be reassigned
+        val resultado = numero * 2 // Correcto: creamos un nuevo valor local
+        return resultado
+    }
+    ```
+
+### 1.2. Funciones de Expresión Única (*Single-Expression Functions*)
+
+Cuando el cuerpo de una función consiste en una única expresión o cálculo, se pueden omitir las llaves `{}` y la sentencia `return`, sustituyéndolas por el operador `=`:
+
+```kotlin
+// Versión verbosa con bloque
+fun esMayorDeEdad(edad: Int): Boolean {
+    return edad >= 18
+}
+
+// Versión idiomática de expresión única (el tipo Boolean se infiere)
+fun esMayorDeEdad(edad: Int) = edad >= 18
+fun multiplicar(x: Int, y: Int) = x * y
+```
+
+### 1.3. Parámetros con Valores por Defecto y Argumentos con Nombre
+
+En Java es común sobrecargar métodos creando 4 o 5 variantes del mismo constructor o método con diferente número de argumentos. Kotlin soluciona esto con **valores por defecto**:
+
+```kotlin
+fun crearPerfilUsuario(
+    nombre: String,
+    activo: Boolean = true,
+    rol: String = "ESTUDIANTE",
+    intentos: Int = 0
+) {
+    println("Usuario: $nombre | Rol: $rol | Activo: $activo | Intentos: $intentos")
+}
+
+// Llamada con todos los parámetros
+crearPerfilUsuario("Sofía", false, "ADMIN", 3)
+
+// Llamada omitiendo los valores con valor por defecto
+crearPerfilUsuario("Mateo") // Activo = true, Rol = "ESTUDIANTE", Intentos = 0
+
+// Argumentos con nombre (Named Arguments): Mejoran la legibilidad y permiten alterar el orden
+crearPerfilUsuario(
+    nombre = "Elena",
+    rol = "DOCENTE",
+    intentos = 1
+)
+```
+
+---
+
+## 2. Tipos de Función y Funciones Lambda
+
+Una **expresión lambda** (o función anónima) es un bloque de código ejecutable que no tiene nombre y que puede tratarse como un dato.
+
+### 2.1. Tipos de Función (*Function Types*)
+
+Para que una variable o parámetro acepte una función, debemos declarar su **tipo de función**, indicando los tipos de entrada entre paréntesis y el tipo de salida tras una flecha `->`:
+
+- `() -> Unit`: Función que no recibe parámetros y no retorna nada.
+- `(Int, Int) -> Int`: Función que recibe dos enteros y devuelve un entero.
+- `(String) -> Boolean`: Función que recibe un texto y devuelve un booleano.
+
+### 2.2. Sintaxis de una Lambda
+
+Las lambdas se delimitan siempre entre llaves `{}`. Los parámetros van al principio, separados del cuerpo por una flecha `->`:
+
+```kotlin
+// Variable que almacena una lambda con tipo explícito (Int, Int) -> Int
+val multiplicacion: (Int, Int) -> Int = { a, b -> a * b }
+
+// Con inferencia de tipos en la variable y tipos explícitos en los parámetros
+val division = { a: Double, b: Double -> a / b }
+
+println(multiplicacion(4, 5)) // Imprime 20
+println(division(10.0, 2.0))   // Imprime 5.0
+```
+
+### 2.3. El Parámetro Implícito `it`
+
+Si una lambda tiene **exactamente un único parámetro**, Kotlin permite omitir su declaración explícita y la flecha `->`. El compilador genera automáticamente una variable local con el nombre reservado `it`:
+
+```kotlin
+// Sintaxis explícita
+val doblar: (Int) -> Int = { numero -> numero * 2 }
+
+// Sintaxis idiomática simplificada con 'it'
+val doblarConIt: (Int) -> Int = { it * 2 }
+
+val esPar: (Int) -> Boolean = { it % 2 == 0 }
+```
+
+---
+
+## 3. Funciones de Orden Superior (*Higher-Order Functions*)
+
+Una **función de orden superior** es aquella que recibe otra función como parámetro o devuelve una función como resultado.
+
+```kotlin
+fun ejecutarOperacion(a: Int, b: Int, operacion: (Int, Int) -> Int): Int {
+    println("-> Ejecutando operación matemática...")
+    return operacion(a, b) // Invocamos la función pasada por parámetro
+}
+
+fun main() {
+    val suma = { x: Int, y: Int -> x + y }
+    val resultadoSuma = ejecutarOperacion(10, 5, suma)
+    println(resultadoSuma) // 15
+
+    // También podemos pasar una lambda directamente "en línea"
+    val resultadoResta = ejecutarOperacion(10, 5, { x, y -> x - y })
+    println(resultadoResta) // 5
+}
+```
+
+---
+
+## 4. Lambdas: El Motor de Jetpack Compose
+
+El diseño visual de **Jetpack Compose** descansa enteramente sobre las convenciones de sintaxis que Kotlin diseñó para las lambdas. Si entiendes estas tres reglas sintácticas, la estructura de Compose te resultará transparente:
+
+### 4.1. Regla 1: Sintaxis de Lambda Colgante (*Trailing Lambda Syntax*)
+
+En Kotlin, **si el último parámetro de una función es una función (lambda), la lambda puede colocarse FUERA de los paréntesis ordinarios `()`**:
+
+```kotlin
+// Llamada tradicional (la lambda está dentro de los paréntesis)
+ejecutarOperacion(10, 5, { x, y -> x * y })
+
+// Trailing Lambda: La lambda se extrae fuera de los paréntesis
+ejecutarOperacion(10, 5) { x, y ->
+    x * y
+}
+```
+
+Si la lambda es el **único parámetro** que recibe la función, **los paréntesis `()` pueden omitirse por completo**:
+
+```kotlin
+fun ejecutarEnSegundoPlano(tarea: () -> Unit) {
+    tarea()
+}
+
+// Omitimos los paréntesis () por completo:
+ejecutarEnSegundoPlano {
+    println("Descargando actualización en hilo de fondo...")
+}
+```
+
+#### ¿Cómo se traduce esto en Jetpack Compose?
+
+Al programar en Compose, los botones, tarjetas y pantallas no son etiquetas XML, sino llamadas a funciones de Kotlin que aprovechan esta regla:
+
+```kotlin
+// En Jetpack Compose:
+// Button tiene como parámetros: onClick: () -> Unit y content: @Composable () -> Unit
+Button(onClick = { registrarClic() }) {
+    Text(text = "Guardar Partida")
+}
+```
+
+Fíjate en lo que ocurre:
+1. `onClick = { ... }` es una lambda que se pasa como argumento con nombre.
+2. `{ Text(...) }` es la última lambda (`content`), por lo que **se extrae fuera de los paréntesis**.
+3. El resultado es un código visualmente anidado y limpio que parece un lenguaje de marcado (como HTML/Flutter), pero es **100% código Kotlin estándar**.
+
+---
+
+### 4.2. Regla 2: Elevación de Estado (*State Hoisting*) mediante Callbacks Lambda
+
+En interfaces de usuario modernas, los componentes visuales no deben almacenar ni modificar lógica de negocio directamente. Se diseñan como **componentes sin estado (*Stateless*)**, recibiendo los datos como parámetros y emitiendo eventos hacia el componente superior mediante lambdas:
+
+```kotlin
+// Componente desacoplado y reutilizable: no sabe qué hace la acción, solo la notifica
+fun CampoTextoJuego(
+    textoActual: String,
+    alCambiarTexto: (String) -> Unit // Callback lambda
+) {
+    println("Mostrando input con texto: $textoActual")
+    // Cuando el usuario teclea 'Elden Ring', invocamos la lambda:
+    alCambiarTexto("Elden Ring")
+}
+
+fun main() {
+    var tituloJuego = "Zelda"
+
+    // La pantalla padre gestiona el estado real
+    CampoTextoJuego(textoActual = tituloJuego) { nuevoTexto ->
+        tituloJuego = nuevoTexto
+        println("Estado actualizado a: $tituloJuego")
+    }
+}
+```
+
+---
+
+### 4.3. Regla 3: Lambdas con Receptor (*Function Literals with Receiver*)
+
+Una de las características más avanzadas de Kotlin son las lambdas que se ejecutan dentro del ámbito de un objeto receptor específico. Su tipo se define como: `Receptor.() -> TipoRetorno`.
+
+Dentro del cuerpo de esa lambda, la palabra clave `this` apunta automáticamente a la instancia de `Receptor`, permitiendo llamar a sus métodos directamente sin prefijo:
+
+```kotlin
+class ConfiguradorCanvas {
+    var ancho: Int = 0
+    var alto: Int = 0
+    var colorFondo: String = "Negro"
+
+    fun renderizar() = println("Canvas $ancho x $alto - Fondo: $colorFondo")
+}
+
+// Definimos una función que acepta una lambda con receptor ConfiguradorCanvas
+fun construirCanvas(bloque: ConfiguradorCanvas.() -> Unit): ConfiguradorCanvas {
+    val canvas = ConfiguradorCanvas()
+    canvas.bloque() // Ejecutamos la lambda en el contexto de 'canvas'
+    return canvas
+}
+
+fun main() {
+    // Fíjate cómo asignamos propiedades directamente dentro del bloque:
+    val miCanvas = construirCanvas {
+        ancho = 1920
+        alto = 1080
+        colorFondo = "Azul Medianoche"
+    }
+    miCanvas.renderizar()
+}
+```
+
+En **Compose**, contenedores como `Row` o `Column` definen su contenido como:
+`content: @Composable RowScope.() -> Unit`. Por esta razón, dentro de un `Row` tienes disponible el modificador `Modifier.weight(1f)`, pero fuera de él no compilará.
+
+---
+
+## 5. Funciones de Extensión (*Extension Functions*)
+
+Kotlin permite añadir nuevos métodos a clases existentes (incluso de librerías del sistema como `String`, `List` o clases de Android) **sin necesidad de heredar de ellas ni modificar su código fuente**:
+
+```kotlin
+// Añadimos el método 'esEmailValido' a la clase String
+fun String.esEmailValido(): Boolean {
+    return this.contains("@") && this.contains(".")
+}
+
+// Añadimos 'formatearMoneda' a Double
+fun Double.formatearEuros(): String {
+    return "%.2f €".format(this)
+}
+
+fun main() {
+    val correo = "alumno@ies.es"
+    println(correo.esEmailValido()) // true
+
+    val saldo = 49.9
+    println(saldo.formatearEuros()) // 49,90 €
+}
+```
+
+---
+
+## 6. Rendimiento: Funciones `inline`
+
+Cuando pasas una lambda a una función en la JVM, tradicionalmente se crea una instancia de un objeto anónimo en memoria (consumiendo memoria RAM en el *Heap*).
+
+Para evitar cualquier penalización de rendimiento, Kotlin ofrece el modificador `inline`. El compilador sustituye la llamada a la función y el cuerpo de la lambda directamente en el lugar donde se invoca en el *bytecode*:
+
+```kotlin
+inline fun medirTiempo(operacion: () -> Unit) {
+    val inicio = System.currentTimeMillis()
+    operacion()
+    val fin = System.currentTimeMillis()
+    println("Tiempo transcurrido: ${fin - inicio} ms")
+}
+```
+
+---
+
+## 7. Retos Prácticos
+
+### 🟢 Reto 1: Formateador con valores por defecto (Básico)
+Crea una función `formatearCabecera` que reciba un título obligatorio y dos parámetros opcionales: `caracterBorde` (por defecto `'*'`) y `longitud` (por defecto `30`). Utiliza llamadas con argumentos con nombre para probar diferentes combinaciones.
+
+??? tip "Ver solución"
+    ```kotlin
+    fun formatearCabecera(
+        titulo: String,
+        caracterBorde: Char = '*',
+        longitud: Int = 30
+    ): String {
+        val borde = caracterBorde.toString().repeat(longitud)
+        return "$borde\n$titulo\n$borde"
+    }
+
+    fun main() {
+        println(formatearCabecera("INICIO"))
+        println(formatearCabecera(titulo = "GAME OVER", caracterBorde = '=', longitud = 20))
+    }
+    ```
+
+### 🟡 Reto 2: Extensión y filtrado con lambdas (Intermedio)
+Crea una función de extensión sobre `List<Int>` llamada `filtrarPares` que acepte una lambda transformadora `(Int) -> String` y devuelva una lista de cadenas con los números pares procesados.
+
+??? tip "Ver solución"
+    ```kotlin
+    fun List<Int>.filtrarPares(transformacion: (Int) -> String): List<String> {
+        val resultado = mutableListOf<String>()
+        for (numero in this) {
+            if (numero % 2 == 0) {
+                resultado.add(transformacion(numero))
+            }
+        }
+        return resultado
+    }
+
+    fun main() {
+        val numeros = listOf(1, 2, 3, 4, 5, 6)
+        val paresFormateados = numeros.filtrarPares { "Par: $it" }
+        println(paresFormateados) // [Par: 2, Par: 4, Par: 6]
+    }
+    ```
+
+### 🔴 Reto 3: Mini-DSL declarativo al estilo Compose (Avanzado)
+Diseña una clase `NotificacionBuilder` con propiedades `titulo`, `mensaje` e `icono`. Implementa una función de orden superior `crearNotificacion(bloque: NotificacionBuilder.() -> Unit): NotificacionBuilder` que permita crear una notificación con sintaxis declarativa limpia idéntica a Compose.
+
+??? tip "Ver solución"
+    ```kotlin
+    class NotificacionBuilder {
+        var titulo: String = ""
+        var mensaje: String = ""
+        var prioridadAlta: Boolean = false
+
+        fun mostrar() {
+            val prefijo = if (prioridadAlta) "URGENTE" else "INFO"
+            println("[$prefijo] $titulo: $mensaje")
         }
     }
 
-    Boton() // Botón con texto "Aceptar" y color azul
-    Boton("Cancelar", Color.Red) // Botón con texto "Cancelar" y color rojo
+    fun notificacion(configuracion: NotificacionBuilder.() -> Unit): NotificacionBuilder {
+        val builder = NotificacionBuilder()
+        builder.configuracion() // Ejecuta la lambda con receptor
+        return builder
+    }
+
+    fun main() {
+        val miAviso = notificacion {
+            titulo = "Descarga Finalizada"
+            mensaje = "El parche 1.4 de GameVault se ha instalado."
+            prioridadAlta = true
+        }
+
+        miAviso.mostrar()
+    }
     ```
-
-### Parámetros de una función lambda
-
-En una función lambda en Kotlin, puedes especificar los tipos de los parámetros de entrada o dejar que el compilador infiera los tipos automáticamente.
-
-```kotlin
-val suma: (Int, Int) -> Int = { a, b -> a + b }
-val resta = { a: Int, b: Int -> a - b }
-```
-
-En el ejemplo anterior, se definen dos funciones lambda `suma` y `resta` que toman dos parámetros de tipo `Int` y devuelven un valor de tipo `Int`. En la función lambda `suma`, se especifican los tipos de los parámetros de entrada, mientras que en la función lambda `resta`, se deja que el compilador infiera los tipos automáticamente.
-
-### La palabra reservada `it`
-
-En una función lambda en Kotlin, puedes utilizar la palabra reservada `it` para referirte al único parámetro de entrada si la función lambda tiene un solo parámetro.
-
-```kotlin
-val cuadrado: (Int) -> Int = { it * it }
-```
-
-En el ejemplo anterior, se define una función lambda `cuadrado` que toma un parámetro de tipo `Int` y devuelve un valor de tipo `Int`. 
-
-!!! info "Short explicativo en YouTube"
-    [Enlace al vídeo](https://youtube.com/shorts/h1SwVhEHAUs?si=Mqk7qXcF8qNsZMWf)
-
-
-La palabra reservada `it` se utiliza para referirse al único parámetro de entrada de la función lambda.
-
-Esto es útil cuando la función lambda tiene un solo parámetro y quieres hacer el código más conciso.
-
-### Funciones lambda con múltiples líneas
-
-En una función lambda en Kotlin, puedes utilizar múltiples líneas de código si es necesario. 
-
-```kotlin
-val suma: (Int, Int) -> Int = { a, b ->
-    val resultado = a + b
-    println("La suma de $a y $b es $resultado")
-    resultado
-}
-```
-
-En el ejemplo anterior, se define una función lambda `suma` que toma dos parámetros de tipo `Int` y devuelve un valor de tipo `Int`. La función lambda realiza la suma de los dos parámetros y muestra un mensaje por consola con el resultado.
-
-### Número variable de argumentos
-
-En Kotlin, puedes definir funciones que toman un número variable de argumentos utilizando el operador `vararg`.
-
-```kotlin
-fun sumar(vararg numeros: Int): Int {
-    var suma = 0
-    for (numero in numeros) {
-        suma += numero
-    }
-    return suma
-}
-
-val resultado = sumar(1, 2, 3, 4, 5)
-```
-
-En el ejemplo anterior, se define una función `sumar` que toma un número variable de argumentos de tipo `Int` utilizando el operador `vararg`. La función suma todos los números pasados como argumentos y devuelve el resultado.
-
-## Funciones de extensión (Extension Functions)
-
-En Kotlin, puedes agregar nuevas funciones a las clases existentes sin heredar de ellas. 
-
-Estas funciones se conocen como funciones de extensión y te permiten extender la funcionalidad de las clases sin modificar su código fuente.
-
-```kotlin
-fun String.invertir(): String {
-    return this.reversed()
-}
-
-val texto = "Hola, mundo!"
-val textoInvertido = texto.invertir()
-```
-
-En el ejemplo anterior, se define una función de extensión `invertir` para la clase `String` que invierte el contenido de la cadena de texto. La función de extensión se llama como si fuera un método de la clase `String`.
-
-!!! info "Funciones de extensión y funciones de orden superior"
-    Las funciones de extensión y las funciones de orden superior son dos características poderosas de Kotlin que te permiten escribir código más conciso y reutilizable.
-
-    Las funciones de extensión te permiten agregar nuevas funciones a las clases existentes sin heredar de ellas, mientras que las funciones de orden superior te permiten pasar funciones como argumentos a otras funciones.
-
-    Al combinar estas dos características, puedes escribir código más flexible y expresivo en Kotlin.
-
-
-
-
-## 🎯 Ejemplo. Poniendo en práctica todo
-
-Imaginen que estamos desarrollando una aplicación para gestionar los cursos de una universidad. Vamos a trabajar con una lista de estudiantes.
-
-### **Paso 1: Definir nuestro modelo de datos** #️⃣
-
-Primero, definamos una clase de datos (`data class`) que representará a un estudiante. Las `data class` en Kotlin son perfectas para este propósito, ya que nos proveen automáticamente de métodos útiles como `equals()`, `hashCode()` y `toString()`.
-
-```kotlin
-data class Estudiante(
-    val id: Int,
-    val nombre: String,
-    val calificacion: Double,
-    val curso: String,
-    val activo: Boolean = true
-)
-```
-
-### **Paso 2: Generar nuestra colección de datos** #️⃣
-
-Ahora, vamos a crear una lista (`List`) de estudiantes para nuestros ejemplos. Las listas son colecciones ordenadas de elementos. En Kotlin, podemos crearlas fácilmente con la función `listOf()`.
-
-```kotlin
-val estudiantes = listOf(
-    Estudiante(1, "Ana", 9.5, "Kotlin Avanzado", true),
-    Estudiante(2, "Luis", 6.8, "Jetpack Compose", false),
-    Estudiante(3, "Carlos", 8.9, "Kotlin Avanzado", true),
-    Estudiante(4, "Sofía", 10.0, "Arquitectura Android", true),
-    Estudiante(5, "Marta", 7.2, "Jetpack Compose", true),
-    Estudiante(6, "Pedro", 5.5, "Kotlin Avanzado", true),
-    Estudiante(7, "Lucía", 8.1, "Arquitectura Android", false)
-)
-```
-***
-
-### **Paso 3: Procesando la colección con funciones de orden superior y Lambdas** #️⃣
-
-Aquí es donde reside la magia de la programación funcional en Kotlin. En lugar de usar bucles `for` tradicionales para todo, podemos usar funciones que aceptan otras funciones (lambdas) como parámetros para procesar colecciones.
-
-#### **1. `filter`: Filtrando la colección**
-
-La función `filter` crea una nueva lista que contiene únicamente los elementos que cumplen con una condición específica (el "predicado").
-
-**Ejemplo:** Queremos obtener solo los estudiantes que hayan aprobado, es decir, que tengan una calificación mayor o igual a 7.0.
-
-```kotlin
-val estudiantesAprobados = estudiantes.filter { estudiante ->
-    estudiante.calificacion >= 7.0
-}
-
-println("Estudiantes Aprobados:")
-estudiantesAprobados.forEach { println(it) }
-
-// --- Salida ---
-// Estudiantes Aprobados:
-// Estudiante(id=1, nombre=Ana, calificacion=9.5, curso=Kotlin Avanzado, activo=true)
-// Estudiante(id=3, nombre=Carlos, calificacion=8.9, curso=Kotlin Avanzado, activo=true)
-// Estudiante(id=4, nombre=Sofía, calificacion=10.0, curso=Arquitectura Android, activo=true)
-// Estudiante(id=5, nombre=Marta, calificacion=7.2, curso=Jetpack Compose, activo=true)
-// Estudiante(id=7, nombre=Lucía, calificacion=8.1, curso=Arquitectura Android, activo=false)
-```
-
-!!! info "Explicación"
-    La lambda `{ estudiante -> estudiante.calificacion >= 7.0 }` se ejecuta para cada estudiante en la lista. Si la expresión devuelve `true`, el estudiante se incluye en la nueva lista `estudiantesAprobados`.
-
-#### **2. `map`: Transformando la colección** #️⃣
-
-La función `map` crea una nueva lista transformando cada elemento de la lista original en algo nuevo.
-
-**Ejemplo:** Necesitamos una lista que contenga solo los nombres de todos los estudiantes, pero en mayúsculas.
-
-```kotlin
-val nombresEnMayusculas = estudiantes.map { it.nombre.uppercase() }
-
-println("\nNombres de Estudiantes en Mayúsculas:")
-println(nombresEnMayusculas)
-
-// --- Salida ---
-// Nombres de Estudiantes en Mayúsculas:
-// [ANA, LUIS, CARLOS, SOFÍA, MARTA, PEDRO, LUCÍA]
-```
-
-!!! info "Explicación"
-    La lambda `{ it.nombre.uppercase() }` toma cada estudiante (`it` es el nombre implícito para un único parámetro) y devuelve su nombre convertido a mayúsculas. El resultado es una `List<String>`.
-
-#### **3. `find` (o `firstOrNull`): Encontrando un elemento** #️⃣
-
-La función `firstOrNull` devuelve el primer elemento que cumple una condición, o `null` si ninguno la cumple.
-
-**Ejemplo:** Busquemos al estudiante con el ID 4.
-
-```kotlin
-val estudianteBuscado = estudiantes.firstOrNull { it.id == 4 }
-
-if (estudianteBuscado != null) {
-    println("\nEstudiante encontrado: ${estudianteBuscado.nombre}")
-} else {
-    println("\nNo se encontró al estudiante.")
-}
-
-// --- Salida ---
-// Estudiante encontrado: Sofía
-```
-
-#### **4. `groupBy`: Agrupando elementos** #️⃣
-
-Esta función es increíblemente útil. Agrupa los elementos de una colección en un `Map`, donde las claves son el resultado de la lambda y los valores son listas de los elementos que generaron esa clave.
-
-**Ejemplo:** Agrupemos a los estudiantes por el curso en el que están inscritos.
-
-```kotlin
-val estudiantesPorCurso = estudiantes.groupBy { it.curso }
-
-println("\nEstudiantes agrupados por curso:")
-estudiantesPorCurso.forEach { (curso, listaEstudiantes) ->
-    println("Curso: $curso")
-    listaEstudiantes.forEach { estudiante ->
-        println("  - ${estudiante.nombre}")
-    }
-}
-
-// --- Salida ---
-// Estudiantes agrupados por curso:
-// Curso: Kotlin Avanzado
-//   - Ana
-//   - Carlos
-//   - Pedro
-// Curso: Jetpack Compose
-//   - Luis
-//   - Marta
-// Curso: Arquitectura Android
-//   - Sofía
-//   - Lucía
-```
-!!! info "Explicación"
-    La lambda `{ it.curso }` se ejecuta para cada estudiante, y el valor que devuelve (el nombre del curso) se usa como clave en el `Map` resultante.
-
-### **Encadenamiento de Operaciones: El verdadero poder** 💪
-
-La verdadera expresividad se alcanza cuando encadenamos estas funciones. Las operaciones se ejecutan en secuencia, permitiéndonos realizar consultas complejas de forma muy legible.
-
-**Ejemplo complejo:** Queremos obtener los nombres de los estudiantes activos del curso "Kotlin Avanzado" que hayan aprobado, ordenados por su calificación de mayor a menor.
-
-```kotlin
-val resultadoFinal = estudiantes
-    .filter { it.curso == "Kotlin Avanzado" && it.activo } // 1. Filtra por curso y estado activo
-    .filter { it.calificacion >= 7.0 }                 // 2. Filtra los aprobados de ese grupo
-    .sortedByDescending { it.calificacion }               // 3. Ordena de mayor a menor calificación
-    .map { "${it.nombre} - Calificación: ${it.calificacion}" } // 4. Mapea al formato deseado (String)
-
-println("\nConsulta compleja:")
-resultadoFinal.forEach { println(it) }
-
-// --- Salida ---
-// Consulta compleja:
-// Ana - Calificación: 9.5
-// Carlos - Calificación: 8.9
-```
-

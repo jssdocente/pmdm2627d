@@ -1,93 +1,208 @@
+# Singletons, Companion Object y Objetos Anónimos en Kotlin
 
+En Java, cuando se necesita compartir un recurso único a nivel global se implementa el patrón **Singleton** (lo que requiere constructores privados, variables estáticas y bloqueos para evitar problemas en multihilo), y cuando se necesitan métodos o constantes globales se recurre a la palabra clave `static`.
 
-# Objetos anónimos en Kotlin
+Kotlin no dispone de la palabra clave `static`. En su lugar, aborda estas necesidades mediante la palabra reservada **`object`** a través de tres mecanismos diferenciados y elegantes:
 
-En Kotlin, puedes crear objetos anónimos utilizando la palabra clave `object`. 
+1. **Declaración de Objetos (*Object Declarations*):** Singletons nativos con nombre.
+2. **Objetos Compañeros (*Companion Objects*):** Miembros estáticos asociados a una clase.
+3. **Expresiones de Objeto (*Object Expressions*):** Objetos anónimos e instancias puntuales de interfaces.
 
-Los objetos anónimos son instancias de una clase anónima que no tienen un nombre y se utilizan para definir una clase de forma concisa y reutilizable.
+---
 
-```kotlin
-val persona = object {
-    val nombre = "Juan"
-    val edad = 25
-}
+## 1. Declaración de Objetos: El Patrón Singleton Nativo
 
-println(persona.nombre) // Juan
-println(persona.edad) // 25
-```
-
-En el ejemplo anterior, se crea un objeto anónimo que tiene dos propiedades `nombre` y `edad`. 
-
-El objeto anónimo se asigna a la variable `persona` y se puede acceder a sus propiedades utilizando la notación de punto.
-
-Los objetos anónimos son útiles cuando necesitas crear una instancia de una clase de forma rápida y concisa sin tener que definir una clase con nombre.
-
-## Uso de objetos anónimos
-
-Los objetos anónimos se utilizan en Kotlin para:
-
-- Crear instancias de una clase de forma rápida y concisa.
-- Definir clases de forma reutilizable sin tener que definir una clase con nombre.
-- Implementar interfaces y clases abstractas de forma anónima.
-
-Los objetos anónimos son una característica poderosa de Kotlin que te permite escribir código de forma más concisa y eficiente.
-
-## Implementación de interfaces con objetos anónimos
-
-En Kotlin, puedes implementar interfaces de forma anónima utilizando objetos anónimos. Esto te permite definir una clase que implementa una interfaz sin tener que definir una clase con nombre.
+En Kotlin, crear un Singleton seguro ante hilos (*Thread-Safe*) y con inicialización perezosa (*Lazy Initialization*) solo requiere cambiar la palabra clave `class` por `object`:
 
 ```kotlin
-interface Saludable {
-    fun saludar()
-}
+object GestorSesion {
+    var usuarioActivo: String? = null
+    var tokenAutenticacion: String? = null
 
-val persona = object : Saludable {
-    override fun saludar() {
-        println("Hola, soy una persona saludable!")
+    fun estaAutenticado(): Boolean = tokenAutenticacion != null
+
+    fun cerrarSesion() {
+        usuarioActivo = null
+        tokenAutenticacion = null
+        println("Sesión cerrada con éxito.")
     }
 }
 
-persona.saludar() // Hola, soy una persona saludable!
+fun main() {
+    // Se accede directamente por su nombre, sin instanciar (no hay constructor)
+    GestorSesion.usuarioActivo = "mario_bros"
+    GestorSesion.tokenAutenticacion = "JWT_SECURE_TOKEN_888"
+
+    println("¿Logueado? ${GestorSesion.estaAutenticado()}") // true
+    GestorSesion.cerrarSesion()
+}
 ```
 
-En el ejemplo anterior, se define una interfaz `Saludable` con un método `saludar`.
+### Características de una Declaración de Objeto:
+- **Instancia única:** El compilador garantiza que existirá exactamente una sola instancia en toda la memoria de la aplicación.
+- **Sin constructores:** No puede tener constructor primario ni secundario (no se puede instanciar con `()`).
+- **Puede heredar e implementar interfaces:** Puede heredar de clases abiertas e implementar contratos de interfaces.
 
-Se crea un objeto anónimo que implementa la interfaz `Saludable` y se asigna a la variable `persona`.
+---
 
-El objeto anónimo define la implementación del método `saludar` y se puede llamar al método utilizando la notación de punto.
+## 2. El Objeto Compañero (*Companion Object*)
 
-## Implementación del patrón Singleton con objetos anónimos
+Dado que en Kotlin no existe `static`, ¿dónde colocamos las constantes globales, las etiquetas de *logging* (`TAG`) o los métodos factoría que en Java pertenecían a la clase y no a la instancia?
 
-En Kotlin, puedes implementar el patrón Singleton utilizando objetos anónimos. El patrón Singleton garantiza que una clase tenga una única instancia y proporciona un punto de acceso global a esa instancia.
+La respuesta es el **`companion object`**: un objeto especial que se declara dentro de una clase y cuyos miembros pueden invocarse directamente utilizando el nombre de la clase contenedora:
 
 ```kotlin
-object Configuracion {
-    val servidor = "localhost"
-    val puerto = 8080
+class ClienteHttp(val urlBase: String) {
+
+    // Miembros asociados a la clase (equivalente conceptual a 'static' en Java)
+    companion object {
+        const val TAG = "CLIENTE_HTTP_LOG"
+        const val TIMEOUT_SEGUNDOS = 30
+
+        // Método factoría para crear instancias preconfiguradas
+        fun crearParaProduccion(): ClienteHttp {
+            println("[$TAG]: Creando cliente para entorno de producción")
+            return ClienteHttp("https://api.gamevault.com/v1")
+        }
+    }
+
+    fun realizarPeticion(endpoint: String) {
+        println("Conectando a: $urlBase/$endpoint")
+    }
 }
 
-println(Configuracion.servidor) // localhost
-println(Configuracion.puerto) // 8080
+fun main() {
+    // Acceso directo a constantes y métodos del companion object sin crear instancias:
+    println("Timeout configurado: ${ClienteHttp.TIMEOUT_SEGUNDOS} segundos")
+    println("Tag para Logcat: ${ClienteHttp.TAG}")
+
+    // Invocación del método factoría:
+    val clienteProd = ClienteHttp.crearParaProduccion()
+    clienteProd.realizarPeticion("juegos")
+}
 ```
 
-En el ejemplo anterior, se define un objeto anónimo `Configuracion` que tiene dos propiedades `servidor` y `puerto`.
+!!! tip "Uso habitual en Android"
+    En el desarrollo Android, el `companion object` se utiliza de forma constante para:
+    - Definir la constante `TAG` de cada clase para filtrar mensajes en el **Logcat**.
+    - Definir métodos `newInstance()` para crear `Fragments`.
+    - Definir constantes de argumentos de navegación en Jetpack Compose (`const val ARG_GAME_ID = "gameId"`).
 
-El objeto anónimo se utiliza para almacenar la configuración de la aplicación y garantiza que solo haya una instancia de la configuración en toda la aplicación.
+---
 
-!!! tip "Características de los objetos anónimos"
-    Los objetos anónimos en Kotlin tienen las siguientes características:
+## 3. Expresiones de Objeto (*Object Expressions* / Objetos Anónimos)
 
-    - No tienen un nombre y se crean utilizando la palabra clave `object`.
-    - Pueden tener propiedades, métodos y constructores.
-    - Se utilizan para definir clases de forma concisa y reutilizable.
-    - Se pueden utilizar para implementar interfaces y clases abstractas de forma anónima.
-    - Se pueden utilizar para implementar el patrón Singleton y almacenar configuraciones globales.
+Las expresiones de objeto crean instancias de **clases anónimas**, es decir, objetos únicos que no se asocian a un nombre de clase formal. Se utilizan comúnmente cuando necesitamos instanciar una interfaz o extender una clase para un solo uso inmediato (como un *listener* o callback):
 
-!!! info "Sobre el patrón Singleton"
-    El patrón Singleton es un patrón de diseño que garantiza que una clase tenga una única instancia y proporciona un punto de acceso global a esa instancia.
+```kotlin
+interface OnGameDownloadListener {
+    fun onProgreso(porcentaje: Int)
+    fun onCompletado(archivo: String)
+}
 
-    En Kotlin, puedes implementar el patrón Singleton utilizando objetos anónimos, que garantizan que solo haya una instancia de la clase en toda la aplicación.
+fun descargarJuego(nombre: String, listener: OnGameDownloadListener) {
+    println("Iniciando descarga de $nombre...")
+    listener.onProgreso(50)
+    listener.onCompletado("$nombre.apk")
+}
 
-    **Usos comunes del patrón Singleton incluyen la creación de objetos de configuración, conexiones a bases de datos y puntos de acceso a servicios globales.**
+fun main() {
+    // Creamos una instancia anónima que implementa la interfaz en el acto:
+    val miDescargaListener = object : OnGameDownloadListener {
+        override fun onProgreso(porcentaje: Int) {
+            println("-> Descargando: $porcentaje %")
+        }
 
+        override fun onCompletado(archivo: String) {
+            println("-> ¡Descarga finalizada! Archivo guardado: $archivo")
+        }
+    }
 
+    descargarJuego("Cyberpunk 2077", miDescargaListener)
+}
+```
+
+### Objetos Anónimos Ad-Hoc
+También puedes usar `object` para crear estructuras de datos anónimas rápidas y locales sin declarar una clase previa:
+
+```kotlin
+val coordenadaTemporal = object {
+    val x = 100
+    val y = 250
+    val descripcion = "Punto de spawn"
+}
+
+println("${coordenadaTemporal.descripcion}: (${coordenadaTemporal.x}, ${coordenadaTemporal.y})")
+```
+
+---
+
+## 4. Cuadro Comparativo: Cuándo Usar Cada Uno
+
+| Concepto | Sintaxis | Equivalente en Java | Caso de Uso Principal |
+| :--- | :--- | :--- | :--- |
+| **Object Declaration** | `object MiSingleton { ... }` | Patrón Singleton manual con `getInstance()` | Gestores globales, bases de datos en memoria, servicios únicos. |
+| **Companion Object** | `companion object { ... }` dentro de una clase | Miembros `static` (constantes y métodos estáticos) | Constantes `TAG`, métodos factoría, claves de navegación. |
+| **Object Expression** | `object : MiInterfaz { ... }` | Clases anónimas (`new MiInterfaz() { ... }`) | Listeners de eventos complejos, callbacks con múltiples métodos. |
+
+---
+
+## 5. Retos Prácticos
+
+### 🟢 Reto 1: Singleton de Configuración de Audio (Básico)
+Crea una declaración de objeto `ConfiguracionAudio` que mantenga el `volumenMusica: Int` (entre 0 y 100) y un booleano `estaSilenciado`. Añade un método `silenciar()` y compruébalo desde `main()`.
+
+??? tip "Ver solución"
+    ```kotlin
+    object ConfiguracionAudio {
+        var volumenMusica: Int = 80
+        var estaSilenciado: Boolean = false
+
+        fun silenciar() {
+            estaSilenciado = true
+            println("Audio silenciado por completo.")
+        }
+
+        fun reanudar(nuevoVolumen: Int = 50) {
+            estaSilenciado = false
+            volumenMusica = nuevoVolumen.coerceIn(0, 100)
+            println("Audio activo al volumen: $volumenMusica")
+        }
+    }
+
+    fun main() {
+        ConfiguracionAudio.silenciar()
+        ConfiguracionAudio.reanudar(75)
+    }
+    ```
+
+### 🟡 Reto 2: Companion Object para Fábrica de Jugadores (Intermedio)
+Crea una clase `Jugador(val nick: String, val nivel: Int, val monedas: Int)`. En su `companion object`, define métodos factoría para `crearNovato(nick: String)` (nivel 1, 100 monedas) y `crearVeterano(nick: String)` (nivel 50, 10.000 monedas).
+
+??? tip "Ver solución"
+    ```kotlin
+    class Jugador private constructor(val nick: String, val nivel: Int, val monedas: Int) {
+
+        companion object {
+            fun crearNovato(nick: String): Jugador {
+                return Jugador(nick, nivel = 1, monedas = 100)
+            }
+
+            fun crearVeterano(nick: String): Jugador {
+                return Jugador(nick, nivel = 50, monedas = 10_000)
+            }
+        }
+
+        fun mostrarFicha() {
+            println("Jugador: $nick | Nivel: $nivel | Monedas: $monedas")
+        }
+    }
+
+    fun main() {
+        val jugador1 = Jugador.crearNovato("Newbie99")
+        val jugador2 = Jugador.crearVeterano("ProGamer")
+
+        jugador1.mostrarFicha()
+        jugador2.mostrarFicha()
+    }
+    ```

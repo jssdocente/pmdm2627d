@@ -1,308 +1,226 @@
-# Corrutinas en Kotlin
+# Programación Asíncrona con Corrutinas en Kotlin
 
-Las corrutinas son una característica de Kotlin que permite escribir código asíncrono de manera más sencilla y legible. Las corrutinas son funciones que pueden suspenderse y reanudarse en un punto determinado, lo que permite realizar operaciones asíncronas sin bloquear el hilo principal.    
+En el desarrollo de aplicaciones móviles, la **concurrencia asíncrona** es un requisito innegociable. Una aplicación móvil debe realizar operaciones que toman tiempo (descargar imágenes, consultar una API REST, leer una base de datos local SQLite/Room) sin **congelar jamás la pantalla** ni bloquear la interacción del usuario a 60 o 120 fotogramas por segundo.
+
+Históricamente en Java y Android se utilizaban hilos manuales (`Thread`), manejadores (`Handler`), `AsyncTask` o complejas librerías de callbacks reactivos (`RxJava`). Kotlin revolucionó este panorama introduciendo las **corrutinas** (*Coroutines*): una solución elegante y ligera que permite escribir **código asíncrono no bloqueante con la misma sencillez y legibilidad que el código secuencial síncrono**.
+
+---
+
+## 1. La Analogía del Camarero: ¿Por qué bloquear un hilo es fatal?
+
+Imagina un restaurante concurrido:
+
+```mermaid
+flowchart LR
+    subgraph Malo ["Enfoque Bloqueante (Sin Corrutinas)"]
+        Cam1[Camarero / Main Thread] -->|Pide café a cocina| Cocina1[Espera 5 min quieto sin atender]
+        Cocina1 -->|App se congela| ANR[Error ANR: App Not Responding]
+    end
+```
+
+- **El Hilo Principal (*Main Thread* o Hilo de UI):** Es el **único camarero** del restaurante. Su trabajo vital es escuchar al usuario (toques en la pantalla, gestos, teclado) y redibujar los componentes visuales.
+- **La Tarea Pesada:** Es un pedido complejo (por ejemplo, descargar el catálogo de juegos desde un servidor).
+
+### El Enfoque Bloqueante (Sin Corrutinas)
+Si el camarero toma el pedido, se mete a la cocina y se queda allí de pie 4 segundos esperando a que termine la máquina de café:
+- Durante esos 4 segundos, **nadie atiende el comedor**.
+- Si un cliente intenta pulsar un botón, la app no responde.
+- El sistema operativo Android detecta que el hilo principal lleva más de 5 segundos sin procesar eventos y lanza el temido diálogo del sistema: **ANR (Application Not Responding)**, cerrando la app a la fuerza.
+
+### El Enfoque con Corrutinas (No Bloqueante)
+Con corrutinas, el camarero pasa la comanda a la cocina (lanza una corrutina en segundo plano) y **vuelve inmediatamente a la sala a seguir atendiendo a los clientes**. 
+Cuando la cocina termina, la corrutina avisa al camarero, quien recoge el plato y lo entrega en la mesa sin haber dejado de atender la sala en ningún momento.
+
+---
+
+## 2. Corrutinas vs Hilos Tradicionales (*Threads*)
+
+A menudo se confunden, pero su coste en recursos es drásticamente distinto:
+
+| Característica | Hilo Tradicional (`Thread` del SO) | Corrutina de Kotlin |
+| :--- | :--- | :--- |
+| **Peso en memoria** | **Pesado** (consume ~1 MB de memoria de pila por hilo) | **Ultraligero** (consume unos pocos bytes en memoria) |
+| **Creación** | Muy costosa (requiere intervención del kernel del SO) | Prácticamente instantánea (gestionada en espacio de usuario) |
+| **Escalabilidad** | Crear 5.000 hilos colapsa la memoria de un teléfono móvil (`OutOfMemoryError`). | Puedes lanzar **100.000 corrutinas** simultáneamente sin problema. |
+| **Concepto clave** | "Hilos de hardware/SO" | "Hilos virtuales cooperativos" que se ejecutan sobre un grupo de hilos reales. |
+
+---
+
+## 3. Funciones de Suspensión (`suspend fun`)
+
+El bloque de construcción fundamental de las corrutinas es la palabra clave **`suspend`**.
+
+Una función marcada como `suspend` es una función ordinaria con una capacidad especial: **puede pausar su ejecución en un punto determinado y reanudarse más tarde sin bloquear el hilo donde se está ejecutando**.
 
 ```kotlin
-suspend fun main() {
-    val resultado = async { obtenerDatos() }
-    println("Datos: ${resultado.await()}")
-}
-suspend fun obtenerDatos(): String {
-    delay(1000)
-    return "Datos obtenidos"
+import kotlinx.coroutines.delay
+
+// 'delay' es una función de suspensión: pausa la corrutina sin bloquear el hilo
+suspend fun descargarDatosJuegos(): String {
+    println("-> Iniciando descarga de catálogo en segundo plano...")
+    delay(2000) // Simula una espera de red de 2 segundos de forma NO bloqueante
+    return "Catálogo: 120 videojuegos disponibles"
 }
 ```
 
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse. La función `main` utiliza la función `async` para ejecutar la función `obtenerDatos` en una corrutina y espera a que se complete utilizando la función `await`. 
+!!! warning "Regla de compilación de funciones suspend"
+    Una función `suspend` **solo puede ser invocada desde dentro de otra función de suspensión o desde el cuerpo de un constructor de corrutina (*Coroutine Builder*)**.
 
-## Código síncrono
+---
 
-El código síncrono es el código que se ejecuta de manera secuencial, es decir, una instrucción se ejecuta después de que la anterior haya terminado. En Kotlin, el código síncrono se ejecuta en el hilo principal de la aplicación.    
+## 4. Constructores de Corrutinas (*Coroutine Builders*)
 
-```kotlin
-fun main() {
-    val resultado = obtenerDatos()
-    println("Datos: $resultado")
-}
-fun obtenerDatos(): String {
-    Thread.sleep(1000)
-    return "Datos obtenidos"
-}
-```
+Para arrancar una corrutina desde código convencional síncrono, se utilizan los *builders*, los cuales se invocan siempre en el contexto de un ámbito de ejecución (**`CoroutineScope`**):
 
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación síncrona que tarda 1 segundo en completarse. La función `main` llama a la función `obtenerDatos` y espera a que se complete antes de imprimir los datos obtenidos.
-
-## Código asíncrono
-
-El código asíncrono es el código que se ejecuta de manera concurrente, es decir, varias instrucciones se pueden ejecutar al mismo tiempo. En Kotlin, el código asíncrono se puede escribir utilizando corrutinas.    
+### 4.1. `launch`: Lanzar y Olvidar (*Fire and Forget*)
+Se utiliza cuando se desea ejecutar una tarea en segundo plano y **no se necesita que devuelva un valor directo** (por ejemplo: registrar un log, guardar un ajuste local, enviar una analítica):
 
 ```kotlin
-suspend fun main() {
-    val resultado = async { obtenerDatos() }
-    println("Datos: ${resultado.await()}")
-}
+import kotlinx.coroutines.*
 
-suspend fun obtenerDatos(): String {
-    delay(1000)
-    return "Datos obtenidos"
-}
-```
+fun main() = runBlocking { // 'runBlocking' crea un scope bloqueante solo para pruebas en main
+    println("Antes del launch")
 
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse. La función `main` utiliza la función `async` para ejecutar la función `obtenerDatos` en una corrutina y espera a que se complete utilizando la función `await`.
-
-## Los métodos launch y async
-
-En Kotlin, las funciones `launch` y `async` se utilizan para crear corrutinas. 
-
-La principal diferencia entre ellas es que `launch` se utiliza para ejecutar una corrutina que no devuelve un valor, mientras que `async` se utiliza para ejecutar una corrutina que devuelve un valor.  
-
-```kotlin
-suspend fun main() {
-    val resultado = async { obtenerDatos() }
-    println("Datos: ${resultado.await()}")
-}
-
-suspend fun obtenerDatos(): String {
-    delay(1000)
-    return "Datos obtenidos"
-}
-
-suspend fun main() {
-    launch { obtenerDatos() }
-    println("Datos obtenidos")
-}
-
-suspend fun obtenerDatos() {
-    delay(1000)
-    println("Datos obtenidos")
-}
-```
-
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse. La función `main` utiliza la función `async` para ejecutar la función `obtenerDatos` en una corrutina y espera a que se complete utilizando la función `await`. En el segundo ejemplo, se utiliza la función `launch` para ejecutar la función `obtenerDatos` en una corrutina sin esperar a que se complete.   
-
-## Excepciones
-
-En Kotlin, las corrutinas pueden lanzar excepciones que se pueden manejar utilizando bloques `try-catch`. Las excepciones lanzadas en una corrutina se propagan a la corrutina padre y se pueden manejar en el hilo principal.  
-
-```kotlin
-suspend fun main() {
-    try {
-        val resultado = async { obtenerDatos() }
-        println("Datos: ${resultado.await()}")
-    } catch (e: Exception) {
-        println("Error: ${e.message}")
-    }
-}
-
-suspend fun obtenerDatos(): String {
-    delay(1000)
-    throw Exception("Error al obtener los datos")
-    return "Datos obtenidos"
-}
-```
-
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse y lanza una excepción. La función `main` utiliza un bloque `try-catch` para manejar la excepción lanzada en la corrutina.
-
-- [Documentación oficial de Kotlin](https://kotlinlang.org/docs/coroutines-guide.html): La documentación oficial de Kotlin sobre corrutinas, que incluye guías, tutoriales y ejemplos para aprender a usar corrutinas en Kotlin.
-
-!!! warning "La importancia de controlar las excepciones al usar corrutinas"
-    Cuando se utilizan corrutinas en Kotlin, es importante controlar las excepciones que se pueden producir durante la ejecución de la aplicación. Las excepciones no controladas pueden provocar fallos en la aplicación y afectar negativamente la experiencia del usuario.   
-
-    Por lo tanto, es importante utilizar bloques `try-catch` para manejar las excepciones que se pueden producir en las corrutinas. Además, es recomendable utilizar la función `CoroutineExceptionHandler` para manejar las excepciones que se producen en las corrutinas de manera global.
-
-    ```kotlin
-    val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        println("Error: ${exception.message}")
-    }
-
-    suspend fun main() {
-        try {
-            val resultado = async { obtenerDatos() }
-            println("Datos: ${resultado.await()}")
-        } catch (e: Exception) {
-            println("Error: ${e.message}")
-        }
-    }   
-
-    suspend fun obtenerDatos(): String {
+    launch {
         delay(1000)
-        throw Exception("Error al obtener los datos")
-        return "Datos obtenidos"
+        println("Tarea secundaria completada en segundo plano")
+    }
+
+    println("Después del launch (se ejecuta de inmediato)")
+}
+```
+
+### 4.2. `async` y `await`: Peticiones en Paralelo con Retorno de Valor
+Se utiliza cuando **necesitamos un resultado devuelto**. `async` devuelve un objeto `Deferred<T>` (una promesa de que habrá un resultado futuro). Para esperar a que esté listo y extraer el valor se invoca `.await()`:
+
+```kotlin
+import kotlinx.coroutines.*
+
+suspend fun obtenerPuntuacion(): Int {
+    delay(1000)
+    return 950
+}
+
+suspend fun obtenerNombreJugador(): String {
+    delay(1000)
+    return "Zelda"
+}
+
+fun main() = runBlocking {
+    println("Cargando perfil en paralelo...")
+
+    // Ambas tareas se ejecutan simultáneamente en paralelo:
+    val puntuacionDeferred = async { obtenerPuntuacion() }
+    val nombreDeferred = async { obtenerNombreJugador() }
+
+    // .await() espera a que ambas finalicen (tardará 1 segundo en total, no 2)
+    val nombre = nombreDeferred.await()
+    val puntos = puntuacionDeferred.await()
+
+    println("Perfil cargado: $nombre con $puntos puntos.")
+}
+```
+
+---
+
+## 5. Despachadores en Android (*Dispatchers*)
+
+Un **Dispatcher** indica en qué grupo de hilos (*Thread Pool*) debe ejecutarse una corrutina determinada:
+
+| Despachador | Diseñado para | Ejemplos en Android |
+| :--- | :--- | :--- |
+| **`Dispatchers.Main`** | Operaciones exclusivas de Interfaz de Usuario (hilo principal). | Actualizar estados de Jetpack Compose, animaciones, navegación. |
+| **`Dispatchers.IO`** | Operaciones de Entrada/Salida bloqueantes fuera de CPU. | Consultas SQL con Room, peticiones HTTP de red, lectura/escritura de ficheros. |
+| **`Dispatchers.Default`** | Tareas intensivas en cómputo de procesador. | Parseo de JSONs masivos, ordenación de listas gigantescas, compresión o filtros de imagen. |
+
+### Cambio de Contexto Seguro con `withContext`
+Permite cambiar temporalmente de hilo para una operación pesada y regresar automáticamente al hilo original:
+
+```kotlin
+import kotlinx.coroutines.*
+
+suspend fun cargarCatalogoYActualizarUi() {
+    // 1. Cambiamos al hilo de Entrada/Salida para descargar
+    val datos = withContext(Dispatchers.IO) {
+        println("Descargando en hilo de red: ${Thread.currentThread().name}")
+        delay(1500)
+        listOf("Metroid", "Pokemon", "Zelda")
+    }
+
+    // 2. Al salir de withContext, volvemos automáticamente al hilo original (Main)
+    println("Actualizando pantalla en Compose con: $datos")
+}
+```
+
+---
+
+## 6. Manejo de Errores con `try-catch`
+
+A diferencia de los callbacks antiguos donde las excepciones se perdían entre hilos, en las corrutinas puedes capturar errores de operaciones asíncronas con la sintaxis clásica de `try-catch`:
+
+```kotlin
+import kotlinx.coroutines.*
+
+suspend fun descargarConFalloSeguro() {
+    try {
+        withContext(Dispatchers.IO) {
+            delay(1000)
+            throw java.io.IOException("Error 503: Servidor de GameVault no disponible")
+        }
+    } catch (e: java.io.IOException) {
+        println("Error capturado limpiamente: ${e.message}")
+        // Aquí actualizamos el UiState a CatalogoUiState.Error(...)
+    }
+}
+```
+
+---
+
+## 7. Retos Prácticos
+
+### 🟢 Reto 1: Saludo con retardo (Básico)
+Crea una función de suspensión `saludarConRetardo(nombre: String, tiempoMs: Long)` que imprima "Iniciando espera...", espere el tiempo indicado usando `delay()` y luego imprima "¡Hola, $nombre!". Pruébala dentro de un bloque `runBlocking`.
+
+??? tip "Ver solución"
+    ```kotlin
+    import kotlinx.coroutines.*
+
+    suspend fun saludarConRetardo(nombre: String, tiempoMs: Long) {
+        println("Iniciando espera para $nombre...")
+        delay(tiempoMs)
+        println("¡Hola, $nombre tras ${tiempoMs}ms!")
+    }
+
+    fun main() = runBlocking {
+        saludarConRetardo("Mario", 1000)
     }
     ```
 
-## Cancelación
+### 🟡 Reto 2: Descargas concurrentes con `async` (Intermedio)
+Simula la carga de un juego descargando en paralelo sus texturas (demora 1.5 s) y sus sonidos (demora 1.0 s). Mide el tiempo total demostrando que no supera los 1.6 segundos al ejecutarse en paralelo.
 
-En Kotlin, las corrutinas se pueden cancelar utilizando la función `cancel()`. La cancelación de una corrutina no detiene inmediatamente su ejecución, sino que la marca como cancelada y permite que se complete de manera segura. 
+??? tip "Ver solución"
+    ```kotlin
+    import kotlinx.coroutines.*
 
-```kotlin
-suspend fun main() {
-    val job = launch {
-        try {
-            obtenerDatos()
-        } catch (e: CancellationException) {
-            println("Corrutina cancelada")
-        }
-    }
-    delay(500)
-    job.cancel()
-}
-
-suspend fun obtenerDatos() {
-    delay(1000)
-    println("Datos obtenidos")
-}
-```
-
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse. La función `main` utiliza la función `launch` para ejecutar la función `obtenerDatos` en una corrutina y espera 500 milisegundos antes de cancelar la corrutina utilizando la función `cancel()`. Si la corrutina es cancelada, se lanza una excepción `CancellationException` que se puede manejar en el bloque `try-catch`.   
-
-## La clase Job
-
-En Kotlin, la clase `Job` se utiliza para gestionar la ejecución de corrutinas. Un `Job` representa una unidad de trabajo que se puede cancelar y supervisar. 
-
-```kotlin
-suspend fun main() {
-    val job = launch {
-        obtenerDatos()
-    }
-    delay(500)
-    job.cancel()
-}
-suspend fun obtenerDatos() {
-    delay(1000)
-    println("Datos obtenidos")
-}
-```
-
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse. La función `main` utiliza la función `launch` para ejecutar la función `obtenerDatos` en una corrutina y espera 500 milisegundos antes de cancelar la corrutina utilizando la función `cancel()`. 
-
-El objeto `Job` se utiliza para gestionar la ejecución de la corrutina y se puede utilizar para supervisar su estado. 
-
-!!! info "La importancia de Job"
-    Job desempeña un papel importante para garantizar la simultaneidad estructurada, ya que administra el ciclo de vida de las corrutinas y mantiene la relación de superior y secundario.
-
-
-### Jerarquía de trabajos
-
-En Kotlin, la jerarquía de trabajos se utiliza para gestionar la ejecución de corrutinas. Un trabajo (Job) representa una unidad de trabajo que se puede cancelar y supervisar. Los trabajos se pueden organizar en una jerarquía para gestionar la ejecución de corrutinas de manera más eficiente. 
-
-```kotlin
-suspend fun main() {
-    val parentJob = Job()
-    val childJob1 = Job(parentJob)
-    val childJob2 = Job(parentJob)
-
-    launch(childJob1) {
-        obtenerDatos()
-    }
-    launch(childJob2) {
-        obtenerDatos()
+    suspend fun cargarTexturas(): String {
+        delay(1500)
+        return "Texturas 4K"
     }
 
-    delay(500)
-    parentJob.cancel()
-}
-
-suspend fun obtenerDatos() {
-    delay(1000)
-    println("Datos obtenidos")
-}
-```
-
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse. La función `main` crea un trabajo padre y dos trabajos secundarios que se ejecutan en paralelo. Después de 500 milisegundos, se cancela el trabajo padre utilizando la función `cancel()`, lo que cancela todos los trabajos secundarios.
-
-![Jerarquía de trabajos](https://developer.android.com/static/codelabs/basic-android-kotlin-compose-coroutines-kotlin-playground/img/d6f120976b283e0_960.png?hl=es-419)
-
-## CoroutineScope
-
-En Kotlin, el `CoroutineScope` es una interfaz que define un ámbito para las corrutinas. 
-
-Un `CoroutineScope` se utiliza para crear y gestionar corrutinas en una aplicación. 
-
-```kotlin
-class MyCoroutineScope : CoroutineScope {
-    private val job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-    fun cancel() {
-        job.cancel()
+    suspend fun cargarSonidos(): String {
+        delay(1000)
+        return "Efectos SFX"
     }
-suspend fun main() {
-    val scope = MyCoroutineScope()
-    scope.launch {
-        obtenerDatos()
+
+    fun main() = runBlocking {
+        val inicio = System.currentTimeMillis()
+
+        val texturas = async { cargarTexturas() }
+        val sonidos = async { cargarSonidos() }
+
+        println("Recursos listos: ${texturas.await()} y ${sonidos.await()}")
+        val totalMs = System.currentTimeMillis() - inicio
+        println("Tiempo total en paralelo: $totalMs ms (menos de 2 segundos)")
     }
-    delay(500)
-    scope.cancel()
-}
-
-suspend fun obtenerDatos() {
-    delay(1000)
-    println("Datos obtenidos")
-}
-
-}
-```
-
-En el ejemplo anterior, se define una clase `MyCoroutineScope` que implementa la interfaz `CoroutineScope`. La clase `MyCoroutineScope` define un ámbito para las corrutinas utilizando la propiedad `coroutineContext`, que combina el despachador `Dispatchers.Main` y un objeto `Job`. La clase también incluye una función `cancel()` que cancela todas las corrutinas en el ámbito. En la función `main`, se crea una instancia de `MyCoroutineScope` y se utiliza para ejecutar una corrutina que llama a la función `obtenerDatos`. Después de 500 milisegundos, se cancela el ámbito utilizando la función `cancel()`.  
-
-!!! tip "launch y async en CoroutineScope"
-    launch() y async() son funciones de extension de la interfaz `CoroutineScope` que se utilizan para crear corrutinas en un ámbito determinado. La función `launch()` se utiliza para crear una corrutina que no devuelve un valor, mientras que la función `async()` se utiliza para crear una corrutina que devuelve un valor. Ambas funciones se pueden utilizar en un ámbito de `CoroutineScope` para gestionar la ejecución de corrutinas de manera más eficiente.
-
-
-## CoroutineContext
-
-En Kotlin, el `CoroutineContext` es una interfaz que define el contexto en el que se ejecuta una corrutina. 
-
-Un `CoroutineContext` se utiliza para definir el despachador, la supervisión y otros elementos del contexto de una corrutina. 
-
-Es en esencia un mapa que almacena pares clave-valor que se utilizan para definir el contexto de una corrutina. 
-
-Estos campos no son obligatorios pero algunos de los más comunes son:
-- `Job`: Un objeto que representa una unidad de trabajo que se puede cancelar y supervisar.
-- `CoroutineName`: Un objeto que representa el nombre de una corrutina.
-- `CoroutineExceptionHandler`: Un objeto que maneja las excepciones que se producen en una corrutina. 
-- `Dispatcher`: Un objeto que define en qué hilo o grupo de hilos se ejecuta la corrutina. 
-
-```kotlin
-suspend fun main() {
-    val context = Dispatchers.Main + Job()
-    withContext(context) {
-        obtenerDatos()
-    }
-}
-suspend fun obtenerDatos() {
-    delay(1000)
-    println("Datos obtenidos")
-}
-```
-
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse. La función `main` utiliza la función `withContext` para ejecutar la función `obtenerDatos` en un contexto que combina el despachador `Dispatchers.Main` y un objeto `Job`.  
-
-## CoroutineDispatcher
-
-En Kotlin, el `CoroutineDispatcher` es una interfaz que define el despachador de una corrutina. 
-
-Un `CoroutineDispatcher` se utiliza para definir en qué hilo o grupo de hilos se ejecuta una corrutina. 
-
-Puede utilizar los despachadores predefinidos de Kotlin, como `Dispatchers.Main`, `Dispatchers.IO` y `Dispatchers.Default`, o crear un despachador personalizado.
-
-Para crear uno personalizado se puede utilizar la clase `ExecutorCoroutineDispatcher` de Kotlin. 
-
-```kotlin
-
-suspend fun main() {
-    val dispatcher = Dispatchers.IO
-    withContext(dispatcher) {
-        obtenerDatos()
-    }
-}
-suspend fun obtenerDatos() {
-    delay(1000)
-    println("Datos obtenidos")
-}
-```
-
-En el ejemplo anterior, se define una función `obtenerDatos` que simula una operación asíncrona que tarda 1 segundo en completarse. La función `main` utiliza la función `withContext` para ejecutar la función `obtenerDatos` en un contexto que utiliza el despachador `Dispatchers.IO`.  
-
+    ```
