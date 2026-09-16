@@ -13,6 +13,7 @@ Para resolver este problema arquitectural de modelado, Kotlin proporciona los **
 Un tipo sellado representa una **jerarquía restringida de herencia**. Todas las subclases directas deben conocerse en tiempo de compilación y definirse dentro del mismo paquete o módulo.
 
 A diferencia de un `enum`:
+
 - Cada subclase de una `sealed class` o `sealed interface` puede ser una clase diferente (`data class`, `class` normal o `data object`).
 - Cada subclase puede tener **su propio número y tipo de propiedades**, e incluso múltiples instancias independientes en memoria con datos distintos.
 
@@ -122,8 +123,11 @@ fun main() {
 
 ### 🟢 Reto 1: Modelado de Estado de Autenticación (Básico)
 Diseña una `sealed interface AuthState` con tres estados:
+
 1. `data object NoAutenticado : AuthState`
+
 2. `data object Autenticando : AuthState`
+
 3. `data class Autenticado(val token: String, val email: String) : AuthState`
 Crea una función `evaluarSesion(estado: AuthState)` que imprima el mensaje adecuado con un `when` exhaustivo.
 
@@ -151,6 +155,7 @@ Crea una función `evaluarSesion(estado: AuthState)` que imprima el mensaje adec
 
 ### 🟡 Reto 2: Respuesta genérica de API (Intermedio)
 Diseña una `sealed interface RespuestaApi<out T>` que admita un tipo genérico:
+
 - `data class Correcta<T>(val datos: T) : RespuestaApi<T>`
 - `data class Fallo(val mensaje: String, val codigo: Int) : RespuestaApi<Nothing>`
 Escribe un programa que cree una respuesta correcta con un entero y otra de fallo, evaluando ambas.

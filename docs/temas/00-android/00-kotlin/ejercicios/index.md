@@ -76,6 +76,7 @@ Cada módulo temático contiene una amplia batería graduada de actividades para
 - 🟢 **Nivel Básico (Consolidación):** Ejercicios guiados para mecanizar la sintaxis idiomática de Kotlin, el tipado y notar la diferencia respecto a Java.
 - 🟡 **Nivel Intermedio (Aplicación):** Problemas de lógica que requieren aplicar inmutabilidad, control de nulos, funciones de orden superior o transformaciones funcionales sin código repetitivo.
 - 🔴 **Nivel Avanzado (Reto Lúdico Incremental):** Cada bloque culmina con un **juego interactivo** que ensambla todas las piezas vistas hasta ese momento. Cada reto incluye:
+
     - 📊 **Diagrama Mermaid** (flujo de control o arquitectura de datos) para enseñar al alumno a modelar el problema antes de escribir código.
     - 🧠 **Preguntas de reflexión previa** para desarrollar pensamiento crítico y algorítmico.
     - 💡 **Pistas progresivas desplegables** que guían la resolución paso a paso sin desvelar la solución de golpe.

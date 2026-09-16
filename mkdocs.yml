@@ -30,6 +30,7 @@ nav:
               - "Scope functions": temas/00-android/00-kotlin/31-scope-functions.md
               - "Corrutinas": temas/00-android/00-kotlin/51-corrutinas.md
               - "Flujos Asíncronos (Flow y StateFlow)": temas/00-android/00-kotlin/52-flows.md
+              - "Anexo: La Magia de los DSLs": temas/00-android/00-kotlin/61-dsl-en-kotlin.md
           - "Actividades":
               - "Laboratorio de Kotlin": temas/00-android/00-kotlin/ejercicios/index.md
               - "1. Fundamentos e Inmutabilidad": temas/00-android/00-kotlin/ejercicios/01-fundamentos-inmutabilidad.md
@@ -52,12 +53,18 @@ nav:
           - "Listas": temas/00-android/00-compose/23-listas-cuadriculas.md
           - "Navegación Rutas": temas/00-android/00-compose/24-navegacion-rutas.md
           - "Material Design": temas/00-android/00-compose/25-material-design.md
+          - "Diseño con @Preview y Mock Data": temas/00-android/00-compose/26-preview-diseno-mock.md
+          - "Contexto y CompositionLocal": temas/00-android/00-compose/27-compositionlocal-contexto-efectos.md
           - "Glosario": temas/00-android/00-compose/99-glosario-android.md
 
-    # - "Ciclo de Vida aplicación Android": temas/00-android/01-ciclo-vida-app.md
-    # - "Arquitecturas en Android": temas/00-android/02-arquitectura.md
-    # - "Capa de UI": temas/00-android/02-capa-ui.md
-  #     - ""
+      - "Arquitectura y KMP con Koin":
+          - "Introducción": temas/00-android/02-arquitectura/index.md
+          - "Guía de Arquitectura de Google": temas/00-android/02-arquitectura/01-guia-arquitectura-google.md
+          - "Clean Architecture": temas/00-android/02-arquitectura/02-clean-architecture.md
+          - "Inyección con Koin": temas/00-android/02-arquitectura/03-inyeccion-dependencias-koin.md
+          - "Ecosistema Multiplataforma (KMP)": temas/00-android/02-arquitectura/04-ecosistema-kmp-multiplataforma.md
+          - "Testing en Android y KMP": temas/00-android/02-arquitectura/06-testing-android-kmp.md
+          - "Glosario de Patrones": temas/00-android/02-arquitectura/05-glosario-patrones.md
   - "UT1 - Visión General y Entorno de desarrollo": temas/01/index.md
   # - "UT2 - Programación de aplicaciones de móviles con Android":
   #   - "Inicio": temas/02/index.md

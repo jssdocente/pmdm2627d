@@ -1,184 +1,285 @@
-# Listas en Compose
+# Listas y Cuadrículas en Compose
 
-En Jetpack Compose, puedes mostrar listas de elementos utilizando los componentes `LazyColumn` y `LazyRow`. Estos componentes te permiten mostrar una lista de elementos de forma eficiente y reactiva.
+En Jetpack Compose, las listas y cuadrículas de elementos se renderizan mediante los componentes perezosos (`LazyLayouts`): `LazyColumn`, `LazyRow`, `LazyVerticalGrid` y `LazyHorizontalGrid`. A diferencia de `Column` o `Row` tradicionales (que instancian y componen todos sus hijos de golpe en memoria), los componentes *Lazy* sólo componen, miden y dibujan los elementos que entran en la ventana de visualización (*viewport*), emulando y superando la eficiencia del antiguo `RecyclerView` de Android Views.
 
-## LazyColumn
+---
 
-El componente `LazyColumn` te permite mostrar una lista de elementos de forma eficiente y reactiva. Puedes utilizar `LazyColumn` para mostrar una lista de elementos verticales que se cargan de forma perezosa a medida que el usuario se desplaza por la lista.
+## 1. LazyColumn y LazyRow
+
+`LazyColumn` produce una lista de desplazamiento vertical, mientras que `LazyRow` genera una horizontal. Ambos proporcionan un `LazyListScope` donde se declaran los elementos mediante las funciones `item()` (para un único elemento o cabeceras) o `items()` (para colecciones).
+
+### Lista básica con LazyColumn
 
 ```kotlin
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+
 @Composable
-fun ListaVertical() {
+fun ListaNombres(nombres: List<String>) {
     LazyColumn {
-        items(100) { index ->
-            Text(text = "Elemento $index")
+        item {
+            Text(text = "Cabecera de la lista")
+        }
+        items(nombres) { nombre ->
+            Text(text = "Hola, $nombre!")
         }
     }
 }
 ```
 
-En el ejemplo anterior, se define un componente `ListaVertical` que muestra una lista de 100 elementos verticales utilizando `LazyColumn`. El método `items()` de `LazyColumn` se utiliza para generar los elementos de la lista en función de un rango de índices.
+### Espaciado y Relleno Recomendados
 
-!!! info "Video Listas y LazyColumn"
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/2OUEAhX7o2g?si=zE8Xybp2x_FVVRlj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-
-## LazyRow
-
-El componente `LazyRow` te permite mostrar una lista de elementos de forma eficiente y reactiva. Puedes utilizar `LazyRow` para mostrar una lista de elementos horizontales que se cargan de forma perezosa a medida que el usuario se desplaza por la lista.
+En lugar de colocar separadores manuales o márgenes individuales en cada elemento, las buenas prácticas de Jetpack Compose recomiendan usar `contentPadding` y `Arrangement.spacedBy()`:
 
 ```kotlin
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.unit.dp
+
 @Composable
-fun ListaHorizontal() {
-    LazyRow {
-        items(100) { index ->
-            Text(text = "Elemento $index")
+fun ListaConEspaciado(usuarios: List<Usuario>) {
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(
+            items = usuarios,
+            key = { usuario -> usuario.id }
+        ) { usuario ->
+            TarjetaUsuario(usuario = usuario)
         }
     }
 }
 ```
 
-En el ejemplo anterior, se define un componente `ListaHorizontal` que muestra una lista de 100 elementos horizontales utilizando `LazyRow`. El método `items()` de `LazyRow` se utiliza para generar los elementos de la lista en función de un rango de índices.
+!!! tip "Padding de barras del sistema"
+    Al usar `Scaffold`, debes pasar el `innerPadding` recibido en el parámetro lambda al `contentPadding` del `LazyColumn`. De este modo, la lista se desplazará por debajo de las barras translúcidas sin quedar cortada.
 
-## Scroll infinito
+---
 
-Puedes implementar el scroll infinito en las listas de Compose utilizando el método `items()` de `LazyColumn` o `LazyRow` y pasando una lista infinita como argumento. Esto te permite cargar nuevos elementos a medida que el usuario se desplaza por la lista.
+## 2. La Clave Única (`key`): Recomposición Eficiente
+
+Por defecto, si no se especifica una clave en `items()`, Compose utiliza la **posición numérica (índice)** del elemento en la lista como su identificador.
+
+!!! danger "El peligro de omitir `key`"
+    Si la lista cambia por una inserción al principio, eliminación intermedia o reordenación (ej. ordenamiento alfabético):
+
+    - Sin `key`: Compose asume que todos los elementos cambiaron porque sus índices cambiaron, forzando la recomposición innecesaria de toda la lista y perdiendo cualquier estado interno (como animaciones o inputs de texto).
+    - Con `key`: Compose identifica cada elemento por su ID único, reutiliza los composables ya existentes y reordena únicamente las vistas desplazadas en pantalla.
 
 ```kotlin
-@Composable
-fun ScrollInfinito() {
-    val elementos = remember { mutableStateListOf<String>() }
+// Incorreto: omitir key fuerza recomposiciones masivas al modificar la lista
+items(listaJuegos) { juego ->
+    JuegoItem(juego)
+}
 
-    LazyColumn {
-        items(elementos) { elemento ->
-            Text(text = elemento)
-        }
-    }
+// Correcto: clave estable e inequívoca
+items(
+    items = listaJuegos,
+    key = { juego -> juego.id } // Garantiza identidad estable
+) { juego ->
+    JuegoItem(juego)
 }
 ```
 
-En el ejemplo anterior, se define un componente `ScrollInfinito` que muestra una lista de elementos utilizando `LazyColumn`. Se utiliza un estado mutable `mutableStateListOf` para almacenar los elementos de la lista, y se pasa esta lista como argumento al método `items()` de `LazyColumn`. Esto permite cargar nuevos elementos a medida que el usuario se desplaza por la lista.
+### Animaciones de Lista con `Modifier.animateItem()`
 
-El manejo del scroll infinito en Compose es similar al manejo del scroll infinito en otras bibliotecas de UI, como RecyclerView en Android. Puedes utilizar técnicas como la paginación y la carga perezosa para cargar nuevos elementos a medida que el usuario se desplaza por la lista.
-
-El estado mutable `mutableStateListOf` se utiliza para almacenar los elementos de la lista y notificar a Compose cuando se actualizan los elementos. Esto permite que Compose vuelva a renderizar la lista con los nuevos elementos.
-
-## Elementos personalizados
-
-Puedes utilizar elementos personalizados en las listas de Compose para mostrar elementos más complejos. Para ello, puedes utilizar el método `item()` de `LazyColumn` o `LazyRow` y pasar un componente personalizado como argumento.
+A partir de Jetpack Compose 1.7+, la asignación de una clave única permite animar automáticamente inserciones, eliminaciones y reordenaciones aplicando `Modifier.animateItem()`:
 
 ```kotlin
 @Composable
-fun ListaPersonalizada() {
+fun ListaAnimada(juegos: List<Juego>) {
     LazyColumn {
-        items(100) { index ->
-            ElementoPersonalizado(index)
-        }
-    }
-}
-
-@Composable
-fun ElementoPersonalizado(index: Int) {
-    Text(text = "Elemento $index")
-}
-```
-
-En el ejemplo anterior, se define un componente `ListaPersonalizada` que muestra una lista de 100 elementos utilizando `LazyColumn`. El método `items()` de `LazyColumn` se utiliza para generar los elementos de la lista en función de un rango de índices, y se pasa un componente personalizado `ElementoPersonalizado` como argumento.
-
-## Escuchadores de eventos
-
-Puedes añadir escuchadores de eventos a los elementos de la lista para responder a las interacciones del usuario. Por ejemplo, puedes añadir un escuchador de clics a un elemento de la lista para realizar una acción cuando el usuario haga clic en él.
-
-```kotlin
-@Composable
-fun ListaConClics() {
-    LazyColumn {
-        items(100) { index ->
-            Text(
-                text = "Elemento $index",
-                modifier = Modifier.clickable { /* Acción al hacer clic */ }
+        items(
+            items = juegos,
+            key = { it.id }
+        ) { juego ->
+            TarjetaJuego(
+                juego = juego,
+                modifier = Modifier.animateItem() // Anima suavemente cambios en la lista
             )
         }
     }
 }
 ```
 
-En el ejemplo anterior, se define un componente `ListaConClics` que muestra una lista de 100 elementos utilizando `LazyColumn`. Se añade un escuchador de clics al elemento de la lista utilizando el modificador `clickable`.
+---
 
-## Separadores
+## 3. Control y Observación del Scroll
 
-Puedes añadir separadores entre los elementos de la lista utilizando el método `item()` de `LazyColumn` o `LazyRow` y pasando un componente separador como argumento.
+Para inspeccionar o manipular programáticamente la posición de la lista (por ejemplo, para mostrar un botón flotante "Volver arriba"), se utiliza `rememberLazyListState()`.
+
+### Uso de `derivedStateOf` para evitar recomposiciones continuas
+
+El estado `listState.firstVisibleItemIndex` cambia con muchísima frecuencia durante un desplazamiento. Observarlo directamente dentro de la composición provocaría cientos de recomposiciones por segundo. La solución idónea es utilizar `derivedStateOf`:
 
 ```kotlin
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+
 @Composable
-fun ListaConSeparadores() {
-    LazyColumn {
-        items(100) { index ->
-            Column {
-                ElementoPersonalizado(index)
-                Divider()
+fun PantallaListaScroll(articulos: List<Articulo>) {
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    // derivedStateOf garantiza que la UI solo se recomponga cuando el booleano cambie de true a false o viceversa
+    val mostrarBotonArriba by remember {
+        derivedStateOf { listState.firstVisibleItemIndex > 3 }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(articulos, key = { it.id }) { articulo ->
+                FilaArticulo(articulo = articulo)
+            }
+        }
+
+        AnimatedVisibility(
+            visible = mostrarBotonArriba,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            FloatingActionButton(
+                onClick = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                }
+            ) {
+                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Subir al inicio")
             }
         }
     }
 }
 ```
 
-En el ejemplo anterior, se define un componente `ListaConSeparadores` que muestra una lista de 100 elementos utilizando `LazyColumn`. Se añade un separador `Divider()` entre cada elemento de la lista.
+---
 
-## Filtrado y ordenación
+## 4. Cuadrículas: LazyVerticalGrid y LazyHorizontalGrid
 
-Puedes filtrar y ordenar los elementos de la lista utilizando funciones de extensión como `filter()` y `sortedBy()`. Estas funciones te permiten realizar operaciones comunes con las listas de forma sencilla y eficiente.
+Para mostrar catálogos, galerías multimedia o tarjetas en columnas múltiples se emplean `LazyVerticalGrid` o `LazyHorizontalGrid`.
+
+El diseño de las columnas o filas se especifica mediante el parámetro `columns` o `rows`:
+
+- `GridCells.Fixed(count)`: Fija un número exacto de columnas/filas sin importar el ancho del dispositivo.
+- `GridCells.Adaptive(minSize)`: Diseña automáticamente tantas columnas como quepan, garantizando que cada celda tenga al menos el ancho mínimo especificado (ideal para diseño responsivo en tablets y móviles).
 
 ```kotlin
-@Composable
-fun ListaFiltrada() {
-    val numeros = (0..100).toList()
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 
+@Composable
+fun GaleriaJuegos(juegos: List<Juego>) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 140.dp),
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(
+            items = juegos,
+            key = { juego -> juego.id }
+        ) { juego ->
+            TarjetaJuegoCuadricula(juego = juego)
+        }
+    }
+}
+```
+
+---
+
+## 5. Separadores con Material 3
+
+Cuando la UI requiera una línea divisoria física entre elementos en lugar de espaciado transparente, se debe emplear `HorizontalDivider` de Material 3:
+
+```kotlin
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun ListaConDivisores(elementos: List<String>) {
     LazyColumn {
-        items(numeros.filter { it % 2 == 0 }) { numero ->
-            Text(text = "Número $numero")
+        itemsIndexed(
+            items = elementos,
+            key = { index, item -> "$index-$item" }
+        ) { index, item ->
+            ElementoFila(texto = item)
+
+            // Añade divisor a todos salvo al último
+            if (index < elementos.lastIndex) {
+                HorizontalDivider(
+                    thickness = 0.5.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
+            }
         }
     }
 }
 ```
 
-En el ejemplo anterior, se define un componente `ListaFiltrada` que muestra una lista de números pares del 0 al 100 utilizando `LazyColumn`. Se filtran los números pares utilizando la función de extensión `filter()`.
+---
 
-## Porqué usar LazyColumn y LazyRow en lugar de Column y Row
+## 6. Vinculación con Arquitectura y UiState
 
-`LazyColumn` y `LazyRow` son componentes optimizados para mostrar listas de elementos de forma eficiente y reactiva. A diferencia de `Column` y `Row`, que renderizan todos los elementos de la lista de forma inmediata, `LazyColumn` y `LazyRow` renderizan solo los elementos visibles en la pantalla y los elementos que están cerca de la zona visible.
-
-Esto hace que `LazyColumn` y `LazyRow` sean más eficientes en términos de rendimiento y consumo de recursos, especialmente cuando se trabaja con listas grandes o infinitas.
-
-Por lo tanto, es recomendable utilizar `LazyColumn` y `LazyRow` para mostrar listas de elementos en Jetpack Compose, ya que proporcionan una experiencia de usuario más fluida y eficiente.
-
-## Cuadrículsa o Grids
-
-En Jetpack Compose, puedes mostrar listas de elementos en forma de cuadrículas utilizando el componente `LazyVerticalGrid` o `LazyHorizontalGrid`. Estos componentes te permiten mostrar una cuadrícula de elementos de forma eficiente y reactiva.
+En una arquitectura limpia y moderna, la lista no debe gestionar su propia lógica de obtención de datos. El Composable debe recibir el estado inmutable desde la capa de UI (`UiState`) y propagar los clics hacia el ViewModel mediante eventos:
 
 ```kotlin
 @Composable
-fun CuadriculaVertical() {
-    LazyVerticalGrid(cells = GridCells.Fixed(3)) {
-        items(100) { index ->
-            Text(text = "Elemento $index")
+fun PantallaBiblioteca(
+    uiState: BibliotecaUiState.Exito, // Sealed interface de UI
+    onJuegoClick: (Long) -> Unit,      // Evento hacia el ViewModel
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(modifier = modifier) {
+        items(
+            items = uiState.juegos,
+            key = { it.id }
+        ) { juego ->
+            TarjetaJuego(
+                juego = juego,
+                onClick = { onJuegoClick(juego.id) }
+            )
         }
     }
 }
 ```
 
-En el ejemplo anterior, se define un componente `CuadriculaVertical` que muestra una cuadrícula de 100 elementos en 3 columnas utilizando `LazyVerticalGrid`. El método `items()` de `LazyVerticalGrid` se utiliza para generar los elementos de la cuadrícula en función de un rango de índices.
+Para ver cómo estructurar y gestionar estos estados con `StateFlow` y Clean Architecture, consulta:
 
-```kotlin
-@Composable
-fun CuadriculaHorizontal() {
-    LazyHorizontalGrid(cells = GridCells.Fixed(3)) {
-        items(100) { index ->
-            Text(text = "Elemento $index")
-        }
-    }
-}
-```
-
-En el ejemplo anterior, se define un componente `CuadriculaHorizontal` que muestra una cuadrícula de 100 elementos en 3 filas utilizando `LazyHorizontalGrid`. El método `items()` de `LazyHorizontalGrid` se utiliza para generar los elementos de la cuadrícula en función de un rango de índices.
-
+- [Guía de Arquitectura de Google y Capa UI](../02-arquitectura/01-guia-arquitectura-google.md#capa-ui-layer)
+- [Gestión de Estado y UDF en Compose](./22-state-management.md#modelado-del-uistate)

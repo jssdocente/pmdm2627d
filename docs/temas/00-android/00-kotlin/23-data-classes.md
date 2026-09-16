@@ -112,7 +112,9 @@ println(partidaEnRebajas.precio) // 7.49 (Nueva instancia generada)
 Para que una clase pueda ser `data class`, Kotlin exige cumplir las siguientes reglas:
 
 1. **Constructor primario obligatorio:** Debe tener al menos un parámetro.
+
 2. **Propiedades explícitas:** Todos los parámetros del constructor primario deben marcarse obligatoriamente como `val` o `var`.
+
 3. **No pueden ser abstractas, abiertas ni internas:** Las `data classes` no pueden marcarse como `abstract`, `open`, `sealed` ni `inner`. (Sin embargo, sí pueden implementar interfaces y heredar de otras clases abiertas).
 
 ---

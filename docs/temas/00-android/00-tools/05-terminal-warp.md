@@ -7,7 +7,9 @@
 Aunque **Android Studio** e **IntelliJ IDEA** disponen de botones gráficos para compilar, sincronizar y ejecutar aplicaciones, depender exclusivamente de la interfaz gráfica presenta limitaciones importantes en el ámbito profesional:
 
 1. **Diagnóstico preciso de fallos:** Cuando una compilación falla por incompatibilidades de JVM o dependencias circulares, la consola de Gradle con parámetros como `--stacktrace`, `--info` o `--scan` ofrece información mucho más detallada que los resúmenes del IDE.
+
 2. **Velocidad y automatización:** Tareas repetitivas (limpiar caché de Gradle, desinstalar una app del emulador, consultar logs filtrados de `adb`, compilar variantes de release) se ejecutan en segundos mediante atajos de terminal.
+
 3. **Flujos profesionales (CI/CD):** En entornos reales, los pipelines de integración continua (GitHub Actions, GitLab CI, Bitrise) compilan las aplicaciones mediante la línea de comandos de Gradle, nunca con interfaces gráficas.
 
 Para conseguir una experiencia cómoda, ágil y visualmente atractiva, configuraremos una **pila de terminal de última generación**:
@@ -90,6 +92,7 @@ Sigue las instrucciones correspondientes al sistema operativo de tu equipo:
        if (!(Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force }
        notepad $PROFILE
        ```
+
     2. Pega el siguiente contenido y guarda el archivo:
        ```powershell
        # Inicializar prompt de Starship
@@ -278,6 +281,7 @@ graph TD
 
 ### 1. Warp AI (Diagnóstico asistido de compilación)
 Cuando un comando de Gradle falle (por ejemplo, por una incompatibilidad entre la versión de AGP y el JDK):
+
 - Haz clic derecho sobre el bloque con error o pulsa en **"Ask Warp AI"**.
 - La inteligencia artificial analizará el *stacktrace* del compilador y sugerirá la causa exacta (ej. versión de Java requerida o dependencia desactualizada).
 
@@ -286,6 +290,7 @@ Pulsando `Ctrl + R` (Windows) o `Cmd + P` (macOS), puedes buscar y ejecutar fluj
 
 ### 3. Navegación y exportación por bloques
 Cada comando ejecutado en Warp queda encapsulado en un bloque independiente:
+
 - Puedes hacer clic en el menú del bloque para copiar únicamente la salida de ese comando.
 - Puedes compartir un enlace permanente al bloque (*Share Block*) para enviar una duda al profesor con la traza completa de error sin saturar capturas de pantalla.
 
@@ -295,7 +300,9 @@ Cada comando ejecutado en Warp queda encapsulado en un bloque independiente:
 
 ??? question "¿Por qué no aparece el icono de Java en el prompt?"
     1. Asegúrate de estar dentro de una carpeta que contenga un proyecto Android (con archivo `build.gradle` o `build.gradle.kts`).
+
     2. Comprueba que Java está en el PATH ejecutando `java -version`.
+
     3. Verifica que en los ajustes de Warp (**Settings ➔ Appearance ➔ Prompt**) esté marcada la opción **"Honor user's custom prompt (PS1)"**.
 
 ??? question "¿Por qué aparecen signos de interrogación o rectángulos rotos en vez de iconos?"
@@ -305,7 +312,9 @@ Cada comando ejecutado en Warp queda encapsulado en un bloque independiente:
     Ocurre cuando Warp intenta ejecutar el alias protegido de la Microsoft Store (`...\Microsoft\WindowsApps\pwsh.exe`). 
     
     Para resolverlo:
+
     1. Ve a **Settings ➔ Features ➔ Startup shell**.
+
     2. Selecciona **Custom** y coloca la ruta directa al binario real de Scoop:
        `C:\Users\<tu_usuario>\scoop\apps\pwsh\current\pwsh.exe`
 

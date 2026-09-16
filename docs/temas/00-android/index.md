@@ -1,56 +1,56 @@
-# Desarrollo de aplicaciones Android con Kotlin y Jetpack Compose
+# Desarrollo de Aplicaciones Android con Kotlin y Jetpack Compose
 
-En esta página encontraréis todo el material que iremos viendo durante el curso de la parte de Android.
+En este bloque formativo abordaremos el desarrollo de aplicaciones móviles nativas modernas para Android, utilizando **Kotlin** como lenguaje oficial y **Jetpack Compose** como motor declarativo de interfaz de usuario, complementado con las recomendaciones de arquitectura de Google (**Clean Architecture**, **UDF**, **Inyección de Dependencias con Koin** y **Kotlin Multiplatform**).
 
-[Página de descarga de Android Studio](https://developer.android.com/studio?hl=es-419)
+---
 
-[Kotlin Playground](https://play.kotlinlang.org/)
+## Enlaces de Interés y Entornos
 
-[Repositorio con respuestas a algunas dudas habituales](https://github.com/resuadam2/FAQs-Android-Compose)
+- [Página de descarga de Android Studio](https://developer.android.com/studio?hl=es-419)
+- [Kotlin Playground oficial](https://play.kotlinlang.org/)
+- [Android Developers: Guía de Arquitectura de apps](https://developer.android.com/topic/architecture?hl=es-419)
 
-## Apartados del curso
+---
 
-1. [Introducción Kotlin](./00-kotlin/01-sobre-kotlin.mdx)
+## Estructura del Bloque Android
 
-2. [Jetpack Compose](./00-compose/ 2-jetpack-compose/2-jetpack-compose.mdx)
+1. **[Fundamentos del Lenguaje Kotlin](./00-kotlin/index.md)**
 
-    1. [Composable functions](./2-jetpack-compose/21-composable-functions.mdx)
+    - Sintaxis básica, tipado estático, inmutabilidad y nulos seguros (*null safety*).
+    - Colecciones (listas impacientes vs `Sequence` perezosas).
+    - Programación asíncrona: Corrutinas, `suspend`, `Job`, `CoroutineScope` y mitigación del infierno de callbacks.
+    - [Anexo: La Magia de los DSLs en Kotlin](./00-kotlin/61-dsl-en-kotlin.md).
 
-    2. [State management](./2-jetpack-compose/22-state-management.mdx)
+2. **[Jetpack Compose: Desarrollo Declarativo](./00-compose/index.md)**
 
-    3. [Listas y cuadrículas](./2-jetpack-compose/23-listas-cuadriculas.mdx)
+    - [Funciones Componibles y Modificadores](./00-compose/21-composable-functions.md)
+    - [Gestión del Estado y Flujo Unidireccional (UDF)](./00-compose/22-state-management.md)
+    - [Listas y Cuadrículas Perezosas (LazyLayouts)](./00-compose/23-listas-cuadriculas.md)
+    - [Navegación Fuertemente Tipada (Type-Safe Navigation)](./00-compose/24-navegacion-rutas.md)
+    - [Material Design 3 y Theming](./00-compose/25-material-design.md)
+    - [Diseño Ágil con @Preview y Datos Mock](./00-compose/26-preview-diseno-mock.md)
+    - [Contexto, CompositionLocal y Efectos Secundarios](./00-compose/27-compositionlocal-contexto-efectos.md)
 
-    4. [Navegación y rutas](./2-jetpack-compose/24-navegacion-rutas.mdx)
+3. **[Arquitectura de Software y KMP](./02-arquitectura/index.md)**
 
-    5. [Material Design](./2-jetpack-compose/25-material-design.mdx)
+    - [Guía Oficial de Arquitectura de Google (UI, Domain, Data)](./02-arquitectura/01-guia-arquitectura-google.md)
+    - [Clean Architecture en Android](./02-arquitectura/02-clean-architecture.md)
+    - [Inyección de Dependencias con Koin](./02-arquitectura/03-inyeccion-dependencias-koin.md)
+    - [Ecosistema Multiplataforma (KMP y CMP)](./02-arquitectura/04-ecosistema-kmp-multiplataforma.md)
+    - [Glosario y Patrones Clave (ViewModel, Repository, UseCase)](./02-arquitectura/05-glosario-patrones.md)
+    - [Testing en Android y KMP](./02-arquitectura/06-testing-android-kmp.md)
 
-3. [Ciclo de vida de una app](./3-ciclo-vida-app.mdx)
+4. **[Entorno de Desarrollo y Herramientas](./00-ide-intellij/index.md)**
 
-4. [Arquitecturas en Android](./4-arquitectura.mdx)
+    - Configuración de Android Studio, IntelliJ IDEA, Gradle y emuladores.
 
-6. [La capa de UI](./6-capa-ui.mdx)
+---
 
-7. [Conexión a internet](./7-conexion-internet.mdx)
+## Codelabs y Recursos Oficiales
 
-8. [Conversión JSON a objetos](./8-trabajando-con-json.mdx)
-
-9. [Persistencia de datos](./9-persistencia-datos.mdx)
-
-10. [Ejercicios: Enunciados y soluciones](./10-enunciados-ejercicios.mdx)
-
-12. [Documentación extra y recursos externos](./11-documentacion-recursos-externos.mdx)
-
-
-## Codelabs primordiales
-
-  1. [Mi primera app para Android - Codelabs introductorios](https://developer.android.com/courses/android-basics-compose/unit-1?hl=es-419)
-
-  2. [Avanzando con Kotlin y el manejo de la UI - Codelabs](https://developer.android.com/courses/android-basics-compose/unit-2?hl=es-419)
-
-  3. [Más Kotlin y listas de elementos (LazyColumn) - Codelabs](https://developer.android.com/courses/android-basics-compose/unit-3?hl=es-419)
-
-  4. [Navegación y arquitectura de la app (MVVM) - Codelabs](https://developer.android.com/courses/android-basics-compose/unit-4?hl=es-419)
-  
-  5. [Cómo conectarse a internet - Codelabs](https://developer.android.com/courses/android-basics-compose/unit-5?hl=es-419)
-
-  6. [Persistencia de datos - Codelabs](https://developer.android.com/courses/android-basics-compose/unit-6?hl=es-419)
+- [Unidad 1: Mi primera app para Android (Codelabs básicos)](https://developer.android.com/courses/android-basics-compose/unit-1?hl=es-419)
+- [Unidad 2: Construir interfaz de usuario con Jetpack Compose](https://developer.android.com/courses/android-basics-compose/unit-2?hl=es-419)
+- [Unidad 3: Arquitectura, colecciones y listas en Compose](https://developer.android.com/courses/android-basics-compose/unit-3?hl=es-419)
+- [Unidad 4: Navegación y arquitectura de apps (ViewModel y StateFlow)](https://developer.android.com/courses/android-basics-compose/unit-4?hl=es-419)
+- [Unidad 5: Obtención de datos de Internet y llamadas REST](https://developer.android.com/courses/android-basics-compose/unit-5?hl=es-419)
+- [Unidad 6: Persistencia de datos local con Room](https://developer.android.com/courses/android-basics-compose/unit-6?hl=es-419)

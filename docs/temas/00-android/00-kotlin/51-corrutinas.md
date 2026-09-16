@@ -64,8 +64,11 @@ En Java tradicional, JavaScript o en las primeras versiones de Android, una func
 El problema surgía cuando tenías que ejecutar **varias operaciones asíncronas encadenadas y dependientes**:
 
 1. Autenticar al usuario con credenciales (`login`).
+
 2. Con el `token` obtenido, descargar su perfil (`getProfile`).
+
 3. Con el `id` del perfil, descargar su lista de amigos o compras (`getFriends`).
+
 4. Con los datos finales, actualizar la interfaz de usuario.
 
 En código tradicional, esto se traducía en la temida **Pirámide de la Perdición (*Pyramid of Doom*)**:
@@ -99,7 +102,9 @@ authService.login(usuario, clave, object : AuthCallback {
 #### Los 3 Graves Problemas de los Callbacks:
 
 1. **Legibilidad destructiva:** El código se desplaza horizontalmente hacia la derecha de forma descontrolada (*Pyramid of Doom*), haciendo imposible seguir el flujo lógico natural.
+
 2. **Fragmentación del manejo de errores:** No se puede usar un bloque `try-catch` estándar. Cada llamada anidada necesita su propio manejador de fallos (`onError`), duplicando código defensivo en cada nivel.
+
 3. **Fugas de memoria (*Memory Leaks*) y falta de cancelación:** Si el usuario rota la pantalla o pulsa el botón "Atrás" mientras las peticiones 2 o 3 están en vuelo, los callbacks anidados siguen vivos en segundo plano. Cuando intentan actualizar la interfaz de una pantalla destruida, provocan el colapso de la aplicación (`NullPointerException` o `IllegalStateException`).
 
 ```mermaid

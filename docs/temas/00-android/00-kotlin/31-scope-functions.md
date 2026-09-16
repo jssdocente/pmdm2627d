@@ -11,7 +11,9 @@ Existen 5 funciones de ámbito en Kotlin: **`let`**, **`run`**, **`with`**, **`a
 ## 1. Tabla Maestra de Selección Rápida
 
 Aunque las 5 funciones realizan tareas aparentemente similares, difieren exactamente en dos factores fundamentales:
+
 1. **Cómo se referencia el objeto de contexto dentro de la lambda:** Mediante `this` (receptor implícito) o mediante `it` (argumento de la lambda).
+
 2. **Qué valor retorna la función:** El resultado de la última línea de la lambda (*Lambda result*) o el propio objeto de contexto (*Context object*).
 
 | Función | Objeto de Contexto | Valor de Retorno | ¿Es de Extensión? | Cuándo Utilizarla (Regla Mnemotécnica) |

@@ -6,9 +6,9 @@ Jetpack Compose es un marco de trabajo moderno para la creación de interfaces d
 
 Imagina que construyes una aplicación sin pensar en cómo se gestionan los datos. Al principio, todo parece funcionar. Un botón cambia un texto. Un campo de entrada muestra lo que el usuario escribe. Pero pronto, la complejidad crece:
 
-*   ¿Qué pasa si al girar la pantalla todo el texto que el usuario escribió desaparece?
-*   ¿Cómo se asegura una pantalla de que está mostrando los datos más actualizados que acaban de llegar de internet?
-*   Si actualizas un dato en la pantalla A, ¿cómo se entera la pantalla B de que debe mostrar ese cambio?
+-   ¿Qué pasa si al girar la pantalla todo el texto que el usuario escribió desaparece?
+-   ¿Cómo se asegura una pantalla de que está mostrando los datos más actualizados que acaban de llegar de internet?
+-   Si actualizas un dato en la pantalla A, ¿cómo se entera la pantalla B de que debe mostrar ese cambio?
 
 Estos problemas surgen de una **gestión de estado deficiente o inexistente**. La gestión del estado no es un concepto académico y abstracto; es el pilar fundamental sobre el que se construye cualquier aplicación interactiva y fiable.
 
@@ -25,10 +25,10 @@ En Jetpack Compose, el **estado** es cualquier valor que puede cambiar con el ti
 
 Piénsalo de esta manera:
 
-*   El texto que un usuario introduce en un `TextField`.
-*   El estado de un `Checkbox` (marcado o no marcado).
-*   La posición de un `Slider`.
-*   Una lista de mensajes que se carga desde una base de datos.
+-   El texto que un usuario introduce en un `TextField`.
+-   El estado de un `Checkbox` (marcado o no marcado).
+-   La posición de un `Slider`.
+-   Una lista de mensajes que se carga desde una base de datos.
 
 Todos estos son ejemplos de estado. Si el valor cambia, la UI debe reflejar ese cambio. El mecanismo por el cual Compose redibuja la UI cuando el estado cambia se llama **Recomposición**.
 
@@ -44,8 +44,8 @@ Para que Compose pueda "observar" un valor y reaccionar a sus cambios, no podemo
 
 `remember { mutableStateOf(valorInicial) }`
 
-*   `mutableStateOf` crea el estado observable.
-*   `remember` se asegura de que este estado no se pierda en las recomposiciones.
+-   `mutableStateOf` crea el estado observable.
+-   `remember` se asegura de que este estado no se pierda en las recomposiciones.
 
 ### Formas de Definir el Estado
 
@@ -150,9 +150,13 @@ fun ContadorDesestructurado() {
 !!! bug "Recuerda los puntos clave"
 
     1.  **El estado es la fuente de verdad** que impulsa tu UI.
+
     2.  La **recomposición** es el proceso automático por el cual Compose actualiza la UI cuando el estado cambia.
+
     3.  `mutableStateOf` crea un estado **observable** que Compose puede rastrear.
+
     4.  `remember` le da **memoria** a tus Composables, permitiendo que el estado sobreviva a las recomposiciones.
+
     5.  La sintaxis con el delegado **`by` es la forma preferida** por su simplicidad y legibilidad.
 
 
@@ -502,19 +506,19 @@ En Kotlin, un `Flow` es una secuencia de valores que se emiten de forma asíncro
 
       1.  **La Clase `Carrito`**:
           
-          *   **`_numeroDeArticulos`**: Es un `MutableStateFlow`. El guion bajo `_` es una convención en Kotlin para indicar que es una propiedad privada que no debe usarse desde fuera. Al ser `Mutable`, esta clase puede cambiar su valor. **Siempre necesita un valor inicial** (en este caso, `0`).
+          -   **`_numeroDeArticulos`**: Es un `MutableStateFlow`. El guion bajo `_` es una convención en Kotlin para indicar que es una propiedad privada que no debe usarse desde fuera. Al ser `Mutable`, esta clase puede cambiar su valor. **Siempre necesita un valor inicial** (en este caso, `0`).
               
-          *   **`numeroDeArticulos`**: Esta es la versión pública y de solo lectura (`StateFlow`). La "UI" o el consumidor observará esta propiedad. Esto protege el estado; nadie fuera de la clase `Carrito` puede modificar el número de artículos. Es un principio de **encapsulación**.
+          -   **`numeroDeArticulos`**: Esta es la versión pública y de solo lectura (`StateFlow`). La "UI" o el consumidor observará esta propiedad. Esto protege el estado; nadie fuera de la clase `Carrito` puede modificar el número de artículos. Es un principio de **encapsulación**.
               
-          *   **`anadirArticulo()` y `quitarArticulo()`**: Son las acciones que modifican el estado interno (`_numeroDeArticulos`). La función `.update { ... }` es la forma moderna y segura de hacerlo.
+          -   **`anadirArticulo()` y `quitarArticulo()`**: Son las acciones que modifican el estado interno (`_numeroDeArticulos`). La función `.update { ... }` es la forma moderna y segura de hacerlo.
               
       2.  **La Función `main`**:
           
-          *   **`launch`**: Creamos un "observador" en una corrutina separada. Este se suscribe al `StateFlow` público.
+          -   **`launch`**: Creamos un "observador" en una corrutina separada. Este se suscribe al `StateFlow` público.
               
-          *   **`.collect`**: Aquí ocurre la magia. El código dentro de `.collect` se ejecuta **inmediatamente** con el valor actual del `StateFlow` (que es `0`) y luego se vuelve a ejecutar **cada vez que el valor cambia**.
+          -   **`.collect`**: Aquí ocurre la magia. El código dentro de `.collect` se ejecuta **inmediatamente** con el valor actual del `StateFlow` (que es `0`) y luego se vuelve a ejecutar **cada vez que el valor cambia**.
               
-          *   **`delay`**: Usamos pausas para simular el paso del tiempo y que se pueda ver claramente en la consola cómo el observador reacciona a los cambios.
+          -   **`delay`**: Usamos pausas para simular el paso del tiempo y que se pueda ver claramente en la consola cómo el observador reacciona a los cambios.
 
 Puedes crear un `Flow` utilizando la función `flowOf()` de Kotlin.
 
@@ -552,86 +556,196 @@ En el ejemplo anterior, se utilizan los operadores `map` y `filter` para transfo
 
 
 
-### Flows en Jetpack Compose
+## Elevación del Estado (*State Hoisting*) y Patrón UDF
 
-En Jetpack Compose, puedes utilizar Flows para gestionar la información de tu aplicación de forma reactiva.
+En Compose, un componente que gestiona su propio estado interno mediante `remember { mutableStateOf(...) }` se denomina **Stateful** (con estado). Aunque es cómodo para prototipos rápidos, tiene graves desventajas: es difícil de reutilizar, imposible de previsualizar en `@Preview` con datos variados y complejo de testear.
 
-Puedes convertir un `Flow` en un estado observable utilizando la función `collectAsState()` de Compose.
+La técnica oficial para resolver esto es la **Elevación del Estado (*State Hoisting*)**, que consiste en trasladar el estado al componente padre que lo llamó, convirtiendo el componente hijo en **Stateless** (sin estado).
 
-```kotlin
-val numeros = flowOf(1, 2, 3, 4, 5)
-val numerosState = numeros.collectAsState()
-```
+### La Regla de Oro del State Hoisting
 
-En el ejemplo anterior, se convierte el `Flow` `numeros` en un estado observable `numerosState`.
+Un composable *Stateless* **NUNCA debe recibir un `MutableState<T>`**. Debe recibir exactamente dos parámetros:
 
-### Elevación del estado
+1. **El valor actual (Solo lectura):** `value: T`
 
-En Jetpack Compose, puedes elevar el estado de un componente para compartirlo con otros componentes.
-
-Esto te permite gestionar el estado de tu aplicación de forma centralizada y compartirlo entre diferentes partes de tu interfaz de usuario.
+2. **El evento de cambio (Lambda):** `onValueChange: (T) -> Unit` o `onClick: () -> Unit`
 
 ```kotlin
+// ✅ COMPONENTE STATELESS (Reutilizable, testeable y previsualizable):
 @Composable
-fun Contador() {
-    val contador = remember { mutableStateOf(0) }
-    ContadorBoton(contador)
-    ContadorTexto(contador)
-}
-
-@Composable
-fun ContadorBoton(contador: MutableState<Int>) {
-    Button(onClick = { contador.value++ }) {
-        Text(text = "Incrementar")
+fun ContadorControl(
+    cuenta: Int,                // 1. El estado fluye hacia abajo (State Down)
+    onIncrementar: () -> Unit,  // 2. El evento fluye hacia arriba (Event Up)
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = "Total: $cuenta", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.width(16.dp))
+        Button(onClick = onIncrementar) {
+            Text("Sumar +1")
+        }
     }
 }
+```
 
-@Composable
-fun ContadorTexto(contador: MutableState<Int>) {
-    Text(text = "Contador: ${contador.value}")
+### Arquitectura UDF (*Unidirectional Data Flow*)
+
+La elevación de estado es la base del **Flujo de Datos Unidireccional (UDF)**:
+
+```mermaid
+flowchart TD
+    StateHolder["Contenedor de Estado / ViewModel"] -->|"1. State Down: Emite nuevo valor inmutable"| UI["Composable Stateless (UI)"]
+    UI -->|"2. Events Up: Clic de usuario / Entrada de texto"| StateHolder
+```
+
+- **El Estado fluye hacia abajo:** La pantalla solo lee datos inmutables y los pinta.
+- **Los Eventos fluyen hacia arriba:** La pantalla no modifica ninguna variable; simplemente avisa hacia arriba invocando lambdas cuando el usuario interactúa.
+
+---
+
+## Modelado Profesional del Estado: `UiState`
+
+Para pantallas reales (no solo contadores), Google recomienda encapsular todo lo que la pantalla necesita en un único objeto inmutable llamado **`UiState`**. Existen dos patrones oficiales:
+
+### Patrón 1: Estados Mutuamente Excluyentes (`sealed interface`)
+Ideal para pantallas que cambian por completo según el momento (Cargando, Éxito o Error):
+
+```kotlin
+sealed interface CatalogoUiState {
+    data object Cargando : CatalogoUiState
+    data class Exito(val juegos: List<String>) : CatalogoUiState
+    data class Error(val mensaje: String) : CatalogoUiState
 }
 ```
 
-En el ejemplo anterior, se eleva el estado `contador` del componente `Contador` para compartirlo con los componentes `ContadorBoton` y `ContadorTexto`.
-
-De esta forma, el estado `contador` se gestiona de forma centralizada en el componente `Contador` y se comparte con los componentes hijos. Y ambos se recomponen cuando el estado cambia.
-
-Esto también facilita la reutilización de los componentes y la separación de las preocupaciones en tu aplicación. Además de facilitar la prueba y el mantenimiento del código.
-
-!!! info "Elevación del estado vs. Inyección de dependencias"
-    - La **elevación del estado** es una técnica común en Jetpack Compose para compartir el estado entre componentes.
-    - Otra técnica común es la **inyección de dependencias**, que consiste en pasar el estado como argumento a los componentes que lo necesitan.
-
-    Ambas técnicas tienen sus ventajas y desventajas, y la elección entre ellas depende del diseño y la arquitectura de tu aplicación.
-
-## 📌 Conclusión
-
-La gestión de estado es una parte fundamental de la arquitectura de tu aplicación en Jetpack Compose.
-
-Con Compose, puedes definir, observar y actualizar el estado de tu aplicación de forma reactiva y declarativa.
-
-Los Flows te permiten trabajar con datos de forma reactiva y gestionar la concurrencia de forma sencilla en Kotlin.
-
-#### Ejemplo de gestión del estado básica en una app de Contador
+### Patrón 2: Estado Agregado Continuo (`data class`)
+Ideal para formularios o pantallas con múltiples filtros y recarga en segundo plano:
 
 ```kotlin
-@Composable
-fun Contador() {
-    val contador = remember { mutableStateOf(0) }
-    val contadorState = contador.observeAsState()
+data class FormularioUiState(
+    val textoBusqueda: String = "",
+    val isLoading: Boolean = false,
+    val esFavorito: Boolean = false,
+    val error: String? = null
+)
+```
+
+---
+
+## El `ViewModel` como State Holder en la Arquitectura
+
+Cuando el estado de la pantalla debe sobrevivir a rotaciones de dispositivo, comunicarse con la base de datos o realizar llamadas de red, `remember` ya no es suficiente. Debemos delegar el estado en un **`ViewModel`** de Jetpack.
+
+```mermaid
+flowchart LR
+    CleanArch["Capa de Dominio / Repositorios"] -->|"Datos"| VM["ViewModel (State Holder)"]
+    VM -->|"StateFlow<UiState>"| Compose["Pantalla Compose"]
+```
+
+### 1. El ViewModel expone un `StateFlow`
+El `ViewModel` mantiene un estado mutable privado y expone un `StateFlow` público inmutable:
+
+```kotlin
+class CatalogoViewModel(
+    private val repository: GameRepository // Inyectado por Koin
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow<CatalogoUiState>(CatalogoUiState.Cargando)
+    val uiState: StateFlow<CatalogoUiState> = _uiState.asStateFlow()
+
+    init {
+        cargarJuegos()
+    }
+
+    fun cargarJuegos() {
+        viewModelScope.launch {
+            _uiState.value = CatalogoUiState.Cargando
+            try {
+                val lista = repository.obtenerJuegos()
+                _uiState.value = CatalogoUiState.Exito(lista)
+            } catch (e: Exception) {
+                _uiState.value = CatalogoUiState.Error(e.message ?: "Error desconocido")
+            }
+        }
+    }
+}
+```
+
+### 2. Consumo Seguro en Compose: `collectAsStateWithLifecycle()`
+
+!!! danger "¡Cuidado con collectAsState() a secas!"
+    La función `collectAsState()` de Compose sigue recolectando emisiones aunque la aplicación esté en segundo plano (minimizada o con la pantalla apagada), desperdiciando batería y ciclos de CPU.
     
-    Button(onClick = { contador.value++ }) {
-        Text(text = "Contador: ${contadorState.value}")
+    La **directriz obligatoria de Google** es utilizar **`collectAsStateWithLifecycle()`** (de la librería `androidx.lifecycle:lifecycle-runtime-compose`), que cancela la recolección cuando la Activity se detiene (`STOPPED`) y la reanuda automáticamente cuando vuelve a primer plano (`STARTED`).
+
+### 3. La Estructura Pantalla Completa (*Stateful* vs. *Stateless*) con Koin:
+
+```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.koinViewModel
+
+// 1. COMPOSABLE STATEFUL: Resuelve Koin y recolecta el ciclo de vida
+@Composable
+fun CatalogoScreen(
+    viewModel: CatalogoViewModel = koinViewModel(), // Inyección Koin
+    onNavegarADetalle: (String) -> Unit
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    CatalogoContent(
+        uiState = uiState,
+        onReintentar = viewModel::cargarJuegos,
+        onJuegoClick = onNavegarADetalle
+    )
+}
+
+// 2. COMPOSABLE STATELESS: Puramente visual, previsualizable en @Preview
+@Composable
+fun CatalogoContent(
+    uiState: CatalogoUiState,
+    onReintentar: () -> Unit,
+    onJuegoClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        when (uiState) {
+            is CatalogoUiState.Cargando -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            is CatalogoUiState.Error -> {
+                Column(modifier = Modifier.align(Alignment.Center)) {
+                    Text(text = "Error: ${uiState.mensaje}", color = MaterialTheme.colorScheme.error)
+                    Button(onClick = onReintentar) { Text("Reintentar") }
+                }
+            }
+            is CatalogoUiState.Exito -> {
+                LazyColumn {
+                    items(uiState.juegos, key = { it }) { juego ->
+                        Text(
+                            text = juego,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onJuegoClick(juego) }
+                                .padding(16.dp)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 ```
 
-En el ejemplo anterior, se define un componente `Contador` que muestra un botón y un texto con el valor del estado `contador`. Al hacer clic en el botón, se incrementa en uno el valor del estado `contador`.
+---
 
+## 📚 Enlaces y Siguientes Pasos
 
-## 📦 Recursos
-
-- [Documentación oficial de Jetpack Compose](https://developer.android.com/jetpack/compose?hl=es-419): La documentación oficial de Jetpack Compose, que incluye guías, tutoriales y ejemplos para aprender a usar Compose.
-- [Ejemplos básicos de Compose](https://github.com/resuadam2/TutorialCompose): Un repositorio con ejemplos básicos de Jetpack Compose para que puedas aprender a crear interfaces de usuario con Compose.   
-- [Avanzando con Kotlin y el manejo de la UI - Codelabs](https://developer.android.com/courses/android-basics-compose/unit-2?hl=es-419)
-- [Más Kotlin y listas de elementos (LazyColumn) - Codelabs](https://developer.android.com/courses/android-basics-compose/unit-3?hl=es-419)
+- [Guía Oficial de Arquitectura en Android](../02-arquitectura/01-guia-arquitectura-google.md#capa-ui-layer): Conoce la relación entre la Capa de UI y el resto del sistema.
+- [Clean Architecture en Android](../02-arquitectura/02-clean-architecture.md): Cómo desacoplar Dominio, Casos de Uso y Modelos.
+- [Inyección de Dependencias con Koin](../02-arquitectura/03-inyeccion-dependencias-koin.md#inyeccion-en-compose-koinviewmodel): Cómo configurar y registrar ViewModels para inyectarlos con `koinViewModel()`.
+- [Tipos Sellados y UiState en Kotlin](../00-kotlin/26-sealed-classes.md#5-el-patron-universal-de-arquitectura-en-android-uistate): Teoría del lenguaje sobre `sealed interface` y `data object`.

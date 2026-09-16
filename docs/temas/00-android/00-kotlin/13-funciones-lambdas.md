@@ -196,8 +196,11 @@ Button(onClick = { registrarClic() }) {
 ```
 
 Fíjate en lo que ocurre:
+
 1. `onClick = { ... }` es una lambda que se pasa como argumento con nombre.
+
 2. `{ Text(...) }` es la última lambda (`content`), por lo que **se extrae fuera de los paréntesis**.
+
 3. El resultado es un código visualmente anidado y limpio que parece un lenguaje de marcado (como HTML/Flutter), pero es **100% código Kotlin estándar**.
 
 ---

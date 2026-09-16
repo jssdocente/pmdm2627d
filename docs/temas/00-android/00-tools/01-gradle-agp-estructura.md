@@ -190,14 +190,16 @@ Esto garantiza que si actualizas el BOM a `2024.10.01`, *todas* las librerías d
 
 El BOM se usa principalmente en ecosistemas grandes donde hay múltiples módulos que deben coordinarse.
 
-*   **SÍ suelen tener BOM:**
-    *   **Jetpack Compose**: (`androidx.compose:compose-bom`) Porque tiene ui, foundation, material, animation, etc.
-    *   **Firebase**: (`com.google.firebase:firebase-bom`) Porque tiene auth, firestore, analytics, crashlytics, etc.
-    *   **OkHttp / Retrofit**: A veces ofrecen BOM para gestionar sus familias de dependencias.
-    *   **AWS Amplify**: Otro ecosistema gigante.
+-   **SÍ suelen tener BOM:**
 
-*   **NO suelen tener BOM:**
-    *   Librerías individuales como **Glide**, **Coil**, **Lottie**, **Room** (aunque es parte de Jetpack, suele versionarse sola o seguir el ciclo de core).
+    -   **Jetpack Compose**: (`androidx.compose:compose-bom`) Porque tiene ui, foundation, material, animation, etc.
+    -   **Firebase**: (`com.google.firebase:firebase-bom`) Porque tiene auth, firestore, analytics, crashlytics, etc.
+    -   **OkHttp / Retrofit**: A veces ofrecen BOM para gestionar sus familias de dependencias.
+    -   **AWS Amplify**: Otro ecosistema gigante.
+
+-   **NO suelen tener BOM:**
+
+    -   Librerías individuales como **Glide**, **Coil**, **Lottie**, **Room** (aunque es parte de Jetpack, suele versionarse sola o seguir el ciclo de core).
 
 ### ¿Cómo sé si una librería tiene BOM?
 
@@ -405,8 +407,10 @@ Para terminar, aquí tienes tres conceptos que usarás a diario y que suelen con
 ### 5.1. "Sync" vs "Build" (Sincronizar vs Construir)
 
 - **Sync (Sincronizar)**: Es rápido. Ocurre cuando cambias un archivo `.gradle.kts` o `.toml`. Gradle lee la configuración, descarga librerías nuevas y actualiza los índices de Android Studio. **No compila tu código Kotlin.**
+
     - *Cuándo hacerlo*: Siempre que toques algo de la configuración de Gradle. Verás una barrita amarilla o un elefante con flechas azules.
 - **Build (Construir)**: Es lento. Compila todo tu código Kotlin, procesa los recursos y genera el APK.
+
     - *Cuándo hacerlo*: Cuando le das al botón de "Play" (Run).
 
 ### 5.2. Clean & Rebuild (El "apagar y encender")
@@ -414,8 +418,10 @@ Para terminar, aquí tienes tres conceptos que usarás a diario y que suelen con
 A veces, Android Studio "se lía". Te marca errores en rojo en código que sabes que está bien, o la app falla de forma rara:
 
 - **Build > Clean Project**: Borra la carpeta `build/` (los archivos temporales de compilación).
+
     - *Equivalente en terminal*: `./gradlew clean` (o con nuestro atajo de Warp: `gw-clean`).
 - **Build > Rebuild Project**: Hace un Clean y luego un Build completo desde cero.
+
     - *Equivalente en terminal*: `./gradlew clean build` (o `./gradlew assembleDebug` para generar la APK).
     - *Truco del experto*: Si algo no tiene sentido tras cambiar ramas de Git o actualizar dependencias, un `clean` soluciona el 90% de los problemas "fantasmas".
 
@@ -424,11 +430,13 @@ A veces, Android Studio "se lía". Te marca errores en rojo en código que sabes
 Por defecto, cuando le das al Play, estás instalando la variante **Debug**:
 
 - **Debug**:
+
     - SE PUEDE depurar (breakpoints).
     - No está optimizada (compilación rápida).
     - Se firma con una clave de prueba insegura interna (`debug.keystore`).
     - *Compilar desde terminal*: `./gradlew assembleDebug` (o `gw-debug`).
 - **Release**:
+
     - NO se puede depurar (normalmente).
     - Está optimizada y ofuscada (R8/Proguard).
     - Se firma con tu clave real para subirla a Google Play.
@@ -444,8 +452,9 @@ Un dolor de cabeza común es cuando las versiones no coinciden. Gradle, el Plugi
 
 ### 6.1. La Matriz de Compatibilidad
 No puedes usar cualquier versión de Gradle con cualquier versión de AGP.
-*   **AGP 8.0+** requiere **Gradle 8.0+** y **Java 17**.
-*   **AGP 7.4** requiere **Gradle 7.5+** y **Java 11**.
+
+-   **AGP 8.0+** requiere **Gradle 8.0+** y **Java 17**.
+-   **AGP 7.4** requiere **Gradle 7.5+** y **Java 11**.
 
 > **Consejo**: Si actualizas Android Studio, a menudo te propondrá actualizar el AGP y Gradle automáticamente. Acepta si tu equipo está de acuerdo, pero ten cuidado si saltas muchas versiones de golpe.
 
@@ -477,9 +486,13 @@ Hay **dos** configuraciones de Java que debes distinguir:
 
 2.  **Java para ejecutar Gradle (Gradle Daemon)**:
     Es la versión de Java que usa tu ordenador para *correr* el proceso de construcción.
-    *   **Cómo cambiarlo**:
+
+    -   **Cómo cambiarlo**:
+
         1.  Ve a `File > Settings` (o `Android Studio > Settings` en Mac).
+
         2.  Busca `Build, Execution, Deployment > Build Tools > Gradle`.
+
         3.  En **Gradle JDK**, selecciona la versión. Normalmente deberías usar la versión "Embedded" que trae Android Studio, o asegurarte de que sea al menos Java 17 para proyectos modernos.
 
 !!! warning "El aviso de diferentes JDKs"
@@ -491,7 +504,9 @@ Hay **dos** configuraciones de Java que debes distinguir:
     **Solución**: Intenta que ambos apunten a la misma instalación.
     
     1.  **Gradle JDK**: Ve a `Settings > Build... > Build Tools > Gradle`.
+
     2.  **Project SDK**: Ve a `File > Project Structure... > Project Settings > Project`.
+
     3.  Asegúrate de que el **SDK** seleccionado en el paso 2 coincide con la versión elegida en el paso 1 (por ejemplo, seleccionando `jbr-17` o `Embedded JDK` en ambos sitios).
 
 
@@ -499,15 +514,18 @@ Hay **dos** configuraciones de Java que debes distinguir:
 
 A veces te preguntarán "¿Qué versión de AGP usas?" y no sabrás dónde mirar. Aquí tienes la "chuleta":
 
-*   **Gradle Version**:
-    *   Mira en `gradle/wrapper/gradle-wrapper.properties`.
-    *   Busca la línea `distributionUrl=.../gradle-8.0-bin.zip`. El número `8.0` es tu versión.
-*   **AGP Version**:
-    *   Mira en `libs.versions.toml` bajo `[versions]`, la variable `agp`.
-    *   O en `build.gradle.kts` (Project level) en el bloque `plugins`.
-*   **Kotlin Version**:
-    *   Mira en `libs.versions.toml` bajo `[versions]`, la variable `kotlin`.
-    *   O en `build.gradle.kts` (Project level) en el bloque `plugins`.
+-   **Gradle Version**:
+
+    -   Mira en `gradle/wrapper/gradle-wrapper.properties`.
+    -   Busca la línea `distributionUrl=.../gradle-8.0-bin.zip`. El número `8.0` es tu versión.
+-   **AGP Version**:
+
+    -   Mira en `libs.versions.toml` bajo `[versions]`, la variable `agp`.
+    -   O en `build.gradle.kts` (Project level) en el bloque `plugins`.
+-   **Kotlin Version**:
+
+    -   Mira en `libs.versions.toml` bajo `[versions]`, la variable `kotlin`.
+    -   O en `build.gradle.kts` (Project level) en el bloque `plugins`.
 
 Alternativamente, en Android Studio, puedes ir a **File > Project Structure > Project**, y allí verás un resumen gráfico con todas estas versiones.
 

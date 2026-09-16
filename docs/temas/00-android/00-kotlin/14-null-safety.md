@@ -42,6 +42,7 @@ Para trabajar con variables anulables sin riesgo, Kotlin proporciona operadores 
 
 ### 2.1. Llamada Segura (*Safe Call Operator* `?.`)
 El operador `?.` comprueba si la variable es nula antes de acceder a la propiedad o método:
+
 - Si la variable **no es nula**, ejecuta la llamada normalmente.
 - Si la variable **es nula**, detiene la evaluación y devuelve `null` sin lanzar ninguna excepción.
 

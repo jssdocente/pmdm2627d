@@ -69,14 +69,14 @@ En el ejemplo anterior, se utiliza la función `Column` para organizar los salud
 
 ## Modificadores en Jetpack Compose
 
-Jetpack Compose utiliza modificadores para aplicar estilos y comportamientos a los elementos de la interfaz de usuario. Puedes utilizar modificadores para cambiar el tamaño, la posición, el color, la forma, etc., de los elementos de la interfaz de usuario.
+Jetpack Compose utiliza modificadores (`Modifier`) para aplicar estilos, posicionamiento y comportamientos interactivos a los elementos de la interfaz de usuario. Puedes utilizarlos para cambiar el tamaño, la posición, el color de fondo, la forma, los bordes o responder a gestos táctiles.
 
 ```kotlin
 @Composable
-fun Greeting(name: String) {
+fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello, $name!",
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp)
             .background(Color.Blue)
             .clickable { /* Acción al hacer clic */ }
@@ -84,11 +84,55 @@ fun Greeting(name: String) {
 }
 ```
 
-En el ejemplo anterior, se utiliza el modificador `padding` para añadir un relleno alrededor del texto, el modificador `background` para cambiar el color de fondo del texto, y el modificador `clickable` para añadir una acción al hacer clic en el texto.
+### 1. La Regla de Oro de los Modificadores (Directriz Oficial de Google)
 
-!!! info "Video Modificadores y uso del tema]
+En Android moderno con Jetpack Compose, **todo composable público o reutilizable debe aceptar un parámetro opcional `modifier: Modifier = Modifier` y encadenarlo directamente en su componente contenedor raíz**:
+
+```kotlin
+// ✅ BUENA PRÁCTICA OFICIAL:
+@Composable
+fun TarjetaUsuario(
+    nombre: String,
+    modifier: Modifier = Modifier // Primer parámetro opcional con valor por defecto
+) {
+    Surface(
+        modifier = modifier, // Se aplica al nodo raíz
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text(text = nombre, modifier = Modifier.padding(16.dp))
+    }
+}
+```
+
+**¿Por qué es crucial esta regla?**  
+Permite que quien consuma tu composable desde fuera pueda decidir su tamaño (`fillMaxWidth()`), su margen exterior (`padding()`) o su alineación sin necesidad de modificar el código interno del componente.
+
+### 2. La Importancia Crítica del Orden de los Modificadores
+
+En Compose, **el orden en que encadenas los modificadores altera drásticamente el resultado visual**:
+
+```kotlin
+// Caso A: El fondo cubre el padding (Padding interno tradicional)
+Box(
+    modifier = Modifier
+        .background(Color.Yellow) // 1. Pinta el fondo amarillo
+        .padding(16.dp)           // 2. Empuja el contenido hacia adentro
+) {
+    Text("Padding Interno")
+}
+
+// Caso B: El fondo se aplica DESPUÉS del padding (Simula un Margen externo)
+Box(
+    modifier = Modifier
+        .padding(16.dp)           // 1. Deja 16 dp de espacio transparente alrededor
+        .background(Color.Yellow) // 2. Pinta el fondo solo en la zona interior restante
+) {
+    Text("Margen Externo")
+}
+```
+
+!!! info "Video Modificadores y uso del tema"
     <iframe width="560" height="315" src="https://www.youtube.com/embed/oqV6ZQ48sjM?si=q_RKkBR4TwZJBcKV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 
 ## Recursos en Jetpack Compose
 
@@ -107,24 +151,31 @@ fun Greeting() {
 
 En el ejemplo anterior, se utiliza la función `stringResource()` para obtener una cadena de recursos, la función `colorResource()` para obtener un color de recursos, y la función `dimenResource()` para obtener una dimensión de recursos.
 
-## Temas en Jetpack Compose
+## Temas en Jetpack Compose (Material 3)
 
-Jetpack Compose utiliza el sistema de temas de Android para aplicar estilos coherentes a la interfaz de usuario. Puedes definir un tema personalizado utilizando la función `provideAppTheme()` y aplicarlo a tu aplicación utilizando el modificador `MaterialTheme`.
+Jetpack Compose utiliza **Material Design 3 (Material 3)** para aplicar estilos coherentes a la interfaz de usuario mediante `MaterialTheme` y `lightColorScheme()`:
 
 ```kotlin
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.lightColorScheme
+
+val EsquemaColoresClaro = lightColorScheme(
+    primary = Color(0xFF6750A4),
+    secondary = Color(0xFF625B71),
+    tertiary = Color(0xFF7D5260)
+)
+
 @Composable
-fun MyApp() {
+fun MyApp(content: @Composable () -> Unit) {
     MaterialTheme(
-        colors = lightColors(),
+        colorScheme = EsquemaColoresClaro,
         typography = Typography,
         shapes = Shapes
     ) {
-        Greeting()
+        content()
     }
 }
 ```
-
-En el ejemplo anterior, se define un tema personalizado con colores, tipografía y formas personalizadas, y se aplica a la aplicación utilizando el modificador `MaterialTheme`.
 
 ## Ejemplos de funciones componibles
 
@@ -168,7 +219,7 @@ fun GreetingList(names: List<String>) {
     Column {
         names.forEach { name ->
             Greeting(name = name)
-            Divider(color = Color.Gray, thickness = 1.dp)
+            HorizontalDivider(thickness = 1.dp, color = Color.Gray)
         }
     }
 }
@@ -242,14 +293,16 @@ Jetpack Compose proporciona opciones de alineación que te permiten alinear los 
 ```kotlin
 @Composable
 fun Greeting(name: String) {
-    Text(
-        text = "Hello, $name!",
-        modifier = Modifier.align(Alignment.CenterHorizontally)
-    )
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Hello, $name!",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+    }
 }
 ```
 
-En el ejemplo anterior, se utiliza el modificador `align` para alinear el texto horizontalmente en el centro de la pantalla.
+En el ejemplo anterior, se utiliza el modificador `align` dentro del ámbito de una `Column` (`ColumnScope`) para alinear el texto horizontalmente en el centro.
 
 ### Opciones de alineación horizontal
 
@@ -353,11 +406,13 @@ En el ejemplo anterior, se utiliza el modificador `style` para cambiar el peso d
 ```kotlin
 @Composable
 fun Greeting(name: String) {
-    Text(text = "Hello, $name!", modifier = Modifier.align(Alignment.CenterHorizontally))
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(text = "Hello, $name!", modifier = Modifier.align(Alignment.CenterHorizontally))
+    }
 }
 ```
 
-En el ejemplo anterior, se utiliza el modificador `align` para alinear el texto horizontalmente en el centro.
+En el ejemplo anterior, se utiliza el modificador `align` dentro de una `Column` para alinear el texto horizontalmente en el centro.
 
 ### Modificador de margen
 

@@ -3,6 +3,7 @@
 Las listas son la estructura de datos más utilizada en el desarrollo de aplicaciones. A diferencia de Java (donde la interfaz `java.util.List` contiene métodos de mutación como `add()` y `remove()`), Kotlin separa de forma tajante las listas en **dos interfaces diferenciadas**:
 
 1. **`List<T>`:** Colección ordenada de **solo lectura (inmutable)**. No contiene métodos para añadir, eliminar o modificar elementos.
+
 2. **`MutableList<T>`:** Colección ordenada **modificable (mutable)**. Dispone de métodos como `add()`, `remove()`, `clear()`, etc.
 
 ---
@@ -198,7 +199,9 @@ La **programación Fluent** (o interfaz fluida mediante *Method Chaining*) es un
 Imagina que de una lista de videojuegos queremos:
 
 1. Filtrar solo los juegos de rol ("RPG").
+
 2. Ordenarlos por puntuación de mayor a menor.
+
 3. Extraer solo los títulos en mayúsculas de los 3 mejores.
 
 === "Estilo Imperativo Tradicional (Bucles e Índices)"
@@ -354,11 +357,13 @@ Para ver con tus propios ojos cómo se comporta cada modelo, ejecuta este códig
 En una secuencia existen dos clases de operadores:
 
 1. **Operadores Intermedios (Perezosos):**
+
    - Devuelven otra `Sequence<T>`.
    - **No realizan ningún cómputo inmediatamente**: simplemente construyen la receta de cómo se transformará el dato cuando se le pida.
    - Ejemplos: `filter`, `map`, `take`, `drop`, `distinct`, `sortedBy`.
 
 2. **Operadores Terminales (Ejecutores):**
+
    - Son los que "tiran de la cuerda" y desencadenan la evaluación elemento a elemento a lo largo de toda la cadena.
    - Devuelven un resultado cerrado (una lista, un número, un booleano o nada).
    - Ejemplos: `toList()`, `toSet()`, `first()`, `find()`, `count()`, `sumOf()`, `forEach()`.
@@ -438,8 +443,11 @@ Dada una lista de videojuegos con sus horas de duración `val partidas = listOf(
 Genera una secuencia infinita o un rango de 1 a 1.000.000 de números. Utiliza un pipeline Fluent para:
 
 1. Filtrar solo los números divisibles por 7.
+
 2. Transformar cada número elevándolo al cuadrado.
+
 3. Tomar únicamente los primeros 5 resultados.
+
 4. Convertir el resultado a una `List<Long>` final e imprimirlo.
 
 Comprueba que el cálculo es instantáneo gracias a la evaluación perezosa y el cortocircuito de `Sequence`.

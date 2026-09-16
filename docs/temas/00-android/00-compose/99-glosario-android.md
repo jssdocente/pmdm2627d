@@ -50,8 +50,9 @@ El "DNI" de la aplicación. Un archivo XML que describe la app al sistema: nombr
 
 ### **Intent**
 Un objeto de mensajería que se usa para solicitar una acción a otro componente de la app.
-*   **Intents Explícitos**: Para iniciar una Activity específica dentro de tu app.
-*   **Intents Implícitos**: Para declarar una intención general (ej: "Quiero abrir una URL") y dejar que el sistema decida qué app usar (Chrome, Firefox, etc.).
+
+- **Intents Explícitos**: Para iniciar una Activity específica dentro de tu app.
+- **Intents Implícitos**: Para declarar una intención general (ej: "Quiero abrir una URL") y dejar que el sistema decida qué app usar (Chrome, Firefox, etc.).
 
 ### **Lifecycle (Ciclo de Vida)**
 La serie de estados por los que pasa una Activity o Fragment (Creado, Iniciado, Reanudado, Pausado, Destruido). Entenderlo es vital para evitar fugas de memoria y guardar datos correctamente.
@@ -91,14 +92,18 @@ Cómo estructurar la aplicación y manejar tareas en segundo plano.
 
 ### **MVVM (Model-View-ViewModel)**
 El patrón de arquitectura recomendado por Google.
-*   **Model**: Datos y lógica de negocio.
-*   **View**: La UI (Composable).
-*   **ViewModel**: Intermediario que guarda el estado de la UI y gestiona la lógica, sobreviviendo a cambios de configuración (como rotar la pantalla).
+
+- **Model**: Datos y lógica de negocio.
+- **View**: La UI (Composable).
+- **ViewModel**: Intermediario que guarda el estado de la UI y gestiona la lógica, sobreviviendo a cambios de configuración (como rotar la pantalla).
 
 ### **UDF (Unidirectional Data Flow)**
 Flujo de Datos Unidireccional. Un patrón donde:
-1.  El **Estado** fluye hacia abajo (del ViewModel a la UI).
-2.  Los **Eventos** fluyen hacia arriba (de la UI al ViewModel).
+
+1. El **Estado** fluye hacia abajo (del ViewModel a la UI).
+
+2. Los **Eventos** fluyen hacia arriba (de la UI al ViewModel).
+
 Esto hace que el estado sea predecible y fácil de depurar.
 
 ### **Clean Architecture**
@@ -112,5 +117,14 @@ Una función que puede ser pausada y reanudada. Solo puede ser llamada desde una
 
 ### **Flow / StateFlow**
 Mecanismos para manejar flujos de datos asíncronos (streams).
-*   **Flow (Cold)**: Flujo de datos que solo emite cuando hay un colector activo.
-*   **StateFlow (Hot)**: Un tipo especial de Flow que siempre tiene un valor actual y emite actualizaciones a sus colectores. Es el reemplazo moderno de `LiveData` en arquitectura Kotlin pura.
+
+- **Flow (Cold)**: Flujo de datos que solo emite cuando hay un colector activo.
+- **StateFlow (Hot)**: Un tipo especial de Flow que siempre tiene un valor actual y emite actualizaciones a sus colectores. Es el reemplazo moderno de `LiveData` en arquitectura Kotlin pura.
+
+---
+
+## 5. Glosario Avanzado de Arquitectura
+
+Para una guía monográfica sobre el rol exacto, responsabilidades y patrones de diseño en las capas de datos, dominio y presentación:
+
+- Consulta el [Glosario y Patrones Clave de Arquitectura (ViewModel, Repository, UseCase, Mapper, SSOT, DI)](../02-arquitectura/05-glosario-patrones.md).

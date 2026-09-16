@@ -9,12 +9,14 @@ Este bloque formativo está diseñado específicamente para alumnos de 2º de DA
 ## 🧭 Mapa de Contenidos
 
 ### Fundamentos y Seguridad
+
 - **[Variables, Tipos de Datos e Inmutabilidad](./11-variables-tipos-datos.md):** `val` vs `var`, por qué la inmutabilidad es crítica en entornos móviles, tipos numéricos, String templates y `lateinit` vs `by lazy`.
 - **[Control de Flujo: Expresiones y When](./12.1-when.md):** `if` como expresión, `when` exhaustivo, smart casting y comprobación de rangos.
 - **[Funciones y Lambdas (El Motor de Compose)](./13-funciones-lambdas.md):** Tipos de función, trailing lambdas, elevación del estado (*State Hoisting*) y lambdas con receptor.
 - **[Seguridad contra Nulos (Null Safety)](./14-null-safety.md):** Eliminación del `NullPointerException`, operadores `?.`, `?:`, `as?` y el modismo `objeto?.let { ... }`.
 
 ### Programación Orientada a Objetos y Modelado
+
 - **[POO Idiomática en Kotlin](./21-poo.md):** Constructores primarios en cabecera, bloque `init`, propiedades con `field`, clases `open` y `final` por defecto.
 - **[Singletons, Companion Object y Objetos Anónimos](./22-objetos-anonimos.md):** Declaraciones de objeto (`object`), sustitución de `static` con `companion object` y expresiones anónimas.
 - **[Clases de Datos (Data Classes)](./23-data-classes.md):** Modelado de entidades, generación de `copy()` y derivación de estados inmutables.
@@ -23,11 +25,13 @@ Este bloque formativo está diseñado específicamente para alumnos de 2º de DA
 - **[Genéricos y Varianza](./25-genericos.md):** Clases y funciones genéricas, restricciones (`<T : Comparable<T>>`) y varianza `out` / `in`.
 
 ### Idiomática y Concurrencia
+
 - **[Funciones de Ámbito (Scope Functions)](./31-scope-functions.md):** Guía comparativa de `let`, `apply`, `also`, `run` y `with` con casos de uso en Android.
 - **[Listas y Operaciones Funcionales](./42-listas.md):** Listas inmutables `List` vs `MutableList`, adición funcional (`+`), transformaciones con `map`, `filter`, `groupBy`.
 - **[Colecciones Asociativas (Mapas y Sets)](./43-maps.md):** Almacenamiento clave-valor y conjuntos únicos.
 - **[Programación Asíncrona con Corrutinas](./51-corrutinas.md):** La analogía del camarero, ANR, funciones `suspend`, constructores `launch`/`async` y Dispatchers en Android.
 - **[Flujos Asíncronos y Reactivos (Flow y StateFlow)](./52-flows.md):** Flujos fríos vs calientes, `StateFlow` en Android, emisión reactiva hacia Compose y Room.
+- **[Anexo: La Magia de los DSLs en Kotlin](./61-dsl-en-kotlin.md):** Cómo Compose, Gradle y Koin crean sintaxis declarativa mediante lambdas con receptor, trailing lambdas, funciones de extensión y el operador `invoke`.
 
 ---
 
@@ -36,6 +40,7 @@ Este bloque formativo está diseñado específicamente para alumnos de 2º de DA
 Accede al bloque de ejercicios estructurados en un único proyecto de IntelliJ IDEA con soluciones comentadas y retos lúdicos graduados:
 
 - **[Laboratorio de Actividades de Kotlin](./ejercicios/index.md):** Guía de configuración del proyecto en IntelliJ IDEA y mapa de retos.
+
     - [1. Fundamentos e Inmutabilidad](./ejercicios/01-fundamentos-inmutabilidad.md)
     - [2. Funciones, Lambdas y el Ahorcado](./ejercicios/02-funciones-lambdas-nullsafety.md)
     - [3. POO, Sealed Types y Wordle](./ejercicios/03-poo-sealed-types.md)

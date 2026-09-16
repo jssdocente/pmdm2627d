@@ -5,7 +5,9 @@ En Java, cuando se necesita compartir un recurso único a nivel global se implem
 Kotlin no dispone de la palabra clave `static`. En su lugar, aborda estas necesidades mediante la palabra reservada **`object`** a través de tres mecanismos diferenciados y elegantes:
 
 1. **Declaración de Objetos (*Object Declarations*):** Singletons nativos con nombre.
+
 2. **Objetos Compañeros (*Companion Objects*):** Miembros estáticos asociados a una clase.
+
 3. **Expresiones de Objeto (*Object Expressions*):** Objetos anónimos e instancias puntuales de interfaces.
 
 ---
@@ -39,6 +41,7 @@ fun main() {
 ```
 
 ### Características de una Declaración de Objeto:
+
 - **Instancia única:** El compilador garantiza que existirá exactamente una sola instancia en toda la memoria de la aplicación.
 - **Sin constructores:** No puede tener constructor primario ni secundario (no se puede instanciar con `()`).
 - **Puede heredar e implementar interfaces:** Puede heredar de clases abiertas e implementar contratos de interfaces.
@@ -84,6 +87,7 @@ fun main() {
 
 !!! tip "Uso habitual en Android"
     En el desarrollo Android, el `companion object` se utiliza de forma constante para:
+
     - Definir la constante `TAG` de cada clase para filtrar mensajes en el **Logcat**.
     - Definir métodos `newInstance()` para crear `Fragments`.
     - Definir constantes de argumentos de navegación en Jetpack Compose (`const val ARG_GAME_ID = "gameId"`).

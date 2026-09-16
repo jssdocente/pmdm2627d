@@ -80,8 +80,10 @@ Podemos clasificar el estado según esta matriz:
 
 1. **Eliminación de efectos secundarios (*Side Effects*):**
    Cuando una función recibe un objeto inmutable, tenemos la certeza absoluta de que ninguna otra parte del sistema podrá alterar sus datos mientras se procesa. El código se vuelve determinista y predecible.
+
 2. **Seguridad en Concurrencia (*Thread Safety* sin bloqueos):**
    En Android, la aplicación ejecuta constantemente tareas en segundo plano (peticiones de red con Retrofit/Ktor, lecturas de base de datos con Room, sensores) mientras el hilo principal dibuja la interfaz a 60/120 fps. Si dos hilos acceden al mismo dato mutable, se producen **condiciones de carrera (*Race Conditions*)** que requieren bloqueos pesados (`synchronized`, semáforos) capaces de congelar la pantalla. Los datos inmutables pueden leerse desde 100 hilos concurrentes simultáneamente sin riesgo alguno.
+
 3. **Facilidad de Depuración y Pruebas Unitarias:**
    Un estado inmutable representa una instantánea fija de la aplicación en un instante de tiempo. Esto permite reproducir errores con total fidelidad en los tests unitarios.
 
