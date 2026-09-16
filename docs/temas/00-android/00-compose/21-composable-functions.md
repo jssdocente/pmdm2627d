@@ -246,6 +246,151 @@ fun Greeting(name: String) {
 
 En el ejemplo anterior, se utiliza la función `Image` para añadir una imagen a la interfaz de usuario utilizando un recurso de imagen.
 
+## Los Layout Scopes: RowScope, ColumnScope y BoxScope
+
+Una de las preguntas más frecuentes entre los estudiantes al empezar con Jetpack Compose es:  
+*«¿Por qué ciertos modificadores, como `Modifier.weight()` o `Modifier.align()`, funcionan en algunos sitios pero en otros dan error de compilación en rojo?»*
+
+La respuesta reside en los **Layout Scopes (Ámbitos de Diseño)**. En Compose, la lambda de contenido de un `Row`, `Column` o `Box` no es un bloque de código genérico, sino una **Lambda con Receptor**:
+
+- `Row` expone un `RowScope.() -> Unit`.
+- `Column` expone un `ColumnScope.() -> Unit`.
+- `Box` expone un `BoxScope.() -> Unit`.
+- `LazyColumn / LazyRow` exponen un `LazyItemScope` dentro de cada elemento.
+
+Esto significa que el compilador de Kotlin restringe qué modificadores están disponibles según el contenedor padre en el que te encuentres, garantizando en tiempo de compilación que no apliques reglas de maquetación incoherentes (como intentar alinear horizontalmente un hijo dentro de un `Row` que ya fluye de izquierda a derecha).
+
+---
+
+### 1. Modificadores Exclusivos por Scope
+
+```mermaid
+graph TD
+    subgraph RS ["📐 RowScope"]
+        W1["Modifier.weight(1f)<br>Reparte el ancho horizontal disponible"]
+        A1["Modifier.align(Alignment.CenterVertically)<br>Alineación vertical individual"]
+    end
+
+    subgraph CS ["📐 ColumnScope"]
+        W2["Modifier.weight(1f)<br>Reparte el alto vertical disponible"]
+        A2["Modifier.align(Alignment.CenterHorizontally)<br>Alineación horizontal individual"]
+    end
+
+    subgraph BS ["📐 BoxScope"]
+        A3["Modifier.align(Alignment.Center)<br>Alineación bidimensional en 9 posiciones"]
+        M1["Modifier.matchParentSize()<br>Toma el tamaño del Box sin forzar su medida"]
+    end
+```
+
+#### En `RowScope` (Distribución Horizontal)
+
+- **`Modifier.weight(weight: Float)`**: Distribuye el ancho horizontal restante proporcionalmente entre los hijos que tengan peso asignado.
+- **`Modifier.align(alignment: Alignment.Vertical)`**: Sobrescribe la alineación vertical general del `Row` solo para este elemento específico (`Alignment.Top`, `Alignment.CenterVertically`, `Alignment.Bottom`).
+
+#### En `ColumnScope` (Distribución Vertical)
+
+- **`Modifier.weight(weight: Float)`**: Distribuye el alto vertical restante entre los hijos.
+- **`Modifier.align(alignment: Alignment.Horizontal)`**: Sobrescribe la alineación horizontal de la columna para este elemento (`Alignment.Start`, `Alignment.CenterHorizontally`, `Alignment.End`).
+
+#### En `BoxScope` (Apilamiento en Capas)
+
+- **`Modifier.align(alignment: Alignment)`**: Posiciona al hijo en cualquiera de las 9 coordenadas del contenedor (`TopStart`, `Center`, `BottomEnd`, etc.).
+- **`Modifier.matchParentSize()`**: Hace que el elemento mida exactamente lo mismo que el `Box` padre medido por los demás hijos, **sin influir en el cálculo del tamaño final del `Box`** (a diferencia de `Modifier.fillMaxSize()`, que obligaría al padre a expandirse al máximo).
+
+---
+
+### 2. El Problema Típico al Extraer Composables
+
+Supongamos que tienes una fila con dos botones que se reparten el 50% del ancho cada uno usando `Modifier.weight(1f)`:
+
+```kotlin
+Row(modifier = Modifier.fillMaxWidth()) {
+    Button(modifier = Modifier.weight(1f), onClick = {}) { Text("Aceptar") }
+    Button(modifier = Modifier.weight(1f), onClick = {}) { Text("Cancelar") }
+}
+```
+
+Al refactorizar para extraer el botón a una función separada, surge el error clásico:
+
+```kotlin
+// ❌ ERROR DE COMPILACIÓN: Unresolved reference: weight
+@Composable
+fun BotonAccion(texto: String, onClick: () -> Unit) {
+    Button(
+        modifier = Modifier.weight(1f), // ¡El compilador no sabe qué es weight aquí fuera!
+        onClick = onClick
+    ) {
+        Text(texto)
+    }
+}
+```
+
+**¿Por qué falla?**  
+Porque la función `BotonAccion` es una función ordinaria fuera del contexto de `RowScope`. El método de extensión `.weight()` solo existe como miembro de la interfaz `RowScope` o `ColumnScope`.
+
+---
+
+### 3. Las Dos Soluciones Profesionales
+
+Existen dos maneras de resolver este escenario según el grado de reutilización que desees para tu componente:
+
+#### Solución A: Convertir tu Composable en Extensión del Scope (Acoplado al Contenedor)
+
+Si el componente ha sido diseñado para existir **única y exclusivamente dentro de un `Row`**:
+
+```kotlin
+// ✅ VÁLIDO: La función se declara como función de extensión de RowScope
+@Composable
+fun RowScope.BotonAccion(texto: String, onClick: () -> Unit) {
+    Button(
+        modifier = Modifier.weight(1f), // Válido porque 'this' es RowScope
+        onClick = onClick
+    ) {
+        Text(texto)
+    }
+}
+
+// Uso dentro de un Row:
+Row(modifier = Modifier.fillMaxWidth()) {
+    BotonAccion("Aceptar", onClick = {})
+    BotonAccion("Cancelar", onClick = {})
+}
+```
+
+!!! info "Seguridad en tiempo de compilación"
+    Si intentas llamar a `BotonAccion` dentro de un `Column` o fuera de un `Row`, el compilador de Kotlin te impedirá compilar el proyecto.
+
+#### Solución B: Elevar el Modificador (Patrón Recomendado y Flexible)
+
+Si deseas que `BotonAccion` sea un componente universal que pueda usarse dentro de un `Row`, de un `Column` o en cualquier otra parte, **aplica la Regla de Oro de los modificadores**:
+
+```kotlin
+// ✅ MEJOR PRÁCTICA: El composable recibe el Modifier desde fuera y lo aplica al nodo raíz
+@Composable
+fun BotonAccion(
+    texto: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier // Recibe el modificador configurado
+) {
+    Button(
+        modifier = modifier,
+        onClick = onClick
+    ) {
+        Text(texto)
+    }
+}
+
+// En el llamador (donde sí existe el RowScope), aplicamos el weight:
+Row(modifier = Modifier.fillMaxWidth()) {
+    BotonAccion(texto = "Aceptar", onClick = {}, modifier = Modifier.weight(1f))
+    BotonAccion(texto = "Cancelar", onClick = {}, modifier = Modifier.weight(1f))
+}
+```
+
+Para comprender en profundidad cómo Kotlin implementa estas *Lambdas con Receptor*, consulta el [Anexo: La Magia de los DSL en Kotlin](../00-kotlin/61-dsl-en-kotlin.md#ingrediente-2-lambdas-con-receptor-function-types-with-receiver).
+
+---
+
 ## Previews en Jetpack Compose
 
 Jetpack Compose proporciona una función `@Preview` que te permite previsualizar tus funciones componibles en tiempo real en Android Studio. Puedes definir previsualizaciones para tus funciones componibles y ver cómo se ven en diferentes configuraciones y estados.
