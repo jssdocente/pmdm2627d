@@ -415,7 +415,12 @@ fun main() = runBlocking {
 
 ## 6. Operadores de Transformación Comunes
 
-Al igual que ocurre con las colecciones estándar (`List`), los flujos de datos disponen de operadores intermedios que permiten transformar, limpiar y enriquecer las emisiones sobre la marcha sin detener la cinta transportadora:
+Al igual que aprendimos con las colecciones y las secuencias (`List` y `Sequence`), los flujos reactivos emplean **programación Fluent** y pipelines encadenados construidos con operadores tipo **Stream**. 
+
+En Kotlin Flow, las operaciones se dividen en dos categorías:
+
+- **Operadores Intermedios (Perezosos / Cold Streams):** No consumen ni disparan el flujo por sí mismos; se limitan a transformar, filtrar o retrasar las emisiones, devolviendo una nueva receta `Flow<T>`.
+- **Operadores Terminales (Desencadenadores):** Son funciones de suspensión que arrancan la cinta transportadora y procesan cada elemento que llega (`collect`, `first`, `toList`, `reduce`).
 
 ### Operadores Esenciales
 
@@ -423,7 +428,7 @@ Al igual que ocurre con las colecciones estándar (`List`), los flujos de datos 
 
 - **`filter { ... }`**: Deja pasar únicamente los valores que satisfagan un predicado booleano.
 
-- **`take(n)`**: Toma únicamente las primeras $n$ emisiones y cancela el flujo automáticamente tras recibirlas.
+- **`take(n)`**: Toma únicamente las primeras $n$ emisiones y cancela el flujo automáticamente tras recibirlas (cortocircuito / *short-circuiting*).
 
 - **`debounce(tiempoMs)`**: Descarta emisiones consecutivas si ocurren demasiado rápido, esperando a que transcurra una pausa silenciosa. Es la base de los **buscadores reactivos** (evita enviar peticiones a la API mientras el usuario teclea rápido).
 
