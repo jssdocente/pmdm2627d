@@ -5,12 +5,23 @@ En este tercer bloque dominarás la Programación Orientada a Objetos moderna en
 📁 **Paquete de trabajo:** `package b03_poo_sealed`  
 Ubicación en tu proyecto: `src/main/kotlin/b03_poo_sealed/`
 
+!!! info "📚 Apuntes Teóricos de Referencia"
+    Para resolver las actividades de este bloque, puedes consultar los siguientes temas de los apuntes:
+
+    - [Programación Orientada a Objetos (Clases, Herencia e Interfaces)](../21-poo.md)
+    - [Singletons y Companion Object (Objetos y Factorías)](../22-objetos-anonimos.md)
+    - [Data Classes (Modelos de Datos Inmutables)](../23-data-classes.md)
+    - [Enum Classes (Tipos Enumerados y `.entries`)](../24-enum-classes.md)
+    - [Genéricos (Parámetros de Tipo y Covarianza)](../25-genericos.md)
+    - [Tipos Sellados (Sealed Classes/Interfaces y UI State)](../26-sealed-classes.md)
+
 ---
 
 ## 🟢 Nivel Básico (POO Idiomática, Constructores y Propiedades)
 
 ### Ejercicio 3.1: Constructor Primario y Bloque `init`
-📄 **Archivo:** `E01_ConstructorPrimarioInit.kt`
+📄 **Archivo:** `E01_ConstructorPrimarioInit.kt`  
+📚 **Teoría de referencia:** [Clases y Constructor Primario Idiomático](../21-poo.md#1-clases-y-constructor-primario-idiomatico)
 
 #### 1. Enunciado y Requisitos
 
@@ -64,7 +75,8 @@ Capturado error esperado al crear jugador inválido: Failed requirement.
 ---
 
 ### Ejercicio 3.2: Constructores Secundarios vs Valores por Defecto
-📄 **Archivo:** `E02_ConstructoresSecundarios.kt`
+📄 **Archivo:** `E02_ConstructoresSecundarios.kt`  
+📚 **Teoría de referencia:** [El Bloque de Inicialización: init y Constructores Secundarios](../21-poo.md#2-el-bloque-de-inicializacion-init)
 
 #### 1. Enunciado y Requisitos
 
@@ -120,7 +132,8 @@ Servidor 2 (Constructor secundario por URL): ServidorPartida(ip='servidor.es', p
 ---
 
 ### Ejercicio 3.3: Getters y Setters Personalizados con `field`
-📄 **Archivo:** `E03_GettersSettersField.kt`
+📄 **Archivo:** `E03_GettersSettersField.kt`  
+📚 **Teoría de referencia:** [Propiedades y Acceso (field): Getters y Setters](../21-poo.md#3-propiedades-y-acceso-field)
 
 #### 1. Enunciado y Requisitos
 
@@ -178,7 +191,8 @@ Vida: 0/100 (clamp a 0) | ¿Vivo? false
 ---
 
 ### Ejercicio 3.4: Interfaces con Implementaciones por Defecto
-📄 **Archivo:** `E04_InterfacesPolimorfismo.kt`
+📄 **Archivo:** `E04_InterfacesPolimorfismo.kt`  
+📚 **Teoría de referencia:** [Clases Abstractas e Interfaces](../21-poo.md#6-clases-abstractas-e-interfaces)
 
 #### 1. Enunciado y Requisitos
 
@@ -247,7 +261,8 @@ Acción: Link tira de la palanca. Nueva posición: Activada.
 ---
 
 ### Ejercicio 3.5: Herencia con `open` y `override`
-📄 **Archivo:** `E05_HerenciaOpenOverride.kt`
+📄 **Archivo:** `E05_HerenciaOpenOverride.kt`  
+📚 **Teoría de referencia:** [Herencia: final por Defecto y la Palabra Clave open](../21-poo.md#5-herencia-final-por-defecto-y-la-palabra-clave-open)
 
 #### 1. Enunciado y Requisitos
 
@@ -301,7 +316,8 @@ Boss 'Ganon el Conquistador' (500 HP, Fase 2) ataca: *¡RUGIDO DESTRUCTIVO!*
 ## 🟡 Nivel Intermedio (Data Classes, Singletons, Enums y Eventos)
 
 ### Ejercicio 3.6: Data Classes y Generación de Copias con `.copy()`
-📄 **Archivo:** `E06_DataClassesCopy.kt`
+📄 **Archivo:** `E06_DataClassesCopy.kt`  
+📚 **Teoría de referencia:** [Declaración de Data Classes y Método copy()](../23-data-classes.md#3-el-metodo-copy-y-la-inmutabilidad)
 
 #### 1. Enunciado y Requisitos
 
@@ -353,7 +369,8 @@ Desestructuración: ID=1 | Título=Celeste | Precio=19.99 €
 ---
 
 ### Ejercicio 3.7: `companion object` para Constantes y Factorías
-📄 **Archivo:** `E07_CompanionObjectFactory.kt`
+📄 **Archivo:** `E07_CompanionObjectFactory.kt`  
+📚 **Teoría de referencia:** [El Objeto Compañero (Companion Object)](../22-objetos-anonimos.md#2-el-objeto-companero-companion-object)
 
 #### 1. Enunciado y Requisitos
 
@@ -405,7 +422,8 @@ Tarjeta local instanciada mediante Factoría: MAC=00:00:00:00, IP=127.0.0.1
 ---
 
 ### Ejercicio 3.8: `object` Nativo (Patrón Singleton Thread-Safe)
-📄 **Archivo:** `E08_SingletonObject.kt`
+📄 **Archivo:** `E08_SingletonObject.kt`  
+📚 **Teoría de referencia:** [Declaración de Objetos: El Patrón Singleton Nativo](../22-objetos-anonimos.md#1-declaracion-de-objetos-el-patron-singleton-nativo)
 
 #### 1. Enunciado y Requisitos
 
@@ -461,7 +479,8 @@ Acceso desde componente B: Usuario activo = Link_Hero
 ---
 
 ### Ejercicio 3.9: `enum class` con Propiedades y `.entries`
-📄 **Archivo:** `E09_EnumEntries.kt`
+📄 **Archivo:** `E09_EnumEntries.kt`  
+📚 **Teoría de referencia:** [Enums con Propiedades y Métodos](../24-enum-classes.md#2-enums-con-propiedades-y-metodos) e [Iteración con .entries](../24-enum-classes.md#3-iteracion-moderna-entries-vs-values)
 
 #### 1. Enunciado y Requisitos
 
@@ -525,7 +544,8 @@ Configuración activa: Modo Desafío -> Daño enemigo amplificado un 150%.
 ---
 
 ### Ejercicio 3.10: Modelado de Eventos con `sealed interface UiEvent`
-📄 **Archivo:** `E10_UiEventsSealed.kt`
+📄 **Archivo:** `E10_UiEventsSealed.kt`  
+📚 **Teoría de referencia:** [Sintaxis Moderna: sealed interface y data object](../26-sealed-classes.md#2-sintaxis-moderna-sealed-interface-y-data-object-kotlin-19) y [Manejo con when Exhaustivo](../26-sealed-classes.md#3-manejo-con-when-exhaustivo-y-smart-casting)
 
 #### 1. Enunciado y Requisitos
 
@@ -590,7 +610,8 @@ En Jetpack Compose, las acciones que el usuario realiza en la pantalla (pulsar b
 ---
 
 ### Ejercicio 3.11: Delegación de Propiedades con `by` y `Delegates.observable`
-📄 **Archivo:** `E11_DelegatedProperties.kt`
+📄 **Archivo:** `E11_DelegatedProperties.kt`  
+📚 **Teoría de referencia:** [Propiedades y Acceso en Clases](../21-poo.md#3-propiedades-y-acceso-field)
 
 #### 1. Enunciado y Requisitos
 
@@ -642,7 +663,8 @@ Puntuación final: 1000
 ## 🔴 Nivel Avanzado (Tipos Sellados, Genéricos y Reto Lúdico)
 
 ### Ejercicio 3.12: `sealed interface` y Patrón `UiState`
-📄 **Archivo:** `E12_SealedUiState.kt`
+📄 **Archivo:** `E12_SealedUiState.kt`  
+📚 **Teoría de referencia:** [El Patrón Universal de Arquitectura en Android: UiState](../26-sealed-classes.md#5-el-patron-universal-de-arquitectura-en-android-uistate)
 
 #### 1. Enunciado y Requisitos
 
@@ -703,7 +725,8 @@ Puntuación final: 1000
 ---
 
 ### Ejercicio 3.13: Envoltorio Genérico con Covarianza `out`
-📄 **Archivo:** `E13_GenericosVarianzaOut.kt`
+📄 **Archivo:** `E13_GenericosVarianzaOut.kt`  
+📚 **Teoría de referencia:** [Clases Genéricas](../25-genericos.md#1-clases-genericas) y [Covarianza con out](../25-genericos.md#41-covarianza-con-out-productores-de-datos)
 
 #### 1. Enunciado y Requisitos
 
@@ -761,114 +784,179 @@ Login erróneo -> Error 401: Credenciales inválidas
 
 ---
 
-### Reto 3.14: El Motor de Wordle en Consola
-📄 **Archivo:** `Reto03_WordleEngine.kt`
+### Reto 3.14: El Motor de Wordle en Consola (*POO, Data Classes y Dominio*)
+📄 **Archivo:** `Reto03_WordleEngine.kt`  
+📚 **Teoría de referencia:** [El Método copy() y la Inmutabilidad](../23-data-classes.md#3-el-metodo-copy-y-la-inmutabilidad) y [El Dúo Estrella: enum y when Exhaustivo](../24-enum-classes.md#5-el-duo-estrella-enum-y-la-expresion-when-exhaustiva)
 
-#### 1. Contexto y Objetivos
+#### 1. Contexto y Misión
 
-Construirás el motor de validación de intentos para el juego de palabras **Wordle** aplicando `enum class`, `data class`, extensiones y colecciones inmutables.
+En este reto construirás el motor de validación para el popular juego de palabras **Wordle**, aplicando los principios esenciales de **Programación Orientada a Objetos en Kotlin**, **Data Classes** y **Enum Classes** aprendidos a lo largo del Bloque 3.
 
-El reto te enseñará a estructurar modelos de datos desacoplados de la interfaz gráfica, tal y como se diseñan los estados de pantalla (**UiState**) en aplicaciones Android reales con Jetpack Compose.
+El propósito formativo es aprender a modelar la lógica de negocio y las entidades de dominio de forma totalmente desacoplada de la interfaz gráfica, tal como se diseñan los modelos de datos y estados de pantalla (**UiState**) en aplicaciones profesionales con **Jetpack Compose**.
 
-#### 2. Modelo Mental del Reto (Diagrama de Clases y Dominio)
+##### 🎮 La Dinámica del Juego Explicada
 
-Analiza las relaciones entre el estado del juego, las evaluaciones de celda y los tipos enumerados:
+El objetivo del jugador consiste en adivinar una palabra secreta oculta de longitud determinada (en este ejercicio, `"COMPOSE"`, de 7 letras) dentro de un límite de **6 intentos máximos**.
 
-```mermaid
-classDiagram
-    class EstadoLetra {
-        <<enum>>
-        VERDE : "🟩"
-        AMARILLO : "🟨"
-        GRIS : "⬛"
-        +String icono
-    }
+Tras cada intento propuesto por el usuario, el motor compara letra a letra la palabra enviada con la palabra secreta y genera una **evaluación visual** mediante un código de colores icónico.
 
-    class EvaluacionLetra {
-        <<data class>>
-        +Char caracter
-        +EstadoLetra estado
-    }
+###### A. Componentes y Recursos de la Partida
 
-    class PartidaWordle {
-        <<data class>>
-        +String palabraSecreta
-        +Int intentosMaximos
-        +List~List~EvaluacionLetra~~ intentosRealizados
-    }
+| Elemento | Tipo de Dato | Función en el Juego |
+| :--- | :--- | :--- |
+| **`EstadoLetra`** | `enum class` | Calificación de cada posición (`VERDE`, `AMARILLO`, `GRIS`), con su emoji visual asociado (`"🟩"`, `"🟨"`, `"⬛"`). |
+| **`EvaluacionLetra`** | `data class` | Celda individual de la cuadrícula que empareja el carácter probado con su `EstadoLetra`. |
+| **`PartidaWordle`** | `data class` | Modelo de estado inmutable de la partida con la palabra secreta, límite de intentos y matriz de evaluaciones acumuladas. |
+| **`evaluarIntento()`** | Función pura | Analiza la palabra enviada y devuelve la lista inmutable `List<EvaluacionLetra>`. |
 
-    PartidaWordle *-- EvaluacionLetra : contiene matriz de intentos
-    EvaluacionLetra --> EstadoLetra : calificada con
-```
+###### B. Reglas de Validación de Letras (Verde, Amarillo y Gris)
 
-#### 3. Preguntas de Reflexión (Aprender a Pensar)
+Para cada carácter en la posición `i` del intento propuesto, se aplican las siguientes reglas oficiales de Wordle:
 
-- **¿Por qué asociar el icono visual (`"🟩"`) directamente al `enum class`?** De esta forma, el `enum` encapsula tanto el significado lógico como su representación gráfica, evitando largos `when` o `if-else` en la capa de presentación.
-- **¿Por qué `data class EvaluacionLetra`?** En Compose, cada celda de la cuadrícula es un componente independiente. Tener un objeto inmutable con el carácter y su estado facilita renderizar una fila mediante un simple `Row { ... }`.
-- **¿Cómo comparar las letras eficientemente?** Utilizando `intento.mapIndexed { index, char -> ... }`. La posición `index` permite comprobar si coincide exactamente con `palabraSecreta[index]` (Verde), y el operador `in palabraSecreta` comprueba si la letra existe en otra posición (Amarillo).
+1. **🟩 VERDE (Acierto Pleno):**  
+   El carácter propuesto coincide de forma idéntica con el carácter de la palabra secreta en esa misma posición exacta (`intento[i] == secreta[i]`).
 
-#### 4. Requisitos Funcionales
+2. **🟨 AMARILLO (Letra Presente en Posición Distinta):**  
+   El carácter propuesto existe dentro de la palabra secreta (`intento[i] in secreta`), pero se encuentra en otra posición diferente.
 
-1. Modela el estado de cada letra con un `enum class EstadoLetra(val icono: String)`:
+3. **⬛ GRIS (Letra Ausente):**  
+   El carácter propuesto no existe en ninguna posición de la palabra secreta.
 
-    - `VERDE("🟩")`: Letra correcta en la posición correcta.
+###### C. Ciclo de Vida de Cada Intento (Paso a Paso)
 
-    - `AMARILLO("🟨")`: Letra presente en la palabra secreta, pero en posición errónea.
+Cada intento introducido en el motor sigue cronológicamente las siguientes fases:
 
-    - `GRIS("⬛")`: Letra que no existe en la palabra secreta.
+1. **Fase de Validación y Normalización de Entrada:**  
+   Ambas cadenas se convierten a mayúsculas con `.uppercase()`. Se verifica con `require(secreta.length == intento.length)` que la longitud del intento sea exactamente igual a la de la palabra secreta; si no coinciden, se detiene el proceso con una excepción descriptiva.
 
-2. Modela una celda con `data class EvaluacionLetra(val caracter: Char, val estado: EstadoLetra)`.
+2. **Fase de Mapeo Posicional (`mapIndexed`):**  
+   Se recorre la cadena caracter a caracter conociendo su índice posicional `(i, c)`. Mediante una expresión `when`, se asigna el estado (`VERDE`, `AMARILLO` o `GRIS`) y se instancia un objeto `EvaluacionLetra(c, estado)`.
 
-3. Modela el estado de la partida con:
-   `data class PartidaWordle(val palabraSecreta: String, val intentosMaximos: Int = 6, val intentosRealizados: List<List<EvaluacionLetra>> = emptyList())`.
+3. **Fase de Renderizado y Visualización:**  
+   En consola se imprimen dos líneas por intento:
+   
+    - La palabra del intento con las letras separadas por espacios (ej. `K O T L I N S`).
+    
+    - La fila de iconos correspondiente dibujada con los emojis de cada celda (ej. `⬛ 🟩 ⬛ ⬛ ⬛ ⬛ 🟨`).
 
-4. Implementa la función `evaluarIntento(palabraSecreta: String, intento: String): List<EvaluacionLetra>` que compare letra a letra y devuelva la lista de evaluaciones correspondiente.
+4. **Fase de Comprobación de Fin de Partida:**  
+   Se evalúa la lista de evaluaciones generadas:
 
-#### 5. Pistas Progresivas de Ayuda
+    - Si todas las celdas tienen el estado `EstadoLetra.VERDE`, ¡se declara la victoria inmediata!
 
-??? tip "💡 Pista 1: Validación previa con `require`"
-    Asegúrate de que la palabra enviada tenga la misma longitud que la palabra secreta para evitar errores `IndexOutOfBoundsException`:
-    ```kotlin
-    require(secreta.length == intento.length) { "La longitud debe coincidir exactamente." }
-    ```
+    - Si no, se descuenta un intento y el juego continúa hasta agotar el cupo de 6 rondas.
 
-??? tip "💡 Pista 2: Mapeo posicional con `mapIndexed`"
-    Kotlin ofrece `mapIndexed` para iterar conociendo el índice y el valor a la vez:
-    ```kotlin
-    return intento.mapIndexed { i, c ->
-        val estado = when {
-            c == secreta[i] -> EstadoLetra.VERDE
-            c in secreta -> EstadoLetra.AMARILLO
-            else -> EstadoLetra.GRIS
+###### D. Desenlace Final (Condiciones de Victoria y Derrota)
+
+- **🏆 Victoria:** Se alcanza en el momento en que un intento resulta 100% verde (`evaluacion.all { it.estado == EstadoLetra.VERDE }`). Se felicita al jugador indicando el número exacto de intentos requeridos.
+
+- **💀 Derrota:** Se produce si se alcanzan los 6 intentos máximos sin descubrir la palabra. Se desvela la solución oculta.
+
+---
+
+#### 2. Requisitos Funcionales
+
+Para completar el reto con la máxima fidelidad técnica:
+
+1. **RF-01 (Enum Class con Propiedad Visual):** Declara `enum class EstadoLetra(val icono: String)` con las constantes `VERDE("🟩")`, `AMARILLO("🟨")` y `GRIS("⬛")`.
+
+2. **RF-02 (Data Class de Celda):** Modela `data class EvaluacionLetra(val caracter: Char, val estado: EstadoLetra)` para encapsular cada celda evaluada.
+
+3. **RF-03 (Data Class del Estado Global de la Partida):** Modela `data class PartidaWordle(val palabraSecreta: String, val intentosMaximos: Int = 6, val intentosRealizados: List<List<EvaluacionLetra>> = emptyList())` asegurando inmutabilidad en las listas anidadas.
+
+4. **RF-04 (Función Pura de Evaluación):** Implementa `fun evaluarIntento(palabraSecreta: String, intentoRaw: String): List<EvaluacionLetra>` que valide la coincidencia de longitud con `require` y aplique `mapIndexed` junto con una expresión `when` para clasificar cada letra.
+
+5. **RF-05 (Renderizado Formateado e Iconografía):** Muestra cada intento imprimiendo las letras separadas por espacios y en la línea siguiente la cadena de iconos (`iconos = evaluacion.joinToString(" ") { it.estado.icono }`).
+
+6. **RF-06 (Control de Flujo de la Partida en `main()`):** Simula una partida con una lista de intentos progresivos (ej. `"KOTLINS"`, `"COMPASS"`, `"COMPOSE"`), verificando la condición de victoria con `.all` tras cada intento.
+
+---
+
+??? info "📊 Ver Modelo Mental del Reto (Diagrama de Clases y Dominio)"
+    Analiza cómo se estructuran las clases y tipos enumerados en la arquitectura del juego:
+
+    ```mermaid
+    classDiagram
+        class EstadoLetra {
+            <<enum>>
+            VERDE : "🟩"
+            AMARILLO : "🟨"
+            GRIS : "⬛"
+            +String icono
         }
-        EvaluacionLetra(c, estado)
-    }
+
+        class EvaluacionLetra {
+            <<data class>>
+            +Char caracter
+            +EstadoLetra estado
+        }
+
+        class PartidaWordle {
+            <<data class>>
+            +String palabraSecreta
+            +Int intentosMaximos
+            +List~List~EvaluacionLetra~~ intentosRealizados
+        }
+
+        PartidaWordle *-- EvaluacionLetra : contiene matriz de intentos
+        EvaluacionLetra --> EstadoLetra : calificada con
     ```
 
-??? tip "💡 Pista 3: Detección de Victoria con `.all`"
-    Para saber si el turno actual es ganador, comprueba si todas las celdas evaluadas están en verde:
-    ```kotlin
-    val victoria = evaluacion.all { it.estado == EstadoLetra.VERDE }
+??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
+    Antes de examinar la solución o las pistas, reflexiona sobre estas decisiones de diseño:
+
+    - **¿Por qué asociar el icono visual (`"🟩"`) directamente al `enum class`?**  
+      De esta forma el `enum` encapsula tanto el significado semántico como su representación gráfica. Evita tener que repetir estructuras `when` en la capa de presentación para decidir qué icono pintar.
+
+    - **¿Por qué `data class EvaluacionLetra` en lugar de pares simples `Pair<Char, EstadoLetra>`?**  
+      Las `data class` proporcionan nombres descriptivos a los campos (`caracter`, `estado`) en lugar de los genéricos `first` y `second`, mejorando drásticamente la legibilidad y mantenibilidad del código. Además, generan automáticamente `equals()`, `hashCode()` y `toString()`.
+
+    - **¿Cómo comparar las letras eficientemente sin bucles manuales `for`?**  
+      Utilizando `intento.mapIndexed { index, char -> ... }`. El parámetro `index` permite verificar si el carácter coincide con `palabraSecreta[index]` (Verde), mientras que el operador de pertenencia `char in palabraSecreta` determina si existe en otra posición (Amarillo).
+
+??? tip "💡 Pistas Progresivas de Ayuda (Abrir solo si te atascas)"
+    ??? tip "💡 Pista 1: Validación previa con `require`"
+        Asegúrate de que la palabra enviada tenga la misma longitud que la palabra secreta para evitar errores `IndexOutOfBoundsException`:
+        ```kotlin
+        require(secreta.length == intento.length) { "La longitud del intento debe coincidir con la palabra secreta." }
+        ```
+
+    ??? tip "💡 Pista 2: Mapeo posicional con `mapIndexed` y `when`"
+        Kotlin ofrece `mapIndexed` para iterar conociendo el índice y el valor simultáneamente:
+        ```kotlin
+        return intento.mapIndexed { i, c ->
+            val estado = when {
+                c == secreta[i] -> EstadoLetra.VERDE
+                c in secreta -> EstadoLetra.AMARILLO
+                else -> EstadoLetra.GRIS
+            }
+            EvaluacionLetra(c, estado)
+        }
+        ```
+
+    ??? tip "💡 Pista 3: Detección de Victoria con `.all`"
+        Para determinar si el turno actual es ganador, comprueba si la totalidad de las celdas evaluadas tienen el estado verde:
+        ```kotlin
+        val victoria = evaluacion.all { it.estado == EstadoLetra.VERDE }
+        ```
+
+??? info "🖥️ Ver Salida de Ejemplo en Consola"
+    ```text
+    === WORDLE KOTLIN CLI ===
+    Palabra secreta fijada: COMPOSE (7 letras)
+
+    Intento 1: K O T L I N S
+    ⬛ 🟩 ⬛ ⬛ ⬛ ⬛ 🟨
+
+    Intento 2: C O M P A S S
+    🟩 🟩 🟩 🟩 ⬛ ⬛ 🟨
+
+    Intento 3: C O M P O S E
+    🟩 🟩 🟩 🟩 🟩 🟩 🟩
+
+    ¡ENHORABUENA! 🎉 Has resuelto el Wordle en 3 intentos.
     ```
 
-#### 6. Salida de Ejemplo en Consola
-
-```text
-=== WORDLE KOTLIN CLI ===
-Palabra secreta fijada: COMPOSE (7 letras)
-
-Intento 1: K O T L I N S
-⬛ 🟩 ⬛ ⬛ ⬛ ⬛ 🟨
-
-Intento 2: C O M P A S S
-🟩 🟩 🟩 🟩 ⬛ ⬛ 🟨
-
-Intento 3: C O M P O S E
-🟩 🟩 🟩 🟩 🟩 🟩 🟩
-¡ENHORABUENA! 🎉 Has resuelto el Wordle en 3 intentos.
-```
-
-#### 7. Solución Comentada
 ??? tip "Ver solución comentada paso a paso"
     ```kotlin
     package b03_poo_sealed
@@ -884,11 +972,19 @@ Intento 3: C O M P O S E
         val estado: EstadoLetra
     )
 
+    data class PartidaWordle(
+        val palabraSecreta: String,
+        val intentosMaximos: Int = 6,
+        val intentosRealizados: List<List<EvaluacionLetra>> = emptyList()
+    )
+
     fun evaluarIntento(palabraSecreta: String, intentoRaw: String): List<EvaluacionLetra> {
         val secreta = palabraSecreta.uppercase()
         val intento = intentoRaw.uppercase()
 
-        require(secreta.length == intento.length) { "La longitud del intento debe coincidir con la palabra secreta." }
+        require(secreta.length == intento.length) { 
+            "La longitud del intento (${intento.length}) debe coincidir con la palabra secreta (${secreta.length})." 
+        }
 
         return intento.mapIndexed { i, c ->
             val estado = when {
@@ -908,7 +1004,7 @@ Intento 3: C O M P O S E
         val intentos = listOf("KOTLINS", "COMPASS", "COMPOSE")
 
         intentos.forEachIndexed { turno, palabra ->
-            println("Intento ${turno + 1}: ${palabra.map { "$it " }.joinToString("").trim()}")
+            println("Intento ${turno + 1}: ${palabra.map { "$it" }.joinToString(" ")}")
             val evaluacion = evaluarIntento(secreta, palabra)
 
             val iconos = evaluacion.joinToString(" ") { it.estado.icono }
@@ -922,3 +1018,4 @@ Intento 3: C O M P O S E
         }
     }
     ```
+

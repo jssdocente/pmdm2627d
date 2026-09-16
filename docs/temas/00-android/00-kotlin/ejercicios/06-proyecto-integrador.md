@@ -7,6 +7,14 @@ Este proyecto reúne **todos los conceptos aprendidos a lo largo del curso** (in
 📁 **Paquete de trabajo:** `package b06_proyecto_integrador`  
 Ubicación en tu proyecto: `src/main/kotlin/b06_proyecto_integrador/`
 
+!!! info "📚 Apuntes Teóricos de Referencia"
+    Este proyecto consolida los conocimientos de todo el módulo de Kotlin. Puedes consultar los siguientes apuntes teóricos para resolver cada componente:
+    
+    - [Data Classes y Modelado Inmutable](../23-data-classes.md) y [Enum Classes](../24-enum-classes.md) (para las entidades y estados de la luz en `model/`).
+    - [Sealed Classes y Sealed Interfaces](../26-sealed-classes.md) (para el modelado exhaustivo de estados en `state/PartidaUiState.kt`).
+    - [Flujos Asíncronos Reactivos (Flow y StateFlow)](../52-flows.md) (para la emisión de eventos de la muñeca y el estado de la partida).
+    - [Corrutinas y Concurrencia con async/await](../51-corrutinas.md) y [Colecciones y Listas](../42-listas.md) (para la simulación de avance de jugadores).
+
 ---
 
 ## 🎯 Objetivos de Aprendizaje Demostrados
@@ -97,6 +105,7 @@ src/main/kotlin/b06_proyecto_integrador/
 ## 💻 Implementación Guiada Paso a Paso
 
 ### Paso 1: Modelos de Datos (`model/`)
+📚 **Teoría de referencia:** [El Método copy() y la Inmutabilidad](../23-data-classes.md#3-el-metodo-copy-y-la-inmutabilidad) y [Declaración Básica de un enum class](../24-enum-classes.md#1-declaracion-basica-de-un-enum-class)
 
 Crea el archivo `Jugador.kt`:
 ```kotlin
@@ -130,6 +139,7 @@ enum class EstadoLuz(val emoji: String) {
 ---
 
 ### Paso 2: Estados Sellados de la Partida (`state/`)
+📚 **Teoría de referencia:** [Sintaxis Moderna: sealed interface](../26-sealed-classes.md#2-sintaxis-moderna-sealed-interface-y-data-object-kotlin-19) y [Patrón Arquitectónico UiState](../26-sealed-classes.md#5-el-patron-universal-de-arquitectura-en-android-uistate)
 
 Crea el archivo `PartidaUiState.kt`:
 ```kotlin
@@ -156,6 +166,7 @@ sealed interface PartidaUiState {
 ---
 
 ### Paso 3: El Emisor de Flujos de la Muñeca (`engine/`)
+📚 **Teoría de referencia:** [Creación y Consumo Básico de un Flow](../52-flows.md#2-creacion-y-consumo-basico-de-un-flow)
 
 Crea el archivo `MunecaSensorFlow.kt`:
 ```kotlin
@@ -187,6 +198,7 @@ class MunecaSensorFlow {
 ---
 
 ### Paso 4: Programa Principal y Orquestación Concurrente (`JuegoCalamarApp.kt`)
+📚 **Teoría de referencia:** [async y await: Peticiones en Paralelo](../51-corrutinas.md#42-async-y-await-peticiones-en-paralelo-con-retorno-de-valor), [StateFlow Reactivo](../52-flows.md#4-stateflow-el-rey-de-la-arquitectura-en-android-y-compose) y [Operaciones en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
 
 Crea el archivo ejecutable `JuegoCalamarApp.kt`:
 ```kotlin

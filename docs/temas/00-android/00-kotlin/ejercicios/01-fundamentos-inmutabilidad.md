@@ -5,12 +5,21 @@ En este primer bloque comenzarás a programar en el proyecto único **`pmdm-kotl
 📁 **Paquete de trabajo:** `package b01_fundamentos`  
 Ubicación en tu proyecto: `src/main/kotlin/b01_fundamentos/`
 
+!!! info "📚 Apuntes Teóricos de Referencia"
+    Para resolver las actividades de este bloque, puedes consultar los siguientes temas de los apuntes:
+
+    - [Variables, Tipos de Datos e Inmutabilidad](../11-variables-tipos-datos.md)
+    - [Expresiones vs Sentencias (If y Rangos)](../12-expresiones-vs-sentencias.md)
+    - [Estructura When (Condicionales Expresivos)](../12.1-when.md)
+    - [Null Safety e Inicialización Tardía (`lateinit` y `by lazy`)](../14-null-safety.md)
+
 ---
 
 ## 🟢 Nivel Básico (Consolidación Sintáctica y Tipado)
 
 ### Ejercicio 1.1: Variables Inmutables vs Mutables
-📄 **Archivo:** `E01_VariablesInmutabilidad.kt`
+📄 **Archivo:** `E01_VariablesInmutabilidad.kt`  
+📚 **Teoría de referencia:** [Declaración de Variables: val vs var](../11-variables-tipos-datos.md#1-declaracion-de-variables-val-vs-var)
 
 #### 1. Enunciado y Requisitos
 
@@ -59,8 +68,9 @@ Descargas totales: 1350
 
 ---
 
-### Ejercicio 1.2: Inferencia de Tipos y Tipos Numéricos
-📄 **Archivo:** `E02_InferenciaYTipos.kt`
+### Ejercicio 1.2: Inferencia de Tipos y Tipos Fuerte
+📄 **Archivo:** `E02_InferenciaYTipos.kt`  
+📚 **Teoría de referencia:** [Inferencia de Tipos](../11-variables-tipos-datos.md#2-inferencia-de-tipos) y [Tipos de Datos](../11-variables-tipos-datos.md#4-tipos-de-datos-en-kotlin)
 
 #### 1. Enunciado y Requisitos
 
@@ -110,8 +120,9 @@ Récord histórico: 1500000 pts
 
 ---
 
-### Ejercicio 1.3: *String Templates* y Expresiones Embebidas
-📄 **Archivo:** `E03_StringTemplates.kt`
+### Ejercicio 1.3: *String Templates* y Expresiones Complejas
+📄 **Archivo:** `E03_StringTemplates.kt`  
+📚 **Teoría de referencia:** [Plantillas de Cadenas (String Templates)](../11-variables-tipos-datos.md#51-plantillas-de-cadenas-string-templates)
 
 #### 1. Enunciado y Requisitos
 
@@ -149,8 +160,9 @@ Longitud del nombre: 6 caracteres
 
 ---
 
-### Ejercicio 1.4: Cadenas Multilínea (*Raw Strings*)
-📄 **Archivo:** `E04_CadenasMultilinea.kt`
+### Ejercicio 1.4: Cadenas Multilínea (*Raw Strings*) y `.trimIndent()`
+📄 **Archivo:** `E04_CadenasMultilinea.kt`  
+📚 **Teoría de referencia:** [Cadenas Multilínea (Raw Strings)](../11-variables-tipos-datos.md#52-cadenas-multilinea-raw-strings)
 
 #### 1. Enunciado y Requisitos
 
@@ -205,8 +217,9 @@ Poder total acumulado: 65 pts
 
 ---
 
-### Ejercicio 1.5: Conversión Explícita de Tipos Numéricos
-📄 **Archivo:** `E05_ConversionTipos.kt`
+### Ejercicio 1.5: Tipos Numéricos y Conversión Explícita
+📄 **Archivo:** `E05_ConversionTipos.kt`  
+📚 **Teoría de referencia:** [Conversión Explícita de Tipos](../11-variables-tipos-datos.md#6-conversion-explicita-de-tipos)
 
 #### 1. Enunciado y Requisitos
 
@@ -250,7 +263,8 @@ Precio con fallback seguro: 0 €
 ---
 
 ### Ejercicio 1.6: Bucles Idiomáticos sobre Rangos y Progresiones
-📄 **Archivo:** `E06_BuclesRangos.kt`
+📄 **Archivo:** `E06_BuclesRangos.kt`  
+📚 **Teoría de referencia:** [Expresiones y Sentencias: Rangos en Bucles](../12-expresiones-vs-sentencias.md#expresiones)
 
 #### 1. Enunciado y Requisitos
 
@@ -304,7 +318,8 @@ Pares hasta 10: 2 4 6 8 10
 ---
 
 ### Ejercicio 1.7: Igualdad Estructural (`==`) vs Referencial (`===`)
-📄 **Archivo:** `E07_IgualdadEstructuralReferencial.kt`
+📄 **Archivo:** `E07_IgualdadEstructuralReferencial.kt`  
+📚 **Teoría de referencia:** [Igualdad Estructural (==) vs Referencial (===)](../11-variables-tipos-datos.md#53-igualdad-estructural-vs-referencial)
 
 #### 1. Enunciado y Requisitos
 
@@ -349,7 +364,8 @@ Contenido s1: 'Android' | Contenido s2: 'Android'
 ## 🟡 Nivel Intermedio (Control de Flujo Expresivo y Estado)
 
 ### Ejercicio 1.8: `if` como Expresión (Sustituto del Operador Ternario)
-📄 **Archivo:** `E08_IfComoExpresion.kt`
+📄 **Archivo:** `E08_IfComoExpresion.kt`  
+📚 **Teoría de referencia:** [Expresiones vs Sentencias: If como Expresión](../12-expresiones-vs-sentencias.md#expresiones)
 
 #### 1. Enunciado y Requisitos
 
@@ -394,7 +410,8 @@ Batería al 18% -> Modo de ahorro: ACTIVADO_MODERADO
 ---
 
 ### Ejercicio 1.9: `when` con Múltiples Casos y Rangos
-📄 **Archivo:** `E09_WhenCasosAgrupados.kt`
+📄 **Archivo:** `E09_WhenCasosAgrupados.kt`  
+📚 **Teoría de referencia:** [When: Comprobar Rangos](../12.1-when.md#5-when-para-comprobar-rangos-y-colecciones) y [When como Expresión](../12.1-when.md#2-when-como-expresion-su-primer-superpoder)
 
 #### 1. Enunciado y Requisitos
 
@@ -438,7 +455,8 @@ Día 9 -> Número de día no válido
 ---
 
 ### Ejercicio 1.10: `when` sin Argumento y Condiciones Complejas
-📄 **Archivo:** `E10_WhenSinArgumento.kt`
+📄 **Archivo:** `E10_WhenSinArgumento.kt`  
+📚 **Teoría de referencia:** [When sin Argumento (Modo Inteligente)](../12.1-when.md#3-when-sin-argumento-el-modo-if-else-if-inteligente)
 
 #### 1. Enunciado y Requisitos
 
@@ -481,7 +499,8 @@ Resultado: Acceso estándar concedido a zona general.
 ---
 
 ### Ejercicio 1.11: Control de Bucles Anidados con Etiquetas (*Labels*)
-📄 **Archivo:** `E11_BuclesConEtiquetas.kt`
+📄 **Archivo:** `E11_BuclesConEtiquetas.kt`  
+📚 **Teoría de referencia:** [Diferencias entre Expresiones y Sentencias](../12-expresiones-vs-sentencias.md#diferencias-entre-expresiones-y-sentencias)
 
 #### 1. Enunciado y Requisitos
 
@@ -541,7 +560,8 @@ Objetivo hallado en Fila 2, Columna 3.
 ---
 
 ### Ejercicio 1.12: Inicialización Diferida: `lateinit` vs `by lazy`
-📄 **Archivo:** `E12_LateinitLazy.kt`
+📄 **Archivo:** `E12_LateinitLazy.kt`  
+📚 **Teoría de referencia:** [Inicialización Especial: by lazy vs lateinit](../11-variables-tipos-datos.md#7-inicializacion-especial-lateinit-vs-by-lazy)
 
 #### 1. Enunciado y Requisitos
 
@@ -603,7 +623,8 @@ Base de datos: SQLITE_ACTIVA
 ## 🔴 Nivel Avanzado (Gotchas de Memoria y Reto Integrador)
 
 ### Ejercicio 1.13: Inmutabilidad de Cadenas y Derivación de Estados
-📄 **Archivo:** `E13_InmutabilidadCadenasEstado.kt`
+📄 **Archivo:** `E13_InmutabilidadCadenasEstado.kt`  
+📚 **Teoría de referencia:** [La Inmutabilidad en el Desarrollo Moderno](../11-variables-tipos-datos.md#3-la-inmutabilidad-en-el-desarrollo-moderno)
 
 #### 1. Enunciado y Requisitos
 
@@ -663,7 +684,8 @@ Estado derivado: JUGANDO
 ---
 
 ### Reto 1.14: Combate RPG por Turnos (*Héroe vs Dragón Carmesí*)
-📄 **Archivo:** `Reto01_CombateRpg.kt`
+📄 **Archivo:** `Reto01_CombateRpg.kt`  
+📚 **Teoría de referencia:** [La Inmutabilidad en el Desarrollo Moderno](../11-variables-tipos-datos.md#3-la-inmutabilidad-en-el-desarrollo-moderno) y [When como Expresión](../12.1-when.md#2-when-como-expresion-su-primer-superpoder)
 
 #### 1. Contexto y Misión
 

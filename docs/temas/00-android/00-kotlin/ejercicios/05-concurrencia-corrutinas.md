@@ -5,12 +5,19 @@ En este quinto bloque te enfrentarás a la **programación asíncrona no bloquea
 📁 **Paquete de trabajo:** `package b05_corrutinas`  
 Ubicación en tu proyecto: `src/main/kotlin/b05_corrutinas/`
 
+!!! info "📚 Apuntes Teóricos de Referencia"
+    Para resolver los ejercicios y el reto de este bloque, consulta los temas correspondientes en los apuntes teóricos:
+    
+    - [Corrutinas y Funciones de Suspensión](../51-corrutinas.md) (`suspend fun`, `launch`, `async`/`await`, `withContext`, `Dispatchers`, manejo de excepciones).
+    - [Flujos Asíncronos (Flow, StateFlow y SharedFlow)](../52-flows.md) (emisión con `flow {}`, operadores `map`/`filter`/`debounce`, `StateFlow` reactivo y eventos efímeros con `SharedFlow`).
+
 ---
 
 ## 🟢 Nivel Básico (Suspensión, Builders y Flows Simples)
 
 ### Ejercicio 5.1: Funciones de Suspensión con `delay()`
-📄 **Archivo:** `E01_SuspendFunDelay.kt`
+📄 **Archivo:** `E01_SuspendFunDelay.kt`  
+📚 **Teoría de referencia:** [Funciones de Suspensión (suspend fun)](../51-corrutinas.md#3-funciones-de-suspension-suspend-fun)
 
 #### 1. Enunciado y Requisitos
 
@@ -55,7 +62,8 @@ Ubicación en tu proyecto: `src/main/kotlin/b05_corrutinas/`
 ---
 
 ### Ejercicio 5.2: `launch` para Tareas en Segundo Plano
-📄 **Archivo:** `E02_LaunchFireAndForget.kt`
+📄 **Archivo:** `E02_LaunchFireAndForget.kt`  
+📚 **Teoría de referencia:** [launch: Lanzar y Olvidar (Fire and Forget)](../51-corrutinas.md#41-launch-lanzar-y-olvidar-fire-and-forget)
 
 #### 1. Enunciado y Requisitos
 
@@ -99,7 +107,8 @@ Hilo principal: Abriendo pantalla inmediatamente...
 ---
 
 ### Ejercicio 5.3: Múltiples Tareas Concurrentes con `join()`
-📄 **Archivo:** `E03_MultiplesLaunchJoin.kt`
+📄 **Archivo:** `E03_MultiplesLaunchJoin.kt`  
+📚 **Teoría de referencia:** [Constructores de Corrutinas (Coroutine Builders)](../51-corrutinas.md#4-constructores-de-corrutinas-coroutine-builders)
 
 #### 1. Enunciado y Requisitos
 
@@ -157,7 +166,8 @@ Iniciando precarga paralela de assets...
 ---
 
 ### Ejercicio 5.4: Emisión y Recolección Básica de un `Flow`
-📄 **Archivo:** `E04_FlowBasicoEmision.kt`
+📄 **Archivo:** `E04_FlowBasicoEmision.kt`  
+📚 **Teoría de referencia:** [Creación y Consumo Básico de un Flow](../52-flows.md#2-creacion-y-consumo-basico-de-un-flow)
 
 #### 1. Enunciado y Requisitos
 
@@ -214,7 +224,8 @@ Progreso recibido: [==========          ] 100%
 ---
 
 ### Ejercicio 5.5: Operadores de Transformación en Flow (`map`, `filter`, `take`)
-📄 **Archivo:** `E05_OperadoresFlow.kt`
+📄 **Archivo:** `E05_OperadoresFlow.kt`  
+📚 **Teoría de referencia:** [Operadores de Transformación Comunes en Flow](../52-flows.md#6-operadores-de-transformacion-comunes)
 
 #### 1. Enunciado y Requisitos
 
@@ -275,7 +286,8 @@ Monitorización finalizada tras 3 alertas de actividad.
 ## 🟡 Nivel Intermedio (Concurrencia, Despachadores y StateFlow)
 
 ### Ejercicio 5.6: Paralelismo con `async` y `await`
-📄 **Archivo:** `E06_AsyncAwaitParalelo.kt`
+📄 **Archivo:** `E06_AsyncAwaitParalelo.kt`  
+📚 **Teoría de referencia:** [async y await: Peticiones en Paralelo con Retorno de Valor](../51-corrutinas.md#42-async-y-await-peticiones-en-paralelo-con-retorno-de-valor)
 
 #### 1. Enunciado y Requisitos
 
@@ -341,7 +353,8 @@ Tiempo total transcurrido: ~1050 ms (¡Paralelismo real!)
 ---
 
 ### Ejercicio 5.7: Cambio Seguro de Hilos con `withContext(Dispatchers.IO)`
-📄 **Archivo:** `E07_DispatchersWithContext.kt`
+📄 **Archivo:** `E07_DispatchersWithContext.kt`  
+📚 **Teoría de referencia:** [Despachadores en Android (Dispatchers) y withContext](../51-corrutinas.md#5-despachadores-en-android-dispatchers)
 
 #### 1. Enunciado y Requisitos
 
@@ -394,7 +407,8 @@ Configuración recuperada: {"tema": "oscuro", "notificaciones": true}
 ---
 
 ### Ejercicio 5.8: Manejo Seguro de Excepciones en Corrutinas
-📄 **Archivo:** `E08_ExcepcionesEnCorrutinas.kt`
+📄 **Archivo:** `E08_ExcepcionesEnCorrutinas.kt`  
+📚 **Teoría de referencia:** [Manejo de Errores con try-catch](../51-corrutinas.md#6-manejo-de-errores-con-try-catch)
 
 #### 1. Enunciado y Requisitos
 
@@ -455,7 +469,8 @@ La aplicación sigue funcionando normalmente tras el fallo de red.
 ---
 
 ### Ejercicio 5.9: `StateFlow` como Fuente de Verdad para UI (ViewModel)
-📄 **Archivo:** `E09_StateFlowUiState.kt`
+📄 **Archivo:** `E09_StateFlowUiState.kt`  
+📚 **Teoría de referencia:** [StateFlow: El Rey de la Arquitectura en Android y Compose](../52-flows.md#4-stateflow-el-rey-de-la-arquitectura-en-android-y-compose)
 
 #### 1. Enunciado y Requisitos
 
@@ -538,7 +553,8 @@ En Jetpack Compose, las pantallas observan un `StateFlow<UiState>` expuesto por 
 ---
 
 ### Ejercicio 5.10: `SharedFlow` para Eventos de Interfaz (*One-Off Events*)
-📄 **Archivo:** `E10_SharedFlowEventosUnicos.kt`
+📄 **Archivo:** `E10_SharedFlowEventosUnicos.kt`  
+📚 **Teoría de referencia:** [SharedFlow: Emisión de Eventos Únicos (One-Shot Events)](../52-flows.md#5-sharedflow-emision-de-eventos-unicos-one-shot-events)
 
 #### 1. Enunciado y Requisitos
 
@@ -599,7 +615,8 @@ A diferencia de los estados de pantalla (que deben persistir ante recomposicione
 ## 🔴 Nivel Avanzado (Patrones de Producción en Android)
 
 ### Ejercicio 5.11: Buscador Reactivo con Flow (`debounce` y `distinctUntilChanged`)
-📄 **Archivo:** `E11_BuscadorReactivoFlow.kt`
+📄 **Archivo:** `E11_BuscadorReactivoFlow.kt`  
+📚 **Teoría de referencia:** [Operadores de Transformación Comunes en Flow (debounce)](../52-flows.md#6-operadores-de-transformacion-comunes)
 
 #### 1. Enunciado y Requisitos
 
@@ -660,7 +677,8 @@ Cuando un usuario teclea en una barra de búsqueda (`OutlinedTextField`), no deb
 ---
 
 ### Ejercicio 5.12: Orquestador de Repositorio Offline-First (Room + API)
-📄 **Archivo:** `E12_RepositorioOfflineFirst.kt`
+📄 **Archivo:** `E12_RepositorioOfflineFirst.kt`  
+📚 **Teoría de referencia:** [La Conexión Final: De Room a Jetpack Compose](../52-flows.md#7-la-conexion-final-de-room-a-jetpack-compose) y [Funciones de Suspensión](../51-corrutinas.md#3-funciones-de-suspension-suspend-fun)
 
 #### 1. Enunciado y Requisitos
 
@@ -720,122 +738,182 @@ Sincronizando con backend en segundo plano...
 ---
 
 ### Reto 5.13: Carrera Espacial Galáctica (*Space Grand Prix*)
-📄 **Archivo:** `Reto05_CarreraEspacial.kt`
+📄 **Archivo:** `Reto05_CarreraEspacial.kt`  
+📚 **Teoría de referencia:** [Constructores de Corrutinas: launch](../51-corrutinas.md#41-launch-lanzar-y-olvidar-fire-and-forget) y [StateFlow y SharedFlow](../52-flows.md#4-stateflow-el-rey-de-la-arquitectura-en-android-y-compose)
 
-#### 1. Contexto y Objetivos
+#### 1. Contexto y Misión
 
-Vas a construir un simulador de carreras galácticas en consola donde varias naves espaciales compiten en paralelo para alcanzar una baliza a **50 años luz**.
+En este reto construirás un simulador de carreras estelares en consola en tiempo real (**Space Grand Prix**), integrando la totalidad de los conceptos de **Programación Asíncrona, Corrutinas y Flujos Reactivos** aprendidos a lo largo del Bloque 5.
 
-Este reto une **todas las piezas del Bloque 5**: múltiples corrutinas concurrentes (`launch`), pausas asíncronas no bloqueantes (`delay`), un **`StateFlow`** que actúa como fuente única de verdad para las posiciones del circuito, y un **`SharedFlow`** para eventos efímeros como la activación de *Turbos Hiperespaciales*.
+El propósito formativo es reproducir la arquitectura real de una aplicación **Android con Jetpack Compose**, donde coexisten tareas en segundo plano concurrentes, un estado global unificado (**`StateFlow`**) que gobierna el redibujado de la pantalla, y un bus de eventos efímeros (**`SharedFlow`**) para alertas puntuales.
 
-#### 2. Modelo Mental del Reto (Arquitectura Reactiva Concurrente)
+##### 🎮 La Dinámica de la Carrera Explicada
 
-Analiza cómo interactúan los productores concurrentes de datos con el estado centralizado y la capa de presentación:
+Tres legendarias naves espaciales (**Halcón Milenario**, **USS Enterprise** y **Arwing**) compiten simultáneamente en un circuito interestelar para alcanzar una baliza balizada a **50 años luz (AL)** de distancia.
 
-```mermaid
-flowchart TD
-    subgraph CorrutinasConcurrentes ["3 Corrutinas Concurrentes (launch)"]
-        Nave1["Nave 1: Halcón Milenario<br/>(Avanza 5-15 AL)"]
-        Nave2["Nave 2: USS Enterprise<br/>(Avanza 5-15 AL)"]
-        Nave3["Nave 3: Arwing<br/>(Avanza 5-15 AL)"]
-    end
+Cada nave se propulsa de manera totalmente autónoma e independiente: no esperan unas por otras, sino que cada motor hiperespacial opera a su propia frecuencia de ciclo.
+
+###### A. Naves y Recursos de la Competición
+
+| Elemento | Tipo de Componente | Rol en la Simulación |
+| :--- | :--- | :--- |
+| **`Naves Competidoras`** | `List<String>` | Lista inmutable con los 3 bólidos estelares: `"Halcón"`, `"Enterprise"` y `"Arwing"`. |
+| **`CarreraManager`** | Gestor de Estado (*Fake ViewModel*) | Centraliza la lógica de avance, la detección de turbos y el control del ganador. |
+| **`posiciones`** | `StateFlow<Map<String, Int>>` | **Fuente Única de Verdad** reactiva. Mantiene la distancia recorrida (0 a 50 AL) de cada nave y desencadena el renderizado en consola. |
+| **`eventos`** | `SharedFlow<String>` | **Bus de Eventos Efímeros (*One-Off Events*)**. Emite avisos inmediatos cuando una nave activa un turbo, sin retener el mensaje en el tiempo. |
+| **Corrutinas Piloto** | `launch { ... }` concurrentes | 3 corrutinas en paralelo que ejecutan bucles independientes de propulsión con pausas no bloqueantes (`delay`). |
+
+###### B. Mecánicas de Avance y Turbos Hiperespaciales
+
+El desplazamiento por el hiperespacio se gobierna mediante las siguientes reglas:
+
+1. **Ciclos de Impulso Asíncrono:** En cada ciclo, cada nave realiza una pausa no bloqueante de `150` a `300` ms con `delay()` para simular la recarga de sus bobinas iónicas.
+
+2. **Avance Estocástico:** Cada impulso propulsa a la nave una distancia aleatoria de **4 a 12 años luz**.
+
+3. **Turbo Hiperespacial (Evento Crítico):** Si el avance en un solo impulso alcanza o supera los **11 AL**, la nave experimenta una sobrecarga positiva de energía y activa el **Turbo Hiperespacial**. En ese instante se emite un aviso puntual al `SharedFlow`.
+
+4. **Meta Estelar Acotada:** Ninguna nave puede registrar más de 50 AL (`.coerceAtMost(50)`). La primera nave que alcance los 50 AL detiene inmediatamente el bucle de todos los competidores.
+
+###### C. Ciclo de Ejecución Concurrente (Paso a Paso)
+
+El programa arranca en `runBlocking` orquestando las siguientes corrutinas colaborativas:
+
+1. **Fase 1 — Lanzamiento del Observador de Eventos Efímeros (`SharedFlow`):**  
+   Una corrutina en segundo plano se suscribe al flujo de eventos para imprimir las alertas de turbo entre los saltos de telemetría.
+
+2. **Fase 2 — Lanzamiento del Observador de Pantalla (`StateFlow`):**  
+   Una corrutina recolectora escucha los cambios en `posiciones` y dibuja periódicamente las pistas estelares con barras horizontales proporcionales (ej. `Halcón : =====> [10/50 AL]`).
+
+3. **Fase 3 — Ignición Concurrente de las Naves:**  
+   Se lanzan 3 corrutinas concurrentes mediante `naves.map { launch { ... } }`. Cada nave itera de forma independiente mientras `manager.hayGanador() == null`.
+
+4. **Fase 4 — Sincronización y Cierre Limpio:**  
+   La corrutina principal espera la finalización de los competidores con `jobsNaves.joinAll()`. Cuando hay ganador, cancela los observadores infinitos (`jobEventos.cancel()`, `jobRender.cancel()`) y muestra la proclamación final.
+
+###### D. Desenlace Final (Llegada a la Meta Estelar)
+
+- **🏆 Veredicto Galáctico:** La primera nave que registre 50 AL es coronada como campeona del Gran Premio Espacial.
+
+- **Detención Inmediata:** La carrera concluye sin bloqueos residuales de hilos gracias a la cooperación no bloqueante de las corrutinas.
+
+---
+
+#### 2. Requisitos Funcionales
+
+Para modelar la simulación con arquitectura reactiva profesional:
+
+1. **RF-01 (Competidores Inmutables):** Declara una lista inmutable `val naves = listOf("Halcón", "Enterprise", "Arwing")`.
+
+2. **RF-02 (Arquitectura Reactiva en CarreraManager):** Implementa `class CarreraManager(val nombresNaves: List<String>)` con:
+   
+    - Propiedad privada `_posiciones = MutableStateFlow(nombresNaves.associateWith { 0 })` expuesta como `val posiciones: StateFlow<Map<String, Int>> = _posiciones.asStateFlow()`.
     
-    subgraph GestionEstado ["Gestión Centralizada (ViewModel Fake)"]
-        EstadoCarrera["<b>MutableStateFlow&lt;Map&lt;String, Int&gt;&gt;</b><br/>Posiciones Actuales (0-50 AL)"]
-        BusEventos["<b>MutableSharedFlow&lt;String&gt;</b><br/>Eventos Efímeros (Turbos/Averías)"]
-    end
-    
-    subgraph CapaPresentacion ["Capa de Presentación (Simulador Compose)"]
-        UIRender["<b>collect { posiciones -&gt; ... }</b><br/>Renderiza las 3 pistas en consola"]
-        UIEventos["<b>collect { evento -&gt; ... }</b><br/>Muestra alertas puntuales (Toast/SnackBar)"]
-    end
+    - Propiedad privada `_eventos = MutableSharedFlow<String>()` expuesta como `val eventos: SharedFlow<String> = _eventos.asSharedFlow()`.
 
-    Nave1 -->|Actualiza posición| EstadoCarrera
-    Nave2 -->|Actualiza posición| EstadoCarrera
-    Nave3 -->|Actualiza posición| EstadoCarrera
-    
-    Nave1 -.->|Si avance &gt;= 14| BusEventos
-    Nave2 -.->|Si avance &gt;= 14| BusEventos
-    Nave3 -.->|Si avance &gt;= 14| BusEventos
-    
-    EstadoCarrera -->|Emite nuevo estado| UIRender
-    BusEventos -->|Emite evento puntual| UIEventos
-```
+3. **RF-03 (Actualización Atómica de Estado):** Implementa `suspend fun moverNave(nombre: String, avance: Int)` utilizando `_posiciones.update { ... }` para garantizar operaciones atómicas libres de condiciones de carrera (*race conditions*), acotando a 50 AL con `.coerceAtMost(50)`.
 
-#### 3. Preguntas de Reflexión (Aprender a Pensar)
+4. **RF-04 (Detección y Emisión de Eventos Efímeros):** Si el avance es $\ge 11$ AL, emite un aviso hacia `_eventos.emit("⚡ ¡TURBO HIPERESPACIAL ACTIVADO POR $nombre! (+$avance AL)")`.
 
-- **¿Por qué `StateFlow` para las posiciones y `SharedFlow` para los turbos?** Las posiciones representan un **estado continuo** (la pantalla necesita saber dónde está cada nave en todo momento, incluso si rota o se recomone). Los avisos de turbo son **eventos efímeros** que solo deben mostrarse una vez y no persistir en pantalla.
-- **¿Por qué `launch` en lugar de llamadas secuenciales?** Si llamas secuencialmente a una función con `delay(200)`, una nave esperará a que la anterior termine. Con `launch`, las 3 naves avanzan a la vez de forma verdaderamente concurrente.
-- **¿Cómo evitar carreras de datos (*race conditions*)?** El método `.update { anterior -> ... }` de `MutableStateFlow` es atómico y seguro ante concurrencia.
+5. **RF-05 (Concurrencia Real de Competidores):** Lanza las naves con `val jobsNaves = naves.map { launch { ... } }`, ejecutando un bucle con `delay((150..300).random().toLong())` y avance aleatorio `(4..12).random()` mientras no haya ganador.
 
-#### 4. Requisitos Funcionales
+6. **RF-06 (Orquestación, Observación y Cancelación Limpia):** Inicia los observadores reactivos en `launch`, sincroniza los competidores con `jobsNaves.joinAll()`, cancela los observadores activos (`jobEventos.cancel()`, `jobRender.cancel()`) y muestra el podio final.
 
-1. Modela una lista inmutable con los nombres de las 3 naves:
-   `val naves = listOf("Halcón", "Enterprise", "Arwing")`
+---
 
-2. Modela una clase `CarreraManager`:
+??? info "📊 Ver Modelo Mental del Reto (Arquitectura Reactiva Concurrente)"
+    Analiza cómo interactúan los productores concurrentes de datos con el estado centralizado y la capa de presentación:
 
-    - Una propiedad privada `_posiciones = MutableStateFlow(naves.associateWith { 0 })` expuesta como `val posiciones: StateFlow<Map<String, Int>>`.
+    ```mermaid
+    flowchart TD
+        subgraph CorrutinasConcurrentes ["3 Corrutinas Concurrentes (launch)"]
+            Nave1["Nave 1: Halcón Milenario<br/>(Avanza 5-15 AL)"]
+            Nave2["Nave 2: USS Enterprise<br/>(Avanza 5-15 AL)"]
+            Nave3["Nave 3: Arwing<br/>(Avanza 5-15 AL)"]
+        end
+        
+        subgraph GestionEstado ["Gestión Centralizada (ViewModel Fake)"]
+            EstadoCarrera["<b>MutableStateFlow&lt;Map&lt;String, Int&gt;&gt;</b><br/>Posiciones Actuales (0-50 AL)"]
+            BusEventos["<b>MutableSharedFlow&lt;String&gt;</b><br/>Eventos Efímeros (Turbos/Averías)"]
+        end
+        
+        subgraph CapaPresentacion ["Capa de Presentación (Simulador Compose)"]
+            UIRender["<b>collect { posiciones -&gt; ... }</b><br/>Renderiza las 3 pistas en consola"]
+            UIEventos["<b>collect { evento -&gt; ... }</b><br/>Muestra alertas puntuales (Toast/SnackBar)"]
+        end
 
-    - Una propiedad privada `_eventos = MutableSharedFlow<String>()` expuesta como `val eventos: SharedFlow<String>`.
-
-    - Un método `suspend fun actualizarNave(nombre: String, avance: Int)`.
-
-3. Lanza una corrutina por cada nave que, en un bucle mientras nadie haya llegado a la meta (`50 AL`), espere entre `150` y `300` ms con `delay()` y avance entre `4` y `12` años luz.
-
-4. Si una nave avanza `11` o más años luz en un solo turno, emite un evento al `SharedFlow`: `"⚡ ¡TURBO HIPERESPACIAL ACTIVADO POR $nombre!"`.
-
-5. En el recolector principal, dibuja las pistas en consola con barras horizontales hasta que una de las naves cruce la meta.
-
-#### 5. Pistas Progresivas de Ayuda
-
-??? tip "💡 Pista 1: Actualización Atómica de StateFlow"
-    Usa `.update` para derivar un nuevo mapa inmutable sin alterar el anterior:
-    ```kotlin
-    _posiciones.update { mapaActual ->
-        val posActual = mapaActual[nombre] ?: 0
-        mapaActual + (nombre to (posActual + avance).coerceAtMost(50))
-    }
+        Nave1 -->|Actualiza posición| EstadoCarrera
+        Nave2 -->|Actualiza posición| EstadoCarrera
+        Nave3 -->|Actualiza posición| EstadoCarrera
+        
+        Nave1 -.->|Si avance &gt;= 11| BusEventos
+        Nave2 -.->|Si avance &gt;= 11| BusEventos
+        Nave3 -.->|Si avance &gt;= 11| BusEventos
+        
+        EstadoCarrera -->|Emite nuevo estado| UIRender
+        BusEventos -->|Emite evento puntual| UIEventos
     ```
 
-??? tip "💡 Pista 2: Cancelación de corrutinas observadoras al terminar"
-    Las corrutinas que observan `StateFlow` y `SharedFlow` con `.collect` son infinitas (*hot streams*). Para finalizar el programa cuando haya ganador, guarda su `Job` y cancela:
-    ```kotlin
-    observadorJob.cancel()
+??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
+    Antes de examinar la solución o las pistas, reflexiona sobre estos principios de arquitectura asíncrona:
+
+    - **¿Por qué `StateFlow` para las posiciones y `SharedFlow` para los turbos?**  
+      Las posiciones representan un **estado continuo**: la interfaz de usuario necesita conocer la posición exacta de cada nave en todo momento, incluso ante recomposiciones o giros de pantalla. Los avisos de turbo son **eventos efímeros de disparo único (*One-Off Events*)** que solo deben mostrarse una vez y no persistir en el estado.
+
+    - **¿Por qué `launch` en lugar de llamadas secuenciales tradicionales?**  
+      Si ejecutas llamadas secuenciales con `delay(200)`, una nave esperará obligatoriamente a que la anterior termine su ciclo. Con `launch`, cada nave se ejecuta en su propia corrutina no bloqueante, compitiendo de forma verdaderamente paralela y concurrente.
+
+    - **¿Cómo evitar colisiones de concurrencia al actualizar el mapa?**  
+      El método `.update { mapaActual -> ... }` de `MutableStateFlow` es atómico y seguro ante concurrencia (*thread-safe*), evitando condiciones de carrera al recibir escrituras simultáneas de múltiples corrutinas.
+
+??? tip "💡 Pistas Progresivas de Ayuda (Abrir solo si te atascas)"
+    ??? tip "💡 Pista 1: Actualización Atómica con `.update`"
+        Usa `.update` para derivar un nuevo mapa inmutable sin mutar la referencia previa:
+        ```kotlin
+        _posiciones.update { mapaActual ->
+            val posActual = mapaActual[nombre] ?: 0
+            val nuevaPos = (posActual + avance).coerceAtMost(50)
+            mapaActual + (nombre to nuevaPos)
+        }
+        ```
+
+    ??? tip "💡 Pista 2: Cancelación de Corrutinas Observadoras"
+        Las corrutinas que observan `StateFlow` y `SharedFlow` mediante `.collect` representan flujos infinitos (*hot streams*). Para finalizar el programa limpiamente cuando haya un ganador, guarda sus referencias `Job` y cancélalas:
+        ```kotlin
+        jobEventos.cancel()
+        jobRender.cancel()
+        ```
+
+    ??? tip "💡 Pista 3: Esperar a que los competidores finalicen con `joinAll`"
+        Guarda los trabajos de las naves en una lista `val jobsNaves = naves.map { launch { ... } }` y suspende la ejecución hasta que todas terminen:
+        ```kotlin
+        jobsNaves.joinAll()
+        ```
+
+??? info "🖥️ Ver Salida Esperada en Consola"
+    ```text
+    ==================================================
+          🚀 GRAN PREMIO ESPACIAL: 50 AÑOS LUZ 🚀      
+    ==================================================
+
+    Halcón     : =====> [10/50 AL]
+    Enterprise : =======> [14/50 AL]
+    Arwing     : ====> [8/50 AL]
+
+    ⚡ ¡TURBO HIPERESPACIAL ACTIVADO POR Enterprise! (+12 AL)
+
+    Halcón     : ============> [24/50 AL]
+    Enterprise : ==================> [36/50 AL]
+    Arwing     : =============> [26/50 AL]
+
+    ...
+
+    ==================================================
+               🏆 ¡TENEMOS GANADOR GALÁCTICO! 🏆       
+    La nave 'Enterprise' ha cruzado la meta estelar (50 AL).
+    ==================================================
     ```
 
-??? tip "💡 Pista 3: Esperar a que los competidores terminen con `joinAll`"
-    Guarda los trabajos de las naves en una lista `val jobs = naves.map { launch { ... } }` y espera:
-    ```kotlin
-    jobs.joinAll()
-    ```
-
-#### 6. Salida Esperada en Consola
-
-```text
-==================================================
-      🚀 GRAN PREMIO ESPACIAL: 50 AÑOS LUZ 🚀      
-==================================================
-
-Halcón     : =====> [10/50 AL]
-Enterprise : =======> [14/50 AL]
-Arwing     : ====> [8/50 AL]
-
-⚡ [ALERTA TELEMETRÍA]: ¡TURBO HIPERESPACIAL ACTIVADO POR Enterprise!
-
-Halcón     : ============> [24/50 AL]
-Enterprise : ==================> [36/50 AL]
-Arwing     : =============> [26/50 AL]
-
-...
-
-==================================================
-           🏆 ¡TENEMOS GANADOR GALÁCTICO! 🏆       
-La nave 'Enterprise' ha cruzado la meta estelar (50 AL).
-==================================================
-```
-
-#### 7. Solución Comentada
 ??? tip "Ver solución comentada paso a paso"
     ```kotlin
     package b05_corrutinas
@@ -926,4 +1004,5 @@ La nave 'Enterprise' ha cruzado la meta estelar (50 AL).
         """.trimIndent())
     }
     ```
+
 

@@ -89,25 +89,32 @@ Cada módulo temático contiene una amplia batería graduada de actividades para
 
 1. **[Bloque 1: Fundamentos, Inmutabilidad y Control de Flujo](./01-fundamentos-inmutabilidad.md)**  
    *Paquete:* `b01_fundamentos`  
+   📖 **Teoría de referencia:** [Variables y Tipos de Datos](../11-variables-tipos-datos.md), [Expresiones](../12-expresiones-vs-sentencias.md) y [Control de Flujo con When](../12.1-when.md)  
    🎮 **Reto Lúdico:** *Combate RPG por Turnos: Héroe vs Dragón Carmesí* (Diagrama de Estados)
 
 2. **[Bloque 2: Funciones, Lambdas y Null Safety](./02-funciones-lambdas-nullsafety.md)**  
    *Paquete:* `b02_funciones_lambdas`  
+   📖 **Teoría de referencia:** [Funciones y Lambdas](../13-funciones-lambdas.md) y [Null Safety](../14-null-safety.md)  
    🎮 **Reto Lúdico:** *El Juego del Ahorcado Funcional (Hangman)* (Diagrama de Flujo Puro)
 
 3. **[Bloque 3: POO, Data Classes y Tipos Sellados (UiState)](./03-poo-sealed-types.md)**  
    *Paquete:* `b03_poo_sealed`  
+   📖 **Teoría de referencia:** [POO](../21-poo.md), [Data Classes](../23-data-classes.md), [Enum Classes](../24-enum-classes.md) y [Sealed Classes](../26-sealed-classes.md)  
    🎮 **Reto Lúdico:** *El Motor de Wordle en Consola* (Diagrama de Clases y Dominio)
 
 4. **[Bloque 4: Colecciones Funcionales y Scope Functions](./04-colecciones-scope-functions.md)**  
    *Paquete:* `b04_colecciones`  
+   📖 **Teoría de referencia:** [Arrays](../41-arrays.md), [Listas](../42-listas.md), [Maps](../43-maps.md), [Sets](../44-sets.md) y [Scope Functions](../31-scope-functions.md)  
    🎮 **Reto Lúdico:** *Deck Builder RPG: Saqueo y Forja de Cartas* (Diagrama de Pipeline Funcional)
 
 5. **[Bloque 5: Programación Asíncrona con Corrutinas y Flows](./05-concurrencia-corrutinas.md)**  
    *Paquete:* `b05_corrutinas`  
+   📖 **Teoría de referencia:** [Corrutinas y Funciones de Suspensión](../51-corrutinas.md) y [Flujos Asíncronos (Flow)](../52-flows.md)  
    🎮 **Reto Lúdico:** *Carrera Espacial Galáctica en Tiempo Real* (Diagrama de Concurrencia y StateFlow)
 
 6. **[Bloque 6: Proyecto Integrador Final ("El Juego del Calamar")](./06-proyecto-integrador.md)**  
    *Paquete:* `b06_proyecto_integrador`  
+   📖 **Teoría de referencia:** [Data Classes](../23-data-classes.md), [Sealed Interfaces](../26-sealed-classes.md), [Flows Reactivos](../52-flows.md) y [Corrutinas](../51-corrutinas.md)  
    🦑 **Reto Acumulativo:** *Simulador "Luz Roja, Luz Verde" - 50m* (Clean Architecture + Flow Engine)
+
 

@@ -5,12 +5,22 @@ En este cuarto bloque trabajarás con la biblioteca de operaciones funcionales d
 📁 **Paquete de trabajo:** `package b04_colecciones`  
 Ubicación en tu proyecto: `src/main/kotlin/b04_colecciones/`
 
+!!! info "📚 Apuntes Teóricos de Referencia"
+    Para resolver las actividades de este bloque, puedes consultar los siguientes temas de los apuntes:
+
+    - [Listas y Operaciones Funcionales](../42-listas.md)
+    - [Conjuntos (Sets) y Unicidad](../44-sets.md)
+    - [Mapas (Diccionarios y Agrupaciones)](../43-maps.md)
+    - [Arrays en Kotlin](../41-arrays.md)
+    - [Scope Functions (`let`, `run`, `with`, `apply`, `also`)](../31-scope-functions.md)
+
 ---
 
 ## 🟢 Nivel Básico (Colecciones Inmutables y Filtros)
 
 ### Ejercicio 4.1: Inmutabilidad en Listas y el Operador `+`
-📄 **Archivo:** `E01_ListasInmutables.kt`
+📄 **Archivo:** `E01_ListasInmutables.kt`  
+📚 **Teoría de referencia:** [Creación de Listas: listOf() vs mutableListOf()](../42-listas.md#1-creacion-de-listas-listof-vs-mutablelistof) y [Inmutabilidad y Adición (+)](../42-listas.md#3-inmutabilidad-y-adicion-funcional-de-elementos)
 
 #### 1. Enunciado y Requisitos
 
@@ -51,7 +61,8 @@ Sin Metroid: [Zelda, Mario, Pokemon, Kirby]
 ---
 
 ### Ejercicio 4.2: Transformaciones con `map` y `filter`
-📄 **Archivo:** `E02_MapFilterBasico.kt`
+📄 **Archivo:** `E02_MapFilterBasico.kt`  
+📚 **Teoría de referencia:** [map: Transformación elemento a elemento](../42-listas.md#41-map-transformacion-elemento-a-elemento) y [filter: Filtrado por condición](../42-listas.md#42-filter-filtrado-por-condicion)
 
 #### 1. Enunciado y Requisitos
 
@@ -91,7 +102,8 @@ Precios en euros (>10$): [13.80 €, 55.20 €, 32.20 €, 110.40 €]
 ---
 
 ### Ejercicio 4.3: Conjuntos (`Set`) para Unicidad y Operaciones Matemáticas
-📄 **Archivo:** `E03_ConjuntosYOperaciones.kt`
+📄 **Archivo:** `E03_ConjuntosYOperaciones.kt`  
+📚 **Teoría de referencia:** [Operaciones con Sets](../44-sets.md#operaciones-con-sets)
 
 #### 1. Enunciado y Requisitos
 
@@ -146,7 +158,8 @@ Pendientes por encontrar (subtract): [Estrategia, Terror]
 ---
 
 ### Ejercicio 4.4: Mapas Asociativos (`Map`) y Acceso Seguro
-📄 **Archivo:** `E04_MapasYValoresPorDefecto.kt`
+📄 **Archivo:** `E04_MapasYValoresPorDefecto.kt`  
+📚 **Teoría de referencia:** [Acceso a elementos de un Map](../43-maps.md#acceso-a-elementos-de-un-map) y [Operaciones con Maps](../43-maps.md#operaciones-con-maps)
 
 #### 1. Enunciado y Requisitos
 
@@ -197,7 +210,8 @@ Munición Arco (getOrElse con lógica): 5 (suministro base)
 ---
 
 ### Ejercicio 4.5: Búsqueda y Predicados (`find`, `any`, `all`, `none`)
-📄 **Archivo:** `E05_BusquedaYPredicados.kt`
+📄 **Archivo:** `E05_BusquedaYPredicados.kt`  
+📚 **Teoría de referencia:** [Búsqueda y Verificación: find, any, all](../42-listas.md#43-busqueda-y-verificacion-find-any-all)
 
 #### 1. Enunciado y Requisitos
 
@@ -249,7 +263,8 @@ Primer jugador > 400 pts: 450
 ## 🟡 Nivel Intermedio (Agrupaciones y Scope Functions)
 
 ### Ejercicio 4.6: Agrupación con `groupBy` y Estadísticas
-📄 **Archivo:** `E06_GroupByEstadisticas.kt`
+📄 **Archivo:** `E06_GroupByEstadisticas.kt`  
+📚 **Teoría de referencia:** [Agrupación y Ordenación: groupBy y sortedBy](../42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby)
 
 #### 1. Enunciado y Requisitos
 
@@ -300,7 +315,8 @@ Categoría: Consumible (2 items) -> Valor total: 80 monedas
 ---
 
 ### Ejercicio 4.7: `partition` y Ordenación Funcional
-📄 **Archivo:** `E07_PartitionYSorted.kt`
+📄 **Archivo:** `E07_PartitionYSorted.kt`  
+📚 **Teoría de referencia:** [Agrupación y Ordenación en Listas](../42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby)
 
 #### 1. Enunciado y Requisitos
 
@@ -361,7 +377,8 @@ Total cuentas gratuitas: 2
 ---
 
 ### Ejercicio 4.8: Indexación Eficiente con `associateBy` y `associateWith`
-📄 **Archivo:** `E08_AssociateByYWith.kt`
+📄 **Archivo:** `E08_AssociateByYWith.kt`  
+📚 **Teoría de referencia:** [Operaciones con Maps: Creación e Indexación](../43-maps.md#operaciones-con-maps)
 
 #### 1. Enunciado y Requisitos
 
@@ -422,7 +439,8 @@ Estados iniciales: {P-02=CARGADO, P-99=CARGADO}
 ---
 
 ### Ejercicio 4.9: Aplanado de Jerarquías con `flatten` y `flatMap`
-📄 **Archivo:** `E09_FlattenYFlatMap.kt`
+📄 **Archivo:** `E09_FlattenYFlatMap.kt`  
+📚 **Teoría de referencia:** [Operaciones Funcionales Imprescindibles en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
 
 #### 1. Enunciado y Requisitos
 
@@ -476,7 +494,8 @@ Estados iniciales: {P-02=CARGADO, P-99=CARGADO}
 ---
 
 ### Ejercicio 4.10: Configuración de Objetos con `apply` y Trazas con `also`
-📄 **Archivo:** `E10_ScopeFunctionsApplyAlso.kt`
+📄 **Archivo:** `E10_ScopeFunctionsApplyAlso.kt`  
+📚 **Teoría de referencia:** [apply: Configuración de Objetos](../31-scope-functions.md#21-apply-configuracion-e-inicializacion-de-objetos) y [also: Efectos Secundarios y Logging](../31-scope-functions.md#23-also-efectos-secundarios-side-effects-y-logging)
 
 #### 1. Enunciado y Requisitos
 
@@ -529,7 +548,8 @@ Estado final -> Volumen: 75, Brillo: 80, Subtítulos: true
 ## 🔴 Nivel Avanzado (Arquitectura Limpia y Analítica)
 
 ### Ejercicio 4.11: Transformación DTO a Dominio con `run` y `let` (Data Mapper)
-📄 **Archivo:** `E11_MapperDtoADominio.kt`
+📄 **Archivo:** `E11_MapperDtoADominio.kt`  
+📚 **Teoría de referencia:** [let: Operaciones Null-Safe](../31-scope-functions.md#22-let-operaciones-null-safe-y-transformaciones-locales) y [run: Cómputo de Resultado](../31-scope-functions.md#24-run-configuracion-y-computo-de-resultado)
 
 #### 1. Enunciado y Requisitos
 
@@ -598,7 +618,8 @@ DTO Inválido transformado: null
 ---
 
 ### Ejercicio 4.12: Pipeline Funcional Completo: Analítica de Sesiones
-📄 **Archivo:** `E12_PipelineAnaliticaCompleta.kt`
+📄 **Archivo:** `E12_PipelineAnaliticaCompleta.kt`  
+📚 **Teoría de referencia:** [Tabla Maestra de Scope Functions](../31-scope-functions.md#1-tabla-maestra-de-seleccion-rapida) y [Operaciones Funcionales](../42-listas.md#4-operaciones-funcionales-imprescindibles)
 
 #### 1. Enunciado y Requisitos
 
@@ -677,109 +698,169 @@ Dada una lista con al menos 8 registros de sesiones de diferentes usuarios y jue
 
 ---
 
-### Reto 4.13: Deck Builder RPG (*Simulador de Saqueo y Forja de Mazo*)
-📄 **Archivo:** `Reto04_DeckBuilder.kt`
+### Reto 4.13: Deck Builder RPG (*Saqueo y Forja de Cartas*)
+📄 **Archivo:** `Reto04_DeckBuilder.kt`  
+📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles) y [Estudio Detallado de Scope Functions](../31-scope-functions.md#2-estudio-detallado-y-casos-de-uso-en-android)
 
-#### 1. Contexto y Objetivos
+#### 1. Contexto y Misión
 
-Vas a programar el motor de gestión de cartas para un juego de construcción de mazos (*Deck Builder RPG*). El reto consiste en procesar el botín obtenido al derrotar a varios jefes de mazmorra, transformando, limpiando, agrupando y seleccionando las mejores cartas **mediante pipelines 100% funcionales (sin un solo bucle `for` tradicional)**.
+En este reto programarás el motor de gestión de cartas e inventario para un juego de rol táctico de construcción de mazos (**Deck Builder RPG**), aplicando las operaciones avanzadas de **Colecciones Funcionales** y **Scope Functions** aprendidas en el Bloque 4.
 
-#### 2. Modelo Mental del Reto (Pipeline Funcional de Transformación)
+El reto te desafía a procesar el botín acumulado tras una incursión a una mazmorra mediante **pipelines puramente funcionales**: queda terminantemente prohibido el uso de bucles clásicos (`for`, `while`) o variables de acumulación mutables.
 
-Visualiza el flujo continuo de datos por el que viajan las cartas desde los cofres hasta el mazo definitivo:
+##### 🎮 La Dinámica del Juego Explicada
 
-```mermaid
-flowchart TD
-    Cofres["3 Cofres de Botín<br/><i>(List&lt;List&lt;Carta&gt;&gt;)</i>"] --> FlatMap["<b>flatMap</b><br/>Aplanar a lista única"]
-    FlatMap --> Distinct["<b>distinctBy { it.id }</b><br/>Eliminar duplicados"]
-    Distinct --> Filter["<b>filter { it.poder &gt; 0 }</b><br/>Descartar cartas malditas o rotas"]
-    Filter --> Partition["<b>partition { it.esAtaque }</b><br/>Dividir en Ofensivas y Defensivas"]
-    
-    Partition --> Ofensivas["Cartas de Ataque"]
-    Partition --> Defensivas["Cartas de Escudo/Curación"]
-    
-    Ofensivas --> GroupBy["<b>groupBy { it.elemento }</b><br/>Calcular sinergias elementales"]
-    GroupBy --> MazoFinal["<b>take(3) Ofensivas + take(2) Defensivas</b><br/>Mazo Activo (5 Cartas)"]
-    MazoFinal --> ApplyAlso["<b>apply + also</b><br/>Configurar Mazo e imprimir Log"]
-```
+Al derrotar a los jefes de las tres criptas, los héroes han abierto **3 cofres de botín**. Sin embargo, los cofres contienen cartas repetidas, talismanes rotos y reliquias malditas con poder nulo o negativo.
 
-#### 3. Preguntas de Reflexión (Aprender a Pensar)
+Tu misión es canalizar ese aluvión de cartas a través de un embudo funcional que purifique los datos, calcule las sinergias mágicas elementales y seleccione la mejor alineación de **5 cartas definitivas** para el mazo activo.
 
-- **¿Por qué `flatMap` y no `map`?** Si usas `map`, obtendrás una `List<List<Carta>>`. `flatMap` extrae los elementos internos concatenándolos en una única secuencia plana `List<Carta>`.
-- **¿Por qué `distinctBy`?** Dos cartas pueden tener el mismo identificador si cayeron en cofres distintos. `distinctBy { it.id }` asegura unicidad sin tener que implementar `.equals()` y `.hashCode()` manualmente.
-- **¿Cómo reemplazar un bucle acumulador de daño?** La función `.sumOf { it.poder }` suma valores numéricos de una colección de forma idiomática y sin variables acumuladoras mutables.
+###### A. Componentes y Recursos de la Partida
 
-#### 4. Requisitos Funcionales
+| Elemento | Tipo de Dato | Función en el Juego |
+| :--- | :--- | :--- |
+| **`Carta`** | `data class` | Ficha inmutable que contiene identificador (`id`), nombre, afinidad elemental (`elemento`), puntuación de `poder` y rol (`esAtaque: Boolean`). |
+| **`Cofres de Botín`** | `List<List<Carta>>` | Colección anidada que representa los 3 cofres abiertos tras la batalla. |
+| **`Sinergias Elementales`** | `Map<String, List<Carta>>` | Agrupación de cartas de ataque según su elemento (Fuego, Hielo, Rayo) para calcular el daño acumulado por escuela mágica. |
+| **`MazoCombate`** | Clase de Dominio | Mazo sellado de 5 cartas con una propiedad calculada `poderTotal` que suma el impacto total del equipo. |
 
-1. Modela una carta:
-   `data class Carta(val id: String, val nombre: String, val elemento: String, val poder: Int, val esAtaque: Boolean)`
+###### B. Reglas de Filtrado y Forja (Aplanado, Limpieza y Sinergias)
 
-2. Recibe 3 cofres (listas de cartas) con al menos 9 cartas en total, incluyendo duplicados por ID y al menos una carta maldita con `poder <= 0`.
+El tratamiento de las cartas se rige por las siguientes reglas estrictas:
 
-3. Aplica un pipeline funcional que:
+1. **Unicidad Obligatoria:** Si dos cartas comparten el mismo identificador `id` (por haber caído en cofres distintos), solo se conserva una de ellas (`distinctBy { it.id }`).
 
-    - Aplane los 3 cofres en una única lista mediante **`flatMap`**.
+2. **Purificación de Maldiciones:** Cualquier carta con `poder <= 0` se considera rota o maldita y debe ser excluida de inmediato (`filter { it.poder > 0 }`).
 
-    - Elimine duplicados con **`distinctBy { it.id }`**.
+3. **Separación de Roles Tácticos:** Las cartas purificadas deben dividirse en dos contingentes independientes (**Cartas de Ataque** frente a **Cartas de Defensa / Curación**) en una única pasada con `partition { it.esAtaque }`.
 
-    - Descarte cartas con `poder <= 0` mediante **`filter`**.
+4. **Análisis de Sinergias de Ataque:** Las cartas ofensivas se agrupan por su elemento mágico (`groupBy { it.elemento }`) y se totaliza el daño que aporta cada elemento con `.sumOf { it.poder }`.
 
-    - Divida las cartas en dos grupos (**Ofensivas** y **Defensivas**) mediante **`partition`**.
+###### C. Fases del Pipeline Funcional (Paso a Paso)
 
-    - Agrupe las cartas ofensivas por su `elemento` (**`groupBy`**) y calcule la suma total de daño por cada elemento (`sumOf`).
+El procesamiento del botín se ejecuta cronológicamente a través de las siguientes etapas:
 
-4. Selecciona las 3 mejores cartas ofensivas y las 2 mejores defensivas (ordenadas por poder descendente) y combínalas en el **Mazo de Combate (5 cartas)**.
+1. **Fase 1 — Aplanado de Cofres (`flatMap`):**  
+   Se combinan los 3 cofres independientes en una única secuencia plana `List<Carta>`.
 
-5. Empaqueta el mazo en una clase `MazoCombate` configurada mediante **`apply`** y muestra una traza de auditoría con **`also`**.
+2. **Fase 2 — Deduplicación y Filtro de Poder (`distinctBy` y `filter`):**  
+   Se eliminan duplicados posicionales por identificador y se descartan las cartas inútiles o dañinas.
 
-#### 5. Pistas Progresivas de Ayuda
+3. **Fase 3 — Partición Ofensiva / Defensiva (`partition`):**  
+   Se desestructura la lista resultante en dos colecciones inmutables: `val (ofensivas, defensivas) = cartasValidas.partition { it.esAtaque }`.
 
-??? tip "💡 Pista 1: Aplanar colecciones anidadas con `flatMap`"
-    Si tienes `val cofres = listOf(cofre1, cofre2, cofre3)`, puedes aplanarlos directamente:
-    ```kotlin
-    val todasLasCartas = cofres.flatMap { it }
+4. **Fase 4 — Agrupación Elemental (`groupBy` y `sumOf`):**  
+   Se imprimen las estadísticas de sinergia elemental, reportando el número de cartas y la potencia total acumulada de cada elemento.
+
+5. **Fase 5 — Ensamblado con Scope Functions (`apply` y `also`):**  
+   Se extraen las 3 cartas más poderosas de ataque y las 2 más poderosas de defensa, se fusionan con el operador `+` y se configuran en una instancia de `MazoCombate` emitiendo una traza de auditoría.
+
+###### D. Desenlace Final (Composición del Mazo de 5 Cartas)
+
+- El mazo queda ensamblado exactamente con **5 cartas de élite** (Top 3 ataque + Top 2 defensa).
+
+- Se imprime el desglose individual de las cartas equipadas con su rol, elemento, nombre y poder.
+
+- Se muestra la suma global de poder del mazo mediante la propiedad calculada `poderTotal`.
+
+---
+
+#### 2. Requisitos Funcionales
+
+Para completar el reto de forma rigurosa:
+
+1. **RF-01 (Data Class de Carta):** Declara `data class Carta(val id: String, val nombre: String, val elemento: String, val poder: Int, val esAtaque: Boolean)` para representar cada carta de forma inmutable.
+
+2. **RF-02 (Clase Mazo con Getter Calculado):** Modela `class MazoCombate` con una propiedad mutable de configuración `var cartas: List<Carta> = emptyList()` y una propiedad calculada `val poderTotal: Int get() = cartas.sumOf { it.poder }`.
+
+3. **RF-03 (Preparación del Botín):** Simula 3 cofres (`cofre1`, `cofre2`, `cofre3`) que sumen al menos 9 cartas, asegurando la presencia de al menos un identificador duplicado y dos cartas con poder $\le 0$ (malditas o rotas).
+
+4. **RF-04 (Pipeline de Purificación y Partición):** Concatena en una sola cadena funcional `flatMap`, `distinctBy { it.id }` y `filter { it.poder > 0 }`, dividiendo el resultado con `.partition { it.esAtaque }`.
+
+5. **RF-05 (Análisis de Sinergias Elementales):** Aplica `groupBy { it.elemento }` sobre las cartas ofensivas e imprime el poder acumulado de cada elemento mediante `.sumOf { it.poder }`.
+
+6. **RF-06 (Forja del Mazo con Scope Functions):** Ordena descendentemente con `.sortedByDescending { it.poder }`, selecciona con `.take(3)` y `.take(2)`, ensambla el mazo dentro de un bloque `.apply { ... }` y emite el mensaje de auditoría con `.also { ... }`.
+
+---
+
+??? info "📊 Ver Modelo Mental del Reto (Pipeline Funcional de Transformación)"
+    Visualiza el flujo continuo de datos por el que viajan las cartas desde los cofres hasta el mazo definitivo:
+
+    ```mermaid
+    flowchart TD
+        Cofres["3 Cofres de Botín<br/><i>(List&lt;List&lt;Carta&gt;&gt;)</i>"] --> FlatMap["<b>flatMap</b><br/>Aplanar a lista única"]
+        FlatMap --> Distinct["<b>distinctBy { it.id }</b><br/>Eliminar duplicados"]
+        Distinct --> Filter["<b>filter { it.poder &gt; 0 }</b><br/>Descartar cartas malditas o rotas"]
+        Filter --> Partition["<b>partition { it.esAtaque }</b><br/>Dividir en Ofensivas y Defensivas"]
+        
+        Partition --> Ofensivas["Cartas de Ataque"]
+        Partition --> Defensivas["Cartas de Escudo/Curación"]
+        
+        Ofensivas --> GroupBy["<b>groupBy { it.elemento }</b><br/>Calcular sinergias elementales"]
+        GroupBy --> MazoFinal["<b>take(3) Ofensivas + take(2) Defensivas</b><br/>Mazo Activo (5 Cartas)"]
+        MazoFinal --> ApplyAlso["<b>apply + also</b><br/>Configurar Mazo e imprimir Log"]
     ```
 
-??? tip "💡 Pista 2: Agrupación y Sumas con `sumOf`"
-    Para calcular el poder total por cada elemento a partir de un mapa agrupado:
-    ```kotlin
-    val sinergias = ofensivas.groupBy { it.elemento }.mapValues { (_, cartas) ->
-        cartas.sumOf { it.poder }
-    }
+??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
+    Antes de examinar la solución o las pistas, reflexiona sobre estos conceptos funcionales:
+
+    - **¿Por qué `flatMap` en lugar de `map`?**  
+      Si aplicas `map`, obtendrás una lista anidada `List<List<Carta>>`. La función `flatMap` extrae los elementos de cada sublista y los fusiona en una única secuencia plana `List<Carta>`.
+
+    - **¿Por qué `distinctBy` en lugar de transformar a un `Set`?**  
+      Dos cartas pueden tener el mismo identificador pero variar en algún otro parámetro secundario. `distinctBy { it.id }` asegura que la unicidad se evalúe estrictamente sobre el identificador único sin necesidad de redefinir `equals()` y `hashCode()`.
+
+    - **¿Cómo sustituye `.sumOf { ... }` a un bucle acumulador?**  
+      En la programación orientada a objetos tradicional en Java se creaba una variable `var suma = 0` y se acumulaba en un bucle `for`. Con `.sumOf { it.poder }` de Kotlin la operación es atómica, inmutable y libre de efectos colaterales.
+
+??? tip "💡 Pistas Progresivas de Ayuda (Abrir solo si te atascas)"
+    ??? tip "💡 Pista 1: Aplanar colecciones anidadas con `flatMap`"
+        Si agrupas los cofres en una lista de listas `val todosLosCofres = listOf(cofre1, cofre2, cofre3)`, puedes aplanarlos directamente:
+        ```kotlin
+        val todasLasCartas = todosLosCofres.flatMap { it }
+        ```
+
+    ??? tip "💡 Pista 2: Agrupación y Sumas con `sumOf`"
+        Para calcular el poder total por cada elemento a partir de las cartas agrupadas:
+        ```kotlin
+        val porElemento = ofensivas.groupBy { it.elemento }
+        porElemento.forEach { (elem, lista) ->
+            val totalPoder = lista.sumOf { it.poder }
+            println("Elemento $elem: $totalPoder pts de daño total (${lista.size} cartas)")
+        }
+        ```
+
+    ??? tip "💡 Pista 3: Construcción y Auditoría con `apply` y `also`"
+        Configura la instancia de `MazoCombate` concatenando las dos listas y aprovecha el contexto `this` e `it`:
+        ```kotlin
+        val mazo = MazoCombate().apply {
+            cartas = topAtaque + topDefensa
+        }.also {
+            println("\n[LOG AUDITORÍA]: Mazo de ${it.cartas.size} cartas sellado y validado con éxito.")
+        }
+        ```
+
+??? info "🖥️ Ver Salida Esperada en Consola"
+    ```text
+    === SIMULADOR DE SAQUEO: DECK BUILDER RPG ===
+    Botín inicial recogido en 3 cofres: 9 cartas.
+    Tras eliminar duplicados y cartas malditas: 7 cartas válidas.
+
+    --- ANÁLISIS DE SINERGIAS ELEMENTALES (ATAQUE) ---
+    Elemento Fuego: 155 pts de daño total (2 cartas)
+    Elemento Hielo: 65 pts de daño total (1 cartas)
+    Elemento Rayo: 80 pts de daño total (1 cartas)
+
+    [LOG AUDITORÍA]: Mazo de 5 cartas sellado y validado con éxito.
+
+    --- MAZO FINAL DE COMBATE (TOP 5) ---
+    1. [ATAQUE - Fuego] Meteoro Ígneo (Poder: 90)
+    2. [ATAQUE - Rayo] Rayo Fulminante (Poder: 80)
+    3. [ATAQUE - Fuego] Bola de Fuego (Poder: 65)
+    4. [DEFENSA - Hielo] Muro de Hielo (Poder: 70)
+    5. [DEFENSA - Luz] Escudo Divino (Poder: 50)
+    Poder total del mazo: 355 pts
     ```
 
-??? tip "💡 Pista 3: Construcción del Mazo con `apply` y `also`"
-    Combina las listas filtradas y envuélvelas:
-    ```kotlin
-    val mazoDefinitivo = (topOfensivas + topDefensivas).also {
-        println("[LOG AUDITORÍA]: Mazo de 5 cartas sellado para la batalla.")
-    }
-    ```
-
-#### 6. Salida Esperada en Consola
-
-```text
-=== SIMULADOR DE SAQUEO: DECK BUILDER RPG ===
-Botín inicial recogido en 3 cofres: 9 cartas.
-Tras eliminar duplicados y cartas malditas: 7 cartas válidas.
-
---- ANÁLISIS DE SINERGIAS ELEMENTALES (ATAQUE) ---
-Elemento Fuego: 155 pts de daño total (2 cartas)
-Elemento Hielo: 65 pts de daño total (1 cartas)
-Elemento Rayo: 80 pts de daño total (1 cartas)
-
-[LOG AUDITORÍA]: Mazo de 5 cartas sellado y validado con éxito.
-
---- MAZO FINAL DE COMBATE (TOP 5) ---
-1. [ATAQUE - Fuego] Meteoro Ígneo (Poder: 90)
-2. [ATAQUE - Rayo] Rayo Fulminante (Poder: 80)
-3. [ATAQUE - Fuego] Bola de Fuego (Poder: 65)
-4. [DEFENSA - Hielo] Muro de Hielo (Poder: 70)
-5. [DEFENSA - Luz] Escudo Divino (Poder: 50)
-Poder total del mazo: 355 pts
-```
-
-#### 7. Solución Comentada
 ??? tip "Ver solución comentada paso a paso"
     ```kotlin
     package b04_colecciones
@@ -861,4 +942,5 @@ Poder total del mazo: 355 pts
         println("Poder total del mazo: ${mazo.poderTotal} pts")
     }
     ```
+
 

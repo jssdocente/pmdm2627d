@@ -5,12 +5,20 @@ En este segundo bloque dominarás la sintaxis de funciones de orden superior, la
 📁 **Paquete de trabajo:** `package b02_funciones_lambdas`  
 Ubicación en tu proyecto: `src/main/kotlin/b02_funciones_lambdas/`
 
+!!! info "📚 Apuntes Teóricos de Referencia"
+    Para resolver las actividades de este bloque, puedes consultar los siguientes temas de los apuntes:
+
+    - [Funciones y Lambdas (Enfoque Compose)](../13-funciones-lambdas.md)
+    - [Null Safety (Seguridad ante Nulos)](../14-null-safety.md)
+    - [Scope Functions (`takeIf`, `let`, etc.)](../31-scope-functions.md)
+
 ---
 
 ## 🟢 Nivel Básico (Funciones, Parámetros y Lambdas Simples)
 
 ### Ejercicio 2.1: Funciones de Expresión Única y Argumentos con Nombre
-📄 **Archivo:** `E01_FuncionesExpresionUnica.kt`
+📄 **Archivo:** `E01_FuncionesExpresionUnica.kt`  
+📚 **Teoría de referencia:** [Funciones de Expresión Única](../13-funciones-lambdas.md#12-funciones-de-expresion-unica-single-expression-functions)
 
 #### 1. Enunciado y Requisitos
 
@@ -48,7 +56,8 @@ Daño crítico con arma legendaria: 110
 ---
 
 ### Ejercicio 2.2: Parámetros por Defecto al Estilo Compose
-📄 **Archivo:** `E02_ParametrosDefectoModifiers.kt`
+📄 **Archivo:** `E02_ParametrosDefectoModifiers.kt`  
+📚 **Teoría de referencia:** [Parámetros con Valores por Defecto y Argumentos con Nombre](../13-funciones-lambdas.md#13-parametros-con-valores-por-defecto-y-argumentos-con-nombre)
 
 #### 1. Enunciado y Requisitos
 
@@ -95,7 +104,8 @@ Boton [Texto: 'Guardar', Color: #6200EE, Habilitado: false, Padding: 32dp]
 ---
 
 ### Ejercicio 2.3: Número Variable de Argumentos (`vararg`)
-📄 **Archivo:** `E03_Varargs.kt`
+📄 **Archivo:** `E03_Varargs.kt`  
+📚 **Teoría de referencia:** [Declaración de Funciones e Inmutabilidad de Parámetros](../13-funciones-lambdas.md#11-inmutabilidad-de-los-parametros)
 
 #### 1. Enunciado y Requisitos
 
@@ -137,7 +147,8 @@ Jugador Luigi: 600 pts extra (usando spread operator)
 ---
 
 ### Ejercicio 2.4: Tipos de Función y Lambdas Básicas
-📄 **Archivo:** `E04_TiposDeFuncion.kt`
+📄 **Archivo:** `E04_TiposDeFuncion.kt`  
+📚 **Teoría de referencia:** [Tipos de Función y Sintaxis de Lambdas](../13-funciones-lambdas.md#2-tipos-de-funcion-y-funciones-lambda)
 
 #### 1. Enunciado y Requisitos
 
@@ -171,7 +182,8 @@ Precio formateado: 29.99 €
 ---
 
 ### Ejercicio 2.5: Validaciones Idiomáticas con `takeIf` y `takeUnless`
-📄 **Archivo:** `E05_TakeIfTakeUnless.kt`
+📄 **Archivo:** `E05_TakeIfTakeUnless.kt`  
+📚 **Teoría de referencia:** [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos) y [Scope Functions](../31-scope-functions.md#1-tabla-maestra-de-seleccion-rapida)
 
 #### 1. Enunciado y Requisitos
 
@@ -218,7 +230,8 @@ Edad para juego pegi 18: No cumple el requisito de edad
 ---
 
 ### Ejercicio 2.6: Funciones de Orden Superior Propias y Callbacks
-📄 **Archivo:** `E06_FuncionOrdenSuperiorPropia.kt`
+📄 **Archivo:** `E06_FuncionOrdenSuperiorPropia.kt`  
+📚 **Teoría de referencia:** [Funciones de Orden Superior](../13-funciones-lambdas.md#3-funciones-de-orden-superior-higher-order-functions)
 
 #### 1. Enunciado y Requisitos
 
@@ -289,7 +302,8 @@ Resultado final: Operación completada con éxito.
 ## 🟡 Nivel Intermedio (State Hoisting, Null Safety y Extensiones)
 
 ### Ejercicio 2.7: El Parámetro Implícito `it`
-📄 **Archivo:** `E07_ParametroImplicitoIt.kt`
+📄 **Archivo:** `E07_ParametroImplicitoIt.kt`  
+📚 **Teoría de referencia:** [El Parámetro Implícito it](../13-funciones-lambdas.md#23-el-parametro-implicito-it)
 
 #### 1. Enunciado y Requisitos
 
@@ -338,7 +352,8 @@ Transformación con marco: '[[ gamevault ]]'
 ---
 
 ### Ejercicio 2.8: Sintaxis de Lambda Colgante (*Trailing Lambda*) y State Hoisting
-📄 **Archivo:** `E08_TrailingLambdaStateHoisting.kt`
+📄 **Archivo:** `E08_TrailingLambdaStateHoisting.kt`  
+📚 **Teoría de referencia:** [Sintaxis de Lambda Colgante](../13-funciones-lambdas.md#41-regla-1-sintaxis-de-lambda-colgante-trailing-lambda-syntax) y [Elevación de Estado (State Hoisting)](../13-funciones-lambdas.md#42-regla-2-elevacion-de-estado-state-hoisting-mediante-callbacks-lambda)
 
 #### 1. Enunciado y Requisitos
 
@@ -385,7 +400,8 @@ Estado tras el clic (State Hoisting): Producto 'Elden Ring' añadido
 ---
 
 ### Ejercicio 2.9: Safe Call (`?.`), Elvis (`?:`) y Cláusulas de Guarda
-📄 **Archivo:** `E09_NullSafetyBasico.kt`
+📄 **Archivo:** `E09_NullSafetyBasico.kt`  
+📚 **Teoría de referencia:** [Llamada Segura (?. ) y Operador Elvis (?:)](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
 
 #### 1. Enunciado y Requisitos
 
@@ -432,7 +448,8 @@ Nombre visible en perfil: Anónimo
 ---
 
 ### Ejercicio 2.10: El Modismo Idiomático `objeto?.let { ... }`
-📄 **Archivo:** `E10_ObjetoLet.kt`
+📄 **Archivo:** `E10_ObjetoLet.kt`  
+📚 **Teoría de referencia:** [El Modismo Estrella en Android: objeto?.let](../14-null-safety.md#5-el-modismo-estrella-en-android-objetolet)
 
 #### 1. Enunciado y Requisitos
 
@@ -476,7 +493,8 @@ Llamada 2:
 ---
 
 ### Ejercicio 2.11: Fábricas de Lambdas y Closures
-📄 **Archivo:** `E11_FabricaDeFunciones.kt`
+📄 **Archivo:** `E11_FabricaDeFunciones.kt`  
+📚 **Teoría de referencia:** [Tipos de Función (Function Types)](../13-funciones-lambdas.md#21-tipos-de-funcion-function-types)
 
 #### 1. Enunciado y Requisitos
 
@@ -525,7 +543,8 @@ Daño base del jefe: 100
 ---
 
 ### Ejercicio 2.12: Casteo Seguro con `as?`
-📄 **Archivo:** `E12_CasteoSeguro.kt`
+📄 **Archivo:** `E12_CasteoSeguro.kt`  
+📚 **Teoría de referencia:** [Comprobaciones, Smart Casts y Casteo Seguro (as?)](../14-null-safety.md#3-comprobaciones-y-smart-casts)
 
 #### 1. Enunciado y Requisitos
 
@@ -564,7 +583,8 @@ Resultado: Formato de respuesta no soportado (devuelve null con seguridad)
 ---
 
 ### Ejercicio 2.13: Funciones de Extensión
-📄 **Archivo:** `E13_FuncionesExtension.kt`
+📄 **Archivo:** `E13_FuncionesExtension.kt`  
+📚 **Teoría de referencia:** [Funciones de Extensión](../13-funciones-lambdas.md#5-funciones-de-extension-extension-functions)
 
 #### 1. Enunciado y Requisitos
 
@@ -611,7 +631,8 @@ Precio del pase de batalla: 19.99 €
 ## 🔴 Nivel Avanzado (Reto Lúdico)
 
 ### Reto 2.14: El Juego del Ahorcado Funcional (*Hangman con Callbacks y Null Safety*)
-📄 **Archivo:** `Reto02_AhorcadoJuego.kt`
+📄 **Archivo:** `Reto02_AhorcadoJuego.kt`  
+📚 **Teoría de referencia:** [Funciones de Orden Superior](../13-funciones-lambdas.md#3-funciones-de-orden-superior-higher-order-functions) y [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
 
 #### 1. Contexto y Misión
 
