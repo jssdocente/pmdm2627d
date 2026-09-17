@@ -14,7 +14,8 @@ nav:
               - "Variables e Inmutabilidad": temas/00-android/00-kotlin/11-variables-tipos-datos.md
               - "Expresiones vs Sentencias": temas/00-android/00-kotlin/12-expresiones-vs-sentencias.md
               - "When": temas/00-android/00-kotlin/12.1-when.md
-              - "Funciones y lambdas (Compose)": temas/00-android/00-kotlin/13-funciones-lambdas.md
+              - "Bucles e Iteración": temas/00-android/00-kotlin/12.2-bucles-iteracion.md
+              - "Funciones y lambdas": temas/00-android/00-kotlin/13-funciones-lambdas.md
               - "Null safety": temas/00-android/00-kotlin/14-null-safety.md
               - "Colecciones":
                   - "Arrays": temas/00-android/00-kotlin/41-arrays.md
@@ -38,10 +39,10 @@ nav:
               - "3. POO, Sealed Types y Wordle": temas/00-android/00-kotlin/ejercicios/03-poo-sealed-types.md
               - "4. Colecciones, Mappers y Scopes": temas/00-android/00-kotlin/ejercicios/04-colecciones-scope-functions.md
               - "5. Corrutinas y Flows": temas/00-android/00-kotlin/ejercicios/05-concurrencia-corrutinas.md
-              - "6. Proyecto Final (El Juego del Calamar)": temas/00-android/00-kotlin/ejercicios/06-proyecto-integrador.md
+              - "6. Proyecto Final": temas/00-android/00-kotlin/ejercicios/06-proyecto-integrador.md
       - "Herramientas Proyecto Android":
           - "Introducción": "temas/00-android/00-tools/index.md"
-          - "Terminal Avanzada (Warp + Shell)": "temas/00-android/00-tools/05-terminal-warp.md"
+          - "Terminal Avanzada": "temas/00-android/00-tools/05-terminal-warp.md"
           - "Gradle": "temas/00-android/00-tools/01-gradle-agp-estructura.md"
           - "Build-gradle": "temas/00-android/00-tools/02-build-gradle.md"
           - "Matriz de Compatibilidad": "temas/00-android/00-tools/04-matriz-compatibilidad.md"

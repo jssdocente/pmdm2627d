@@ -10,8 +10,9 @@ Este bloque formativo está diseñado específicamente para alumnos de 2º de DA
 
 ### Fundamentos y Seguridad
 
-- **[Variables, Tipos de Datos e Inmutabilidad](./11-variables-tipos-datos.md):** `val` vs `var`, por qué la inmutabilidad es crítica en entornos móviles, tipos numéricos, String templates y `lateinit` vs `by lazy`.
+- **[Variables, Tipos de Datos e Inmutabilidad](./11-variables-tipos-datos.md):** `val` vs `var`, por qué la inmutabilidad es crítica en entornos móviles, tipos numéricos, conversiones explícitas, String templates y anticipo de inicialización especial.
 - **[Control de Flujo: Expresiones y When](./12.1-when.md):** `if` como expresión, `when` exhaustivo, smart casting y comprobación de rangos.
+- **[Bucles e Iteración: Imperativo vs Declarativo](./12.2-bucles-iteracion.md):** `for` con rangos (`..`, `until`, `downTo`, `step`), bucles `while`/`do-while`, etiquetas (`@label`), `repeat(n)` y transición al paradigma declarativo.
 - **[Funciones y Lambdas (El Motor de Compose)](./13-funciones-lambdas.md):** Tipos de función, trailing lambdas, elevación del estado (*State Hoisting*) y lambdas con receptor.
 - **[Seguridad contra Nulos (Null Safety)](./14-null-safety.md):** Eliminación del `NullPointerException`, operadores `?.`, `?:`, `as?` y el modismo `objeto?.let { ... }`.
 

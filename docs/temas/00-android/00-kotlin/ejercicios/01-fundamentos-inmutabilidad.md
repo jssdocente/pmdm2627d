@@ -9,9 +9,10 @@ Ubicación en tu proyecto: `src/main/kotlin/b01_fundamentos/`
     Para resolver las actividades de este bloque, puedes consultar los siguientes temas de los apuntes:
 
     - [Variables, Tipos de Datos e Inmutabilidad](../11-variables-tipos-datos.md)
-    - [Expresiones vs Sentencias (If y Rangos)](../12-expresiones-vs-sentencias.md)
+    - [Expresiones vs Sentencias (If como Expresión)](../12-expresiones-vs-sentencias.md)
     - [Estructura When (Condicionales Expresivos)](../12.1-when.md)
-    - [Null Safety e Inicialización Tardía (`lateinit` y `by lazy`)](../14-null-safety.md)
+    - [Bucles e Iteración (Imperativo vs Declarativo)](../12.2-bucles-iteracion.md)
+    - [Null Safety e Inicialización Tardía](../14-null-safety.md)
 
 ---
 
@@ -335,7 +336,7 @@ Acción ejecutada: Avanzar hacia el Norte
 
 #### Ejercicio 0.8: `when` con Rangos Numéricos (`in 1..10`)
 📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
-📚 **Teoría de referencia:** [Rangos y Progresiones](../12-expresiones-vs-sentencias.md#4-rangos-y-progresiones)
+📚 **Teoría de referencia:** [Rangos y Progresiones](../12.2-bucles-iteracion.md#2-el-bucle-for-y-las-progresiones-numericas)
 
 ##### 1. Enunciado y Requisitos
 
@@ -376,7 +377,7 @@ Nivel 17 clasificado en categoría: Intermedio
 
 #### Ejercicio 0.9: Progresiones con `downTo` y `step`
 📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
-📚 **Teoría de referencia:** [Bucles y Progresiones](../12-expresiones-vs-sentencias.md#4-rangos-y-progresiones)
+📚 **Teoría de referencia:** [Bucles y Progresiones](../12.2-bucles-iteracion.md#2-el-bucle-for-y-las-progresiones-numericas)
 
 ##### 1. Enunciado y Requisitos
 En lugar del bucle clásico `for (int i = 10; i >= 0; i -= 2)` de Java:
@@ -693,7 +694,7 @@ Precio con fallback seguro: 0 €
 
 ### Ejercicio 1.6: Bucles Idiomáticos sobre Rangos y Progresiones
 📄 **Archivo:** `E06_BuclesRangos.kt`  
-📚 **Teoría de referencia:** [Expresiones y Sentencias: Rangos en Bucles](../12-expresiones-vs-sentencias.md#expresiones)
+📚 **Teoría de referencia:** [Bucles e Iteración: Progresiones Numéricas](../12.2-bucles-iteracion.md#2-el-bucle-for-y-las-progresiones-numericas)
 
 #### 1. Enunciado y Requisitos
 
@@ -929,7 +930,7 @@ Resultado: Acceso estándar concedido a zona general.
 
 ### Ejercicio 1.11: Control de Bucles Anidados con Etiquetas (*Labels*)
 📄 **Archivo:** `E11_BuclesConEtiquetas.kt`  
-📚 **Teoría de referencia:** [Diferencias entre Expresiones y Sentencias](../12-expresiones-vs-sentencias.md#diferencias-entre-expresiones-y-sentencias)
+📚 **Teoría de referencia:** [Control de Flujo con Etiquetas (*Labels*)](../12.2-bucles-iteracion.md#4-control-de-flujo-con-etiquetas-labels)
 
 #### 1. Enunciado y Requisitos
 

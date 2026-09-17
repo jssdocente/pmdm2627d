@@ -56,6 +56,8 @@ En la programación tradicional en Java es habitual crear objetos mutables y alt
 
 Uno de los errores más comunes al iniciarse en Kotlin es confundir una variable declarada con `val` con una estructura de datos inmutable:
 
+*(Nota pedagógica: Las colecciones como `listOf()` y `mutableListOf()` se abordarán en detalle en el Bloque 4. Aquí las utilizamos únicamente a modo de ejemplo intuitivo para diferenciar una variable inmutable de un objeto interno mutable).*
+
 ```kotlin
 // 1. Variable 'val' con objeto MUTABLE
 val usuariosConectados = mutableListOf("Ana", "Carlos")
@@ -197,43 +199,25 @@ val numeroParseado: Int = textoNumero.toInt()
 
 ---
 
-## 7. Inicialización Especial: `lateinit` vs `by lazy`
+## 7. Adelanto: ¿Qué ocurre si no podemos inicializar una variable de inmediato?
 
-En el ciclo de vida de componentes Android (como `Activity` o `Fragment`), las variables frecuentemente no pueden inicializarse en el momento de instanciar la clase, sino en métodos del ciclo de vida como `onCreate()` o cuando se consuman por primera vez.
-
-### `lateinit var` (Inicialización Tardía)
-Se utiliza para variables mutables que garantizamos que se inicializarán antes de su primer uso. Evita tener que declararlas como tipos anulables (`String? = null`).
+Hasta ahora hemos visto que en Kotlin **toda variable local debe tener un valor asignado antes de poder utilizarse**:
 
 ```kotlin
-class PerfilActivity {
-    // Garantizamos que se inicializará antes de leerse
-    lateinit var idSesion: String
-
-    fun onCreate() {
-        idSesion = "TOKEN_XYZ_123"
-    }
-
-    fun mostrarId() {
-        if (::idSesion.isInitialized) {
-            println(idSesion)
-        }
-    }
-}
+val nombre = "Laura" // Correcto
+var contador: Int    // Declarada sin valor inicial
+// println(contador) // ERROR de compilación: Variable 'contador' must be initialized
 ```
 
-### `by lazy` (Inicialización Perezosa)
-Se utiliza para variables de solo lectura (`val`). El bloque lambda no se ejecuta hasta que la variable se lee por primera vez en el código. A partir de ese momento, el resultado queda cacheado:
+!!! info "Para más adelante: Android y Programación Orientada a Objetos"
+    Cuando lleguemos a los temas de **Clases** y al desarrollo en **Android**, descubriremos que en ocasiones ciertas propiedades de una clase no pueden tener valor en el instante exacto de su creación (por ejemplo, botones o vistas de interfaz que dependen de que el sistema operativo cargue la pantalla).
 
-```kotlin
-val conexionBaseDatos: String by lazy {
-    println("Configurando conexión pesada...")
-    "CONEXION_ACTIVA_SQLITE"
-}
+    Para esos casos avanzados, Kotlin proporciona mecanismos como:
 
-// En este punto, 'conexionBaseDatos' aún no se ha evaluado.
-println(conexionBaseDatos) // Imprime mensaje y retorna valor.
-println(conexionBaseDatos) // Solo retorna el valor cacheado (sin volver a evaluar).
-```
+    - **`lateinit var` (Inicialización tardía):** Permite posponer la asignación de una propiedad asegurando que recibirá valor antes de su primer acceso.
+    - **`by lazy` (Inicialización perezosa):** Permite calcular el valor de una constante `val` únicamente en el momento en que se consulte por primera vez.
+
+    *No te preocupes por su sintaxis ahora: las abordaremos con calma y ejemplos prácticos en su bloque correspondiente.*
 
 ---
 
@@ -253,75 +237,81 @@ println(conexionBaseDatos) // Solo retorna el valor cacheado (sin volver a evalu
 
 ## 9. Retos Prácticos
 
-### 🟢 Reto 1: Conversión y plantillas (Básico)
-Declara una variable inmutable con tu nombre, otra con el año de nacimiento (entero) y calcula tu edad aproximada en una cadena de texto multilínea que muestre tu perfil formateado utilizando *String Templates*.
+A continuación tienes pequeños ejercicios prácticos para consolidar los conceptos básicos vistos en este tema:
+
+### 🟢 Reto 1: Variables `val` y `var` (Reasignación básica)
+Declara una constante inmutable `val nombreJuego = "Zelda"` y una variable mutable `var vidas = 3`. 
+Resta una vida al jugador e imprime en consola un mensaje indicando el juego y las vidas restantes.
 
 ??? tip "Ver solución"
     ```kotlin
     fun main() {
-        val nombre = "Lucía"
-        val anioNacimiento = 2004
-        val anioActual = 2026
+        val nombreJuego = "Zelda"
+        var vidas = 3
 
-        val perfil = """
-            =========================
-            FICHA DE ALUMNO/A
-            Nombre: $nombre
-            Año Nacimiento: $anioNacimiento
-            Edad aproximada: ${anioActual - anioNacimiento} años
-            =========================
+        // Restamos una vida
+        vidas -= 1
+
+        println("En $nombreJuego te quedan $vidas vidas.")
+    }
+    ```
+
+### 🟢 Reto 2: Plantillas de Cadenas (*String Templates*) y Expresiones
+Declara el precio de un artículo (`val precio = 12.5`) y la cantidad comprada (`val cantidad = 4`). 
+Imprime en una sola línea el total a pagar calculando la multiplicación directamente dentro de una expresión `${...}`. Muestra también la longitud del nombre del producto `val producto = "Teclado"` usando `${producto.length}`.
+
+??? tip "Ver solución"
+    ```kotlin
+    fun main() {
+        val producto = "Teclado"
+        val precio = 12.5
+        val cantidad = 4
+
+        println("Producto: $producto (${producto.length} letras)")
+        println("Total a pagar por $cantidad unidades: ${precio * cantidad} €")
+    }
+    ```
+
+### 🟡 Reto 3: Conversión Explícita de Tipos
+En Kotlin, un número entero no se convierte automáticamente en decimal.
+Declara una variable entera `val distanciaMetros = 100` y una cadena de texto `val textoPuntuacion = "250"`.
+1. Convierte `distanciaMetros` a `Double` usando `.toDouble()` y divídelo entre 3.
+2. Convierte `textoPuntuacion` a `Int` usando `.toInt()` y súmale 50 puntos de bonificación.
+3. Muestra ambos resultados en consola.
+
+??? tip "Ver solución"
+    ```kotlin
+    fun main() {
+        // Conversión de Int a Double
+        val distanciaMetros: Int = 100
+        val distanciaTercio: Double = distanciaMetros.toDouble() / 3
+
+        // Conversión de String a Int
+        val textoPuntuacion: String = "250"
+        val puntuacionFinal: Int = textoPuntuacion.toInt() + 50
+
+        println("Un tercio de la distancia: $distanciaTercio metros")
+        println("Puntuación con bonus: $puntuacionFinal puntos")
+    }
+    ```
+
+### 🟡 Reto 4: Bloques de Texto Multilínea (`"""`)
+Declara variables para tu nombre y tu lenguaje favorito. Imprime una tarjeta de presentación en tres líneas limpias utilizando comillas triples `"""` y la función `.trimIndent()`, sin necesidad de usar `\n`.
+
+??? tip "Ver solución"
+    ```kotlin
+    fun main() {
+        val alumno = "Marcos"
+        val lenguaje = "Kotlin"
+
+        val tarjeta = """
+            ==============================
+            Alumno   : $alumno
+            Lenguaje : $lenguaje
+            Módulo   : PMDM (Android)
+            ==============================
         """.trimIndent()
 
-        println(perfil)
-    }
-    ```
-
-### 🟡 Reto 2: Inmutabilidad defensiva (Intermedio)
-Dada una lista mutable de calificaciones de un estudiante, escribe un bloque de código que garantice que la vista pública exponga una versión de solo lectura que impida modificaciones externas accidentales.
-
-??? tip "Ver solución"
-    ```kotlin
-    fun main() {
-        // Estado interno privado modificable
-        val notasInternas = mutableListOf(8.5, 9.0, 7.2)
-
-        // Exposición pública de solo lectura (Casting hacia List inmutable)
-        val notasPublicas: List<Double> = notasInternas
-
-        // notasPublicas.add(10.0) // ERROR de compilación: add no existe en List
-        notasInternas.add(9.8) // Solo el propietario del estado interno puede mutar
-
-        println("Notas visibles: $notasPublicas")
-    }
-    ```
-
-### 🔴 Reto 3: Inicialización segura en Android (Avanzado)
-Diseña una clase `ConfiguracionJuego` que cargue la configuración pesada desde una cadena simulada usando inicialización perezosa (`by lazy`), y que posea una propiedad `lateinit` para el identificador del jugador actual que verifique si está inicializado antes de imprimir un informe.
-
-??? tip "Ver solución"
-    ```kotlin
-    class ConfiguracionJuego {
-        lateinit var idJugador: String
-
-        val recursosGraficos: String by lazy {
-            println("-> Cargando texturas 3D en memoria...")
-            "TEXTURAS_4K_CARGADAS"
-        }
-
-        fun mostrarEstado() {
-            if (::idJugador.isInitialized) {
-                println("Jugador: $idJugador")
-            } else {
-                println("Advertencia: Jugador aún no autenticado.")
-            }
-            println("Estado de recursos: $recursosGraficos")
-        }
-    }
-
-    fun main() {
-        val juego = ConfiguracionJuego()
-        juego.mostrarEstado() // Avisa que no está autenticado y carga recursos por primera vez
-        juego.idJugador = "Player_One"
-        juego.mostrarEstado() // Ya está autenticado; recursos ya estaban en memoria
+        println(tarjeta)
     }
     ```
