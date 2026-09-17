@@ -13,6 +13,161 @@ Ubicación en tu proyecto: `src/main/kotlin/b05_corrutinas/`
 
 ---
 
+## 🌱 Fase 0: Calentamiento Guiado (Gimnasio de Sintaxis)
+
+Esta fase contiene **3 micro-ejercicios fundamentales** para romper mano con la concurrencia ligera de Kotlin, experimentando la diferencia radical entre bloquear un hilo del sistema operativo y suspender una corrutina.
+
+📁 **Archivo de trabajo para esta fase:** `E00_CalentamientoCorrutinas.kt`  
+Ubicación: `src/main/kotlin/b05_corrutinas/`
+
+---
+
+### 🔹 Nivel 1: Corrutinas Ligeras y Suspensión
+
+#### Ejercicio 0.1: Primer `launch` vs `new Thread` en Java
+📄 **Archivo:** `E00_CalentamientoCorrutinas.kt`  
+📚 **Teoría de referencia:** [Constructores de Corrutinas: launch](../51-corrutinas.md#4-constructores-de-corrutinas-coroutine-builders)
+
+##### 1. Concepto y Código Resuelto
+En Java, crear concurrencia requiere instanciar hilos del sistema operativo (`Thread`), los cuales consumen ~1 MB de pila cada uno y son muy costosos. En Kotlin, una corrutina es un **hilo ligero en espacio de usuario**; se pueden ejecutar decenas de miles simultáneamente sin agotar la memoria.
+
+=== "Kotlin"
+    ```kotlin
+    package b05_corrutinas
+
+    import kotlinx.coroutines.*
+
+    fun main() = runBlocking {
+        println("1. Inicio en el hilo principal: ${Thread.currentThread().name}")
+
+        // Lanzamos una corrutina en segundo plano:
+        launch {
+            delay(500)
+            println("2. Tarea en corrutina finalizada en: ${Thread.currentThread().name}")
+        }
+
+        println("3. El hilo principal continúa sin bloquearse")
+    }
+    ```
+
+=== "Java (Hilos Clásicos Pesados)"
+    ```java
+    public class ConcurrenciaJava {
+        public static void main(String[] args) {
+            System.out.println("1. Inicio en el hilo principal: " + Thread.currentThread().getName());
+
+            // En Java se requiere instanciar un hilo del sistema operativo:
+            new Thread(() -> {
+                try {
+                    Thread.sleep(500);
+                    System.out.println("2. Tarea en hilo finalizada en: " + Thread.currentThread().getName());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
+            System.out.println("3. El hilo principal continúa");
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+1. Inicio en el hilo principal: main @coroutine#1
+3. El hilo principal continúa sin bloquearse
+2. Tarea en corrutina finalizada en: main @coroutine#2
+```
+
+---
+
+#### Ejercicio 0.2: `delay()` vs `Thread.sleep()` (No Bloqueo del Hilo)
+📄 **Archivo:** `E00_CalentamientoCorrutinas.kt`  
+📚 **Teoría de referencia:** [Funciones de Suspensión](../51-corrutinas.md#3-funciones-de-suspension-suspend-fun)
+
+##### 1. Enunciado y Requisitos
+
+- **`Thread.sleep()`:** Congela el hilo del sistema operativo por completo (si es el hilo principal en Android, la aplicación deja de responder y se produce un error **ANR**).
+- **`delay()`:** Suspende la corrutina liberando el hilo subyacente para que pueda atender otras tareas, animaciones o eventos de usuario mientras espera.
+
+1. Dentro de un `runBlocking`, lanza dos corrutinas con `launch`.
+2. La primera corrutina hace `delay(200)` y la segunda `delay(100)`.
+3. Comprueba cómo la segunda corrutina termina antes a pesar de haberse lanzado en el mismo hilo, demostrando que ninguna bloqueó la ejecución de la otra.
+
+##### 2. Salida Esperada
+```text
+Lanzadas ambas corrutinas
+-> Corrutina 2 terminada tras 100ms
+-> Corrutina 1 terminada tras 200ms
+Fin del calentamiento
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b05_corrutinas
+
+    import kotlinx.coroutines.*
+
+    fun main() = runBlocking {
+        launch {
+            delay(200)
+            println("-> Corrutina 1 terminada tras 200ms")
+        }
+
+        launch {
+            delay(100)
+            println("-> Corrutina 2 terminada tras 100ms")
+        }
+
+        println("Lanzadas ambas corrutinas")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.3: Primera Función de Suspensión (`suspend fun`)
+📄 **Archivo:** `E00_CalentamientoCorrutinas.kt`  
+📚 **Teoría de referencia:** [Funciones de Suspensión](../51-corrutinas.md#3-funciones-de-suspension-suspend-fun)
+
+##### 1. Enunciado y Requisitos
+Las funciones de suspensión se marcan con la palabra clave **`suspend`**. Solo pueden ser invocadas desde otra función de suspensión o desde el interior de una corrutina.
+
+1. Declara `suspend fun descargarAvatar(usuario: String): String`.
+2. Dentro, simula un retardo de red con `delay(300)` y devuelve `"Avatar_de_$usuario.png"`.
+3. Invoca la función desde `main() = runBlocking { ... }` para dos usuarios secuencialmente e imprime el resultado.
+
+##### 2. Salida Esperada
+```text
+Descargando avatar de Link...
+Descarga completada: Avatar_de_Link.png
+Descargando avatar de Zelda...
+Descarga completada: Avatar_de_Zelda.png
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b05_corrutinas
+
+    import kotlinx.coroutines.*
+
+    suspend fun descargarAvatar(usuario: String): String {
+        println("Descargando avatar de $usuario...")
+        delay(300) // Simulación no bloqueante de latencia de red
+        return "Avatar_de_$usuario.png"
+    }
+
+    fun main() = runBlocking {
+        val a1 = descargarAvatar("Link")
+        println("Descarga completada: $a1")
+
+        val a2 = descargarAvatar("Zelda")
+        println("Descarga completada: $a2")
+    }
+    ```
+
+---
+
 ## 🟢 Nivel Básico (Suspensión, Builders y Flows Simples)
 
 ### Ejercicio 5.1: Funciones de Suspensión con `delay()`
@@ -737,7 +892,70 @@ Sincronizando con backend en segundo plano...
 
 ---
 
-### Reto 5.13: Carrera Espacial Galáctica (*Space Grand Prix*)
+### Ejercicio 5.13: Cancelación Cooperativa de Corrutinas (`isActive` y `ensureActive`)
+📄 **Archivo:** `E13_CancelacionCooperativa.kt`  
+📚 **Teoría de referencia:** [Cancelación y Tiempos de Espera](../51-corrutinas.md#4-constructores-de-corrutinas-coroutine-builders)
+
+#### 1. Enunciado y Requisitos
+En aplicaciones móviles con Android y Jetpack Compose, cuando el usuario sale de una pantalla, el `viewModelScope` cancela todas las corrutinas en vuelo para no desperdiciar batería ni memoria.
+
+Sin embargo, **la cancelación en Kotlin es cooperativa**: si una corrutina ejecuta un cálculo intensivo de CPU (como procesar una imagen, ordenar una matriz pesada o calcular criptografía) sin llamar a funciones de suspensión como `delay()`, el hilo continuará ejecutándose indefinidamente aunque se invoque `job.cancel()`, provocando fugas de CPU.
+
+Para ser cooperativa, la corrutina debe verificar periódicamente la propiedad **`isActive`** o invocar **`ensureActive()`** / **`yield()`**:
+
+1. Inicia un `runBlocking`.
+2. Lanza una corrutina en `Dispatchers.Default` que ejecute un bucle de cálculo pesado simulado (ej. iterando de 1 a 10).
+3. En cada iteración, verifica `if (!isActive) break` o llama a `ensureActive()`, imprimiendo el progreso y realizando un pequeño trabajo de CPU.
+4. En el hilo principal, espera `150` ms y cancela la corrutina mediante **`job.cancelAndJoin()`**.
+5. Imprime un mensaje final confirmando que la corrutina cooperativa se detuvo limpiamente sin completar las 10 iteraciones.
+
+#### 2. Salida Esperada en Consola
+```text
+Iniciando cálculo intensivo...
+Calculando bloque 1...
+Calculando bloque 2...
+Calculando bloque 3...
+[CANCELACIÓN]: Solicitando cancelación del trabajo...
+[LIMPIEZA]: Corrutina cancelada limpiamente tras el bloque 3.
+Fin de la prueba de cancelación cooperativa.
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b05_corrutinas
+
+    import kotlinx.coroutines.*
+
+    fun main() = runBlocking {
+        println("Iniciando cálculo intensivo...")
+
+        val job = launch(Dispatchers.Default) {
+            try {
+                for (bloque in 1..10) {
+                    // Verificación cooperativa: si el job fue cancelado, ensureActive lanza CancellationException:
+                    ensureActive()
+
+                    println("Calculando bloque $bloque...")
+                    Thread.sleep(50) // Simulación de cómputo intensivo de CPU
+                }
+                println("Cálculo completado en su totalidad.")
+            } catch (e: CancellationException) {
+                println("[LIMPIEZA]: Corrutina cancelada limpiamente antes de terminar.")
+            }
+        }
+
+        delay(130)
+        println("[CANCELACIÓN]: Solicitando cancelación del trabajo...")
+        job.cancelAndJoin()
+
+        println("Fin de la prueba de cancelación cooperativa.")
+    }
+    ```
+
+---
+
+### Reto 5.14: Carrera Espacial Galáctica (*Space Grand Prix*)
 📄 **Archivo:** `Reto05_CarreraEspacial.kt`  
 📚 **Teoría de referencia:** [Constructores de Corrutinas: launch](../51-corrutinas.md#41-launch-lanzar-y-olvidar-fire-and-forget) y [StateFlow y SharedFlow](../52-flows.md#4-stateflow-el-rey-de-la-arquitectura-en-android-y-compose)
 

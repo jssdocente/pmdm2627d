@@ -14,82 +14,164 @@ Kotlin no dispone de la palabra clave `static`. En su lugar, aborda estas necesi
 
 ## 1. Declaración de Objetos: El Patrón Singleton Nativo
 
-En Kotlin, crear un Singleton seguro ante hilos (*Thread-Safe*) y con inicialización perezosa (*Lazy Initialization*) solo requiere cambiar la palabra clave `class` por `object`:
+### ¿Qué es el Patrón Singleton y qué problema resuelve?
 
-```kotlin
-object GestorSesion {
-    var usuarioActivo: String? = null
-    var tokenAutenticacion: String? = null
+El patrón **Singleton** es uno de los patrones creacionales clásicos descritos por la "Banda de los Cuatro" (GoF). Su propósito fundamental es:
 
-    fun estaAutenticado(): Boolean = tokenAutenticacion != null
+1. **Garantizar que una clase tenga una única instancia** en toda la memoria de la aplicación durante su ciclo de vida.
 
-    fun cerrarSesion() {
-        usuarioActivo = null
-        tokenAutenticacion = null
-        println("Sesión cerrada con éxito.")
-    }
-}
+2. **Proporcionar un punto de acceso global** a dicha instancia sin requerir pasarla manualmente por cada constructor o parámetro.
 
-fun main() {
-    // Se accede directamente por su nombre, sin instanciar (no hay constructor)
-    GestorSesion.usuarioActivo = "mario_bros"
-    GestorSesion.tokenAutenticacion = "JWT_SECURE_TOKEN_888"
+Se utiliza habitualmente para gestionar recursos compartidos costosos: una base de datos local, un cliente de red, un gestor de configuración o una caché en memoria.
 
-    println("¿Logueado? ${GestorSesion.estaAutenticado()}") // true
-    GestorSesion.cerrarSesion()
-}
-```
-
-### Características de una Declaración de Objeto:
-
-- **Instancia única:** El compilador garantiza que existirá exactamente una sola instancia en toda la memoria de la aplicación.
-- **Sin constructores:** No puede tener constructor primario ni secundario (no se puede instanciar con `()`).
-- **Puede heredar e implementar interfaces:** Puede heredar de clases abiertas e implementar contratos de interfaces.
+!!! info "Referencia Externa: Patrón Singleton en la Industria"
+    Para conocer a fondo el diagrama UML, su aplicabilidad teórica y sus variantes en distintos lenguajes, puedes consultar la guía interactiva de [Refactoring Guru: Patrón Singleton](https://refactoring.guru/es/design-patterns/singleton).
 
 ---
 
-## 2. El Objeto Compañero (*Companion Object*)
+### La Pesadilla de Java vs la Solución Nativa de Kotlin
 
-Dado que en Kotlin no existe `static`, ¿dónde colocamos las constantes globales, las etiquetas de *logging* (`TAG`) o los métodos factoría que en Java pertenecían a la clase y no a la instancia?
+En Java, implementar un Singleton *Thread-Safe* (seguro ante múltiples hilos de ejecución concurrentes) requiere escribir una gran cantidad de código propenso a errores (*Double-Checked Locking* con variables `volatile` y bloques `synchronized`).
 
-La respuesta es el **`companion object`**: un objeto especial que se declara dentro de una clase y cuyos miembros pueden invocarse directamente utilizando el nombre de la clase contenedora:
+En Kotlin, el compilador y la JVM lo resuelven de forma **nativa y segura con una sola palabra reservada: `object`**:
+
+=== "Kotlin (Nativo con `object`)"
+    ```kotlin
+    // El compilador genera automáticamente una clase final con una instancia estática única
+    // y la inicializa de forma perezosa y segura ante hilos durante la carga de clases.
+    object GestorSesion {
+        var usuarioActivo: String? = null
+        var tokenAutenticacion: String? = null
+
+        fun estaAutenticado(): Boolean = tokenAutenticacion != null
+
+        fun cerrarSesion() {
+            usuarioActivo = null
+            tokenAutenticacion = null
+            println("Sesión cerrada con éxito.")
+        }
+    }
+
+    fun main() {
+        // Se accede directamente por su nombre, sin instanciar con () ni llamar a getInstance()
+        GestorSesion.usuarioActivo = "mario_bros"
+        GestorSesion.tokenAutenticacion = "JWT_SECURE_TOKEN_888"
+
+        println("¿Logueado? ${GestorSesion.estaAutenticado()}") // true
+        GestorSesion.cerrarSesion()
+    }
+    ```
+
+=== "Java (Boilerplate y Doble Bloqueo Sincronizado)"
+    ```java
+    public class GestorSesionJava {
+        // 1. Variable estática única marcada como volatile para evitar problemas de caché de CPU
+        private static volatile GestorSesionJava instance;
+
+        private String usuarioActivo;
+        private String tokenAutenticacion;
+
+        // 2. Constructor privado para impedir que nadie haga 'new GestorSesionJava()'
+        private GestorSesionJava() {}
+
+        // 3. Método de acceso global con doble bloqueo sincronizado (Double-Checked Locking)
+        public static GestorSesionJava getInstance() {
+            if (instance == null) {
+                synchronized (GestorSesionJava.class) {
+                    if (instance == null) {
+                        instance = new GestorSesionJava();
+                    }
+                }
+            }
+            return instance;
+        }
+
+        public boolean estaAutenticado() {
+            return tokenAutenticacion != null;
+        }
+
+        public void cerrarSesion() {
+            this.usuarioActivo = null;
+            this.tokenAutenticacion = null;
+            System.out.println("Sesión cerrada con éxito.");
+        }
+    }
+    ```
+
+### Características Clave de una Declaración de Objeto en Kotlin:
+
+- **Instancia única garantizada:** El compilador asegura que existirá exactamente una sola instancia en toda la memoria de la aplicación.
+- **Sin constructores:** No puede tener constructores primarios ni secundarios; no se puede hacer `GestorSesion()`.
+- **Herencia e interfaces:** Puede heredar de clases abiertas (`open class`) e implementar interfaces (`interface`), lo que permite que un Singleton actúe como implementación concreta de un contrato.
+
+!!! warning "Cuidado con el Antipatrón: Estado Global Mutable y Testing"
+    Aunque `object` es extremadamente cómodo, abusar de Singletons para guardar **estado mutable global** se considera un *antipatrón* en aplicaciones móviles grandes:
+
+    - **Acoplamiento oculto:** Cualquier parte de la app puede modificar el estado sin que las demás se enteren.
+    - **Imposible de testear con Mocks:** En pruebas unitarias, no puedes sustituir fácilmente un `object` por una implementación falsa de prueba (*Mock*).
+
+    En Android moderno, la alternativa arquitectural recomendada es **gestionar el ciclo de vida de instancias únicas mediante Inyección de Dependencias** (usando la función `single { ... }` de **Koin** o Hilt), como veremos en el bloque de Arquitectura.
+
+---
+
+## 2. El Objeto Compañero (*Companion Object*) y el Patrón Factory Method
+
+Dado que en Kotlin no existe la palabra reservada `static`, ¿dónde colocamos las constantes globales, las etiquetas de *logging* (`TAG`) o los métodos factoría que en Java pertenecían a la clase y no a la instancia?
+
+La respuesta es el **`companion object`**: un objeto especial que se declara dentro de una clase y cuyos miembros pueden invocarse directamente utilizando el nombre de la clase contenedora.
+
+### El Patrón Factory Method (Método Factoría)
+
+Uno de los usos más elegantes y profesionales del `companion object` es implementar el patrón **Factory Method**: en lugar de permitir la instanciación directa mediante constructores públicos ambiguos, la clase define su constructor como `private` y expone métodos factoría estáticos con nombres semánticos que describen claramente la variante que se está construyendo.
+
+!!! info "Referencia Externa: Patrón Factory Method"
+    Puedes consultar la explicación conceptual, estructura y casos de uso del patrón en [Refactoring Guru: Patrón Factory Method](https://refactoring.guru/es/design-patterns/factory-method). Para explorar más soluciones estructurales, consulta el catálogo completo de [Refactoring Guru: Patrones de Diseño](https://refactoring.guru/es/design-patterns).
 
 ```kotlin
-class ClienteHttp(val urlBase: String) {
+class ClienteHttp private constructor(val urlBase: String, val timeoutSegundos: Int) {
 
-    // Miembros asociados a la clase (equivalente conceptual a 'static' en Java)
+    // Miembros asociados a la clase (equivalente conceptual y superior a 'static' en Java)
     companion object {
         const val TAG = "CLIENTE_HTTP_LOG"
-        const val TIMEOUT_SEGUNDOS = 30
+        private const val TIMEOUT_DEFECTO = 30
 
-        // Método factoría para crear instancias preconfiguradas
+        // Factoría 1: Cliente preconfigurado para producción
         fun crearParaProduccion(): ClienteHttp {
-            println("[$TAG]: Creando cliente para entorno de producción")
-            return ClienteHttp("https://api.gamevault.com/v1")
+            println("[$TAG]: Inicializando cliente seguro de Producción")
+            return ClienteHttp(urlBase = "https://api.gamevault.com/v1", timeoutSegundos = TIMEOUT_DEFECTO)
+        }
+
+        // Factoría 2: Cliente preconfigurado para entorno local de pruebas (Mock)
+        fun crearParaDesarrolloLocal(puerto: Int = 8080): ClienteHttp {
+            println("[$TAG]: Inicializando cliente para pruebas locales en puerto $puerto")
+            return ClienteHttp(urlBase = "http://10.0.2.2:$puerto", timeoutSegundos = 5)
         }
     }
 
     fun realizarPeticion(endpoint: String) {
-        println("Conectando a: $urlBase/$endpoint")
+        println("Conectando a: $urlBase/$endpoint (Timeout: ${timeoutSegundos}s)")
     }
 }
 
 fun main() {
-    // Acceso directo a constantes y métodos del companion object sin crear instancias:
-    println("Timeout configurado: ${ClienteHttp.TIMEOUT_SEGUNDOS} segundos")
+    // Acceso directo a constantes del companion object sin crear instancias:
     println("Tag para Logcat: ${ClienteHttp.TAG}")
 
-    // Invocación del método factoría:
+    // Invocación expresiva de los Métodos Factoría:
     val clienteProd = ClienteHttp.crearParaProduccion()
     clienteProd.realizarPeticion("juegos")
+
+    val clienteMock = ClienteHttp.crearParaDesarrolloLocal(8080)
+    clienteMock.realizarPeticion("usuarios/test")
 }
 ```
 
 !!! tip "Uso habitual en Android"
-    En el desarrollo Android, el `companion object` se utiliza de forma constante para:
+    En el desarrollo Android, el `companion object` y el patrón Factory Method se utilizan de forma constante para:
 
     - Definir la constante `TAG` de cada clase para filtrar mensajes en el **Logcat**.
-    - Definir métodos `newInstance()` para crear `Fragments`.
+    - Implementar el patrón `newInstance()` para crear `Fragments` con argumentos empaquetados en un `Bundle`.
+    - Definir métodos factoría en clases de datos (`User.fromDto(apiDto)`).
     - Definir constantes de argumentos de navegación en Jetpack Compose (`const val ARG_GAME_ID = "gameId"`).
 
 ---

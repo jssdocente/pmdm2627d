@@ -14,6 +14,640 @@ Ubicación en tu proyecto: `src/main/kotlin/b02_funciones_lambdas/`
 
 ---
 
+## 🌱 Fase 0: Calentamiento Guiado (Gimnasio de Sintaxis)
+
+Esta fase contiene **15 micro-ejercicios atómicos** diseñados para que interiorices el sistema de tipos seguros ante nulos (*Null Safety*), domines el operador Elvis en cascada y mecanices las funciones idiomáticas antes de construir lógica compleja.
+
+📁 **Archivos de trabajo para esta fase:**  
+
+- `E00_CalentamientoNullSafety.kt` (Niveles 1 y 2)  
+- `E00_CalentamientoFunciones.kt` (Nivel 3)  
+Ubicados en: `src/main/kotlin/b02_funciones_lambdas/`
+
+---
+
+### 🔹 Nivel 1: Null Safety y Llamadas Seguras
+
+#### Ejercicio 0.1: Tipos No Nulos vs Nulos (`String` vs `String?`)
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Tipos Nulables vs No Nulables](../14-null-safety.md#1-tipos-nulables-vs-no-nulables)
+
+##### 1. Concepto y Código Resuelto
+En Java, cualquier objeto puede ser `null`, lo que genera el infame `NullPointerException` (el "error del billón de dólares"). En Kotlin, las variables no pueden ser nulas por defecto; para permitir nulos, debe agregarse explícitamente `?` al tipo.
+
+=== "Kotlin"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        // Tipo no nulo: el compilador garantiza que NUNCA contendrá null
+        val tituloJuego: String = "Elden Ring"
+        // tituloJuego = null // ❌ ERROR DE COMPILACIÓN
+
+        // Tipo nulo: explicitly declaramos que puede no tener valor
+        var subtitulo: String? = "Shadow of the Erdtree"
+        println("Título: $tituloJuego | Subtítulo: $subtitulo")
+
+        subtitulo = null // ✅ Válido porque es String?
+        println("Título: $tituloJuego | Subtítulo tras borrar: $subtitulo")
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class NullSafetyJava {
+        public static void main(String[] args) {
+            // En Java no hay distinción a nivel de compilador entre variables seguras y nulas:
+            String tituloJuego = "Elden Ring";
+            String subtitulo = "Shadow of the Erdtree";
+
+            subtitulo = null; // Válido en Java, pero puede lanzar NullPointerException en cualquier llamada posterior
+            System.out.println("Subtítulo longitud: " + subtitulo.length()); // 💥 CRASH: NullPointerException
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Título: Elden Ring | Subtítulo: Shadow of the Erdtree
+Título: Elden Ring | Subtítulo tras borrar: null
+```
+
+---
+
+#### Ejercicio 0.2: Operador de Llamada Segura (`?.`)
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Llamada Segura (?. )](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
+
+##### 1. Concepto y Código Resuelto
+En lugar de escribir engorrosos bloques `if (variable != null)` para proteger cada acceso a propiedad o método, Kotlin utiliza `?.`. Si la referencia es nula, no se produce error: simplemente evalúa la expresión completa a `null`.
+
+=== "Kotlin"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        val apodo: String? = null
+
+        // Llamada segura: si 'apodo' es null, no lanza excepción; devuelve null
+        val longitud: Int? = apodo?.length
+        println("Longitud calculada con seguridad: $longitud")
+
+        val apodoMayus: String? = apodo?.uppercase()
+        println("Texto en mayúsculas: $apodoMayus")
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class SafeCallJava {
+        public static void main(String[] args) {
+            String apodo = null;
+
+            // En Java requiere comprobaciones defensivas constantes:
+            Integer longitud = null;
+            if (apodo != null) {
+                longitud = apodo.length();
+            }
+            System.out.println("Longitud calculada con seguridad: " + longitud);
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Longitud calculada con seguridad: null
+Texto en mayúsculas: null
+```
+
+---
+
+#### Ejercicio 0.3: Encadenamiento de Llamadas Seguras
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Encadenamiento de Operadores Seguros](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
+
+##### 1. Enunciado y Requisitos
+Dadas tres clases sencillas anidadas:
+```kotlin
+class Arma(val nombre: String)
+class Inventario(val armaEquipada: Arma?)
+class Jugador(val inventario: Inventario?)
+```
+
+1. Instancia un jugador con inventario nulo: `val p1 = Jugador(inventario = null)`.
+2. Instancia un jugador con inventario y arma: `val p2 = Jugador(Inventario(Arma("Espada Maestra")))`.
+3. Obtén el nombre del arma en una sola línea encadenando llamadas seguras `p1.inventario?.armaEquipada?.nombre`.
+
+##### 2. Salida Esperada
+```text
+Arma jugador 1: null
+Arma jugador 2: Espada Maestra
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    class Arma(val nombre: String)
+    class Inventario(val armaEquipada: Arma?)
+    class Jugador(val inventario: Inventario?)
+
+    fun main() {
+        val p1 = Jugador(inventario = null)
+        val p2 = Jugador(Inventario(Arma("Espada Maestra")))
+
+        println("Arma jugador 1: ${p1.inventario?.armaEquipada?.nombre}")
+        println("Arma jugador 2: ${p2.inventario?.armaEquipada?.nombre}")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.4: Conversión Segura a Entero con `.toIntOrNull()`
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Conversiones Numéricas](../11-variables-tipos-datos.md)
+
+##### 1. Enunciado y Requisitos
+En Java, `Integer.parseInt("abc")` lanza una excepción no comprobada `NumberFormatException`. En Kotlin, `.toIntOrNull()` devuelve `null` elegantemente si la cadena no es numérica.
+
+1. Prueba a convertir `"2026"` y `"gratis"` usando `.toIntOrNull()`.
+2. Imprime el resultado de ambas conversiones.
+
+##### 2. Salida Esperada
+```text
+Año parseado: 2026
+Precio parseado: null
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        val anio = "2026".toIntOrNull()
+        val precio = "gratis".toIntOrNull()
+
+        println("Año parseado: $anio")
+        println("Precio parseado: $precio")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.5: Casteo Seguro con `as?` (Evitando ClassCastException)
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Casteo Seguro: as?](../14-null-safety.md#4-casteo-seguro-as)
+
+##### 1. Enunciado y Requisitos
+
+1. Declara una variable `val datoGenerico: Any = 12345` (un entero almacenado como `Any`).
+2. Intenta castearlo a `String` de forma forzada usando `as String` dentro de un comentario explicando por qué fallaría.
+3. Utiliza el operador de casteo seguro **`as? String`**, que devolverá `null` en lugar de romper el programa.
+
+##### 2. Salida Esperada
+```text
+Resultado de casteo seguro a String: null
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        val datoGenerico: Any = 12345
+
+        // val textoForzado: String = datoGenerico as String // ❌ CRASH: ClassCastException (Integer cannot be cast to String)
+        val textoSeguro: String? = datoGenerico as? String
+
+        println("Resultado de casteo seguro a String: $textoSeguro")
+    }
+    ```
+
+---
+
+### 🔹 Nivel 2: El Operador Elvis (`?:`) y Series Concatenadas
+
+#### Ejercicio 0.6: El Operador Elvis Básico (Valor de Respaldo)
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Operador Elvis (?:)](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
+
+##### 1. Concepto y Código Resuelto
+El operador Elvis `?:` toma el valor de la izquierda si no es nulo; si la izquierda es nula, evalúa y devuelve la expresión de la derecha.
+
+=== "Kotlin"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        val bioRecibida: String? = null
+
+        // Si bioRecibida es null, se asigna el valor de fallback:
+        val biografia = bioRecibida ?: "Sin biografía disponible."
+        println("Perfil: $biografia")
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class ElvisBasicoJava {
+        public static void main(String[] args) {
+            String bioRecibida = null;
+
+            // En Java requiere operador ternario comprobando != null:
+            String biografia = (bioRecibida != null) ? bioRecibida : "Sin biografía disponible.";
+            System.out.println("Perfil: " + biografia);
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Perfil: Sin biografía disponible.
+```
+
+---
+
+#### Ejercicio 0.7: Serie de 2 Operadores Elvis Concatenados
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Encadenamiento de Operadores Elvis](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
+
+##### 1. Enunciado y Requisitos
+Un sistema de autenticación intenta identificar al usuario con la siguiente prioridad:
+
+1. `nombrePerfil`
+2. `emailRegistro`
+3. Si ambos son nulos, `"Invitado"`
+
+Declara `val nombrePerfil: String? = null` y `val emailRegistro: String? = "gamer@pmdm.es"`. Resuélvelo en una sola línea encadenando dos operadores Elvis.
+
+##### 2. Salida Esperada
+```text
+Usuario autenticado: gamer@pmdm.es
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        val nombrePerfil: String? = null
+        val emailRegistro: String? = "gamer@pmdm.es"
+
+        // Cascada de 2 operadores Elvis:
+        val usuarioFinal: String = nombrePerfil ?: emailRegistro ?: "Invitado"
+
+        println("Usuario autenticado: $usuarioFinal")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.8: Serie de 3 Operadores Elvis Concatenados
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Encadenamiento de Operadores Elvis](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
+
+##### 1. Enunciado y Requisitos
+Para mostrar el identificador público en un chat multijugador, se consulta:
+
+1. `apodoPersonalizado: String?`
+2. `nickCuenta: String?`
+3. `telefonoAnonimizado: String?`
+4. Valor por defecto: `"Jugador Anónimo"`
+
+Simula que las tres primeras variables son nulas y comprueba que se aplica el valor final. Luego asigna un valor a `nickCuenta` y comprueba que se detiene en el primer no nulo.
+
+##### 2. Salida Esperada
+```text
+Identificador en chat: Jugador Anónimo
+Identificador tras registrar cuenta: PixelHero99
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        var apodoPersonalizado: String? = null
+        var nickCuenta: String? = null
+        var telefonoAnonimizado: String? = null
+
+        // Cascada de 3 operadores Elvis:
+        var tagVisible = apodoPersonalizado ?: nickCuenta ?: telefonoAnonimizado ?: "Jugador Anónimo"
+        println("Identificador en chat: $tagVisible")
+
+        nickCuenta = "PixelHero99"
+        tagVisible = apodoPersonalizado ?: nickCuenta ?: telefonoAnonimizado ?: "Jugador Anónimo"
+        println("Identificador tras registrar cuenta: $tagVisible")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.9: Serie de 4 Operadores Elvis Concatenados (Resolución de Configuración)
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Encadenamiento de Operadores Elvis](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
+
+##### 1. Enunciado y Requisitos
+Un cliente de base de datos determina el host del servidor comprobando en estricto orden de prioridad:
+
+1. `hostArgumentoCLI: String?`
+2. `hostVariableEntorno: String?`
+3. `hostFicheroConfiguracion: String?`
+4. `hostPreferenciaUsuario: String?`
+5. Host local definitivo: `"127.0.0.1"`
+
+Configura el escenario donde solo `hostFicheroConfiguracion = "db.internal.gamevault.com"` tiene valor y resuelve el host final en una sola expresión.
+
+##### 2. Salida Esperada
+```text
+Host seleccionado para la conexión: db.internal.gamevault.com
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        val hostArgumentoCLI: String? = null
+        val hostVariableEntorno: String? = null
+        val hostFicheroConfiguracion: String? = "db.internal.gamevault.com"
+        val hostPreferenciaUsuario: String? = null
+
+        // Cascada de 4 operadores Elvis concatenados:
+        val hostFinal: String = hostArgumentoCLI
+            ?: hostVariableEntorno
+            ?: hostFicheroConfiguracion
+            ?: hostPreferenciaUsuario
+            ?: "127.0.0.1"
+
+        println("Host seleccionado para la conexión: $hostFinal")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.10: Elvis como Cláusula de Guarda y Excepción
+📄 **Archivo:** `E00_CalentamientoNullSafety.kt`  
+📚 **Teoría de referencia:** [Operador Elvis como Cláusula de Guarda](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
+
+##### 1. Enunciado y Requisitos
+A la derecha de un operador Elvis se puede colocar una expresión de tipo `Nothing`, como `return` (para salir de una función) o `error(...)` (para lanzar `IllegalStateException`).
+
+1. Crea una función `procesarToken(token: String?)`.
+2. Utiliza el operador Elvis para guardar en `val tokenValido` el token recibido, o ejecuta `return` anticipado con un mensaje de aviso si es nulo.
+3. Comprueba el comportamiento invocándola con `null` y con `"TOKEN_XYZ"`.
+
+##### 2. Salida Esperada
+```text
+[ERROR]: Token nulo. Proceso abortado.
+[OK]: Procesando token válido: TOKEN_XYZ
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun procesarToken(token: String?) {
+        // Cláusula de guarda con Elvis y bloque run con return:
+        val tokenValido = token ?: run {
+            println("[ERROR]: Token nulo. Proceso abortado.")
+            return
+        }
+
+        println("[OK]: Procesando token válido: $tokenValido")
+    }
+
+    fun main() {
+        procesarToken(null)
+        procesarToken("TOKEN_XYZ")
+    }
+    ```
+
+---
+
+### 🔹 Nivel 3: Funciones Idiomáticas y Lambdas
+
+#### Ejercicio 0.11: Parámetros con Valores por Defecto
+📄 **Archivo:** `E00_CalentamientoFunciones.kt`  
+📚 **Teoría de referencia:** [Valores por Defecto](../13-funciones-lambdas.md#13-parametros-con-valores-por-defecto-y-argumentos-con-nombre)
+
+##### 1. Concepto y Código Resuelto
+En Java, ofrecer variantes de un método requiere escribir múltiples sobrecargas (*overloads*) que se llaman entre sí (*telescoping methods*). En Kotlin, basta asignar valores por defecto en la cabecera.
+
+=== "Kotlin"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    // Una sola función cubre todos los casos posibles de invocación:
+    fun conectarServidor(host: String = "localhost", puerto: Int = 8080, ssl: Boolean = false) {
+        val protocolo = if (ssl) "https" else "http"
+        println("Conectando a: $protocolo://$host:$puerto")
+    }
+
+    fun main() {
+        conectarServidor()                                  // Usa todos los valores por defecto
+        conectarServidor("api.gamevault.es")                // Personaliza solo el host
+        conectarServidor("api.gamevault.es", 443, true)    // Personaliza todos los parámetros
+    }
+    ```
+
+=== "Java (Sobrecarga de Métodos)"
+    ```java
+    public class DefaultParamsJava {
+        // En Java se requieren 3 métodos sobrecargados:
+        public static void conectarServidor() {
+            conectarServidor("localhost", 8080, false);
+        }
+
+        public static void conectarServidor(String host) {
+            conectarServidor(host, 8080, false);
+        }
+
+        public static void conectarServidor(String host, int puerto, boolean ssl) {
+            String protocolo = ssl ? "https" : "http";
+            System.out.println("Conectando a: " + protocolo + "://" + host + ":" + puerto);
+        }
+
+        public static void main(String[] args) {
+            conectarServidor();
+            conectarServidor("api.gamevault.es");
+            conectarServidor("api.gamevault.es", 443, true);
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Conectando a: http://localhost:8080
+Conectando a: http://api.gamevault.es:8080
+Conectando a: https://api.gamevault.es:443
+```
+
+---
+
+#### Ejercicio 0.12: Argumentos con Nombre (*Named Arguments*)
+📄 **Archivo:** `E00_CalentamientoFunciones.kt`  
+📚 **Teoría de referencia:** [Argumentos con Nombre](../13-funciones-lambdas.md#13-parametros-con-valores-por-defecto-y-argumentos-con-nombre)
+
+##### 1. Concepto y Código Resuelto
+En llamadas a métodos con múltiples booleanos o enteros (ej. `crearVentana(true, false, false, true)`), Java resulta ilegible sin mirar la documentación. En Kotlin, se puede indicar el nombre del argumento y alterar el orden a conveniencia.
+
+=== "Kotlin"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun configurarBoton(texto: String, visible: Boolean = true, habilitado: Boolean = true, color: String = "Azul") {
+        println("Botón '$texto' -> Visible: $visible, Habilitado: $habilitado, Color: $color")
+    }
+
+    fun main() {
+        // Invocación alterando el orden y usando nombres de argumento explícitos (estilo Jetpack Compose):
+        configurarBoton(
+            color = "Rojo",
+            texto = "Eliminar Partida",
+            habilitado = false
+        )
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class NamedArgsJava {
+        // En Java no existen los argumentos con nombre; el orden posicional es estricto y ciego:
+        public static void main(String[] args) {
+            // El lector no sabe qué significa cada boolean sin consultar el método:
+            configurarBoton("Eliminar Partida", true, false, "Rojo");
+        }
+
+        public static void configurarBoton(String texto, boolean visible, boolean habilitado, String color) {
+            System.out.println("Botón '" + texto + "' -> Visible: " + visible + ", Habilitado: " + habilitado + ", Color: " + color);
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Botón 'Eliminar Partida' -> Visible: true, Habilitado: false, Color: Rojo
+```
+
+---
+
+#### Ejercicio 0.13: Funciones de Expresión Única (`=`)
+📄 **Archivo:** `E00_CalentamientoFunciones.kt`  
+📚 **Teoría de referencia:** [Funciones de Expresión Única](../13-funciones-lambdas.md#12-funciones-de-expresion-unica-single-expression-functions)
+
+##### 1. Enunciado y Requisitos
+
+1. Declara en una sola línea con `=` una función `esMayorDeEdad(edad: Int): Boolean`.
+2. Declara en una sola línea una función `calcularPrecioConIva(precioBase: Double): Double` (aplicando el 21%).
+3. Comprueba ambas funciones desde `main()`.
+
+##### 2. Salida Esperada
+```text
+¿Edad 20 es mayor de edad?: true
+Precio con IVA de 50.0€: 60.5€
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun esMayorDeEdad(edad: Int): Boolean = edad >= 18
+
+    fun calcularPrecioConIva(precioBase: Double): Double = precioBase * 1.21
+
+    fun main() {
+        println("¿Edad 20 es mayor de edad?: ${esMayorDeEdad(20)}")
+        println("Precio con IVA de 50.0€: ${calcularPrecioConIva(50.0)}€")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.14: El Modismo `objeto?.let { }`
+📄 **Archivo:** `E00_CalentamientoFunciones.kt`  
+📚 **Teoría de referencia:** [El Modismo objeto?.let](../14-null-safety.md#5-el-modismo-estrella-en-android-objetolet)
+
+##### 1. Enunciado y Requisitos
+
+1. Declara una variable `val correoUsuario: String? = "alumno@ies.es"`.
+2. Utiliza `correoUsuario?.let { ... }` para ejecutar una simulación de envío de correo únicamente cuando no sea nulo.
+3. Dentro del bloque, el valor seguro se referencia con el parámetro implícito `it`.
+4. Asigna `null` a la variable y verifica que el bloque no se ejecuta.
+
+##### 2. Salida Esperada
+```text
+Enviando código de verificación a: alumno@ies.es
+(Con correo nulo no se imprime nada)
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun main() {
+        var correoUsuario: String? = "alumno@ies.es"
+
+        correoUsuario?.let {
+            println("Enviando código de verificación a: $it")
+        }
+
+        correoUsuario = null
+        correoUsuario?.let {
+            println("Esto nunca se imprimirá porque es nulo: $it")
+        }
+    }
+    ```
+
+---
+
+#### Ejercicio 0.15: *Trailing Lambda* y el Parámetro Implícito `it`
+📄 **Archivo:** `E00_CalentamientoFunciones.kt`  
+📚 **Teoría de referencia:** [Sintaxis de Trailing Lambda](../13-funciones-lambdas.md#23-sintaxis-de-lambda-colgante-trailing-lambda-syntax)
+
+##### 1. Enunciado y Requisitos
+En Kotlin, si el último parámetro de una función es una lambda, las llaves `{ }` se pueden colocar **fuera de los paréntesis** `()`. Si además la lambda tiene un único parámetro, este se nombra automáticamente como `it`.
+
+1. Define una función `repetirAccion(veces: Int, accion: (Int) -> Unit)`.
+2. Invócala utilizando la sintaxis de *trailing lambda* imprimiendo `Paso actual: $it`.
+
+##### 2. Salida Esperada
+```text
+Paso actual: 1
+Paso actual: 2
+Paso actual: 3
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun repetirAccion(veces: Int, accion: (Int) -> Unit) {
+        for (i in 1..veces) {
+            accion(i) // Invocación de la lambda recibida
+        }
+    }
+
+    fun main() {
+        // Sintaxis de Trailing Lambda: las llaves van fuera de los paréntesis
+        repetirAccion(3) {
+            println("Paso actual: $it")
+        }
+    }
+    ```
+
+---
+
 ## 🟢 Nivel Básico (Funciones, Parámetros y Lambdas Simples)
 
 ### Ejercicio 2.1: Funciones de Expresión Única y Argumentos con Nombre
@@ -628,9 +1262,117 @@ Precio del pase de batalla: 19.99 €
 
 ---
 
+### Ejercicio 2.14: La "Trilogía de Nulabilidad" en Colecciones
+📄 **Archivo:** `E14_ColeccionesNullables.kt`  
+📚 **Teoría de referencia:** [Null Safety en Colecciones](../14-null-safety.md)
+
+#### 1. Enunciado y Requisitos
+Al consumir APIs REST o bases de datos móviles, la nulabilidad en colecciones tiene dos dimensiones ortogonales:
+
+1. **`List<String?>`:** La lista existe con seguridad (no es nula), pero puede albergar elementos nulos en su interior.
+2. **`List<String>?`:** La lista completa puede ser nula (no existir), pero si existe, todos sus elementos son cadenas válidas.
+3. **`List<String?>?`:** La lista completa puede ser nula, y si existe, sus elementos también pueden ser nulos.
+
+Simula la recepción de un JSON de servidor:
+
+1. Declara `val listaElementosNulos: List<String?> = listOf("Zelda", null, "Mario", null, "Metroid")`.
+2. Utiliza la función idiomática **`.filterNotNull()`** para obtener una lista limpia de tipo `List<String>`.
+3. Declara una función `procesarListaOpcional(lista: List<String>?)` que utilice el operador de llamada segura `?.` y Elvis `?:` para imprimir el tamaño de la lista o `"Lista ausente (null)"`.
+
+#### 2. Salida Esperada en Consola
+```text
+Lista original con nulos: [Zelda, null, Mario, null, Metroid]
+Lista depurada con filterNotNull: [Zelda, Mario, Metroid]
+Tamaño lista existente: 3 elementos
+Tamaño lista ausente: Lista ausente (null)
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    fun procesarListaOpcional(lista: List<String>?) {
+        val resumen = lista?.let { "${it.size} elementos" } ?: "Lista ausente (null)"
+        println("Tamaño lista: $resumen")
+    }
+
+    fun main() {
+        // 1. Lista no nula que contiene elementos nulos:
+        val listaElementosNulos: List<String?> = listOf("Zelda", null, "Mario", null, "Metroid")
+        println("Lista original con nulos: $listaElementosNulos")
+
+        // 2. filterNotNull() descarta los nulos y devuelve un List<String> no nulo:
+        val listaLimpia: List<String> = listaElementosNulos.filterNotNull()
+        println("Lista depurada con filterNotNull: $listaLimpia")
+
+        // 3. Prueba con lista potencialmente nula:
+        print("Tamaño lista existente: ")
+        procesarListaOpcional(listaLimpia)
+
+        print("Tamaño lista ausente: ")
+        procesarListaOpcional(null)
+    }
+    ```
+
+---
+
+### Ejercicio 2.15: El Operador `!!` y Análisis de *Code Smell*
+📄 **Archivo:** `E15_AsercionNoNulaCodeSmell.kt`  
+📚 **Teoría de referencia:** [El Operador de Aserción No Nula (!!)](../14-null-safety.md#3-el-operador-de-asercion-no-nula)
+
+#### 1. Enunciado y Requisitos
+El operador de afirmación `!!` le dice al compilador: *"Sé más que tú; te juro que esta variable no es nula, y si lo es, mátame el programa"*. En la industria se considera un **Code Smell** (código con mal olor) porque reactiva los `NullPointerException` que Kotlin busca erradicar.
+
+1. Declara una función `calcularLongitudPeligrosa(texto: String?): Int` que utilice `texto!!.length`. Comenta en su KDoc por qué está desaconsejada.
+2. Refactoriza esa función a una versión segura `calcularLongitudSegura(texto: String?): Int` utilizando el operador Elvis `?: 0`.
+3. Implementa una tercera variante `calcularLongitudConAsercionSemantica(texto: String?): Int` utilizando la función oficial **`requireNotNull(texto) { "El texto no puede ser nulo en esta operación" }`**, que lanza un `IllegalArgumentException` con mensaje explicativo en lugar de un NPE ciego.
+
+#### 2. Salida Esperada en Consola
+```text
+Longitud segura con Elvis (null -> 0): 0
+Longitud segura con Elvis ("Kotlin" -> 6): 6
+Capturada excepción semántica: El texto no puede ser nulo en esta operación
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada y comparativa"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    // ❌ DESACONSEJADO: Rompe la promesa de seguridad de Kotlin
+    fun calcularLongitudPeligrosa(texto: String?): Int {
+        return texto!!.length // Si texto es null -> java.lang.NullPointerException
+    }
+
+    // ✅ RECOMENDADO 1: Fallback suave con Elvis
+    fun calcularLongitudSegura(texto: String?): Int {
+        return texto?.length ?: 0
+    }
+
+    // ✅ RECOMENDADO 2: Falla rápido con mensaje explicativo de depuración
+    fun calcularLongitudConAsercionSemantica(texto: String?): Int {
+        val seguro = requireNotNull(texto) { "El texto no puede ser nulo en esta operación" }
+        return seguro.length
+    }
+
+    fun main() {
+        println("Longitud segura con Elvis (null -> 0): ${calcularLongitudSegura(null)}")
+        println("Longitud segura con Elvis (\"Kotlin\" -> 6): ${calcularLongitudSegura("Kotlin")}")
+
+        try {
+            calcularLongitudConAsercionSemantica(null)
+        } catch (e: IllegalArgumentException) {
+            println("Capturada excepción semántica: ${e.message}")
+        }
+    }
+    ```
+
+---
+
 ## 🔴 Nivel Avanzado (Reto Lúdico)
 
-### Reto 2.14: El Juego del Ahorcado Funcional (*Hangman con Callbacks y Null Safety*)
+### Reto 2.16: El Juego del Ahorcado Funcional (*Hangman con Callbacks y Null Safety*)
 📄 **Archivo:** `Reto02_AhorcadoJuego.kt`  
 📚 **Teoría de referencia:** [Funciones de Orden Superior](../13-funciones-lambdas.md#3-funciones-de-orden-superior-higher-order-functions) y [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
 

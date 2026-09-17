@@ -16,6 +16,227 @@ Ubicación en tu proyecto: `src/main/kotlin/b04_colecciones/`
 
 ---
 
+## 🌱 Fase 0: Calentamiento Guiado (Gimnasio de Sintaxis)
+
+Esta fase contiene **5 micro-ejercicios atómicos** para mecanizar la inmutabilidad de colecciones en Kotlin, el adiós a los bucles `for` imperativos mediante transformaciones funcionales directas y las primeras funciones de ámbito.
+
+📁 **Archivo de trabajo para esta fase:** `E00_CalentamientoColecciones.kt`  
+Ubicación: `src/main/kotlin/b04_colecciones/`
+
+---
+
+### 🔹 Nivel 1: Listas Inmutables y Transformaciones
+
+#### Ejercicio 0.1: `listOf` Inmutable vs `ArrayList` de Java
+📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
+📚 **Teoría de referencia:** [Creación de Listas: listOf vs mutableListOf](../42-listas.md#1-creacion-de-listas-listof-vs-mutablelistof)
+
+##### 1. Concepto y Código Resuelto
+En Java, las listas son mutables por defecto (`new ArrayList<>()`). En Kotlin, la función estándar `listOf()` crea una lista **estrictamente de solo lectura** (`List<T>`), impidiendo adiciones o modificaciones accidentales.
+
+=== "Kotlin"
+    ```kotlin
+    package b04_colecciones
+
+    fun main() {
+        // Lista inmutable de solo lectura:
+        val consolas = listOf("PlayStation 5", "Nintendo Switch", "Xbox Series X")
+
+        println("Consolas disponibles: $consolas")
+        println("Total catálogo: ${consolas.size} consolas")
+
+        // consolas.add("Steam Deck") // ❌ ERROR DE COMPILACIÓN: No existe método add() en List
+    }
+    ```
+
+=== "Java"
+    ```java
+    import java.util.ArrayList;
+    import java.util.List;
+
+    public class ListasJava {
+        public static void main(String[] args) {
+            // En Java, las listas estándar permiten mutación libre:
+            List<String> consolas = new ArrayList<>();
+            consolas.add("PlayStation 5");
+            consolas.add("Nintendo Switch");
+            consolas.add("Xbox Series X");
+
+            System.out.println("Consolas disponibles: " + consolas);
+            System.out.println("Total catálogo: " + consolas.size() + " consolas");
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Consolas disponibles: [PlayStation 5, Nintendo Switch, Xbox Series X]
+Total catálogo: 3 consolas
+```
+
+---
+
+#### Ejercicio 0.2: `mutableListOf` y el Operador Funcional `+`
+📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
+📚 **Teoría de referencia:** [Inmutabilidad y Adición Funcional (+)](../42-listas.md#3-inmutabilidad-y-adicion-funcional-de-elementos)
+
+##### 1. Enunciado y Requisitos
+En Kotlin se puede crear una lista mutable con `mutableListOf()`, pero también se puede mantener una lista inmutable y generar una **nueva lista** con un elemento añadido usando el operador matemático `+`.
+
+1. Declara `val inventarioBase = listOf("Poción", "Antídoto")`.
+2. Genera `val inventarioAmpliado = inventarioBase + "Elixir Mágico"`.
+3. Muestra ambas listas y comprueba que `inventarioBase` sigue teniendo solo 2 elementos.
+
+##### 2. Salida Esperada
+```text
+Inventario base (intacto): [Poción, Antídoto]
+Inventario ampliado (+): [Poción, Antídoto, Elixir Mágico]
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b04_colecciones
+
+    fun main() {
+        val inventarioBase = listOf("Poción", "Antídoto")
+
+        // El operador '+' no muta la lista original; retorna una nueva lista inmutable:
+        val inventarioAmpliado = inventarioBase + "Elixir Mágico"
+
+        println("Inventario base (intacto): $inventarioBase")
+        println("Inventario ampliado (+): $inventarioAmpliado")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.3: Transformación Declarativa con `.map { }`
+📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
+📚 **Teoría de referencia:** [Transformación con map](../42-listas.md#4-transformaciones-con-map-y-mapindexed)
+
+##### 1. Concepto y Código Resuelto
+En Java tradicional, transformar una lista requiere crear una lista vacía, iterar con un bucle `for` y añadir los elementos convertidos uno a uno. En Kotlin, `.map { }` aplica una transformación elemento a elemento y devuelve la nueva lista en una sola expresión.
+
+=== "Kotlin"
+    ```kotlin
+    package b04_colecciones
+
+    fun main() {
+        val preciosDolares = listOf(10.0, 20.0, 50.0)
+
+        // Convertimos cada precio a Euros aplicando la tasa de cambio con .map:
+        val preciosEuros = preciosDolares.map { it * 0.92 }
+
+        println("Precios originales en USD: $preciosDolares")
+        println("Precios convertidos a EUR: $preciosEuros")
+    }
+    ```
+
+=== "Java (Bucle Tradicional)"
+    ```java
+    import java.util.ArrayList;
+    import java.util.Arrays;
+    import java.util.List;
+
+    public class MapJava {
+        public static void main(String[] args) {
+            List<Double> preciosDolares = Arrays.asList(10.0, 20.0, 50.0);
+
+            // En Java tradicional se requiere bucle manual acumulador:
+            List<Double> preciosEuros = new ArrayList<>();
+            for (Double precio : preciosDolares) {
+                preciosEuros.add(precio * 0.92);
+            }
+
+            System.out.println("Precios originales en USD: " + preciosDolares);
+            System.out.println("Precios convertidos a EUR: " + preciosEuros);
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Precios originales en USD: [10.0, 20.0, 50.0]
+Precios convertidos a EUR: [9.2, 18.4, 46.0]
+```
+
+---
+
+#### Ejercicio 0.4: Filtrado Declarativo con `.filter { }`
+📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
+📚 **Teoría de referencia:** [Filtrado con filter](../42-listas.md#5-filtrado-con-filter-y-variantes)
+
+##### 1. Enunciado y Requisitos
+
+1. Declara `val notas = listOf(4.5, 7.0, 3.2, 9.5, 6.0, 2.0, 8.8)`.
+2. Filtra únicamente los aprobados ($\ge 5.0$) en una lista inmutable `val aprobados`.
+3. Muestra los aprobados y calcula la cantidad total con `.size`.
+
+##### 2. Salida Esperada
+```text
+Notas aprobadas: [7.0, 9.5, 6.0, 8.8] (Total: 4 alumnos)
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b04_colecciones
+
+    fun main() {
+        val notas = listOf(4.5, 7.0, 3.2, 9.5, 6.0, 2.0, 8.8)
+
+        // Filtramos solo los elementos que cumplan el predicado:
+        val aprobados = notas.filter { it >= 5.0 }
+
+        println("Notas aprobadas: $aprobados (Total: ${aprobados.size} alumnos)")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.5: Configuración Fluida con `.apply` y Trazas con `.also`
+📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
+📚 **Teoría de referencia:** [Scope Functions](../31-scope-functions.md)
+
+##### 1. Enunciado y Requisitos
+
+1. Crea una clase mutable sencilla `class PerfilUsuario { var nombre: String = ""; var puntos: Int = 0 }`.
+2. Instancia y configura el objeto en un solo paso utilizando `.apply { ... }`.
+3. Encadena un bloque `.also { ... }` para imprimir un mensaje de traza informando de que el perfil ha sido inicializado.
+
+##### 2. Salida Esperada
+```text
+[TRAZA DE LOG]: Perfil inicializado para Gamer_Pro
+Perfil configurado: Gamer_Pro con 250 puntos
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b04_colecciones
+
+    class PerfilUsuario {
+        var nombre: String = ""
+        var puntos: Int = 0
+    }
+
+    fun main() {
+        val usuario = PerfilUsuario().apply {
+            // 'this' es el objeto configurado:
+            nombre = "Gamer_Pro"
+            puntos = 250
+        }.also {
+            // 'it' es el objeto recién configurado, ideal para logging sin alterar el retorno:
+            println("[TRAZA DE LOG]: Perfil inicializado para ${it.nombre}")
+        }
+
+        println("Perfil configurado: ${usuario.nombre} con ${usuario.puntos} puntos")
+    }
+    ```
+
+---
+
 ## 🟢 Nivel Básico (Colecciones Inmutables y Filtros)
 
 ### Ejercicio 4.1: Inmutabilidad en Listas y el Operador `+`
@@ -698,7 +919,162 @@ Dada una lista con al menos 8 registros de sesiones de diferentes usuarios y jue
 
 ---
 
-### Reto 4.13: Deck Builder RPG (*Saqueo y Forja de Cartas*)
+### Ejercicio 4.13: Particionamiento y Paginación con `.chunked()` y `.windowed()`
+📄 **Archivo:** `E13_ChunkedWindowed.kt`  
+📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-transformaciones-con-map-y-mapindexed)
+
+#### 1. Enunciado y Requisitos
+En aplicaciones móviles con Jetpack Compose, a menudo necesitamos alimentar cuadrículas de $N$ columnas o simular páginas de resultados sin realizar cálculos manuales de sublistas:
+
+1. Declara una lista de 9 títulos de juegos: `val catalogo = listOf("Zelda", "Mario", "Metroid", "Pokemon", "Kirby", "Donkey Kong", "Fire Emblem", "Star Fox", "F-Zero")`.
+2. Utiliza **`.chunked(3)`** para dividir el catálogo en páginas o filas de exactamente 3 juegos por bloque.
+3. Dada una serie temporal de latencias de red en milisegundos `val latencias = listOf(45, 52, 60, 48, 55, 70, 65)`, utiliza **`.windowed(size = 3, step = 1)`** para calcular el promedio móvil de latencia en cada ventana de 3 mediciones consecutivas.
+
+#### 2. Salida Esperada en Consola
+```text
+--- CATÁLOGO PAGINADO EN BLOQUES DE 3 (chunked) ---
+Página 1: [Zelda, Mario, Metroid]
+Página 2: [Pokemon, Kirby, Donkey Kong]
+Página 3: [Fire Emblem, Star Fox, F-Zero]
+
+--- PROMEDIOS MÓVILES DE LATENCIA (windowed) ---
+Ventana [45, 52, 60] -> Media: 52.3 ms
+Ventana [52, 60, 48] -> Media: 53.3 ms
+Ventana [60, 48, 55] -> Media: 54.3 ms
+Ventana [48, 55, 70] -> Media: 57.7 ms
+Ventana [55, 70, 65] -> Media: 63.3 ms
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b04_colecciones
+
+    fun main() {
+        val catalogo = listOf(
+            "Zelda", "Mario", "Metroid",
+            "Pokemon", "Kirby", "Donkey Kong",
+            "Fire Emblem", "Star Fox", "F-Zero"
+        )
+
+        println("--- CATÁLOGO PAGINADO EN BLOQUES DE 3 (chunked) ---")
+        val paginas = catalogo.chunked(3)
+        paginas.forEachIndexed { index, pagina ->
+            println("Página ${index + 1}: $pagina")
+        }
+
+        println("\n--- PROMEDIOS MÓVILES DE LATENCIA (windowed) ---")
+        val latencias = listOf(45, 52, 60, 48, 55, 70, 65)
+        latencias.windowed(size = 3, step = 1).forEach { ventana ->
+            val media = ventana.average()
+            println("Ventana $ventana -> Media: ${"%.1f".format(media)} ms")
+        }
+    }
+    ```
+
+---
+
+### Ejercicio 4.14: Emparejado y Separación de Listas con `.zip()` y `.unzip()`
+📄 **Archivo:** `E14_ZipUnzip.kt`  
+📚 **Teoría de referencia:** [Listas y Operaciones Funcionales](../42-listas.md)
+
+#### 1. Enunciado y Requisitos
+Al sincronizar datos recibidos de dos endpoints independientes (ej. una lista de identificadores y otra de marcadores):
+
+1. Dadas dos listas paralelas:
+    - `val jugadores = listOf("Cloud", "Tifa", "Barret", "Aerith")`
+    - `val niveles = listOf(50, 48, 45, 47)`
+
+2. Utiliza **`.zip()`** para fusionarlas en una lista de pares `List<Pair<String, Int>>` y luego conviértela a un mapa `Map<String, Int>` con `.toMap()`.
+3. Toma una lista de pares de coordenadas `val coordenadas = listOf("X1" to 100, "X2" to 200, "X3" to 300)` y utiliza **`.unzip()`** para desacoplarlas nuevamente en dos listas separadas (una de etiquetas y otra de enteros).
+
+#### 2. Salida Esperada en Consola
+```text
+Pares fusionados con zip: [(Cloud, 50), (Tifa, 48), (Barret, 45), (Aerith, 47)]
+Mapa generado desde pares: {Cloud=50, Tifa=48, Barret=45, Aerith=47}
+Desacoplado con unzip:
+- Etiquetas: [X1, X2, X3]
+- Posiciones: [100, 200, 300]
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b04_colecciones
+
+    fun main() {
+        val jugadores = listOf("Cloud", "Tifa", "Barret", "Aerith")
+        val niveles = listOf(50, 48, 45, 47)
+
+        // zip une ambas listas en una de pares Pair<String, Int>:
+        val pares = jugadores.zip(niveles)
+        println("Pares fusionados con zip: $pares")
+
+        val mapaJugadores = pares.toMap()
+        println("Mapa generado desde pares: $mapaJugadores")
+
+        // unzip separa una lista de pares en dos listas independientes:
+        val coordenadas = listOf("X1" to 100, "X2" to 200, "X3" to 300)
+        val (etiquetas, posiciones) = coordenadas.unzip()
+
+        println("Desacoplado con unzip:")
+        println("- Etiquetas: $etiquetas")
+        println("- Posiciones: $posiciones")
+    }
+    ```
+
+---
+
+### Ejercicio 4.15: Acumuladores Funcionales Puros: `.fold()` frente a `.reduce()`
+📄 **Archivo:** `E15_FoldVsReduce.kt`  
+📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
+
+#### 1. Enunciado y Requisitos
+Las operaciones de reducción permiten condensar una colección en un único valor acumulado:
+
+- **`reduce`:** No recibe valor inicial; toma el primer elemento de la lista como semilla. **Falla con excepción si la lista está vacía**.
+- **`fold`:** Recibe un valor inicial explícito (semilla) y es **seguro ante listas vacías**. Permite acumular hacia un tipo de dato completamente distinto al de los elementos de la lista.
+
+1. Calcula la suma de `val monedas = listOf(10, 25, 50, 100)` con `.reduce { acumulado, num -> acumulado + num }`.
+2. Calcula el total partiendo de un saldo previo de `500` monedas utilizando `.fold(500) { acumulado, num -> acumulado + num }`.
+3. Utiliza `.fold` sobre una lista de nombres `listOf("Mario", "Luigi", "Yoshi")` con semilla `StringBuilder("Resumen: ")` para concatenarlos en una sola cadena con separadores, demostrando cómo el tipo del acumulador puede ser diferente al de los elementos.
+
+#### 2. Salida Esperada en Consola
+```text
+Suma pura con reduce: 185
+Suma con saldo inicial (500) con fold: 685
+Texto acumulado con fold: Resumen: [Mario] [Luigi] [Yoshi]
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b04_colecciones
+
+    fun main() {
+        val monedas = listOf(10, 25, 50, 100)
+
+        // 1. reduce: sin valor inicial (toma el primer elemento):
+        val sumaReduce = monedas.reduce { acc, valor -> acc + valor }
+        println("Suma pura con reduce: $sumaReduce")
+
+        // 2. fold: con valor semilla (500 de saldo previo):
+        val totalFold = monedas.fold(500) { acc, valor -> acc + valor }
+        println("Suma con saldo inicial (500) con fold: $totalFold")
+
+        // 3. fold acumulando hacia un tipo distinto (StringBuilder):
+        val personajes = listOf("Mario", "Luigi", "Yoshi")
+        val textoCompuesto = personajes.fold(StringBuilder("Resumen: ")) { acc, p ->
+            acc.append("[$p] ")
+        }.toString().trim()
+
+        println("Texto acumulado con fold: $textoCompuesto")
+    }
+    ```
+
+---
+
+### Reto 4.16: Deck Builder RPG (*Saqueo y Forja de Cartas*)
 📄 **Archivo:** `Reto04_DeckBuilder.kt`  
 📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles) y [Estudio Detallado de Scope Functions](../31-scope-functions.md#2-estudio-detallado-y-casos-de-uso-en-android)
 

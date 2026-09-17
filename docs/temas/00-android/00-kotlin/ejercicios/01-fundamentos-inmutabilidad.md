@@ -15,6 +15,435 @@ Ubicación en tu proyecto: `src/main/kotlin/b01_fundamentos/`
 
 ---
 
+## 🌱 Fase 0: Calentamiento Guiado (Gimnasio de Sintaxis)
+
+Esta fase inicial de entrenamiento rápido contiene **10 micro-ejercicios atómicos** diseñados para que mecanices la sintaxis fundamental de Kotlin, asimiles la inmutabilidad y experimentes el salto cualitativo respecto a Java.
+
+📁 **Archivo de trabajo para esta fase:** Crea el archivo `E00_CalentamientoFundamentos.kt` dentro de la carpeta `src/main/kotlin/b01_fundamentos/`. Cada ejercicio puede ser una función llamada desde `fun main()`.
+
+---
+
+### 🔹 Nivel 1: Inmutabilidad y Tipado
+
+#### Ejercicio 0.1: Inmutabilidad Estricta (`val` vs `var`)
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Declaración de Variables: val vs var](../11-variables-tipos-datos.md#1-declaracion-de-variables-val-vs-var)
+
+##### 1. Concepto y Código Resuelto
+En Java, las variables son mutables por defecto a menos que se use la palabra clave `final`. En Kotlin, la inmutabilidad es un principio de diseño de primer nivel: se promueve el uso sistemático de `val` (solo lectura) y se restringe `var` a casos estrictamente necesarios.
+
+=== "Kotlin"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        // Referencia inmutable: una vez asignada, su valor no puede cambiar
+        val nombreApp: String = "GameVault"
+
+        // Referencia mutable: permite reasignación en el tiempo
+        var contadorDescargas: Int = 100
+        contadorDescargas += 25
+
+        println("App: $nombreApp | Descargas acumuladas: $contadorDescargas")
+
+        // nombreApp = "OtroNombre" // ❌ ERROR DE COMPILACIÓN: Val cannot be reassigned
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class CalentamientoVariablesJava {
+        public static void main(String[] args) {
+            // En Java se requiere 'final' explícito para declarar inmutabilidad
+            final String nombreApp = "GameVault";
+
+            int contadorDescargas = 100;
+            contadorDescargas += 25;
+
+            System.out.println("App: " + nombreApp + " | Descargas acumuladas: " + contadorDescargas);
+
+            // nombreApp = "OtroNombre"; // ❌ ERROR: cannot assign a value to final variable
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+App: GameVault | Descargas acumuladas: 125
+```
+
+---
+
+#### Ejercicio 0.2: Plantillas de Cadenas (*String Templates*)
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [String Templates](../11-variables-tipos-datos.md#3-cadenas-de-texto-y-plantillas-string-templates)
+
+##### 1. Concepto y Código Resuelto
+En Java, concatenar variables con texto requiere encadenar operadores `+` o invocar métodos de `StringBuilder`. En Kotlin, se interpolan variables directamente con `$variable` y expresiones complejas con `${expresion}`.
+
+=== "Kotlin"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        val usuario = "Link"
+        val vidas = 3
+        val corazonPorVida = 4
+
+        // Interpolación directa y evaluación de expresiones matemáticas en la cadena:
+        val informe = "El héroe $usuario tiene $vidas vidas (Total corazones: ${vidas * corazonPorVida})"
+        println(informe)
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class StringTemplatesJava {
+        public static void main(String[] args) {
+            String usuario = "Link";
+            int vidas = 3;
+            int corazonPorVida = 4;
+
+            // En Java requiere concatenación con '+' o String.format():
+            String informe = "El héroe " + usuario + " tiene " + vidas + " vidas (Total corazones: " + (vidas * corazonPorVida) + ")";
+            System.out.println(informe);
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+El héroe Link tiene 3 vidas (Total corazones: 12)
+```
+
+---
+
+#### Ejercicio 0.3: Tipos Numéricos y Separadores de Lectura
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Tipos de Datos en Kotlin](../11-variables-tipos-datos.md#4-tipos-de-datos-en-kotlin)
+
+##### 1. Enunciado y Requisitos
+
+1. Declara una variable `val monedasOro` con el valor `1_500_000` (utilizando guiones bajos para legibilidad).
+2. Declara una variable `val multiplicadorXP = 1.75f` (forzando tipo `Float` con sufijo `f`).
+3. Muestra ambas variables en consola junto con su tipo inferido accediendo a `::class.simpleName`.
+
+##### 2. Salida Esperada
+```text
+Oro acumulado: 1500000 (Tipo: Int)
+Multiplicador: 1.75 (Tipo: Float)
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        val monedasOro = 1_500_000
+        val multiplicadorXP = 1.75f
+
+        println("Oro acumulado: $monedasOro (Tipo: ${monedasOro::class.simpleName})")
+        println("Multiplicador: $multiplicadorXP (Tipo: ${multiplicadorXP::class.simpleName})")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.4: Conversiones Numéricas Explícitas (Sin Promoción Silenciosa)
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Conversiones Numéricas Explícitas](../11-variables-tipos-datos.md#5-conversiones-numericas-explicitas)
+
+##### 1. Enunciado y Requisitos
+A diferencia de Java, en Kotlin los tipos numéricos menores no se promocionan automáticamente a mayores (un `Int` no se puede asignar directamente a un `Long` para evitar *overflows* silenciosos).
+
+1. Declara `val puntosEnteros: Int = 42`.
+2. Asigna su valor a una variable `puntosLong: Long` utilizando la función de conversión `.toLong()`.
+3. Convierte `puntosEnteros` a decimal `Double` con `.toDouble()` y calcula la mitad exacta.
+
+##### 2. Salida Esperada
+```text
+Puntos en formato Long: 42
+Puntos en formato Double: 42.0 | Mitad exacta: 21.0
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        val puntosEnteros: Int = 42
+
+        // val puntosLongError: Long = puntosEnteros // ❌ No compila sin conversión
+        val puntosLong: Long = puntosEnteros.toLong()
+        val puntosDouble: Double = puntosEnteros.toDouble()
+
+        println("Puntos en formato Long: $puntosLong")
+        println("Puntos en formato Double: $puntosDouble | Mitad exacta: ${puntosDouble / 2}")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.5: Bloques de Texto Multilínea con `.trimIndent()`
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Cadenas Multilínea](../11-variables-tipos-datos.md#3-cadenas-de-texto-y-plantillas-string-templates)
+
+##### 1. Enunciado y Requisitos
+
+1. Declara una cadena multilínea utilizando comillas triples `"""`.
+2. Redacta un cuadro de diálogo de personaje que incluya comillas dobles sin necesidad de caracteres de escape `\"`.
+3. Aplica `.trimIndent()` para eliminar los espacios comunes de sangrado al imprimirlo en consola.
+
+##### 2. Salida Esperada
+```text
+[SABIO ANCIANO]:
+"Es peligroso ir solo, toma esto."
+Objeto recibido: Espada de Madera
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        val objeto = "Espada de Madera"
+        val dialogo = """
+            [SABIO ANCIANO]:
+            "Es peligroso ir solo, toma esto."
+            Objeto recibido: $objeto
+        """.trimIndent()
+
+        println(dialogo)
+    }
+    ```
+
+---
+
+### 🔹 Nivel 2: Expresiones y Control de Flujo
+
+#### Ejercicio 0.6: `if` como Expresión (Sustituto del Operador Ternario)
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Expresiones vs Sentencias](../12-expresiones-vs-sentencias.md#1-expresiones-vs-sentencias)
+
+##### 1. Concepto y Código Resuelto
+En Java, el condicional `if` es una sentencia (*statement*) que no devuelve valor, obligando a usar el operador ternario `condicion ? valor1 : valor2`. En Kotlin, `if` es una **expresión** que devuelve un valor evaluado, haciendo redundante el operador ternario.
+
+=== "Kotlin"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        val salud = 45
+
+        // 'if' devuelve un valor que se asigna directamente a la constante inmutable:
+        val estado = if (salud > 50) "Saludable" else "Crítico"
+
+        println("Estado del héroe: $estado")
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class IfTernarioJava {
+        public static void main(String[] args) {
+            int salud = 45;
+
+            // En Java se requiere el operador ternario ? :
+            String estado = (salud > 50) ? "Saludable" : "Crítico";
+
+            System.out.println("Estado del héroe: " + estado);
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Estado del héroe: Crítico
+```
+
+---
+
+#### Ejercicio 0.7: `when` Básico como Expresión Evaluada
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Estructura When](../12.1-when.md#1-la-estructura-when-el-switch-moderno-de-kotlin)
+
+##### 1. Concepto y Código Resuelto
+El clásico `switch` de Java arrastra problemas históricos (olvido de `break`, caídas en cascada no deseadas). La expresión `when` de Kotlin no requiere `break`, es exhaustiva y puede retornar un valor de forma directa.
+
+=== "Kotlin"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        val tecla = 'W'
+
+        val direccion = when (tecla) {
+            'W', 'w' -> "Avanzar hacia el Norte"
+            'S', 's' -> "Retroceder hacia el Sur"
+            'A', 'a' -> "Girar hacia el Oeste"
+            'D', 'd' -> "Girar hacia el Este"
+            else -> "Quieto (tecla no reconocida)"
+        }
+
+        println("Acción ejecutada: $direccion")
+    }
+    ```
+
+=== "Java (Switch Tradicional)"
+    ```java
+    public class SwitchJava {
+        public static void main(String[] args) {
+            char tecla = 'W';
+            String direccion;
+
+            switch (tecla) {
+                case 'W':
+                case 'w':
+                    direccion = "Avanzar hacia el Norte";
+                    break;
+                case 'S':
+                case 's':
+                    direccion = "Retroceder hacia el Sur";
+                    break;
+                case 'A':
+                case 'a':
+                    direccion = "Girar hacia el Oeste";
+                    break;
+                case 'D':
+                case 'd':
+                    direccion = "Girar hacia el Este";
+                    break;
+                default:
+                    direccion = "Quieto (tecla no reconocida)";
+                    break;
+            }
+
+            System.out.println("Acción ejecutada: " + direccion);
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Acción ejecutada: Avanzar hacia el Norte
+```
+
+---
+
+#### Ejercicio 0.8: `when` con Rangos Numéricos (`in 1..10`)
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Rangos y Progresiones](../12-expresiones-vs-sentencias.md#4-rangos-y-progresiones)
+
+##### 1. Enunciado y Requisitos
+
+1. Declara `val nivelJugador = 17`.
+2. Mediante una expresión `when`, clasifica el rango de nivel en una constante `val rango`:
+    - `1..10` $\rightarrow$ `"Principiante"`
+    - `11..25` $\rightarrow$ `"Intermedio"`
+    - `26..50` $\rightarrow$ `"Veterano"`
+    - `else` $\rightarrow$ `"Maestro Supremo"`
+
+3. Muestra el informe en consola.
+
+##### 2. Salida Esperada
+```text
+Nivel 17 clasificado en categoría: Intermedio
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        val nivelJugador = 17
+
+        val rango = when (nivelJugador) {
+            in 1..10 -> "Principiante"
+            in 11..25 -> "Intermedio"
+            in 26..50 -> "Veterano"
+            else -> "Maestro Supremo"
+        }
+
+        println("Nivel $nivelJugador clasificado en categoría: $rango")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.9: Progresiones con `downTo` y `step`
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Bucles y Progresiones](../12-expresiones-vs-sentencias.md#4-rangos-y-progresiones)
+
+##### 1. Enunciado y Requisitos
+En lugar del bucle clásico `for (int i = 10; i >= 0; i -= 2)` de Java:
+
+1. Imprime una cuenta atrás de lanzamiento espacial desde `10` hasta `0` con paso de `2` en `2` utilizando `10 downTo 0 step 2`.
+2. Al finalizar el bucle, imprime `"¡Despegue!"`.
+
+##### 2. Salida Esperada
+```text
+T-10
+T-8
+T-6
+T-4
+T-2
+T-0
+¡Despegue!
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        for (segundos in 10 downTo 0 step 2) {
+            println("T-$segundos")
+        }
+        println("¡Despegue!")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.10: Igualdad Estructural (`==`) vs Igualdad Referencial (`===`)
+📄 **Archivo:** `E00_CalentamientoFundamentos.kt`  
+📚 **Teoría de referencia:** [Tipos de Igualdad en Kotlin](../11-variables-tipos-datos.md)
+
+##### 1. Enunciado y Requisitos
+En Java, comparar dos cadenas con `==` compara sus punteros de memoria (provocando errores habituales en principiantes), obligando a usar `.equals()`. En Kotlin:
+
+- `==` invoca automáticamente a `.equals()` (igualdad de contenido).
+- `===` compara las direcciones físicas en memoria (igualdad de punteros).
+
+Comprueba este comportamiento creando dos instancias distintas de cadenas con el mismo contenido.
+
+##### 2. Salida Esperada
+```text
+¿Tienen el mismo contenido (==)? true
+¿Apuntan al mismo objeto en memoria (===)? false
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b01_fundamentos
+
+    fun main() {
+        val texto1 = String(charArrayOf('D', 'A', 'M'))
+        val texto2 = String(charArrayOf('D', 'A', 'M'))
+
+        println("¿Tienen el mismo contenido (==)? ${texto1 == texto2}")
+        println("¿Apuntan al mismo objeto en memoria (===)? ${texto1 === texto2}")
+    }
+    ```
+
+---
+
 ## 🟢 Nivel Básico (Consolidación Sintáctica y Tipado)
 
 ### Ejercicio 1.1: Variables Inmutables vs Mutables

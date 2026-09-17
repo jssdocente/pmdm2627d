@@ -17,6 +17,404 @@ Ubicación en tu proyecto: `src/main/kotlin/b03_poo_sealed/`
 
 ---
 
+## 🌱 Fase 0: Calentamiento Guiado (Gimnasio de Sintaxis)
+
+Esta fase contiene **8 micro-ejercicios atómicos** diseñados para que mecanices la POO idiomática de Kotlin, asimiles la drástica reducción de *boilerplate* frente a Java y domines el modelado de datos inmutables y Singletons nativos.
+
+📁 **Archivo de trabajo para esta fase:** `E00_CalentamientoPOO.kt`  
+Ubicación: `src/main/kotlin/b03_poo_sealed/`
+
+---
+
+### 🔹 Nivel 1: Clases, Constructores y Data Classes
+
+#### Ejercicio 0.1: Constructor Primario en Cabecera
+📄 **Archivo:** `E00_CalentamientoPOO.kt`  
+📚 **Teoría de referencia:** [Clases y Constructor Primario](../21-poo.md#1-clases-y-constructor-primario-idiomatico)
+
+##### 1. Concepto y Código Resuelto
+En Java, definir una clase sencilla requiere declarar campos privados, escribir un constructor que asigne `this.campo = campo` manualmente y definir métodos *getter*. En Kotlin, declarar `val` o `var` en los paréntesis de la cabecera define el campo, el constructor y los getters automáticamente.
+
+=== "Kotlin"
+    ```kotlin
+    package b03_poo_sealed
+
+    // Cabecera compacta: define los atributos, el constructor primario y los getters en una sola línea:
+    class Personaje(val nombre: String, var salud: Int = 100)
+
+    fun main() {
+        val heroe = Personaje("Zelda")
+        println("Héroe: ${heroe.nombre} | Salud inicial: ${heroe.salud}")
+
+        heroe.salud -= 20
+        println("Salud tras recibir daño: ${heroe.salud}")
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class PersonajeJava {
+        private final String nombre;
+        private int salud;
+
+        // En Java se requiere constructor explícito y getters manuales:
+        public PersonajeJava(String nombre, int salud) {
+            this.nombre = nombre;
+            this.salud = salud;
+        }
+
+        public PersonajeJava(String nombre) {
+            this(nombre, 100);
+        }
+
+        public String getNombre() { return nombre; }
+        public int getSalud() { return salud; }
+        public void setSalud(int salud) { this.salud = salud; }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Héroe: Zelda | Salud inicial: 100
+Salud tras recibir daño: 80
+```
+
+---
+
+#### Ejercicio 0.2: Bloque `init` y Validaciones Previas
+📄 **Archivo:** `E00_CalentamientoPOO.kt`  
+📚 **Teoría de referencia:** [Bloque de Inicialización init](../21-poo.md#2-bloque-de-inicializacion-init)
+
+##### 1. Enunciado y Requisitos
+Como el constructor primario no tiene cuerpo de código, cualquier lógica de inicialización o validación se ubica en el bloque **`init`**.
+
+1. Declara una clase `ItemTienda(val nombre: String, val precio: Double)`.
+2. Añade un bloque `init` que verifique mediante `require(precio >= 0.0) { "El precio no puede ser negativo" }`.
+3. Comprueba que se crea correctamente un ítem con precio positivo y captura la excepción al intentar crear uno con precio `-5.0`.
+
+##### 2. Salida Esperada
+```text
+Item creado: Poción (15.0€)
+Error capturado: El precio no puede ser negativo
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    class ItemTienda(val nombre: String, val precio: Double) {
+        init {
+            require(precio >= 0.0) { "El precio no puede ser negativo" }
+        }
+    }
+
+    fun main() {
+        val itemValido = ItemTienda("Poción", 15.0)
+        println("Item creado: ${itemValido.nombre} (${itemValido.precio}€)")
+
+        try {
+            ItemTienda("Objeto Prohibido", -5.0)
+        } catch (e: IllegalArgumentException) {
+            println("Error capturado: ${e.message}")
+        }
+    }
+    ```
+
+---
+
+#### Ejercicio 0.3: `data class` vs POJO Tradicional de Java
+📄 **Archivo:** `E00_CalentamientoPOO.kt`  
+📚 **Teoría de referencia:** [Data Classes](../23-data-classes.md#1-que-es-una-data-class)
+
+##### 1. Concepto y Código Resuelto
+En Java, modelar una entidad de datos requiere más de 50 líneas para implementar `equals()`, `hashCode()`, `toString()` y constructores. En Kotlin, la palabra clave **`data class`** genera todo esto de forma automática y óptima.
+
+=== "Kotlin"
+    ```kotlin
+    package b03_poo_sealed
+
+    // Genera automáticamente: toString(), equals(), hashCode(), copy() y componentN():
+    data class Videojuego(val id: Int, val titulo: String, val precio: Double)
+
+    fun main() {
+        val j1 = Videojuego(1, "Metroid Prime", 59.99)
+        val j2 = Videojuego(1, "Metroid Prime", 59.99)
+
+        // toString() legible por defecto:
+        println("Ficha del juego: $j1")
+
+        // equals() estructural automático:
+        println("¿Son el mismo juego según sus datos (==)?: ${j1 == j2}")
+    }
+    ```
+
+=== "Java (POJO Tradicional)"
+    ```java
+    import java.util.Objects;
+
+    public class VideojuegoJava {
+        private final int id;
+        private final String titulo;
+        private final double precio;
+
+        public VideojuegoJava(int id, String titulo, double precio) {
+            this.id = id;
+            this.titulo = titulo;
+            this.precio = precio;
+        }
+
+        public int getId() { return id; }
+        public String getTitulo() { return titulo; }
+        public double getPrecio() { return precio; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            VideojuegoJava that = (VideojuegoJava) o;
+            return id == that.id && Double.compare(that.precio, precio) == 0 && Objects.equals(titulo, that.titulo);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, titulo, precio);
+        }
+
+        @Override
+        public String toString() {
+            return "VideojuegoJava{id=" + id + ", titulo='" + titulo + "', precio=" + precio + "}";
+        }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Ficha del juego: Videojuego(id=1, titulo=Metroid Prime, precio=59.99)
+¿Son el mismo juego según sus datos (==)?: true
+```
+
+---
+
+#### Ejercicio 0.4: Mutación Inmutable con `.copy()`
+📄 **Archivo:** `E00_CalentamientoPOO.kt`  
+📚 **Teoría de referencia:** [El Método copy()](../23-data-classes.md#3-el-metodo-copy-mutacion-inmutable)
+
+##### 1. Enunciado y Requisitos
+En arquitecturas reactivas y Jetpack Compose, **los objetos de estado no se mutan internamente**; se genera una nueva instancia inmutable clonando la anterior con campos actualizados.
+
+1. Utiliza la `data class Videojuego(val id: Int, val titulo: String, val precio: Double)`.
+2. Instancia un juego con precio original de `69.99`.
+3. Aplica un descuento de Black Friday generando un nuevo objeto mediante `.copy(precio = 39.99)`.
+4. Muestra que la instancia original permanece intacta y la copia tiene el nuevo precio.
+
+##### 2. Salida Esperada
+```text
+Juego original: Videojuego(id=101, titulo=Doom Eternal, precio=69.99)
+Juego en oferta: Videojuego(id=101, titulo=Doom Eternal, precio=39.99)
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    fun main() {
+        val original = Videojuego(101, "Doom Eternal", 69.99)
+
+        // Creamos una nueva instancia inmutable modificando únicamente el precio:
+        val enOferta = original.copy(precio = 39.99)
+
+        println("Juego original: $original")
+        println("Juego en oferta: $enOferta")
+    }
+    ```
+
+---
+
+### 🔹 Nivel 2: Singletons, Companion Objects y Factorías
+
+#### Ejercicio 0.5: El Patrón Singleton Nativo (`object`)
+📄 **Archivo:** `E00_CalentamientoPOO.kt`  
+📚 **Teoría de referencia:** [Declaración de Objetos: Singleton](../22-objetos-anonimos.md#1-declaracion-de-objetos-el-patron-singleton-nativo)
+
+##### 1. Concepto y Código Resuelto
+Un Singleton garantiza que solo exista una instancia en memoria. En Java requiere constructores privados y bloques `synchronized`. En Kotlin se declara simplemente con `object`.
+
+=== "Kotlin"
+    ```kotlin
+    package b03_poo_sealed
+
+    // Singleton nativo Thread-Safe garantizado por la JVM:
+    object GestorConfiguracion {
+        var idioma: String = "es"
+        var modoOscuro: Boolean = true
+    }
+
+    fun main() {
+        GestorConfiguracion.idioma = "en"
+
+        val refA = GestorConfiguracion
+        val refB = GestorConfiguracion
+
+        println("Idioma configurado: ${refB.idioma}")
+        println("¿Ambas referencias apuntan al mismo objeto en memoria (===)?: ${refA === refB}")
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class GestorConfiguracionJava {
+        private static volatile GestorConfiguracionJava instance;
+        private String idioma = "es";
+
+        private GestorConfiguracionJava() {}
+
+        public static GestorConfiguracionJava getInstance() {
+            if (instance == null) {
+                synchronized (GestorConfiguracionJava.class) {
+                    if (instance == null) instance = new GestorConfiguracionJava();
+                }
+            }
+            return instance;
+        }
+
+        public String getIdioma() { return idioma; }
+        public void setIdioma(String idioma) { this.idioma = idioma; }
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Idioma configurado: en
+¿Ambas referencias apuntan al mismo objeto en memoria (===)?: true
+```
+
+---
+
+#### Ejercicio 0.6: `companion object` (Sustituto de `static`)
+📄 **Archivo:** `E00_CalentamientoPOO.kt`  
+📚 **Teoría de referencia:** [El Objeto Compañero](../22-objetos-anonimos.md#2-el-objeto-companero-companion-object-y-el-patron-factory-method)
+
+##### 1. Concepto y Código Resuelto
+Kotlin no tiene `static`. Los miembros asociados a la clase en lugar de a la instancia se ubican dentro de su `companion object`.
+
+=== "Kotlin"
+    ```kotlin
+    package b03_poo_sealed
+
+    class BaseDatos {
+        companion object {
+            const val TAG = "DATABASE_HELPER"
+            const val VERSION = 1
+        }
+    }
+
+    fun main() {
+        // Acceso directo a través del nombre de la clase:
+        println("Constante TAG: ${BaseDatos.TAG}")
+        println("Versión de BD: ${BaseDatos.VERSION}")
+    }
+    ```
+
+=== "Java"
+    ```java
+    public class BaseDatosJava {
+        // En Java se declaran con public static final:
+        public static final String TAG = "DATABASE_HELPER";
+        public static final int VERSION = 1;
+    }
+    ```
+
+##### 2. Salida en Consola
+```text
+Constante TAG: DATABASE_HELPER
+Versión de BD: 1
+```
+
+---
+
+#### Ejercicio 0.7: Método Factoría (*Factory Method*)
+📄 **Archivo:** `E00_CalentamientoPOO.kt`  
+📚 **Teoría de referencia:** [Patrón Factory Method en Companion Object](../22-objetos-anonimos.md#el-patron-factory-method-metodo-factoria)
+
+##### 1. Enunciado y Requisitos
+Aplica el patrón creacional [Factory Method](https://refactoring.guru/es/design-patterns/factory-method):
+
+1. Declara una clase `ServicioApi private constructor(val url: String, val esSeguro: Boolean)`.
+2. Dentro del `companion object`, define dos métodos factoría con nombres descriptivos:
+    - `fun crearDesarrollo(): ServicioApi` (apunta a `http://localhost:3000`, seguro = false)
+    - `fun crearProduccion(): ServicioApi` (apunta a `https://api.gamevault.es`, seguro = true)
+
+3. Instancia ambos servicios desde `main()` y muestra su configuración.
+
+##### 2. Salida Esperada
+```text
+Servicio Local: http://localhost:3000 (Seguro: false)
+Servicio Prod: https://api.gamevault.es (Seguro: true)
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    class ServicioApi private constructor(val url: String, val esSeguro: Boolean) {
+        companion object {
+            fun crearDesarrollo(): ServicioApi = ServicioApi("http://localhost:3000", esSeguro = false)
+            fun crearProduccion(): ServicioApi = ServicioApi("https://api.gamevault.es", esSeguro = true)
+        }
+    }
+
+    fun main() {
+        val dev = ServicioApi.crearDesarrollo()
+        val prod = ServicioApi.crearProduccion()
+
+        println("Servicio Local: ${dev.url} (Seguro: ${dev.esSeguro})")
+        println("Servicio Prod: ${prod.url} (Seguro: ${prod.esSeguro})")
+    }
+    ```
+
+---
+
+#### Ejercicio 0.8: Expresiones de Objeto Anónimas (*Object Expressions*)
+📄 **Archivo:** `E00_CalentamientoPOO.kt`  
+📚 **Teoría de referencia:** [Expresiones de Objeto](../22-objetos-anonimos.md#3-expresiones-de-objeto-object-expressions-objetos-anonimos)
+
+##### 1. Enunciado y Requisitos
+Para implementar una interfaz de un solo uso sin crear una clase con nombre:
+
+1. Define `interface AccionBoton { fun alPulsar() }`.
+2. En `main()`, crea una instancia anónima utilizando `val listener = object : AccionBoton { ... }`.
+3. Invoca `listener.alPulsar()`.
+
+##### 2. Salida Esperada
+```text
+¡Botón pulsado desde expresión de objeto anónima!
+```
+
+##### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    interface AccionBoton {
+        fun alPulsar()
+    }
+
+    fun main() {
+        val listener = object : AccionBoton {
+            override fun alPulsar() {
+                println("¡Botón pulsado desde expresión de objeto anónima!")
+            }
+        }
+
+        listener.alPulsar()
+    }
+    ```
+
+---
+
 ## 🟢 Nivel Básico (POO Idiomática, Constructores y Propiedades)
 
 ### Ejercicio 3.1: Constructor Primario y Bloque `init`
@@ -370,7 +768,10 @@ Desestructuración: ID=1 | Título=Celeste | Precio=19.99 €
 
 ### Ejercicio 3.7: `companion object` para Constantes y Factorías
 📄 **Archivo:** `E07_CompanionObjectFactory.kt`  
-📚 **Teoría de referencia:** [El Objeto Compañero (Companion Object)](../22-objetos-anonimos.md#2-el-objeto-companero-companion-object)
+📚 **Teoría de referencia:** [El Objeto Compañero (Companion Object)](../22-objetos-anonimos.md#2-el-objeto-companero-companion-object-y-el-patron-factory-method)
+
+!!! info "Patrón de Diseño: Factory Method (Método Factoría)"
+    El uso de constructores privados junto con métodos de creación en el `companion object` es la implementación idiomática en Kotlin del patrón creacional **Factory Method**. Oculta los detalles de instanciación y dota a la creación de objetos de nombres semánticos claros (`crearLocal()`, `crearParaProduccion()`). Puedes profundizar en la teoría de este patrón en [Refactoring Guru: Factory Method](https://refactoring.guru/es/design-patterns/factory-method).
 
 #### 1. Enunciado y Requisitos
 
@@ -425,6 +826,9 @@ Tarjeta local instanciada mediante Factoría: MAC=00:00:00:00, IP=127.0.0.1
 📄 **Archivo:** `E08_SingletonObject.kt`  
 📚 **Teoría de referencia:** [Declaración de Objetos: El Patrón Singleton Nativo](../22-objetos-anonimos.md#1-declaracion-de-objetos-el-patron-singleton-nativo)
 
+!!! info "Patrón de Diseño: Singleton en la Industria"
+    El patrón **Singleton** garantiza que una clase tenga una única instancia global en toda la memoria de la aplicación. Para explorar su estructura clásica, aplicabilidad y pros/contras arquitecturales, consulta [Refactoring Guru: Patrón Singleton](https://refactoring.guru/es/design-patterns/singleton).
+
 #### 1. Enunciado y Requisitos
 
 1. Modela un gestor de sesión de usuario utilizando la palabra clave **`object`**.
@@ -433,7 +837,7 @@ Tarjeta local instanciada mediante Factoría: MAC=00:00:00:00, IP=127.0.0.1
 
 3. Añade métodos para iniciar sesión y cerrar sesión.
 
-4. Demuestra desde dos llamadas independientes en `main()` que ambas acceden exactamente a la misma instancia en memoria.
+4. Demuestra desde dos llamadas independientes en `main()` que ambas acceden exactamente a la misma instancia en memoria mediante igualdad referencial (`===`).
 
 #### 2. Salida Esperada en Consola
 
@@ -445,36 +849,70 @@ Acceso desde componente B: Usuario activo = Link_Hero
 ```
 
 #### 3. Solución Comentada
-??? tip "Ver solución comentada"
-    ```kotlin
-    package b03_poo_sealed
+??? tip "Ver solución comentada y comparativa Kotlin vs Java"
+    === "Kotlin (Solución con object)"
+        ```kotlin
+        package b03_poo_sealed
 
-    // En Kotlin, 'object' crea un Singleton seguro en concurrencia sin código boilerplate
-    object SesionManager {
-        var usuarioActual: String? = null
-            private set
+        // En Kotlin, 'object' crea un Singleton seguro en concurrencia (Thread-Safe)
+        // de forma nativa sin ningún código boilerplate
+        object SesionManager {
+            var usuarioActual: String? = null
+                private set
 
-        fun iniciarSesion(usuario: String) {
-            usuarioActual = usuario
-            println("Sesión iniciada para: $usuario")
+            fun iniciarSesion(usuario: String) {
+                usuarioActual = usuario
+                println("Sesión iniciada para: $usuario")
+            }
+
+            fun cerrarSesion() {
+                usuarioActual = null
+            }
         }
 
-        fun cerrarSesion() {
-            usuarioActual = null
+        fun main() {
+            SesionManager.iniciarSesion("Link_Hero")
+
+            val ref1 = SesionManager
+            val ref2 = SesionManager
+
+            println("Acceso desde componente A: Usuario activo = ${ref1.usuarioActual}")
+            println("Acceso desde componente B: Usuario activo = ${ref2.usuarioActual}")
+            println("¿Es exactamente la misma instancia en memoria? ${ref1 === ref2}")
         }
-    }
+        ```
 
-    fun main() {
-        SesionManager.iniciarSesion("Link_Hero")
+    === "Java (Equivalente Tradicional con Doble Bloqueo)"
+        ```java
+        // En Java se requieren constructores privados, variables volátiles
+        // y bloques sincronizados para lograr el mismo nivel de seguridad
+        public class SesionManagerJava {
+            private static volatile SesionManagerJava instance;
+            private String usuarioActual;
 
-        val ref1 = SesionManager
-        val ref2 = SesionManager
+            private SesionManagerJava() {}
 
-        println("Acceso desde componente A: Usuario activo = ${ref1.usuarioActual}")
-        println("Acceso desde componente B: Usuario activo = ${ref2.usuarioActual}")
-        println("¿Es exactamente la misma instancia en memoria? ${ref1 === ref2}")
-    }
-    ```
+            public static SesionManagerJava getInstance() {
+                if (instance == null) {
+                    synchronized (SesionManagerJava.class) {
+                        if (instance == null) {
+                            instance = new SesionManagerJava();
+                        }
+                    }
+                }
+                return instance;
+            }
+
+            public void iniciarSesion(String usuario) {
+                this.usuarioActual = usuario;
+                System.out.println("Sesión iniciada para: " + usuario);
+            }
+
+            public String getUsuarioActual() {
+                return usuarioActual;
+            }
+        }
+        ```
 
 ---
 
@@ -784,9 +1222,61 @@ Login erróneo -> Error 401: Credenciales inválidas
 
 ---
 
-### Reto 3.14: El Motor de Wordle en Consola (*POO, Data Classes y Dominio*)
+### Ejercicio 3.14: Modelado de Rutas de Navegación con `sealed class`
+📄 **Archivo:** `E14_RutasNavegacionSealed.kt`  
+📚 **Teoría de referencia:** [Tipos Sellados (Sealed Classes e Interfaces)](../26-sealed-classes.md#1-que-es-una-sealed-class-y-que-problema-resuelve)
+
+#### 1. Enunciado y Requisitos
+En el desarrollo moderno en Android con Jetpack Compose, la navegación entre pantallas se modela mediante una jerarquía sellada finita. Las pantallas estáticas sin argumentos se declaran como `object` (para ahorrar memoria compartiendo la misma instancia), mientras que las pantallas que reciben parámetros de ruta (como un ID o slug) se declaran como `data class`.
+
+1. Declara una jerarquía cerrada `sealed class Pantalla(val ruta: String)`:
+    - `object Inicio : Pantalla("pantalla_inicio")`
+    - `object Catalogo : Pantalla("pantalla_catalogo")`
+    - `data class DetalleJuego(val juegoId: Int) : Pantalla("pantalla_detalle/$juegoId")`
+
+2. Define una función `simularNavegacion(destino: Pantalla)` que evalúe con un `when` exhaustivo hacia dónde se navega y muestre los argumentos en caso de ser `DetalleJuego`.
+3. Comprueba desde `main()` la navegación a las tres rutas.
+
+#### 2. Salida Esperada en Consola
+```text
+Navegando a: pantalla_inicio -> Renderizando Carrusel de Novedades
+Navegando a: pantalla_catalogo -> Renderizando Grid de Juegos
+Navegando a: pantalla_detalle/42 -> Cargando datos del juego ID = 42
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    // Jerarquía cerrada para control estricto de destinos de navegación (Patrón Compose)
+    sealed class Pantalla(val ruta: String) {
+        object Inicio : Pantalla("pantalla_inicio")
+        object Catalogo : Pantalla("pantalla_catalogo")
+        data class DetalleJuego(val juegoId: Int) : Pantalla("pantalla_detalle/$juegoId")
+    }
+
+    fun simularNavegacion(destino: Pantalla) {
+        print("Navegando a: ${destino.ruta} -> ")
+        when (destino) {
+            is Pantalla.Inicio -> println("Renderizando Carrusel de Novedades")
+            is Pantalla.Catalogo -> println("Renderizando Grid de Juegos")
+            is Pantalla.DetalleJuego -> println("Cargando datos del juego ID = ${destino.juegoId}")
+        }
+    }
+
+    fun main() {
+        simularNavegacion(Pantalla.Inicio)
+        simularNavegacion(Pantalla.Catalogo)
+        simularNavegacion(Pantalla.DetalleJuego(juegoId = 42))
+    }
+    ```
+
+---
+
+### Reto 3.15: El Motor de Wordle en Consola (*POO, Data Classes y Dominio*)
 📄 **Archivo:** `Reto03_WordleEngine.kt`  
-📚 **Teoría de referencia:** [El Método copy() y la Inmutabilidad](../23-data-classes.md#3-el-metodo-copy-y-la-inmutabilidad) y [El Dúo Estrella: enum y when Exhaustivo](../24-enum-classes.md#5-el-duo-estrella-enum-y-la-expresion-when-exhaustiva)
+📚 **Teoría de referencia:** [El Método copy() y la Inmutabilidad](../23-data-classes.md#3-el-metodo-copy-mutacion-inmutable) y [El Dúo Estrella: enum y when Exhaustivo](../24-enum-classes.md#4-el-duo-estrella-enum-y-la-expresion-when-exhaustiva)
 
 #### 1. Contexto y Misión
 

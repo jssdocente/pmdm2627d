@@ -71,8 +71,9 @@ Haz clic en el icono del elefante de Gradle con la flecha azul (o pulsa `Ctrl + 
 
 ## 🚦 Niveles de Dificultad y Metodología de Andamiaje Cognitivo
 
-Cada módulo temático contiene una amplia batería graduada de actividades para adaptarse al ritmo de cada estudiante:
+Cada módulo temático contiene una amplia batería graduada de actividades estructurada en 4 fases para adaptarse al ritmo de cada estudiante:
 
+- 🌱 **Fase 0: Calentamiento Guiado ("Gimnasio de Sintaxis"):** Batería inicial de micro-ejercicios atómicos (con prefijo `E00_`) para romper mano rápidamente. Incluye ejercicios modelo resueltos con **pestañas comparativas `Kotlin` vs `Java`** para anclar el nuevo lenguaje sobre los conocimientos de 1º de DAM, seguidos de retos cortos con solución oculta.
 - 🟢 **Nivel Básico (Consolidación):** Ejercicios guiados para mecanizar la sintaxis idiomática de Kotlin, el tipado y notar la diferencia respecto a Java.
 - 🟡 **Nivel Intermedio (Aplicación):** Problemas de lógica que requieren aplicar inmutabilidad, control de nulos, funciones de orden superior o transformaciones funcionales sin código repetitivo.
 - 🔴 **Nivel Avanzado (Reto Lúdico Incremental):** Cada bloque culmina con un **juego interactivo** que ensambla todas las piezas vistas hasta ese momento. Cada reto incluye:
