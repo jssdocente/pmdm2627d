@@ -58,8 +58,8 @@ graph TD
 
 - **Definición:** Representación atómica, exhaustiva e inmutable de todo lo que el usuario ve en la pantalla en un milisegundo concreto.
 - **Propósito:** Aplica la ecuación fundamental del desarrollo declarativo:
-  
-    $$\text{UI} = f(\text{UiState})$$
+
+    > **UI = f(UiState)**
   
 - **Formatos habituales:**
 
@@ -169,8 +169,8 @@ graph TD
 
 - **Definición:** Flujo unidireccional de datos en el que la información viaja en un único sentido continuo:
   
-    $$\text{Estado } (\downarrow) \text{ desciende del ViewModel hacia la UI}$$
-    $$\text{Eventos } (\uparrow) \text{ ascienden desde la UI hacia el ViewModel}$$
+    - **Estado (↓):** desciende del ViewModel hacia la UI.
+    - **Eventos (↑):** ascienden desde la UI hacia el ViewModel.
 
 - **Ventaja:** Evita inconsistencias visuales, previene que la UI modifique datos por su cuenta y garantiza que el ViewModel sea el único con potestad de actualizar el estado.
 

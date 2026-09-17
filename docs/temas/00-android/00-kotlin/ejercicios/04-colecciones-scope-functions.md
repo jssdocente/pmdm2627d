@@ -170,7 +170,7 @@ Precios convertidos a EUR: [9.2, 18.4, 46.0]
 ##### 1. Enunciado y Requisitos
 
 1. Declara `val notas = listOf(4.5, 7.0, 3.2, 9.5, 6.0, 2.0, 8.8)`.
-2. Filtra únicamente los aprobados ($\ge 5.0$) en una lista inmutable `val aprobados`.
+2. Filtra únicamente los aprobados (≥ 5.0) en una lista inmutable `val aprobados`.
 3. Muestra los aprobados y calcula la cantidad total con `.size`.
 
 ##### 2. Salida Esperada
@@ -603,7 +603,7 @@ Total cuentas gratuitas: 2
 
 #### 1. Enunciado y Requisitos
 
-En aplicaciones Android frecuentemente recibimos listas de la API y necesitamos convertirlas a mapas indexados por clave primaria (ID) para búsquedas de complejidad $O(1)$ en repositorios o caché.
+En aplicaciones Android frecuentemente recibimos listas de la API y necesitamos convertirlas a mapas indexados por clave primaria (ID) para búsquedas de complejidad O(1) en repositorios o caché.
 
 1. Modela una `data class Personaje(val id: String, val nombre: String, val nivel: Int)`.
 
@@ -924,7 +924,7 @@ Dada una lista con al menos 8 registros de sesiones de diferentes usuarios y jue
 📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-transformaciones-con-map-y-mapindexed)
 
 #### 1. Enunciado y Requisitos
-En aplicaciones móviles con Jetpack Compose, a menudo necesitamos alimentar cuadrículas de $N$ columnas o simular páginas de resultados sin realizar cálculos manuales de sublistas:
+En aplicaciones móviles con Jetpack Compose, a menudo necesitamos alimentar cuadrículas de N columnas o simular páginas de resultados sin realizar cálculos manuales de sublistas:
 
 1. Declara una lista de 9 títulos de juegos: `val catalogo = listOf("Zelda", "Mario", "Metroid", "Pokemon", "Kirby", "Donkey Kong", "Fire Emblem", "Star Fox", "F-Zero")`.
 2. Utiliza **`.chunked(3)`** para dividir el catálogo en páginas o filas de exactamente 3 juegos por bloque.
@@ -1148,7 +1148,7 @@ Para completar el reto de forma rigurosa:
 
 2. **RF-02 (Clase Mazo con Getter Calculado):** Modela `class MazoCombate` con una propiedad mutable de configuración `var cartas: List<Carta> = emptyList()` y una propiedad calculada `val poderTotal: Int get() = cartas.sumOf { it.poder }`.
 
-3. **RF-03 (Preparación del Botín):** Simula 3 cofres (`cofre1`, `cofre2`, `cofre3`) que sumen al menos 9 cartas, asegurando la presencia de al menos un identificador duplicado y dos cartas con poder $\le 0$ (malditas o rotas).
+3. **RF-03 (Preparación del Botín):** Simula 3 cofres (`cofre1`, `cofre2`, `cofre3`) que sumen al menos 9 cartas, asegurando la presencia de al menos un identificador duplicado y dos cartas con poder ≤ 0 (malditas o rotas).
 
 4. **RF-04 (Pipeline de Purificación y Partición):** Concatena en una sola cadena funcional `flatMap`, `distinctBy { it.id }` y `filter { it.poder > 0 }`, dividiendo el resultado con `.partition { it.esAtaque }`.
 

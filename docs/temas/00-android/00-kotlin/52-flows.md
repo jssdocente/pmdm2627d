@@ -428,7 +428,7 @@ En Kotlin Flow, las operaciones se dividen en dos categorías:
 
 - **`filter { ... }`**: Deja pasar únicamente los valores que satisfagan un predicado booleano.
 
-- **`take(n)`**: Toma únicamente las primeras $n$ emisiones y cancela el flujo automáticamente tras recibirlas (cortocircuito / *short-circuiting*).
+- **`take(n)`**: Toma únicamente las primeras n emisiones y cancela el flujo automáticamente tras recibirlas (cortocircuito / *short-circuiting*).
 
 - **`debounce(tiempoMs)`**: Descarta emisiones consecutivas si ocurren demasiado rápido, esperando a que transcurra una pausa silenciosa. Es la base de los **buscadores reactivos** (evita enviar peticiones a la API mientras el usuario teclea rápido).
 

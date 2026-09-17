@@ -1017,7 +1017,7 @@ mindmap
 
     - [x] **Comprendo los retos físicos del móvil:** Sé explicar por qué el sistema operativo destruye procesos en memoria (LMK) y cómo afecta el *Doze Mode* al consumo de batería.
     - [x] **Comprendo la transición histórica de Java a Kotlin:** Sé explicar las razones legales (litigio Oracle vs Google) y las ventajas técnicas (Null Safety en compilación, eliminación de *boilerplate* con `data class`, corrutinas y base obligatoria para Compose) por las que Android es oficialmente "Kotlin-First".
-    - [x] **Diferencio el paradigma imperativo del declarativo:** Entiendo la fórmula reactiva **$UI = f(Estado)$** frente a la manipulación tradicional con `findViewById`.
+    - [x] **Diferencio el paradigma imperativo del declarativo:** Entiendo la fórmula reactiva **UI = f(Estado)** frente a la manipulación tradicional con `findViewById`.
     - [x] **Distingo KMP de otros frameworks:** Conozco la diferencia entre compilar a binario nativo (KMP), empaquetar un motor gráfico propio (Flutter) o interpretar sobre un puente JS (React Native).
     - [x] **Entiendo el ciclo de vida del producto móvil:** Sé cómo operan el aislamiento *Sandbox*, los permisos sensibles en tiempo de ejecución y las firmas criptográficas de actualización.
     - [x] **Domino la tríada de versiones de Android:** Sé exactamente qué función cumplen y qué implicaciones tienen `minSdk`, `compileSdk` y `targetSdk` en el archivo `build.gradle.kts`.

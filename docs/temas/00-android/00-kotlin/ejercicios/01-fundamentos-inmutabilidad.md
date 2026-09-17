@@ -341,10 +341,10 @@ Acción ejecutada: Avanzar hacia el Norte
 
 1. Declara `val nivelJugador = 17`.
 2. Mediante una expresión `when`, clasifica el rango de nivel en una constante `val rango`:
-    - `1..10` $\rightarrow$ `"Principiante"`
-    - `11..25` $\rightarrow$ `"Intermedio"`
-    - `26..50` $\rightarrow$ `"Veterano"`
-    - `else` $\rightarrow$ `"Maestro Supremo"`
+    - `1..10` → `"Principiante"`
+    - `11..25` → `"Intermedio"`
+    - `26..50` → `"Veterano"`
+    - `else` → `"Maestro Supremo"`
 
 3. Muestra el informe en consola.
 
@@ -1156,7 +1156,7 @@ Para que la mecánica del juego se entienda a la perfección:
 
     - Cada lanzamiento de *Lanza de Hielo* consume **15 puntos de energía**.
 
-    - Por tanto, el Héroe solo puede usar este ataque un máximo de **2 veces** en toda la partida ($30 / 15 = 2$).
+    - Por tanto, el Héroe solo puede usar este ataque un máximo de **2 veces** en toda la partida (30 / 15 = 2).
 
     - Una vez agotada la energía (o si le quedan menos de 15 puntos), ya no puede lanzar magia y debe recurrir a su espada básica, que no consume energía.
 
@@ -1216,7 +1216,7 @@ Para que el simulador funcione con precisión, tu código debe ceñirse a los si
 
 3. **RF-03 (Motor de Batalla con Bucle Indeterminado):** Controla el combate mediante un bucle `while (heroeHp > 0 && dragonHp > 0)`.
 
-4. **RF-04 (Estrategia de IA con when sin Argumento):** Determina el código de acción del héroe (`1`, `2` o `3`) mediante un `when` que evalúe las condiciones booleanas de prioridad (vida crítica $\le 40$ con pociones disponibles, energía suficiente $\ge 15$, o espada por defecto).
+4. **RF-04 (Estrategia de IA con when sin Argumento):** Determina el código de acción del héroe (`1`, `2` o `3`) mediante un `when` que evalúe las condiciones booleanas de prioridad (vida crítica ≤ 40 con pociones disponibles, energía suficiente ≥ 15, o espada por defecto).
 
 5. **RF-05 (Modificación Segura de Recursos):** Emplea un segundo `when (accion)` para aplicar la deducción de energía (`heroeEnergia -= costeEnergiaHechizo`), el decremento de existencias de pociones (`pociones--`) y los impactos de daño en la vida.
 

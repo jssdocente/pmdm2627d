@@ -1031,7 +1031,7 @@ Para modelar la simulación con arquitectura reactiva profesional:
 
 3. **RF-03 (Actualización Atómica de Estado):** Implementa `suspend fun moverNave(nombre: String, avance: Int)` utilizando `_posiciones.update { ... }` para garantizar operaciones atómicas libres de condiciones de carrera (*race conditions*), acotando a 50 AL con `.coerceAtMost(50)`.
 
-4. **RF-04 (Detección y Emisión de Eventos Efímeros):** Si el avance es $\ge 11$ AL, emite un aviso hacia `_eventos.emit("⚡ ¡TURBO HIPERESPACIAL ACTIVADO POR $nombre! (+$avance AL)")`.
+4. **RF-04 (Detección y Emisión de Eventos Efímeros):** Si el avance es ≥ 11 AL, emite un aviso hacia `_eventos.emit("⚡ ¡TURBO HIPERESPACIAL ACTIVADO POR $nombre! (+$avance AL)")`.
 
 5. **RF-05 (Concurrencia Real de Competidores):** Lanza las naves con `val jobsNaves = naves.map { launch { ... } }`, ejecutando un bucle con `delay((150..300).random().toLong())` y avance aleatorio `(4..12).random()` mientras no haya ganador.
 
