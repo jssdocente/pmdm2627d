@@ -40,6 +40,7 @@ nav:
               - "5. Corrutinas y Flows": temas/00-android/00-kotlin/ejercicios/05-concurrencia-corrutinas.md
               - "6. Proyecto Final (El Juego del Calamar)": temas/00-android/00-kotlin/ejercicios/06-proyecto-integrador.md
       - "Herramientas Proyecto Android":
+          - "Introducción": "temas/00-android/00-tools/index.md"
           - "Terminal Avanzada (Warp + Shell)": "temas/00-android/00-tools/05-terminal-warp.md"
           - "Gradle": "temas/00-android/00-tools/01-gradle-agp-estructura.md"
           - "Build-gradle": "temas/00-android/00-tools/02-build-gradle.md"
