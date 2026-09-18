@@ -276,14 +276,17 @@ En **Compose**, contenedores como `Row` o `Column` definen su contenido como:
 Kotlin permite añadir nuevos métodos a clases existentes (incluso de librerías del sistema como `String`, `List` o clases de Android) **sin necesidad de heredar de ellas ni modificar su código fuente**:
 
 ```kotlin
+import java.text.NumberFormat
+import java.util.Locale
+
 // Añadimos el método 'esEmailValido' a la clase String
 fun String.esEmailValido(): Boolean {
     return this.contains("@") && this.contains(".")
 }
 
-// Añadimos 'formatearMoneda' a Double
-fun Double.formatearEuros(): String {
-    return "%.2f €".format(this)
+// Añadimos 'aMoneda' a Double usando el Locale por defecto del sistema
+fun Double.aMoneda(locale: Locale = Locale.getDefault()): String {
+    return NumberFormat.getCurrencyInstance(locale).format(this)
 }
 
 fun main() {
@@ -291,7 +294,7 @@ fun main() {
     println(correo.esEmailValido()) // true
 
     val saldo = 49.9
-    println(saldo.formatearEuros()) // 49,90 €
+    println(saldo.aMoneda()) // "49,90 €" (en España)
 }
 ```
 

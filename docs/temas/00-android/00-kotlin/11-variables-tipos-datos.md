@@ -181,6 +181,108 @@ println(s1 === s2) // false -> Son dos instancias distintas en el heap
 
 ---
 
+### 5.4. Formato de Números y Monedas (Decimales, `String.format` y `NumberFormat`)
+
+Al trabajar con números de coma flotante (`Double` o `Float`), al realizar cálculos en un String Template como `println("Total: ${19.99 * 3} €")`, la salida suele ser:
+
+```text
+Total: 59.970000000000006 €
+```
+
+A diferencia de lenguajes como C# (que admiten especificadores de formato dentro de la interpolación como `$"Total: {total:0.00}"` o `{total:C}`), **en Kotlin los String templates (`"$variable"`, `"${expresion}"`) no admiten especificadores de formato directos tras dos puntos `:`**.
+
+Para presentar números con decimales fijos o como moneda, se utilizan las siguientes herramientas estándar de la plataforma:
+
+#### 1. Formateo con `String.format()` o la función `.format()`
+En Kotlin, cualquier cadena de texto posee la función de extensión `.format()` heredada y mejorada de la JVM:
+
+```kotlin
+import java.util.Locale
+
+val subtotal = 19.99 * 3
+
+// Formato básico con dos decimales:
+val textoDosDecimales = "%.2f".format(subtotal)
+println("Total formateado: $textoDosDecimales €") // "Total formateado: 59,97 €"
+
+// También se puede invocar de forma estática indicando el Locale:
+val conPunto = String.format(Locale.US, "%.2f", subtotal)   // "59.97" (punto decimal)
+val conComa = String.format(Locale("es", "ES"), "%.2f", subtotal) // "59,97" (coma decimal)
+```
+
+##### Especificadores de Formato más Habituales:
+
+| Especificador | Propósito | Ejemplo con entrada | Salida resultante |
+| :--- | :--- | :--- | :--- |
+| **`%.2f`** | Redondeo a 2 decimales | `3.14159` | `"3.14"` |
+| **`%.4f`** | Redondeo a 4 decimales | `3.14159` | `"3.1416"` |
+| **`%02d`** | Entero con ceros a la izquierda (mínimo 2 dígitos) | `5` | `"05"` (relojes/fechas) |
+| **`%,d`** | Entero con separadores de miles | `1000000` | `"1.000.000"` (según Locale) |
+| **`%,.2f`** | Separador de miles y dos decimales | `1234567.891` | `"1.234.567,89"` |
+
+---
+
+#### 2. Formateo Profesional de Moneda con `NumberFormat` (i18n)
+
+Concatenar manualmente el símbolo `€` o `$` no es recomendable en aplicaciones comerciales, ya que la posición del símbolo y el separador decimal varían según el país del usuario:
+- En España / Europa: `59,97 €`
+- En Estados Unidos: `$59.97`
+
+Para formatear moneda de forma internacional y profesional, se emplea **`NumberFormat.getCurrencyInstance()`**:
+
+```kotlin
+import java.text.NumberFormat
+import java.util.Locale
+
+val importe = 59.97
+
+// 1. Usando el Locale por defecto del sistema/dispositivo móvil:
+val formateadorLocal = NumberFormat.getCurrencyInstance(Locale.getDefault())
+println("Moneda local: ${formateadorLocal.format(importe)}") // "59,97 €" (en un dispositivo en España)
+
+// 2. Forzando un Locale específico:
+val formatoEspana = NumberFormat.getCurrencyInstance(Locale("es", "ES"))
+val formatoUSA = NumberFormat.getCurrencyInstance(Locale.US)
+
+println("Formato ES: ${formatoEspana.format(importe)}") // "59,97 €"
+println("Formato US: ${formatoUSA.format(importe)}")     // "$59.97"
+```
+
+---
+
+#### 3. El Estilo Idiomático de Kotlin: Funciones de Extensión
+
+Para evitar tener que escribir `String.format(...)` o instanciar `NumberFormat` repetidamente en cada `println`, en Kotlin se definen **funciones de extensión** reutilizables sobre el tipo `Double`:
+
+```kotlin
+import java.text.NumberFormat
+import java.util.Locale
+
+// Definimos funciones de utilidad que amplían la clase Double:
+fun Double.redondear(decimales: Int = 2): String =
+    String.format(Locale.getDefault(), "%.${decimales}f", this)
+
+fun Double.aMoneda(locale: Locale = Locale.getDefault()): String =
+    NumberFormat.getCurrencyInstance(locale).format(this)
+
+fun main() {
+    val precio = 19.99 * 3
+    val pi = 3.1415926535
+
+    // ¡Sintaxis limpia y directa en cualquier String template!:
+    println("Precio final: ${precio.aMoneda()}")     // "Precio final: 59,97 €"
+    println("Pi con 2 decimales: ${pi.redondear()}") // "Pi con 2 decimales: 3,14"
+    println("Pi con 4 decimales: ${pi.redondear(4)}") // "Pi con 4 decimales: 3,1416"
+}
+```
+
+!!! tip "¿Por qué Kotlin prefiere Funciones de Extensión antes que sintaxis como C#?"
+    El equipo de JetBrains decidió no saturar la gramática de las plantillas de texto con operadores como `{precio:0.00}`. 
+    
+    Las funciones de extensión (`precio.aMoneda()`) son **completamente seguras en tiempo de compilación**, cuentan con autocompletado en IntelliJ IDEA / Android Studio y permiten crear tus propios formateadores semánticos (`peso.aKilos()`, `tiempo.aMinutosSegundos()`) sin depender de cadenas mágicas propensas a erratas.
+
+---
+
 ## 6. Conversión Explícita de Tipos
 
 Kotlin **no realiza conversiones implícitas de ensanchamiento numérico** para evitar pérdidas sutiles de precisión y errores en tiempo de ejecución. Cada tipo numérico proporciona funciones de conversión directa:
