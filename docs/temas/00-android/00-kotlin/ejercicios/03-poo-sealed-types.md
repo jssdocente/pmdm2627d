@@ -711,10 +711,386 @@ Boss 'Ganon el Conquistador' (500 HP, Fase 2) ataca: *¡RUGIDO DESTRUCTIVO!*
 
 ---
 
+### Ejercicio 3.6: Clases Abstractas y Polimorfismo: Pasarelas de Pago Móvil
+📄 **Archivo:** `E06_ClasesAbstractasPago.kt`  
+📚 **Teoría de referencia:** [Clases Abstractas: Jerarquías con Identidad Común](../21-poo.md#clases-abstractas-abstract-jerarquias-con-identidad-comun)
+
+#### 1. Enunciado y Requisitos
+
+En el desarrollo de aplicaciones móviles de comercio o servicios in-app, el usuario puede abonar una compra utilizando diferentes métodos de pago. Todos los métodos comparten una identidad común (titular y generación de recibo), pero cada uno valida y procesa el cobro con su propia lógica técnica:
+
+1. Diseña una clase base abstracta `abstract class MetodoPago(val titular: String)`:
+
+    - Método abstracto: `abstract fun procesarCobro(importe: Double): Boolean`. Cada pasarela debe implementarlo obligatoriamente.
+
+    - Método concreto reutilizable:
+      ```kotlin
+      fun generarRecibo(importe: Double, exito: Boolean): String {
+          val estado = if (exito) "PAGO ACEPTADO" else "PAGO RECHAZADO"
+          return "[$estado] Titular: $titular | Total: ${String.format("%.2f", importe)} €"
+      }
+      ```
+
+2. Implementa tres subclases concretas heredando de `MetodoPago`:
+
+    - `class TarjetaCredito(titular: String, val numeroTarjeta: String, val cvv: String) : MetodoPago(titular)`: El cobro tiene éxito si `numeroTarjeta.length == 16` y `cvv.length == 3`. Imprime: `💳 Cobrando con Tarjeta terminado en [últimos 4 dígitos]...`
+
+    - `class Bizum(titular: String, val telefono: String) : MetodoPago(titular)`: El cobro tiene éxito si `telefono.length == 9` y empieza por `'6'` o `'7'`. Imprime: `📱 Enviando petición Bizum al número [teléfono]...`
+
+    - `class PayPal(titular: String, val email: String) : MetodoPago(titular)`: El cobro tiene éxito si el email contiene `'@'`. Imprime: `🌐 Redirigiendo a pasarela PayPal ([email])...`
+
+3. En `fun main()`:
+
+    - Crea una lista polimórfica `List<MetodoPago>` que contenga una tarjeta válida, un Bizum válido y una cuenta PayPal con formato de correo incorrecto.
+
+    - Recorre la lista procesando un cobro de `49.99 €` para cada método e imprimiendo su recibo correspondiente.
+
+#### 2. Salida Esperada en Consola
+
+```text
+💳 Cobrando 49.99 € con Tarjeta [****-****-****-4242]...
+[PAGO ACEPTADO] Titular: Marta Sánchez | Total: 49.99 €
+--------------------------------------------------
+📱 Enviando petición Bizum de 49.99 € al 611223344...
+[PAGO ACEPTADO] Titular: Carlos Ruiz | Total: 49.99 €
+--------------------------------------------------
+🌐 Redirigiendo a pasarela PayPal (usuario_invalido)...
+[PAGO RECHAZADO] Titular: Ana Gómez | Total: 49.99 €
+--------------------------------------------------
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    abstract class MetodoPago(val titular: String) {
+        // Método abstracto: obliga a cada pasarela a implementar su lógica de cobro
+        abstract fun procesarCobro(importe: Double): Boolean
+
+        // Método concreto: lógica compartida para generar el ticket/recibo
+        fun generarRecibo(importe: Double, exito: Boolean): String {
+            val estado = if (exito) "PAGO ACEPTADO" else "PAGO RECHAZADO"
+            return "[$estado] Titular: $titular | Total: ${String.format("%.2f", importe)} €"
+        }
+    }
+
+    class TarjetaCredito(
+        titular: String,
+        val numeroTarjeta: String,
+        val cvv: String
+    ) : MetodoPago(titular) {
+
+        override fun procesarCobro(importe: Double): Boolean {
+            val ultimosCuatro = if (numeroTarjeta.length >= 4) numeroTarjeta.takeLast(4) else "????"
+            println("💳 Cobrando ${String.format("%.2f", importe)} € con Tarjeta [****-****-****-$ultimosCuatro]...")
+            return numeroTarjeta.length == 16 && cvv.length == 3
+        }
+    }
+
+    class Bizum(
+        titular: String,
+        val telefono: String
+    ) : MetodoPago(titular) {
+
+        override fun procesarCobro(importe: Double): Boolean {
+            println("📱 Enviando petición Bizum de ${String.format("%.2f", importe)} € al $telefono...")
+            return telefono.length == 9 && (telefono.startsWith("6") || telefono.startsWith("7"))
+        }
+    }
+
+    class PayPal(
+        titular: String,
+        val email: String
+    ) : MetodoPago(titular) {
+
+        override fun procesarCobro(importe: Double): Boolean {
+            println("🌐 Redirigiendo a pasarela PayPal ($email)...")
+            return email.contains("@") && email.contains(".")
+        }
+    }
+
+    fun main() {
+        val pasarelas: List<MetodoPago> = listOf(
+            TarjetaCredito("Marta Sánchez", "1234567812344242", "123"),
+            Bizum("Carlos Ruiz", "611223344"),
+            PayPal("Ana Gómez", "usuario_invalido")
+        )
+
+        val importeCompra = 49.99
+
+        for (pasarela in pasarelas) {
+            val exito = pasarela.procesarCobro(importeCompra)
+            println(pasarela.generarRecibo(importeCompra, exito))
+            println("-".repeat(50))
+        }
+    }
+    ```
+
+---
+
+### Ejercicio 3.7: Composición sobre Herencia: Descuentos en Carrito Móvil
+📄 **Archivo:** `E07_ComposicionDescuentos.kt`  
+📚 **Teoría de referencia:** [Composición frente a Herencia](../21-poo.md#composicion-frente-a-herencia-composicion-sobre-herencia)
+
+#### 1. Enunciado y Requisitos
+
+En lugar de crear múltiples subclases rígidas para cada tipo de promoción comercial (`CarritoConDescuentoPorcentaje`, `CarritoConCuponFijo`), aplicaremos el principio **"Composición sobre Herencia"**: el carrito de compras **TIENE UNA** estrategia de descuento intercambiable en caliente:
+
+1. Declara la interfaz de contrato para estrategias de descuento:
+   ```kotlin
+   interface EstrategiaDescuento {
+       val descripcion: String
+       fun calcular(precioBase: Double): Double
+   }
+   ```
+
+2. Implementa tres clases que cumplan el contrato:
+
+    - `class SinDescuento : EstrategiaDescuento`: devuelve el precio base íntegro sin alteraciones.
+
+    - `class DescuentoPorcentaje(val porcentaje: Int) : EstrategiaDescuento`: descuenta el porcentaje indicado (ej. 20%).
+
+    - `class DescuentoCuponFijo(val rebajaEuros: Double) : EstrategiaDescuento`: resta `rebajaEuros` del precio base, asegurando con `maxOf(0.0, ...)` que el total nunca sea negativo.
+
+3. Diseña la clase compuesta `CarritoCompra(val usuario: String, var estrategiaDescuento: EstrategiaDescuento = SinDescuento())`:
+
+    - Propiedad privada: `private val items = mutableListOf<Double>()`.
+
+    - Método `fun agregarProducto(precio: Double)` que añada el importe a la lista.
+
+    - Método `fun calcularTotal(): Double` que sume los precios y aplique la estrategia: `estrategiaDescuento.calcular(subtotal)`.
+
+    - Método `fun imprimirTicket()` que muestre el subtotal, la descripción de la estrategia activa y el total final a abonar.
+
+4. En `fun main()`:
+
+    - Crea un carrito para el usuario `"Laura"` y añade dos productos por valor de `60.0 €` y `40.0 €` (subtotal = `100.00 €`).
+
+    - Imprime el ticket inicial (con la estrategia por defecto `SinDescuento`).
+
+    - Simula que la usuaria introduce un código promocional en la pantalla del móvil reasignando la propiedad en caliente:  
+      `carrito.estrategiaDescuento = DescuentoPorcentaje(20)`. Imprime el nuevo ticket.
+
+    - Simula que cambia a un cupón de fidelización de 15€:  
+      `carrito.estrategiaDescuento = DescuentoCuponFijo(15.0)`. Imprime el ticket resultante.
+
+#### 2. Salida Esperada en Consola
+
+```text
+🛒 Ticket de Laura (Subtotal: 100.00 €)
+   Promoción: Sin descuento aplicado
+   TOTAL A PAGAR: 100.00 €
+
+🏷️ [El usuario aplica código: 'BLACKFRIDAY20']
+🛒 Ticket de Laura (Subtotal: 100.00 €)
+   Promoción: 20% de descuento Black Friday
+   TOTAL A PAGAR: 80.00 €
+
+🏷️ [El usuario canjea cupón de bienvenida de 15€]
+🛒 Ticket de Laura (Subtotal: 100.00 €)
+   Promoción: Cupón descuento directo de 15.00 €
+   TOTAL A PAGAR: 85.00 €
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    interface EstrategiaDescuento {
+        val descripcion: String
+        fun calcular(precioBase: Double): Double
+    }
+
+    class SinDescuento : EstrategiaDescuento {
+        override val descripcion: String = "Sin descuento aplicado"
+        override fun calcular(precioBase: Double): Double = precioBase
+    }
+
+    class DescuentoPorcentaje(val porcentaje: Int) : EstrategiaDescuento {
+        override val descripcion: String = "$porcentaje% de descuento Black Friday"
+        override fun calcular(precioBase: Double): Double = precioBase * (1.0 - porcentaje / 100.0)
+    }
+
+    class DescuentoCuponFijo(val rebajaEuros: Double) : EstrategiaDescuento {
+        override val descripcion: String = "Cupón descuento directo de ${String.format("%.2f", rebajaEuros)} €"
+        override fun calcular(precioBase: Double): Double = maxOf(0.0, precioBase - rebajaEuros)
+    }
+
+    // Composición: El Carrito 'TIENE UNA' EstrategiaDescuento intercambiable
+    class CarritoCompra(
+        val usuario: String,
+        var estrategiaDescuento: EstrategiaDescuento = SinDescuento()
+    ) {
+        private val items = mutableListOf<Double>()
+
+        fun agregarProducto(precio: Double) {
+            items.add(precio)
+        }
+
+        fun calcularSubtotal(): Double = items.sum()
+
+        fun calcularTotal(): Double = estrategiaDescuento.calcular(calcularSubtotal())
+
+        fun imprimirTicket() {
+            println("🛒 Ticket de $usuario (Subtotal: ${String.format("%.2f", calcularSubtotal())} €)")
+            println("   Promoción: ${estrategiaDescuento.descripcion}")
+            println("   TOTAL A PAGAR: ${String.format("%.2f", calcularTotal())} €\n")
+        }
+    }
+
+    fun main() {
+        val carrito = CarritoCompra(usuario = "Laura")
+        carrito.agregarProducto(60.0)
+        carrito.agregarProducto(40.0)
+
+        // 1. Estado inicial sin descuento
+        carrito.imprimirTicket()
+
+        // 2. Cambio de comportamiento en caliente mediante composición:
+        println("🏷️ [El usuario aplica código: 'BLACKFRIDAY20']")
+        carrito.estrategiaDescuento = DescuentoPorcentaje(20)
+        carrito.imprimirTicket()
+
+        // 3. Cambio a cupón fijo:
+        println("🏷️ [El usuario canjea cupón de bienvenida de 15€]")
+        carrito.estrategiaDescuento = DescuentoCuponFijo(15.0)
+        carrito.imprimirTicket()
+    }
+    ```
+
+---
+
+### Ejercicio 3.8: Delegación de Interfaces con `by`: Almacenamiento Local y Sesión Móvil
+📄 **Archivo:** `E08_DelegacionInterfacesSesion.kt`  
+📚 **Teoría de referencia:** [La Magia de Kotlin: Delegación de Interfaces (by)](../21-poo.md#la-magia-de-kotlin-delegacion-de-interfaces-by)
+
+#### 1. Enunciado y Requisitos
+
+En las aplicaciones móviles, una clase de negocio a menudo delega el almacenamiento físico en memoria o preferencias sin tener que reescribir manualmente cada método de la interfaz (*boilerplate*):
+
+1. Define una interfaz de almacenamiento clave-valor:
+   ```kotlin
+   interface AlmacenamientoLocal {
+       fun guardar(clave: String, valor: String)
+       fun recuperar(clave: String): String?
+       fun eliminar(clave: String)
+   }
+   ```
+
+2. Implementa `class AlmacenamientoMemoria : AlmacenamientoLocal` utilizando internamente un mapa mutable `private val tabla = mutableMapOf<String, String>()`.
+
+3. Crea la clase de negocio `GestorSesion(val usuarioId: String, almacenamiento: AlmacenamientoLocal) : AlmacenamientoLocal by almacenamiento`:
+
+    - La cláusula `: AlmacenamientoLocal by almacenamiento` aplica la **delegación nativa de clases**: `GestorSesion` cumple el contrato de `AlmacenamientoLocal` redirigiendo automáticamente todas las llamadas al objeto delegado, **sin escribir ni una sola línea de código repetitivo**.
+
+    - Añade lógica de negocio propia:
+      ```kotlin
+      fun iniciarSesion(tokenJwt: String) {
+          guardar("TOKEN_SESION", tokenJwt)
+          println("✅ Sesión iniciada para usuario $usuarioId.")
+      }
+
+      fun cerrarSesion() {
+          eliminar("TOKEN_SESION")
+          println("🚪 Sesión cerrada para usuario $usuarioId.")
+      }
+
+      val estaAutenticado: Boolean
+          get() = recuperar("TOKEN_SESION") != null
+      ```
+
+4. En `fun main()`:
+
+    - Instancia `GestorSesion` pasándole una instancia de `AlmacenamientoMemoria`.
+
+    - Inicia sesión con el token `"JWT_XYZ_777"`.
+
+    - Comprueba que `estaAutenticado` es `true`.
+
+    - Lee el token llamando directamente a `gestor.recuperar("TOKEN_SESION")` (demostrando la delegación de interfaces en acción).
+
+    - Cierra sesión y verifica que `estaAutenticado` pasa a ser `false`.
+
+#### 2. Salida Esperada en Consola
+
+```text
+✅ Sesión iniciada para usuario USR-8842.
+¿Usuario autenticado?: true
+Token activo recuperado por delegación: JWT_XYZ_777
+🚪 Sesión cerrada para usuario USR-8842.
+¿Usuario autenticado tras logout?: false
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    interface AlmacenamientoLocal {
+        fun guardar(clave: String, valor: String)
+        fun recuperar(clave: String): String?
+        fun eliminar(clave: String)
+    }
+
+    class AlmacenamientoMemoria : AlmacenamientoLocal {
+        private val tabla = mutableMapOf<String, String>()
+
+        override fun guardar(clave: String, valor: String) {
+            tabla[clave] = valor
+        }
+
+        override fun recuperar(clave: String): String? = tabla[clave]
+
+        override fun eliminar(clave: String) {
+            tabla.remove(clave)
+        }
+    }
+
+    // Delegación nativa: GestorSesion implementa AlmacenamientoLocal redirigiendo a 'almacenamiento'
+    class GestorSesion(
+        val usuarioId: String,
+        almacenamiento: AlmacenamientoLocal
+    ) : AlmacenamientoLocal by almacenamiento {
+
+        fun iniciarSesion(tokenJwt: String) {
+            guardar("TOKEN_SESION", tokenJwt)
+            println("✅ Sesión iniciada para usuario $usuarioId.")
+        }
+
+        fun cerrarSesion() {
+            eliminar("TOKEN_SESION")
+            println("🚪 Sesión cerrada para usuario $usuarioId.")
+        }
+
+        val estaAutenticado: Boolean
+            get() = recuperar("TOKEN_SESION") != null
+    }
+
+    fun main() {
+        val almacenamiento = AlmacenamientoMemoria()
+        val gestor = GestorSesion(usuarioId = "USR-8842", almacenamiento = almacenamiento)
+
+        gestor.iniciarSesion("JWT_XYZ_777")
+
+        println("¿Usuario autenticado?: ${gestor.estaAutenticado}")
+
+        // Llamada delegada directamente sobre 'gestor' sin métodos manuales en GestorSesion:
+        val tokenActivo = gestor.recuperar("TOKEN_SESION")
+        println("Token activo recuperado por delegación: $tokenActivo")
+
+        gestor.cerrarSesion()
+        println("¿Usuario autenticado tras logout?: ${gestor.estaAutenticado}")
+    }
+    ```
+
+---
+
 ## 🟡 Nivel Intermedio (Data Classes, Singletons, Enums y Eventos)
 
-### Ejercicio 3.6: Data Classes y Generación de Copias con `.copy()`
-📄 **Archivo:** `E06_DataClassesCopy.kt`  
+### Ejercicio 3.9: Data Classes y Generación de Copias con `.copy()`
+📄 **Archivo:** `E09_DataClassesCopy.kt`  
 📚 **Teoría de referencia:** [Declaración de Data Classes y Método copy()](../23-data-classes.md#3-el-metodo-copy-y-la-inmutabilidad)
 
 #### 1. Enunciado y Requisitos
@@ -766,8 +1142,8 @@ Desestructuración: ID=1 | Título=Celeste | Precio=19.99 €
 
 ---
 
-### Ejercicio 3.7: `companion object` para Constantes y Factorías
-📄 **Archivo:** `E07_CompanionObjectFactory.kt`  
+### Ejercicio 3.10: `companion object` para Constantes y Factorías
+📄 **Archivo:** `E10_CompanionObjectFactory.kt`  
 📚 **Teoría de referencia:** [El Objeto Compañero (Companion Object)](../22-objetos-anonimos.md#2-el-objeto-companero-companion-object-y-el-patron-factory-method)
 
 !!! info "Patrón de Diseño: Factory Method (Método Factoría)"
@@ -822,8 +1198,8 @@ Tarjeta local instanciada mediante Factoría: MAC=00:00:00:00, IP=127.0.0.1
 
 ---
 
-### Ejercicio 3.8: `object` Nativo (Patrón Singleton Thread-Safe)
-📄 **Archivo:** `E08_SingletonObject.kt`  
+### Ejercicio 3.11: `object` Nativo (Patrón Singleton Thread-Safe)
+📄 **Archivo:** `E11_SingletonObject.kt`  
 📚 **Teoría de referencia:** [Declaración de Objetos: El Patrón Singleton Nativo](../22-objetos-anonimos.md#1-declaracion-de-objetos-el-patron-singleton-nativo)
 
 !!! info "Patrón de Diseño: Singleton en la Industria"
@@ -916,8 +1292,8 @@ Acceso desde componente B: Usuario activo = Link_Hero
 
 ---
 
-### Ejercicio 3.9: `enum class` con Propiedades y `.entries`
-📄 **Archivo:** `E09_EnumEntries.kt`  
+### Ejercicio 3.12: `enum class` con Propiedades y `.entries`
+📄 **Archivo:** `E12_EnumEntries.kt`  
 📚 **Teoría de referencia:** [Enums con Propiedades y Métodos](../24-enum-classes.md#2-enums-con-propiedades-y-metodos) e [Iteración con .entries](../24-enum-classes.md#3-iteracion-moderna-entries-vs-values)
 
 #### 1. Enunciado y Requisitos
@@ -981,8 +1357,8 @@ Configuración activa: Modo Desafío -> Daño enemigo amplificado un 150%.
 
 ---
 
-### Ejercicio 3.10: Modelado de Eventos con `sealed interface UiEvent`
-📄 **Archivo:** `E10_UiEventsSealed.kt`  
+### Ejercicio 3.13: Modelado de Eventos con `sealed interface UiEvent`
+📄 **Archivo:** `E13_UiEventsSealed.kt`  
 📚 **Teoría de referencia:** [Sintaxis Moderna: sealed interface y data object](../26-sealed-classes.md#2-sintaxis-moderna-sealed-interface-y-data-object-kotlin-19) y [Manejo con when Exhaustivo](../26-sealed-classes.md#3-manejo-con-when-exhaustivo-y-smart-casting)
 
 #### 1. Enunciado y Requisitos
@@ -1047,8 +1423,8 @@ En Jetpack Compose, las acciones que el usuario realiza en la pantalla (pulsar b
 
 ---
 
-### Ejercicio 3.11: Delegación de Propiedades con `by` y `Delegates.observable`
-📄 **Archivo:** `E11_DelegatedProperties.kt`  
+### Ejercicio 3.14: Delegación de Propiedades con `by` y `Delegates.observable`
+📄 **Archivo:** `E14_DelegatedProperties.kt`  
 📚 **Teoría de referencia:** [Propiedades y Acceso en Clases](../21-poo.md#3-propiedades-y-acceso-field)
 
 #### 1. Enunciado y Requisitos
@@ -1100,8 +1476,8 @@ Puntuación final: 1000
 
 ## 🔴 Nivel Avanzado (Tipos Sellados, Genéricos y Reto Lúdico)
 
-### Ejercicio 3.12: `sealed interface` y Patrón `UiState`
-📄 **Archivo:** `E12_SealedUiState.kt`  
+### Ejercicio 3.15: `sealed interface` y Patrón `UiState`
+📄 **Archivo:** `E15_SealedUiState.kt`  
 📚 **Teoría de referencia:** [El Patrón Universal de Arquitectura en Android: UiState](../26-sealed-classes.md#5-el-patron-universal-de-arquitectura-en-android-uistate)
 
 #### 1. Enunciado y Requisitos
@@ -1162,8 +1538,8 @@ Puntuación final: 1000
 
 ---
 
-### Ejercicio 3.13: Envoltorio Genérico con Covarianza `out`
-📄 **Archivo:** `E13_GenericosVarianzaOut.kt`  
+### Ejercicio 3.16: Envoltorio Genérico con Covarianza `out`
+📄 **Archivo:** `E16_GenericosVarianzaOut.kt`  
 📚 **Teoría de referencia:** [Clases Genéricas](../25-genericos.md#1-clases-genericas) y [Covarianza con out](../25-genericos.md#41-covarianza-con-out-productores-de-datos)
 
 #### 1. Enunciado y Requisitos
@@ -1222,8 +1598,8 @@ Login erróneo -> Error 401: Credenciales inválidas
 
 ---
 
-### Ejercicio 3.14: Modelado de Rutas de Navegación con `sealed class`
-📄 **Archivo:** `E14_RutasNavegacionSealed.kt`  
+### Ejercicio 3.17: Modelado de Rutas de Navegación con `sealed class`
+📄 **Archivo:** `E17_RutasNavegacionSealed.kt`  
 📚 **Teoría de referencia:** [Tipos Sellados (Sealed Classes e Interfaces)](../26-sealed-classes.md#1-que-es-una-sealed-class-y-que-problema-resuelve)
 
 #### 1. Enunciado y Requisitos
@@ -1274,7 +1650,7 @@ Navegando a: pantalla_detalle/42 -> Cargando datos del juego ID = 42
 
 ---
 
-### Reto 3.15: El Motor de Wordle en Consola (*POO, Data Classes y Dominio*)
+### Reto 3.18: El Motor de Wordle en Consola (*POO, Data Classes y Dominio*)
 📄 **Archivo:** `Reto03_WordleEngine.kt`  
 📚 **Teoría de referencia:** [El Método copy() y la Inmutabilidad](../23-data-classes.md#3-el-metodo-copy-mutacion-inmutable) y [El Dúo Estrella: enum y when Exhaustivo](../24-enum-classes.md#4-el-duo-estrella-enum-y-la-expresion-when-exhaustiva)
 

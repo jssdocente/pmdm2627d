@@ -18,11 +18,11 @@ Este bloque formativo está diseñado específicamente para alumnos de 2º de DA
 
 ### Programación Orientada a Objetos y Modelado
 
-- **[POO Idiomática en Kotlin](./21-poo.md):** Constructores primarios en cabecera, bloque `init`, propiedades con `field`, clases `open` y `final` por defecto.
+- **[POO Idiomática en Kotlin](./21-poo.md):** Constructores primarios, propiedades con `field`, contratos con `interface`, polimorfismo, comprobación de tipos con `is`/`!is`, casteo seguro (`as?`) y *Smart Casting*.
 - **[Singletons, Companion Object y Objetos Anónimos](./22-objetos-anonimos.md):** Declaraciones de objeto (`object`), sustitución de `static` con `companion object` y expresiones anónimas.
 - **[Clases de Datos (Data Classes)](./23-data-classes.md):** Modelado de entidades, generación de `copy()` y derivación de estados inmutables.
 - **[Clases de Enumeración (Enum Classes)](./24-enum-classes.md):** Constantes con métodos, propiedad moderna `.entries` y `when` exhaustivo.
-- **[Tipos Sellados e Interfaces (Patrón UI State)](./26-sealed-classes.md):** `sealed interface`, `data object` y modelado arquitectural del estado de pantalla en Android.
+- **[Tipos Sellados e Interfaces (Patrón UI State)](./26-sealed-classes.md):** Polimorfismo restringido, `sealed interface` frente a `sealed class`, `data object`, `when` exhaustivo y modelado arquitectural del estado de pantalla en Android.
 - **[Genéricos y Varianza](./25-genericos.md):** Clases y funciones genéricas, restricciones (`<T : Comparable<T>>`) y varianza `out` / `in`.
 
 ### Idiomática y Concurrencia
