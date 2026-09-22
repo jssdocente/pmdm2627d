@@ -1656,28 +1656,30 @@ Navegando a: pantalla_detalle/42 -> Cargando datos del juego ID = 42
 
 #### 1. Contexto y Misión
 
-En este reto construirás el motor de validación para el popular juego de palabras **Wordle**, aplicando los principios esenciales de **Programación Orientada a Objetos en Kotlin**, **Data Classes** y **Enum Classes** aprendidos a lo largo del Bloque 3.
+En este reto construirás el motor de validación y gestión de estado para el popular juego de palabras **Wordle**, aplicando los principios esenciales de **Programación Orientada a Objetos en Kotlin**, **Data Classes**, **Enum Classes** y **Mutación Inmutable con `.copy()`** aprendidos a lo largo del Bloque 3.
 
 El propósito formativo es aprender a modelar la lógica de negocio y las entidades de dominio de forma totalmente desacoplada de la interfaz gráfica, tal como se diseñan los modelos de datos y estados de pantalla (**UiState**) en aplicaciones profesionales con **Jetpack Compose**.
 
 ##### 🎮 La Dinámica del Juego Explicada
 
-El objetivo del jugador consiste en adivinar una palabra secreta oculta de longitud determinada (en este ejercicio, `"COMPOSE"`, de 7 letras) dentro de un límite de **6 intentos máximos**.
+El objetivo del jugador consiste en adivinar una palabra secreta oculta de longitud fija (en este ejercicio, `"COMPOSE"`, de 7 letras) dentro de un límite de **6 intentos máximos**.
 
-Tras cada intento propuesto por el usuario, el motor compara letra a letra la palabra enviada con la palabra secreta y genera una **evaluación visual** mediante un código de colores icónico.
+En cada turno, el usuario propone una palabra del mismo número de letras. El motor analiza el intento letra por letra y produce una **evaluación visual** mediante un código de colores icónico. A continuación, el juego actualiza el **estado global de la partida** (`PartidaWordle`) registrando el nuevo intento y recalculando de forma reactiva si el jugador ha ganado o cuántos intentos le quedan.
 
 ###### A. Componentes y Recursos de la Partida
 
-| Elemento | Tipo de Dato | Función en el Juego |
+La arquitectura del reto se apoya en 4 piezas perfectamente coordinadas:
+
+| Elemento | Tipo de Componente | Función en la Arquitectura |
 | :--- | :--- | :--- |
-| **`EstadoLetra`** | `enum class` | Calificación de cada posición (`VERDE`, `AMARILLO`, `GRIS`), con su emoji visual asociado (`"🟩"`, `"🟨"`, `"⬛"`). |
-| **`EvaluacionLetra`** | `data class` | Celda individual de la cuadrícula que empareja el carácter probado con su `EstadoLetra`. |
-| **`PartidaWordle`** | `data class` | Modelo de estado inmutable de la partida con la palabra secreta, límite de intentos y matriz de evaluaciones acumuladas. |
-| **`evaluarIntento()`** | Función pura | Analiza la palabra enviada y devuelve la lista inmutable `List<EvaluacionLetra>`. |
+| **`EstadoLetra`** | `enum class` | Calificación semántica de cada posición (`VERDE`, `AMARILLO`, `GRIS`), con su emoji visual asociado (`"🟩"`, `"🟨"`, `"⬛"`). |
+| **`EvaluacionLetra`** | `data class` | Celda individual de la cuadrícula que asocia el carácter propuesto (`Char`) con su `EstadoLetra`. |
+| **`evaluarIntento()`** | Función pura | Función determinista que compara la palabra secreta con el intento y devuelve una lista inmutable `List<EvaluacionLetra>`. |
+| **`PartidaWordle`** | `data class` (*UiState*) | Modelo de estado inmutable de la partida. Almacena la palabra secreta, el límite de intentos y la matriz histórica de intentos (`List<List<EvaluacionLetra>>`). Además, expone **propiedades calculadas** (`intentosRestantes`, `esVictoria`, `esFinDePartida`). |
 
 ###### B. Reglas de Validación de Letras (Verde, Amarillo y Gris)
 
-Para cada carácter en la posición `i` del intento propuesto, se aplican las siguientes reglas oficiales de Wordle:
+Para cada carácter en la posición `i` del intento propuesto, se aplican las siguientes reglas oficiales:
 
 1. **🟩 VERDE (Acierto Pleno):**  
    El carácter propuesto coincide de forma idéntica con el carácter de la palabra secreta en esa misma posición exacta (`intento[i] == secreta[i]`).
@@ -1688,35 +1690,36 @@ Para cada carácter en la posición `i` del intento propuesto, se aplican las si
 3. **⬛ GRIS (Letra Ausente):**  
    El carácter propuesto no existe en ninguna posición de la palabra secreta.
 
-###### C. Ciclo de Vida de Cada Intento (Paso a Paso)
+###### C. Ciclo de Vida de Cada Turno (Paso a Paso con `.copy()`)
 
-Cada intento introducido en el motor sigue cronológicamente las siguientes fases:
+A diferencia de los enfoques tradicionales de 1º de DAM donde se mutaban variables sueltas (`var intentos`, `var vidas`), en Kotlin moderno la partida se gestiona como un **flujo de estados inmutables**:
 
-1. **Fase de Validación y Normalización de Entrada:**  
-   Ambas cadenas se convierten a mayúsculas con `.uppercase()`. Se verifica con `require(secreta.length == intento.length)` que la longitud del intento sea exactamente igual a la de la palabra secreta; si no coinciden, se detiene el proceso con una excepción descriptiva.
+1. **Paso 1 — Estado Inicial:**  
+   Se instancia el estado inicial con `var partida = PartidaWordle(palabraSecreta = "COMPOSE")`. En este instante, la lista de intentos realizados está vacía (`emptyList()`), los intentos restantes son 6 y `esFinDePartida` es `false`.
 
-2. **Fase de Mapeo Posicional (`mapIndexed`):**  
-   Se recorre la cadena caracter a caracter conociendo su índice posicional `(i, c)`. Mediante una expresión `when`, se asigna el estado (`VERDE`, `AMARILLO` o `GRIS`) y se instancia un objeto `EvaluacionLetra(c, estado)`.
-
-3. **Fase de Renderizado y Visualización:**  
-   En consola se imprimen dos líneas por intento:
+2. **Paso 2 — Evaluación Pura del Intento:**  
+   Se recibe la palabra del usuario y se invoca la función pura `evaluarIntento(partida.palabraSecreta, palabra)`:
    
-    - La palabra del intento con las letras separadas por espacios (ej. `K O T L I N S`).
-    
-    - La fila de iconos correspondiente dibujada con los emojis de cada celda (ej. `⬛ 🟩 ⬛ ⬛ ⬛ ⬛ 🟨`).
+   - Se valida mediante `require(secreta.length == intento.length)` que la longitud sea idéntica; si no coincide, se lanza una excepción explicativa.
+   - Mediante `mapIndexed` y una expresión `when`, se clasifica cada letra en su `EstadoLetra` correspondiente, retornando una lista inmutable `List<EvaluacionLetra>`.
 
-4. **Fase de Comprobación de Fin de Partida:**  
-   Se evalúa la lista de evaluaciones generadas:
+3. **Paso 3 — Transición Inmutable de Estado con `.copy()`:**  
+   En lugar de modificar una lista interna con `.add()`, se genera una **nueva instancia inmutable** de la partida reasignando la variable con `.copy()`:
+   ```kotlin
+   partida = partida.copy(
+       intentosRealizados = partida.intentosRealizados + evaluacion
+   )
+   ```
+   De este modo, `partida` siempre representa una instantánea consistente y segura de la partida en el tiempo.
 
-    - Si todas las celdas tienen el estado `EstadoLetra.VERDE`, ¡se declara la victoria inmediata!
+4. **Paso 4 — Notificación y Renderizado Visual:**  
+   Se imprime en consola la palabra con sus letras separadas por espacios, la fila de iconos visuales (`evaluacion.joinToString(" ") { it.estado.icono }`) y los intentos que restan consultando la propiedad calculada `partida.intentosRestantes`.
 
-    - Si no, se descuenta un intento y el juego continúa hasta agotar el cupo de 6 rondas.
-
-###### D. Desenlace Final (Condiciones de Victoria y Derrota)
-
-- **🏆 Victoria:** Se alcanza en el momento en que un intento resulta 100% verde (`evaluacion.all { it.estado == EstadoLetra.VERDE }`). Se felicita al jugador indicando el número exacto de intentos requeridos.
-
-- **💀 Derrota:** Se produce si se alcanzan los 6 intentos máximos sin descubrir la palabra. Se desvela la solución oculta.
+5. **Paso 5 — Evaluación de Desenlace mediante Propiedades de Estado:**  
+   La propia clase `PartidaWordle` evalúa de forma reactiva las condiciones de fin de juego:
+   
+   - **🏆 Victoria Inmediata:** Si `partida.esVictoria` devuelve `true` (la última evaluación está 100% verde), se felicita al jugador indicando el número exacto de intentos requeridos (`partida.intentosRealizados.size`).
+   - **💀 Derrota por Agotamiento:** Si `partida.esFinDePartida` es `true` pero no hay victoria (se han consumido los 6 intentos), se detiene el bucle y se revela la palabra secreta.
 
 ---
 
@@ -1728,45 +1731,83 @@ Para completar el reto con la máxima fidelidad técnica:
 
 2. **RF-02 (Data Class de Celda):** Modela `data class EvaluacionLetra(val caracter: Char, val estado: EstadoLetra)` para encapsular cada celda evaluada.
 
-3. **RF-03 (Data Class del Estado Global de la Partida):** Modela `data class PartidaWordle(val palabraSecreta: String, val intentosMaximos: Int = 6, val intentosRealizados: List<List<EvaluacionLetra>> = emptyList())` asegurando inmutabilidad en las listas anidadas.
+3. **RF-03 (Data Class del Estado Global con Propiedades Calculadas):** Modela `data class PartidaWordle(val palabraSecreta: String, val intentosMaximos: Int = 6, val intentosRealizados: List<List<EvaluacionLetra>> = emptyList())` con:
+   
+   - `intentosRestantes: Int` (calculada como `intentosMaximos - intentosRealizados.size`).
+   - `esVictoria: Boolean` (calculada verificando si la última evaluación está 100% verde).
+   - `esFinDePartida: Boolean` (calculada como `esVictoria || intentosRestantes <= 0`).
 
 4. **RF-04 (Función Pura de Evaluación):** Implementa `fun evaluarIntento(palabraSecreta: String, intentoRaw: String): List<EvaluacionLetra>` que valide la coincidencia de longitud con `require` y aplique `mapIndexed` junto con una expresión `when` para clasificar cada letra.
 
 5. **RF-05 (Renderizado Formateado e Iconografía):** Muestra cada intento imprimiendo las letras separadas por espacios y en la línea siguiente la cadena de iconos (`iconos = evaluacion.joinToString(" ") { it.estado.icono }`).
 
-6. **RF-06 (Control de Flujo de la Partida en `main()`):** Simula una partida con una lista de intentos progresivos (ej. `"KOTLINS"`, `"COMPASS"`, `"COMPOSE"`), verificando la condición de victoria con `.all` tras cada intento.
+6. **RF-06 (Control de Flujo con `.copy()` en `main()`):** Simula una partida instanciando `PartidaWordle` y haciendo evolucionar su estado turno a turno reasignando `partida = partida.copy(intentosRealizados = ...)`, verificando `partida.esFinDePartida` y `partida.esVictoria`.
 
 ---
 
-??? info "📊 Ver Modelo Mental del Reto (Diagrama de Clases y Dominio)"
-    Analiza cómo se estructuran las clases y tipos enumerados en la arquitectura del juego:
+??? info "📊 Ver Modelos Mentales del Reto (Diagrama de Flujo y Diagrama de Clases)"
+    === "Diagrama de Flujo (Ciclo de Vida y Transiciones de Estado)"
+        ```mermaid
+        flowchart TD
+            Inicio(["Inicio de la Partida"]) --> CrearEstado["Instanciar Estado Inicial:<br/>PartidaWordle('COMPOSE')"]
+            CrearEstado --> Bucle{"¿Fin de Partida?<br/>partida.esFinDePartida"}
 
-    ```mermaid
-    classDiagram
-        class EstadoLetra {
-            <<enum>>
-            VERDE : "🟩"
-            AMARILLO : "🟨"
-            GRIS : "⬛"
-            +String icono
-        }
+            Bucle -- "No: Quedan intentos" --> Input["Recibir palabra de intento<br/>(ej: 'KOTLINS')"]
+            Input --> Evaluar["Invocar función pura:<br/>evaluarIntento(secreta, intento)"]
 
-        class EvaluacionLetra {
-            <<data class>>
-            +Char caracter
-            +EstadoLetra estado
-        }
+            subgraph Motor ["Motor Puro: evaluarIntento"]
+                Evaluar --> CheckLen{"¿Longitud igual?<br/>require"}
+                CheckLen -- "No" --> ErrorLen["Lanzar excepción<br/>IllegalArgumentException"]
+                CheckLen -- "Sí" --> Mapeo["Recorrer letras con mapIndexed"]
+                Mapeo --> Clasificar{"Clasificar letra con when"}
+                Clasificar -- "c == secreta[i]" --> Verde["🟩 EstadoLetra.VERDE"]
+                Clasificar -- "c in secreta" --> Amarillo["🟨 EstadoLetra.AMARILLO"]
+                Clasificar -- "else" --> Gris["⬛ EstadoLetra.GRIS"]
+                Verde --> CrearCelda["Instanciar EvaluacionLetra(c, estado)"]
+                Amarillo --> CrearCelda
+                Gris --> CrearCelda
+            end
 
-        class PartidaWordle {
-            <<data class>>
-            +String palabraSecreta
-            +Int intentosMaximos
-            +List~List~EvaluacionLetra~~ intentosRealizados
-        }
+            CrearCelda --> RetornarLista["Retornar List de EvaluacionLetra"]
+            RetornarLista --> Transicion["Transición inmutable con .copy():<br/>partida = partida.copy(...)"]
+            Transicion --> Render["Renderizado en Consola:<br/>Letras, Iconos e intentosRestantes"]
+            Render --> Bucle
 
-        PartidaWordle *-- EvaluacionLetra : contiene matriz de intentos
-        EvaluacionLetra --> EstadoLetra : calificada con
-    ```
+            Bucle -- "Sí: Juego terminado" --> CheckWin{"¿Es victoria?<br/>partida.esVictoria"}
+            CheckWin -- "Sí" --> Victoria(["🏆 ¡Victoria! Resuelto con éxito"])
+            CheckWin -- "No" --> Derrota(["💀 ¡Derrota! Palabra no descubierta"])
+        ```
+
+    === "Diagrama de Clases (Dominio y Entidades)"
+        ```mermaid
+        classDiagram
+            class EstadoLetra {
+                <<enum>>
+                VERDE : "🟩"
+                AMARILLO : "🟨"
+                GRIS : "⬛"
+                +String icono
+            }
+
+            class EvaluacionLetra {
+                <<data class>>
+                +Char caracter
+                +EstadoLetra estado
+            }
+
+            class PartidaWordle {
+                <<data class>>
+                +String palabraSecreta
+                +Int intentosMaximos
+                +List~List~EvaluacionLetra~~ intentosRealizados
+                +Int intentosRestantes
+                +Boolean esVictoria
+                +Boolean esFinDePartida
+            }
+
+            PartidaWordle *-- EvaluacionLetra : contiene matriz de intentos
+            EvaluacionLetra --> EstadoLetra : calificada con
+        ```
 
 ??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
     Antes de examinar la solución o las pistas, reflexiona sobre estas decisiones de diseño:
@@ -1776,6 +1817,9 @@ Para completar el reto con la máxima fidelidad técnica:
 
     - **¿Por qué `data class EvaluacionLetra` en lugar de pares simples `Pair<Char, EstadoLetra>`?**  
       Las `data class` proporcionan nombres descriptivos a los campos (`caracter`, `estado`) en lugar de los genéricos `first` y `second`, mejorando drásticamente la legibilidad y mantenibilidad del código. Además, generan automáticamente `equals()`, `hashCode()` y `toString()`.
+
+    - **¿Por qué usamos `partida.copy(...)` en lugar de mutar un array interno con `.add()`?**  
+      En el desarrollo moderno reactivo (como Jetpack Compose o Flutter), los componentes de la interfaz solo se repintan cuando detectan que **la referencia del objeto de estado ha cambiado**. Si mutas un array interno, la referencia sigue siendo la misma y la pantalla no se actualiza. Crear una nueva instancia inmutable con `.copy()` garantiza una arquitectura reactiva libre de efectos secundarios.
 
     - **¿Cómo comparar las letras eficientemente sin bucles manuales `for`?**  
       Utilizando `intento.mapIndexed { index, char -> ... }`. El parámetro `index` permite verificar si el carácter coincide con `palabraSecreta[index]` (Verde), mientras que el operador de pertenencia `char in palabraSecreta` determina si existe en otra posición (Amarillo).
@@ -1800,10 +1844,23 @@ Para completar el reto con la máxima fidelidad técnica:
         }
         ```
 
-    ??? tip "💡 Pista 3: Detección de Victoria con `.all`"
-        Para determinar si el turno actual es ganador, comprueba si la totalidad de las celdas evaluadas tienen el estado verde:
+    ??? tip "💡 Pista 3: Estructura de `PartidaWordle` y mutación inmutable con `.copy()`"
+        Declara las propiedades calculadas dentro del cuerpo de la `data class` y evoluciona el estado en el bucle:
         ```kotlin
-        val victoria = evaluacion.all { it.estado == EstadoLetra.VERDE }
+        data class PartidaWordle(
+            val palabraSecreta: String,
+            val intentosMaximos: Int = 6,
+            val intentosRealizados: List<List<EvaluacionLetra>> = emptyList()
+        ) {
+            val intentosRestantes: Int get() = intentosMaximos - intentosRealizados.size
+            val esVictoria: Boolean get() = intentosRealizados.lastOrNull()?.all { it.estado == EstadoLetra.VERDE } ?: false
+            val esFinDePartida: Boolean get() = esVictoria || intentosRestantes <= 0
+        }
+
+        // Dentro del bucle:
+        partida = partida.copy(
+            intentosRealizados = partida.intentosRealizados + evaluacion
+        )
         ```
 
 ??? info "🖥️ Ver Salida de Ejemplo en Consola"
@@ -1813,12 +1870,15 @@ Para completar el reto con la máxima fidelidad técnica:
 
     Intento 1: K O T L I N S
     ⬛ 🟩 ⬛ ⬛ ⬛ ⬛ 🟨
+    Intentos restantes: 5
 
     Intento 2: C O M P A S S
     🟩 🟩 🟩 🟩 ⬛ ⬛ 🟨
+    Intentos restantes: 4
 
     Intento 3: C O M P O S E
     🟩 🟩 🟩 🟩 🟩 🟩 🟩
+    Intentos restantes: 3
 
     ¡ENHORABUENA! 🎉 Has resuelto el Wordle en 3 intentos.
     ```
@@ -1842,7 +1902,16 @@ Para completar el reto con la máxima fidelidad técnica:
         val palabraSecreta: String,
         val intentosMaximos: Int = 6,
         val intentosRealizados: List<List<EvaluacionLetra>> = emptyList()
-    )
+    ) {
+        val intentosRestantes: Int
+            get() = intentosMaximos - intentosRealizados.size
+
+        val esVictoria: Boolean
+            get() = intentosRealizados.lastOrNull()?.all { it.estado == EstadoLetra.VERDE } ?: false
+
+        val esFinDePartida: Boolean
+            get() = esVictoria || intentosRestantes <= 0
+    }
 
     fun evaluarIntento(palabraSecreta: String, intentoRaw: String): List<EvaluacionLetra> {
         val secreta = palabraSecreta.uppercase()
@@ -1863,25 +1932,52 @@ Para completar el reto con la máxima fidelidad técnica:
     }
 
     fun main() {
-        val secreta = "COMPOSE"
+        var partida = PartidaWordle(palabraSecreta = "COMPOSE")
         println("=== WORDLE KOTLIN CLI ===")
-        println("Palabra secreta fijada: COMPOSE (${secreta.length} letras)\n")
+        println("Palabra secreta fijada: ${partida.palabraSecreta} (${partida.palabraSecreta.length} letras)\n")
 
         val intentos = listOf("KOTLINS", "COMPASS", "COMPOSE")
 
-        intentos.forEachIndexed { turno, palabra ->
-            println("Intento ${turno + 1}: ${palabra.map { "$it" }.joinToString(" ")}")
-            val evaluacion = evaluarIntento(secreta, palabra)
+        for (palabra in intentos) {
+            if (partida.esFinDePartida) break
 
+            val evaluacion = evaluarIntento(partida.palabraSecreta, palabra)
+
+            // Evolución inmutable del estado usando .copy():
+            partida = partida.copy(
+                intentosRealizados = partida.intentosRealizados + evaluacion
+            )
+
+            val turnoActual = partida.intentosRealizados.size
+            println("Intento $turnoActual: ${palabra.map { "$it" }.joinToString(" ")}")
             val iconos = evaluacion.joinToString(" ") { it.estado.icono }
             println(iconos)
-            println()
+            println("Intentos restantes: ${partida.intentosRestantes}\n")
 
-            if (evaluacion.all { it.estado == EstadoLetra.VERDE }) {
-                println("¡ENHORABUENA! 🎉 Has resuelto el Wordle en ${turno + 1} intentos.")
+            if (partida.esVictoria) {
+                println("¡ENHORABUENA! 🎉 Has resuelto el Wordle en $turnoActual intentos.")
                 return
             }
         }
+
+        if (!partida.esVictoria) {
+            println("💀 Has agotado tus intentos. La palabra era: ${partida.palabraSecreta}")
+        }
     }
     ```
+
+---
+
+### 🧪 ¿Cómo diseñar y blindar este motor mediante TDD?
+
+!!! tip "Siguiente Nivel de Calidad: TDD, Dominio, Data Classes y Excepciones"
+    ¿Quieres construir y blindar este motor de juego aplicando **Test-Driven Development (TDD)** desde cero? En la sección de testing dispones del taller práctico guiado paso a paso:
+
+    - Define el contrato inicial en un subpaquete limpio (`b03_poo_sealed.tdd`) y arranca en **Rojo**.
+    - Aprende a validar excepciones y precondiciones con `assertFailsWith<IllegalArgumentException>`.
+    - Verifica igualdad estructural en listas y comprueba las propiedades calculadas del estado inmutable (`PartidaWordle`).
+    - Pasa a **Verde (100% de éxito)** antes de ensamblar el bucle final en consola.
+
+    👉 **[Ir al Taller de Testing 3: Wordle Engine con TDD](../testing/03-test-wordle-dominio.md)**
+
 

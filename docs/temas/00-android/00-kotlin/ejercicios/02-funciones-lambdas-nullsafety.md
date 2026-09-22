@@ -1651,3 +1651,16 @@ Para completar el reto de forma rigurosa respetando el nivel pedagógico del Blo
         }
     }
     ```
+
+---
+
+### 🧪 ¿Cómo desarrollar este juego mediante TDD (Test-Driven Development)?
+
+!!! tip "Siguiente Nivel de Calidad: TDD, Lambdas y Verificación de Callbacks"
+    ¿Quieres experimentar la metodología de desarrollo que aplican los equipos de ingeniería de élite? En la sección de testing dispones de la suite de pruebas completa para el Ahorcado:
+
+    - Diseña por contratos en un subpaquete limpio (`b02_funciones_lambdas.tdd`).
+    - Pasa del **Rojo** al **Verde** implementando las funciones de extensión y el procesador de intentos.
+    - Aprende a verificar de forma automática que los callbacks reactivos y las entradas nulas se comportan a la perfección.
+
+    👉 **[Ir al Taller de Testing 2: El Ahorcado con TDD](../testing/02-test-ahorcado-tdd.md)**

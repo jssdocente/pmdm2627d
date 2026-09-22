@@ -12,14 +12,16 @@ Para maximizar el tiempo de práctica y evitar crear decenas de proyectos indepe
 pmdm-kotlin-lab/
 ├── build.gradle.kts (configuración con dependencias)
 └── src/
-    └── main/
-        └── kotlin/
-            ├── b01_fundamentos/          <-- Bloque 1: Variables, Inmutabilidad y When
-            ├── b02_funciones_lambdas/    <-- Bloque 2: Lambdas y Null Safety
-            ├── b03_poo_sealed/           <-- Bloque 3: POO, Data Classes y Sealed Types
-            ├── b04_colecciones/          <-- Bloque 4: Colecciones y Scope Functions
-            ├── b05_corrutinas/           <-- Bloque 5: Asincronía con Corrutinas
-            └── b06_proyecto_integrador/  <-- Proyecto Final Acumulativo: GameVault CLI
+    ├── main/kotlin/                  <-- CÓDIGO DE PRODUCCIÓN (Ejercicios y Retos jugables)
+    │   ├── b01_fundamentos/          <-- Bloque 1: Variables, Inmutabilidad y When
+    │   ├── b02_funciones_lambdas/    <-- Bloque 2: Lambdas y Null Safety
+    │   ├── b03_poo_sealed/           <-- Bloque 3: POO, Data Classes y Sealed Types
+    │   ├── b04_colecciones/          <-- Bloque 4: Colecciones y Scope Functions
+    │   ├── b05_corrutinas/           <-- Bloque 5: Asincronía con Corrutinas
+    │   └── b06_proyecto_integrador/  <-- Proyecto Final: GameVault CLI
+    │
+    └── test/kotlin/                  <-- PRUEBAS AUTOMATIZADAS (Suites de Tests Unitarios)
+        └── b01_fundamentos/          <-- Tests con kotlin.test y JUnit
 ```
 
 ### Paso 1: Creación del Proyecto en IntelliJ IDEA
@@ -119,4 +121,14 @@ Cada módulo temático contiene una amplia batería graduada de actividades estr
    📖 **Teoría de referencia:** [Data Classes](../23-data-classes.md), [Sealed Interfaces](../26-sealed-classes.md), [Flows Reactivos](../52-flows.md) y [Corrutinas](../51-corrutinas.md)  
    🦑 **Reto Acumulativo:** *Simulador "Luz Roja, Luz Verde" - 50m* (Clean Architecture + Flow Engine)
 
+---
 
+## 🧪 Pruebas Unitarias y Automatización con Gradle (`src/test`)
+
+Cada uno de los retos lúdicos implementados en consola cuenta con una contrapartida orientada a la calidad y la ingeniería de software profesional en la sección **Testing de Retos**:
+
+- Aprende a refactorizar tus programas en **funciones puras** deterministas.
+- Diseña matrices de prueba que cubran casos límite (*edge cases*) y eviten regresiones.
+- Automatiza la suite completa con `./gradlew test` y visualiza los informes HTML generados por Gradle.
+
+👉 **[Consultar la Guía de Testing Unitario y Automatización con Gradle](../testing/index.md)**

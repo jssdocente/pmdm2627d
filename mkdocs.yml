@@ -40,6 +40,13 @@ nav:
               - "4. Colecciones, Mappers y Scopes": temas/00-android/00-kotlin/ejercicios/04-colecciones-scope-functions.md
               - "5. Corrutinas y Flows": temas/00-android/00-kotlin/ejercicios/05-concurrencia-corrutinas.md
               - "6. Proyecto Final": temas/00-android/00-kotlin/ejercicios/06-proyecto-integrador.md
+          - "Testing de Retos (src/test)":
+              - "Fundamentos de Testing y Gradle": temas/00-android/00-kotlin/testing/index.md
+              - "1. Test Combate RPG": temas/00-android/00-kotlin/testing/01-test-combate-rpg.md
+              - "2. Test Ahorcado con TDD": temas/00-android/00-kotlin/testing/02-test-ahorcado-tdd.md
+              - "3. Test Wordle con TDD": temas/00-android/00-kotlin/testing/03-test-wordle-dominio.md
+              - "4. Test Deck Builder con TDD": temas/00-android/00-kotlin/testing/04-test-deck-builder-colecciones.md
+              - "5. Test Concurrencia con TDD": temas/00-android/00-kotlin/testing/05-test-carrera-corrutinas.md
       - "Herramientas Proyecto Android":
           - "Introducción": "temas/00-android/00-tools/index.md"
           - "Terminal Avanzada": "temas/00-android/00-tools/05-terminal-warp.md"

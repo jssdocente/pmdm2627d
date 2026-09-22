@@ -1319,4 +1319,20 @@ Para completar el reto de forma rigurosa:
     }
     ```
 
+---
+
+### 🧪 ¿Cómo diseñar y blindar este forjador mediante TDD?
+
+!!! tip "Siguiente Nivel de Calidad: TDD, Pipelines Funcionales y Scope Functions"
+    ¿Quieres construir y blindar el pipeline funcional de este juego aplicando **Test-Driven Development (TDD)** desde cero? En la sección de testing dispones del taller práctico guiado paso a paso:
+
+    - Define el contrato inicial en un subpaquete limpio (`b04_colecciones.tdd`) y arranca en **Rojo**.
+    - Aprende a testear operaciones de aplanado (`flatMap`), deduplicación (`distinctBy`) y purificación (`filter`).
+    - Verifica particiones (`partition`), agrupaciones y sumas funcionales (`groupBy`, `sumOf`) sin bucles imperativos.
+    - Asegura la inicialización y auditoría reactiva mediante scope functions (`apply`, `also`).
+    - Pasa a **Verde (100% de éxito)** antes de ensamblar la forja final en consola.
+
+    👉 **[Ir al Taller de Testing 4: Deck Builder RPG con TDD](../testing/04-test-deck-builder-colecciones.md)**
+
+
 

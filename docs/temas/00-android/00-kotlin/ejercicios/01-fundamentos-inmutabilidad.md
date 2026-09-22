@@ -1444,3 +1444,13 @@ Para que el simulador funcione con precisión, tu código debe ceñirse a los si
     }
     ```
 
+---
+
+### 🧪 ¿Cómo probar este combate con Tests Automatizados?
+
+!!! tip "Siguiente Nivel de Calidad: Refactorización y Pruebas Unitarias con Gradle"
+    ¿Te has preguntado cómo asegurar que las reglas del combate nunca fallen ante cambios futuros sin tener que jugar 50 partidas manuales en consola?
+
+    En la sección de testing aprenderás a refactorizar este combate en **funciones puras** y a verificar de forma automática la salud, el blindaje contra vida negativa (*overkill*), la sobrecuración y las decisiones estratégicas de la IA:
+
+    👉 **[Ir al Taller de Testing 1: Testeando el Combate RPG](../testing/01-test-combate-rpg.md)**

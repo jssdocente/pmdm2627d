@@ -1223,4 +1223,20 @@ Para modelar la simulación con arquitectura reactiva profesional:
     }
     ```
 
+---
+
+### 🧪 ¿Cómo testear este simulador reactivo mediante TDD?
+
+!!! tip "Siguiente Nivel de Calidad: TDD Asíncrono, StateFlow y SharedFlow"
+    ¿Quieres construir y blindar este simulador concurrente aplicando **Test-Driven Development (TDD)** con corrutinas profesionales? En la sección de testing dispones del taller práctico guiado paso a paso:
+
+    - Configura `kotlinx-coroutines-test` y ejecuta tests deterministas ultrarrápidos con `runTest`.
+    - Define el contrato inicial en un subpaquete limpio (`b05_corrutinas.tdd`) y arranca en **Rojo**.
+    - Verifica actualizaciones atómicas en `StateFlow` con `.update` y acotación con `coerceAtMost`.
+    - Captura eventos efímeros en segundo plano (`backgroundScope`) sobre `SharedFlow` para los turbos hiperespaciales.
+    - Comprueba la proclamación instantánea del ganador (`hayGanador`) pasando a **Verde (100% de éxito)** antes de lanzar la carrera en consola.
+
+    👉 **[Ir al Taller de Testing 5: Carrera Espacial con TDD](../testing/05-test-carrera-corrutinas.md)**
+
+
 
