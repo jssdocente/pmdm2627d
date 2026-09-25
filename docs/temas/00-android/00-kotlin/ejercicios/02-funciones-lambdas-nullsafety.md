@@ -780,23 +780,39 @@ Jugador Luigi: 600 pts extra (usando spread operator)
 
 ---
 
-### Ejercicio 2.4: Tipos de Función y Lambdas Básicas
+### Ejercicio 2.4: Deconstrucción de Funciones y Tipos de Función
 📄 **Archivo:** `E04_TiposDeFuncion.kt`  
-📚 **Teoría de referencia:** [Tipos de Función y Sintaxis de Lambdas](../13-funciones-lambdas.md#2-tipos-de-funcion-y-funciones-lambda)
+📚 **Teoría de referencia:** [De la Función Tradicional a la Lambda: El Camino Paso a Paso](../13-funciones-lambdas.md#2-de-la-funcion-tradicional-a-la-lambda-el-camino-paso-a-paso)
 
 #### 1. Enunciado y Requisitos
 
-1. Declara una variable inmutable `val duplicar: (Int) -> Int` asignándole una expresión lambda explícita `{ numero: Int -> numero * 2 }`.
+En Kotlin, una función es un ciudadano de primera clase: puede almacenarse en variables, pasarse como argumento y devolverse como resultado. Para dominar las lambdas, es esencial interiorizar la escalera de simplificación sintáctica:
 
-2. Declara otra variable `val formatearPrecio: (Double, String) -> String` que reciba un importe y una moneda y devuelva el texto formateado.
+1. **Deconstrucción de una operación en 4 pasos:**
 
-3. Ejecuta ambas lambdas pasándoles distintos valores.
+    - **Paso 1:** Define una función tradicional con nombre `fun calcularDescuento(precio: Double): Double` que aplique un 10% de descuento (`precio * 0.90`).
+
+    - **Paso 2:** Transfórmala en una **función anónima** asignada a una variable `val descuentoAnonimo = fun(precio: Double): Double = ...`.
+
+    - **Paso 3:** Conviértela en una **expresión lambda explícita** `val descuentoLambda: (Double) -> Double = { precio: Double -> precio * 0.90 }`.
+
+    - **Paso 4:** Sintetízala a la **forma idiomática con `it`** `val descuentoIdiomatico: (Double) -> Double = { it * 0.90 }`.
+
+2. **Tipo de función de múltiples parámetros:**
+
+    - Declara una variable `val formatearPrecio: (Double, String) -> String` especificando su tipo formal a la izquierda y el cuerpo lambda a la derecha `{ importe, moneda -> "$importe $moneda" }`.
+
+3. En `main()`, ejecuta cada variante con un precio base de `100.0` y comprueba que todas producen exactamente el mismo resultado (`90.0`).
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Doble de 8: 16
-Precio formateado: 29.99 €
+=== DECONSTRUCCIÓN DE FUNCIONES (Precio base: 100.0 €) ===
+1. Función tradicional: 90.0 €
+2. Función anónima en variable: 90.0 €
+3. Lambda con tipos explícitos: 90.0 €
+4. Lambda idiomática con it: 90.0 €
+Precio con divisa formateado: 90.0 EUR
 ```
 
 #### 3. Solución Comentada
@@ -804,12 +820,36 @@ Precio formateado: 29.99 €
     ```kotlin
     package b02_funciones_lambdas
 
+    // Paso 1: Función tradicional con nombre
+    fun calcularDescuento(precio: Double): Double {
+        return precio * 0.90
+    }
+
     fun main() {
-        val duplicar: (Int) -> Int = { numero -> numero * 2 }
+        val precioBase = 100.0
+
+        // Paso 2: Función anónima almacenada en variable
+        val descuentoAnonimo = fun(precio: Double): Double {
+            return precio * 0.90
+        }
+
+        // Paso 3: Expresión lambda con tipos declarados
+        val descuentoLambda: (Double) -> Double = { precio: Double -> precio * 0.90 }
+
+        // Paso 4: Expresión lambda idiomática con 'it' (un solo parámetro)
+        val descuentoIdiomatico: (Double) -> Double = { it * 0.90 }
+
+        // Tipo de función con 2 parámetros: (Double, String) -> String
         val formatearPrecio: (Double, String) -> String = { importe, moneda -> "$importe $moneda" }
 
-        println("Doble de 8: ${duplicar(8)}")
-        println("Precio formateado: ${formatearPrecio(29.99, "€")}")
+        println("=== DECONSTRUCCIÓN DE FUNCIONES (Precio base: $precioBase €) ===")
+        println("1. Función tradicional: ${calcularDescuento(precioBase)} €")
+        println("2. Función anónima en variable: ${descuentoAnonimo(precioBase)} €")
+        println("3. Lambda con tipos explícitos: ${descuentoLambda(precioBase)} €")
+        println("4. Lambda idiomática con it: ${descuentoIdiomatico(precioBase)} €")
+
+        val precioFinal = descuentoIdiomatico(precioBase)
+        println("Precio con divisa formateado: ${formatearPrecio(precioFinal, "EUR")}")
     }
     ```
 
@@ -985,26 +1025,44 @@ Transformación con marco: '[[ gamevault ]]'
 
 ---
 
-### Ejercicio 2.8: Sintaxis de Lambda Colgante (*Trailing Lambda*) y State Hoisting
-📄 **Archivo:** `E08_TrailingLambdaStateHoisting.kt`  
-📚 **Teoría de referencia:** [Sintaxis de Lambda Colgante](../13-funciones-lambdas.md#41-regla-1-sintaxis-de-lambda-colgante-trailing-lambda-syntax) y [Elevación de Estado (State Hoisting)](../13-funciones-lambdas.md#42-regla-2-elevacion-de-estado-state-hoisting-mediante-callbacks-lambda)
+### Ejercicio 2.8: Invocación Progresiva de Lambdas (Convencional, *Trailing Lambda* y `::`)
+📄 **Archivo:** `E08_InvocacionLambdasTrailing.kt`  
+📚 **Teoría de referencia:** [Cómo Invocar una Función de Orden Superior: La Evolución Gradual](../13-funciones-lambdas.md#32-como-invocarla-de-la-llamada-convencional-a-la-trailing-lambda)
 
 #### 1. Enunciado y Requisitos
 
-En Jetpack Compose, componentes como `Button(onClick = { ... })` sacan la lambda fuera del paréntesis cuando es el último parámetro (*Trailing Lambda*).
+En Kotlin, la llamada a funciones de orden superior cuenta con reglas sintácticas diseñadas para que el código sea limpio y fluido. Practica las cuatro formas posibles de invocar funciones que reciben lambdas:
 
-1. Define una función `SimuladorBotonCompose(texto: String, alHacerClic: (String) -> Unit)`.
+1. **Diseño de funciones de soporte:**
 
-2. En `main()`, invoca a `SimuladorBotonCompose` utilizando la sintaxis de trailing lambda: `SimuladorBotonCompose("Comprar") { accion -> ... }`.
+    - Define una función `procesarPerfil(nombre: String, transformador: (String) -> String): String` que aplique `transformador` sobre `nombre`.
 
-3. Modifica una variable de estado en el llamador simulando la técnica de elevación de estado (*State Hoisting*).
+    - Define una función `ejecutarAuditoria(accion: () -> Unit)` que reciba **únicamente una lambda**, imprima un encabezado `"[AUDITORÍA]: Iniciando chequeo..."`, invoque la lambda y finalice con `"[AUDITORÍA]: Finalizado."`.
+
+    - Define una función nombrada tradicional `fun limpiarEspaciosYMayusculas(texto: String): String = texto.trim().uppercase()`.
+
+2. **Invocación en 4 variantes desde `main()`:**
+
+    - **Paso A (Llamada convencional):** Invoca a `procesarPerfil` pasando la lambda dentro de los paréntesis ordinarios `procesarPerfil("  neo_matrix  ", { it.trim() })`.
+
+    - **Paso B (*Trailing Lambda*):** Invoca a `procesarPerfil` extrayendo la última lambda fuera de los paréntesis `procesarPerfil("  neo_matrix  ") { "[TAG]: ${it.trim()}" }`.
+
+    - **Paso C (Parámetro único sin paréntesis):** Invoca a `ejecutarAuditoria` omitiendo completamente los paréntesis `()`.
+
+    - **Paso D (Referencia a función existente `::`):** Invoca a `procesarPerfil` reutilizando la función `limpiarEspaciosYMayusculas` mediante el operador `::` sin declarar una nueva lambda.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Estado inicial: Carrito vacío
-[Simulador Compose]: Botón 'Añadir al Carrito' pulsado por el usuario.
-Estado tras el clic (State Hoisting): Producto 'Elden Ring' añadido
+=== EVOLUCIÓN DE LLAMADAS CON LAMBDAS ===
+Paso A (Convencional con paréntesis): 'neo_matrix'
+Paso B (Trailing Lambda fuera de paréntesis): '[TAG]: neo_matrix'
+
+[AUDITORÍA]: Iniciando chequeo...
+Paso C: Base de datos verificada sin errores.
+[AUDITORÍA]: Finalizado.
+
+Paso D (Referencia directa ::): 'NEO_MATRIX'
 ```
 
 #### 3. Solución Comentada
@@ -1012,22 +1070,44 @@ Estado tras el clic (State Hoisting): Producto 'Elden Ring' añadido
     ```kotlin
     package b02_funciones_lambdas
 
-    // Componente que no almacena estado propio, solo lo delega hacia arriba
-    fun SimuladorBotonCompose(texto: String, alHacerClic: (String) -> Unit) {
-        println("[Simulador Compose]: Botón '$texto' pulsado por el usuario.")
-        alHacerClic(texto)
+    // Función de orden superior con parámetro ordinario + lambda al final:
+    fun procesarPerfil(nombre: String, transformador: (String) -> String): String {
+        return transformador(nombre)
     }
 
-    fun main() {
-        var estadoCarrito = "Carrito vacío"
-        println("Estado inicial: $estadoCarrito")
+    // Función de orden superior donde la lambda es el ÚNICO parámetro:
+    fun ejecutarAuditoria(accion: () -> Unit) {
+        println("[AUDITORÍA]: Iniciando chequeo...")
+        accion()
+        println("[AUDITORÍA]: Finalizado.")
+    }
 
-        // Trailing lambda: el bloque va fuera de los paréntesis
-        SimuladorBotonCompose("Añadir al Carrito") { boton ->
-            estadoCarrito = "Producto 'Elden Ring' añadido"
+    // Función nombrada reutilizable:
+    fun limpiarEspaciosYMayusculas(texto: String): String = texto.trim().uppercase()
+
+    fun main() {
+        println("=== EVOLUCIÓN DE LLAMADAS CON LAMBDAS ===")
+
+        // Paso A: Lambda como argumento ordinario dentro de los paréntesis ()
+        val r1 = procesarPerfil("  neo_matrix  ", { it.trim() })
+        println("Paso A (Convencional con paréntesis): '$r1'")
+
+        // Paso B: Trailing Lambda -> la última lambda se extrae FUERA de ()
+        val r2 = procesarPerfil("  neo_matrix  ") { "[TAG]: ${it.trim()}" }
+        println("Paso B (Trailing Lambda fuera de paréntesis): '$r2'")
+
+        println()
+
+        // Paso C: Si la lambda es el único parámetro, se OMITEN los paréntesis ()
+        ejecutarAuditoria {
+            println("Paso C: Base de datos verificada sin errores.")
         }
 
-        println("Estado tras el clic (State Hoisting): $estadoCarrito")
+        println()
+
+        // Paso D: Referencia a función existente con :: (sin abrir llaves {})
+        val r3 = procesarPerfil("  neo_matrix  ", ::limpiarEspaciosYMayusculas)
+        println("Paso D (Referencia directa ::): '$r3'")
     }
     ```
 
@@ -1126,29 +1206,44 @@ Llamada 2:
 
 ---
 
-### Ejercicio 2.11: Fábricas de Lambdas y Closures
+### Ejercicio 2.11: Fábricas de Lambdas y Clausuras (*Closures*) Mutables
 📄 **Archivo:** `E11_FabricaDeFunciones.kt`  
-📚 **Teoría de referencia:** [Tipos de Función (Function Types)](../13-funciones-lambdas.md#21-tipos-de-funcion-function-types)
+📚 **Teoría de referencia:** [Clausuras (Closures): Captura y Modificación de Variables](../13-funciones-lambdas.md#33-clausuras-closures-captura-y-modificacion-de-variables-del-entorno)
 
 #### 1. Enunciado y Requisitos
 
-En programación funcional, una función puede construir y devolver otra función recordando las variables del entorno donde fue creada (*Closure*).
+En Kotlin, una lambda forma un **Closure (clausura)** con su entorno léxico: recuerda y puede utilizar las variables declaradas fuera de su cuerpo. A diferencia de Java (donde las variables capturadas deben ser forzosamente `final`), **Kotlin permite mutar variables locales `var` externas directamente**.
 
-1. Diseña una función `crearMultiplicadorDificultad(multiplicador: Double): (Int) -> Int`.
+1. **Parte A — Fábrica de Funciones (Captura Inmutable):**
 
-2. La función debe devolver una lambda que reciba el daño base de un enemigo y devuelva el daño ajustado al nivel de dificultad elegido.
+    - Diseña una función `crearMultiplicadorDificultad(multiplicador: Double): (Int) -> Int`.
 
-3. En `main()`, crea un `modoFacil` (multiplicador `0.75`), un `modoNormal` (`1.0`) y un `modoPesadilla` (`2.5`).
+    - Debe devolver una lambda que reciba el daño base de un enemigo y devuelva el daño escalado al multiplicador.
 
-4. Aplica las tres funciones a un golpe base de 100 puntos.
+    - En `main()`, genera tres instancias: `modoFacil` (`0.75`), `modoNormal` (`1.0`) y `modoPesadilla` (`2.5`).
+
+2. **Parte B — Clausura Mutable y Acumulador de Estado:**
+
+    - En `main()`, declara dos variables locales mutables: `var totalDanoRecibido = 0` y `var contadorAtaques = 0`.
+
+    - Diseña una lambda `val registrarImpacto: (Int) -> Unit = { ... }` que capture y **mute directamente** ambas variables externas, incrementando el contador y sumando el daño al total acumulado.
+
+    - Simula 3 ataques consecutivos de `50`, `120` y `80` puntos llamando a `registrarImpacto` y verifica cómo el estado exterior se actualiza de forma reactiva.
 
 #### 2. Salida Esperada en Consola
 
 ```text
+=== PARTE A: FÁBRICA DE FUNCIONES Y ESCALADO ===
 Daño base del jefe: 100
-- Modo Fácil: 75 pts
-- Modo Normal: 100 pts
-- Modo Pesadilla: 250 pts
+- Modo Fácil (0.75x): 75 pts
+- Modo Normal (1.0x): 100 pts
+- Modo Pesadilla (2.5x): 250 pts
+
+=== PARTE B: CLOSURE MUTABLE (ACUMULADOR) ===
+[Impacto #1]: +50 pts | Daño acumulado: 50
+[Impacto #2]: +120 pts | Daño acumulado: 170
+[Impacto #3]: +80 pts | Daño acumulado: 250
+Total final en ámbito exterior: 250 pts recibidos en 3 impactos.
 ```
 
 #### 3. Solución Comentada
@@ -1156,21 +1251,41 @@ Daño base del jefe: 100
     ```kotlin
     package b02_funciones_lambdas
 
+    // Parte A: Fábrica de funciones -> Devuelve una lambda que encapsula 'multiplicador'
     fun crearMultiplicadorDificultad(multiplicador: Double): (Int) -> Int {
-        // La lambda captura 'multiplicador' en su closure:
         return { danoBase -> (danoBase * multiplicador).toInt() }
     }
 
     fun main() {
+        println("=== PARTE A: FÁBRICA DE FUNCIONES Y ESCALADO ===")
         val modoFacil = crearMultiplicadorDificultad(0.75)
         val modoNormal = crearMultiplicadorDificultad(1.0)
         val modoPesadilla = crearMultiplicadorDificultad(2.5)
 
         val danoJefe = 100
         println("Daño base del jefe: $danoJefe")
-        println("- Modo Fácil: ${modoFacil(danoJefe)} pts")
-        println("- Modo Normal: ${modoNormal(danoJefe)} pts")
-        println("- Modo Pesadilla: ${modoPesadilla(danoJefe)} pts")
+        println("- Modo Fácil (0.75x): ${modoFacil(danoJefe)} pts")
+        println("- Modo Normal (1.0x): ${modoNormal(danoJefe)} pts")
+        println("- Modo Pesadilla (2.5x): ${modoPesadilla(danoJefe)} pts")
+
+        println("\n=== PARTE B: CLOSURE MUTABLE (ACUMULADOR) ===")
+        // Variables locales del ámbito exterior:
+        var totalDanoRecibido = 0
+        var contadorAtaques = 0
+
+        // La lambda captura y MODIFICA directamente las variables externas:
+        val registrarImpacto: (Int) -> Unit = { dano ->
+            contadorAtaques++
+            totalDanoRecibido += dano
+            println("[Impacto #$contadorAtaques]: +$dano pts | Daño acumulado: $totalDanoRecibido")
+        }
+
+        registrarImpacto(50)
+        registrarImpacto(120)
+        registrarImpacto(80)
+
+        // Verificamos que las variables de main() reflejan las mutaciones de la lambda:
+        println("Total final en ámbito exterior: $totalDanoRecibido pts recibidos en $contadorAtaques impactos.")
     }
     ```
 
@@ -1262,8 +1377,141 @@ Precio del pase de batalla: 19.99 €
 
 ---
 
-### Ejercicio 2.14: La "Trilogía de Nulabilidad" en Colecciones
-📄 **Archivo:** `E14_ColeccionesNullables.kt`  
+### Ejercicio 2.14: Pipeline Funcional Concatenado (con Función Terminal `collect`)
+📄 **Archivo:** `E14_PipelineFuncionalCollect.kt`  
+📚 **Teoría de referencia:** [Taller Práctico: Creando un Pipeline Funcional Concatenado (con Función Terminal collect)](../13-funciones-lambdas.md#34-taller-practico-creando-un-pipeline-funcional-concatenado-con-funcion-terminal-collect)
+
+#### 1. Enunciado y Requisitos
+
+En el desarrollo moderno con Kotlin y en las arquitecturas reactivas de Android (como los **Kotlin Flows** o las secuencias de colecciones), el procesamiento de datos se organiza como un **pipeline**: una secuencia de operaciones intermedias concatenadas con el operador punto `.` que culmina con una **operación terminal** (`collect`) encargada de desencadenar la ejecución y recuperar o consumir los resultados.
+
+1. **Operación Intermedia de Filtrado (`filtrar`):**
+
+    - Implementa una función de extensión `fun List<Int>.filtrar(criterio: (Int) -> Boolean): List<Int>`.
+    - Debe recorrer la lista receptora y retornar una nueva lista con los elementos que cumplan el predicado `criterio`.
+
+2. **Operación Intermedia de Transformación (`transformar`):**
+
+    - Implementa una función de extensión `fun List<Int>.transformar(transformacion: (Int) -> String): List<String>`.
+    - Debe mapear cada elemento numérico al texto devuelto por la lambda `transformacion`.
+
+3. **Operaciones Terminales de Recolección (`collect`):**
+
+    - **Variante 1 (`collect(): List<String>`):** Recupera **todo el contenido resultante** del pipeline en una nueva lista final para poder almacenarla en variables, pasarla a un ViewModel o persistirla.
+    - **Variante 2 (`collect(accion: (String) -> Unit)`):** Recupera y entrega cada elemento uno a uno a la lambda `accion` para su consumo reactivo inmediato.
+
+4. **El Pipeline en Acción desde `main()`:**
+
+    - Dada la lista `val puntuaciones = listOf(35, 80, 95, 42, 60, 20, 100, 75)`:
+    - **Contraste con el estilo tradicional:** Comenta la diferencia entre almacenar pasos intermedios en variables sueltas y escribir en **Modo Pipeline Fluido**.
+    - **Caso 1:** Concatena `.filtrar { it >= 60 }.transformar { "Jugador con $it pts" }.collect()` y almacena todo el contenido recuperado en una variable inmutable.
+    - **Caso 2:** Concatena con consumo reactivo directo mediante `.collect { println(...) }` para puntuaciones sobresalientes (`>= 95`).
+    - **Caso 3:** Concatena utilizando una referencia a función existente con el operador `::`.
+
+#### 2. Salida Esperada en Consola
+
+```text
+=== 1. MODO PIPELINE: RECUPERAR TODO EL CONTENIDO EN UNA LISTA ===
+Total de puntuaciones aprobadas recuperadas: 5
+ - Jugador con 80 pts
+ - Jugador con 95 pts
+ - Jugador con 60 pts
+ - Jugador con 100 pts
+ - Jugador con 75 pts
+
+=== 2. MODO PIPELINE: CONSUMO REACTIVO CON LAMBDA EN COLLECT ===
+[ALERTA VIP]: Nivel superado con 95 pts
+[ALERTA VIP]: Nivel superado con 100 pts
+
+=== 3. MODO PIPELINE: REFERENCIA A MÉTODO (::) ===
+Jugador con 80 pts
+Jugador con 95 pts
+Jugador con 60 pts
+Jugador con 100 pts
+Jugador con 75 pts
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b02_funciones_lambdas
+
+    // 1. Operación intermedia de extensión: Filtrar
+    fun List<Int>.filtrar(criterio: (Int) -> Boolean): List<Int> {
+        val resultado = mutableListOf<Int>()
+        for (item in this) {
+            if (criterio(item)) {
+                resultado.add(item)
+            }
+        }
+        return resultado
+    }
+
+    // 2. Operación intermedia de extensión: Transformar
+    fun List<Int>.transformar(transformacion: (Int) -> String): List<String> {
+        val resultado = mutableListOf<String>()
+        for (item in this) {
+            resultado.add(transformacion(item))
+        }
+        return resultado
+    }
+
+    // 3. Operación terminal: Variante 1 -> Recupera todo el contenido en una lista
+    fun List<String>.collect(): List<String> {
+        val copiaFinal = mutableListOf<String>()
+        for (item in this) {
+            copiaFinal.add(item)
+        }
+        return copiaFinal
+    }
+
+    // 3. Operación terminal: Variante 2 -> Procesa/consume cada elemento reactivamente
+    fun List<String>.collect(accion: (String) -> Unit) {
+        for (item in this) {
+            accion(item)
+        }
+    }
+
+    fun esPuntuacionAprobada(puntos: Int): Boolean = puntos >= 60
+
+    fun main() {
+        val puntuaciones = listOf(35, 80, 95, 42, 60, 20, 100, 75)
+
+        // ❌ ENFOQUE TRADICIONAL SIN PIPELINE (Variables intermedias innecesarias):
+        // val paso1 = puntuaciones.filtrar { it >= 60 }
+        // val paso2 = paso1.transformar { "Jugador con $it pts" }
+        // val listaFinal = paso2.collect()
+
+        println("=== 1. MODO PIPELINE: RECUPERAR TODO EL CONTENIDO EN UNA LISTA ===")
+        // ✔️ ENFOQUE PIPELINE FLUIDO: Concatenación con '.' y cierre con collect():
+        val rankingAprobados: List<String> = puntuaciones
+            .filtrar { it >= 60 }
+            .transformar { "Jugador con $it pts" }
+            .collect() // <- Recupera todo el contenido resultante
+
+        println("Total de puntuaciones aprobadas recuperadas: ${rankingAprobados.size}")
+        rankingAprobados.forEach { println(" - $it") }
+
+        println("\n=== 2. MODO PIPELINE: CONSUMO REACTIVO CON LAMBDA EN COLLECT ===")
+        puntuaciones
+            .filtrar { it >= 95 }
+            .transformar { "[ALERTA VIP]: Nivel superado con $it pts" }
+            .collect { alerta ->
+                println(alerta)
+            }
+
+        println("\n=== 3. MODO PIPELINE: REFERENCIA A MÉTODO (::) ===")
+        puntuaciones
+            .filtrar(::esPuntuacionAprobada)
+            .transformar { "Jugador con $it pts" }
+            .collect(::println)
+    }
+    ```
+
+---
+
+### Ejercicio 2.15: La "Trilogía de Nulabilidad" en Colecciones
+📄 **Archivo:** `E15_ColeccionesNullables.kt`  
 📚 **Teoría de referencia:** [Null Safety en Colecciones](../14-null-safety.md)
 
 #### 1. Enunciado y Requisitos
@@ -1317,8 +1565,8 @@ Tamaño lista ausente: Lista ausente (null)
 
 ---
 
-### Ejercicio 2.15: El Operador `!!` y Análisis de *Code Smell*
-📄 **Archivo:** `E15_AsercionNoNulaCodeSmell.kt`  
+### Ejercicio 2.16: El Operador `!!` y Análisis de *Code Smell*
+📄 **Archivo:** `E16_AsercionNoNulaCodeSmell.kt`  
 📚 **Teoría de referencia:** [El Operador de Aserción No Nula (!!)](../14-null-safety.md#3-el-operador-de-asercion-no-nula)
 
 #### 1. Enunciado y Requisitos
@@ -1372,7 +1620,7 @@ Capturada excepción semántica: El texto no puede ser nulo en esta operación
 
 ## 🔴 Nivel Avanzado (Reto Lúdico)
 
-### Reto 2.16: El Juego del Ahorcado Funcional (*Hangman con Callbacks y Null Safety*)
+### Reto 2.17: El Juego del Ahorcado Funcional (*Hangman con Callbacks y Null Safety*)
 📄 **Archivo:** `Reto02_AhorcadoJuego.kt`  
 📚 **Teoría de referencia:** [Funciones de Orden Superior](../13-funciones-lambdas.md#3-funciones-de-orden-superior-higher-order-functions) y [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
 

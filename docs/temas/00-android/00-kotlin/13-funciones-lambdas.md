@@ -473,32 +473,351 @@ Este es el patrón más común en **Android y Compose** para notificaciones, log
 
 ## 3. 🟡 Funciones de Orden Superior (*Higher-Order Functions*)
 
-Una **función de orden superior** es simplemente una función que recibe otra función como parámetro, devuelve una función, o ambas cosas.
+Una **función de orden superior** es una función que recibe otra función como parámetro, devuelve una función, o ambas cosas.
 
-Como ya conocemos la diferencia entre la **Firma** (el tipo de dato) y el **Valor** (la lambda), escribir una función de orden superior resulta totalmente natural:
+Una vez que has aprendido a descomponer una función en su **Firma** (el tipo de dato) y su **Cuerpo** (la lambda), el siguiente paso profesional es:
+
+1. **Aprender a diseñar** funciones que reciban funciones por parámetro.
+2. **Aprender a invocarlas** de forma progresiva, entendiendo cómo se pasa de un parámetro convencional a la **Trailing Lambda** que domina Jetpack Compose.
+3. **Comprender las Clausuras (*Closures*)**: cómo una lambda captura y modifica variables de su entorno exterior.
+4. **Construir un Pipeline Funcional completo** encadenando varias funciones de orden superior.
+
+---
+
+### 3.1. Cómo Diseñar una Función que Recibe otra Función (Paso a Paso)
+
+Imagina que queremos crear una función reutilizable llamada `procesarTexto` que reciba un texto y una operación de transformación cualquiera:
+
+#### Paso 1: Definir la Firma del Parámetro Funcional
+
+Pregúntate: *¿Qué datos necesita recibir la transformación y qué debe devolver?*  
+Si la transformación recibe una cadena y devuelve otra cadena, su **tipo de función (firma)** es:
+
+```text
+(String) -> String
+```
+
+#### Paso 2: Declarar la Función Receptora
+
+Colocamos la firma como el tipo del parámetro, igual que harías con `Int` o `Boolean`:
 
 ```kotlin
-// Parámetro 'operacion': su tipo es la firma (Int, Int) -> Int
-fun ejecutarCalculo(a: Int, b: Int, operacion: (Int, Int) -> Int): Int {
-    println("-> Ejecutando cálculo sobre $a y $b...")
-    val resultado = operacion(a, b) // Invocamos la función recibida
+fun procesarTexto(
+    texto: String,
+    transformacion: (String) -> String // Parámetro de tipo función
+): String {
+    println("[SISTEMA]: Procesando texto: '$texto'...")
+    
+    // Invocamos la función recibida pasándole el argumento:
+    val resultado = transformacion(texto)
+    
     return resultado
+}
+```
+
+!!! info "Dos formas de invocar el parámetro funcional"
+    Dentro del cuerpo puedes invocar la función de dos formas idénticas:
+    
+    - Sintaxis directa: `transformacion(texto)`
+    - Sintaxis explícita: `transformacion.invoke(texto)`
+    
+    Ambas son 100% equivalentes; la sintaxis directa es la más común e idiomática.
+
+---
+
+### 3.2. Cómo Invocarla: De la Llamada Convencional a la *Trailing Lambda*
+
+Para llamar a `procesarTexto(texto, transformacion)`, Kotlin permite una evolución natural que va desde la sintaxis clásica de cualquier lenguaje hasta el estándar idiomático que define a **Android y Jetpack Compose**:
+
+```kotlin
+// Nuestra función receptora:
+fun procesarTexto(texto: String, transformacion: (String) -> String): String {
+    return transformacion(texto)
+}
+```
+
+#### Paso A: La Llamada Convencional (Parámetro dentro de los paréntesis)
+
+Al principio, lo más intuitivo es pasar la lambda como cualquier otro argumento en su posición final, **dentro de los paréntesis `()`**:
+
+```kotlin
+fun main() {
+    // La lambda { s -> ... } se pasa dentro de los paréntesis:
+    val resultado = procesarTexto("kotlin", { s -> s.uppercase() })
+    println(resultado) // "KOTLIN"
+}
+```
+
+#### Paso B: La Regla de la *Trailing Lambda* (El Estándar de Compose)
+
+Kotlin incluye una regla de oro pensada específicamente para el diseño de interfaces: **si el último parámetro de una función es una lambda, dicha lambda puede extraerse FUERA de los paréntesis `()`**:
+
+```kotlin
+fun main() {
+    // La lambda sale de los paréntesis:
+    val resultado = procesarTexto("kotlin") { s -> s.uppercase() }
+    println(resultado) // "KOTLIN"
+}
+```
+
+Y como la función solo recibe **un parámetro**, podemos aprovechar el parámetro implícito **`it`**:
+
+```kotlin
+fun main() {
+    // La forma idiomática que escribirás el 95% de las veces:
+    val resultado = procesarTexto("kotlin") { it.uppercase() }
+    println(resultado) // "KOTLIN"
+}
+```
+
+#### Paso C: Cuando la Lambda es el Único Parámetro
+
+Si una función de orden superior solo recibe un parámetro (la propia lambda), **los paréntesis `()` desaparecen por completo**:
+
+```kotlin
+fun ejecutarTarea(bloque: () -> Unit) {
+    println("[LOG]: Ejecutando tarea...")
+    bloque()
 }
 
 fun main() {
-    // 1. Pasando una variable que contiene una lambda:
-    val suma: (Int, Int) -> Int = { x, y -> x + y }
-    println(ejecutarCalculo(10, 5, suma)) // 15
-
-    // 2. Pasando la lambda directamente en línea:
-    val resta = ejecutarCalculo(10, 5, { x, y -> x - y })
-    println(resta) // 5
-
-    // 3. Pasando una función anónima con tipo de retorno explícito:
-    val producto = ejecutarCalculo(10, 5, fun(x: Int, y: Int): Int = x * y)
-    println(producto) // 50
+    // Sin paréntesis ():
+    ejecutarTarea {
+        println("Descarga completada con éxito.")
+    }
 }
 ```
+
+#### Paso D: El Atajo Profesional con Referencia (`::`)
+
+Si la lógica que necesitas ya está escrita en una función normal o en un método de tu clase / ViewModel, **no hace falta que escribas una lambda nueva**. Puedes pasarla directamente usando el operador **`::`**:
+
+```kotlin
+// Función existente en tu código:
+fun limpiarTexto(s: String): String = s.trim().uppercase()
+
+fun main() {
+    // Pasamos la función con ::limpiarTexto:
+    val resultado = procesarTexto("  compose  ", ::limpiarTexto)
+    println(resultado) // "COMPOSE"
+}
+```
+
+!!! tip "Conexión directa con Jetpack Compose y ViewModels"
+    En Jetpack Compose verás constantemente este patrón para conectar botones con acciones del ViewModel:
+    ```kotlin
+    // En lugar de escribir una lambda redundante:
+    Button(onClick = { viewModel.guardarUsuario() })
+
+    // El desarrollador profesional escribe directamente la referencia:
+    Button(onClick = viewModel::guardarUsuario)
+    ```
+
+??? info "¿Se pueden usar variables o funciones anónimas en la llamada?"
+    Aunque es técnicamente posible guardar una lambda en una variable previa (`val op = { s: String -> s.trim() }; procesarTexto("...", op)`) o escribir una función anónima completa con `fun(...)`, en el día a día de Android casi siempre utilizarás la **Trailing Lambda con `it`** o la **Referencia `::`**, porque mantienen el código conciso y sin variables temporales innecesarias.
+
+---
+
+### 3.3. Clausuras (*Closures*): Captura y Modificación de Variables del Entorno
+
+Uno de los superpoderes más importantes de las funciones lambda en Kotlin es su capacidad para actuar como **clausuras (*closures*)**.
+
+Una clausura significa que **la lambda no vive aislada; tiene acceso a todas las variables que existían en su entorno léxico exterior en el momento de ser creada**.
+
+#### La Diferencia Fundamental con Java
+
+- **En Java tradicional:** Una lambda o clase anónima solo puede acceder a variables externas si están declaradas como `final` (o son *efectivamente finales*). Java **prohíbe modificar** una variable local externa desde dentro de una lambda.
+- **En Kotlin:** Las lambdas no solo pueden leer variables exteriores, sino que **pueden MODIFICAR variables mutables (`var`) del entorno exterior** con total libertad:
+
+```kotlin
+fun main() {
+    var contadorClics = 0 // Variable local del entorno exterior
+
+    // La lambda captura la variable 'contadorClics':
+    val registrarClic = {
+        contadorClics++ // ¡Modificamos directamente la variable externa!
+        println("Clics registrados: $contadorClics")
+    }
+
+    registrarClic() // Clics registrados: 1
+    registrarClic() // Clics registrados: 2
+    registrarClic() // Clics registrados: 3
+
+    println("Total final fuera de la lambda: $contadorClics") // 3
+}
+```
+
+#### Caso de Uso Habitual: Acumuladores de Colecciones
+
+Este mecanismo es el que permite acumular datos o actualizar estados dentro de bloques iterativos en Android:
+
+```kotlin
+fun main() {
+    val precios = listOf(19.99, 5.50, 42.00, 10.00)
+    var gastoTotal = 0.0
+
+    // La lambda dentro de forEach captura y muta 'gastoTotal':
+    precios.forEach { precio ->
+        gastoTotal += precio
+    }
+
+    println("Gasto total acumulado: ${String.format("%.2f", gastoTotal)} €") // 77.49 €
+}
+```
+
+---
+
+### 3.4. Taller Práctico: Creando un Pipeline Funcional Concatenado (con Función Terminal `collect`)
+
+En el paradigma funcional moderno y en las arquitecturas reactivas de Android (como los **Kotlin Flows** o las secuencias de colecciones), el procesamiento de datos se organiza como un **pipeline**: una secuencia de operaciones intermedias concatenadas que finaliza con una **operación terminal** que recupera y consume el resultado.
+
+A continuación vamos a construir desde cero nuestro propio pipeline fluido sobre listas, definiendo tres funciones de orden superior:
+
+#### Etapa 1: Operación Intermedia de Filtrado (`filtrar`)
+
+Recibe un predicado funcional `(Int) -> Boolean` y devuelve una nueva lista con los elementos aprobados:
+
+```kotlin
+// Función de extensión sobre List<Int> para permitir encadenamiento con el punto '.'
+fun List<Int>.filtrar(criterio: (Int) -> Boolean): List<Int> {
+    val resultado = mutableListOf<Int>()
+    for (numero in this) {
+        if (criterio(numero)) { // Evaluamos la condición funcional
+            resultado.add(numero)
+        }
+    }
+    return resultado
+}
+```
+
+#### Etapa 2: Operación Intermedia de Transformación (`transformar`)
+
+Recibe una lambda transformadora `(Int) -> String` y devuelve la lista con cada elemento convertido:
+
+```kotlin
+fun List<Int>.transformar(transformacion: (Int) -> String): List<String> {
+    val resultado = mutableListOf<String>()
+    for (numero in this) {
+        resultado.add(transformacion(numero)) // Mapeamos cada valor
+    }
+    return resultado
+}
+```
+
+#### Etapa 3: Operación Terminal de Recolección (`collect`)
+
+Una **operación terminal** es la que cierra el pipeline. Es la encargada de desencadenar y recuperar el resultado del procesamiento. Definimos dos variantes habituales de `collect`:
+
+1. **`collect(): List<String>`**: Recupera **todo el contenido resultante** acumulado a lo largo del pipeline y lo devuelve en una lista final lista para ser almacenada, guardada en base de datos o enviada al estado de la UI.
+
+2. **`collect(accion: (String) -> Unit)`**: Recupera cada elemento resultante uno por uno y se lo entrega a una lambda consumidora (idéntico a cómo funciona `Flow.collect { ... }` en las arquitecturas reactivas de Android).
+
+```kotlin
+// Variante 1: Recupera todo el contenido procesado en una lista final
+fun List<String>.collect(): List<String> {
+    val resultadoFinal = mutableListOf<String>()
+    for (elemento in this) {
+        resultadoFinal.add(elemento)
+    }
+    return resultadoFinal
+}
+
+// Variante 2: Recupera y consume cada elemento resultante mediante una acción
+fun List<String>.collect(accion: (String) -> Unit) {
+    for (elemento in this) {
+        accion(elemento) // Invocamos el callback terminal para cada elemento
+    }
+}
+```
+
+---
+
+#### Etapa 4: El Pipeline en Acción (Concatenación Fluida y Recuperación con `collect`)
+
+Comparemos la diferencia entre escribir código procedural tradicional frente a programar en **modo pipeline funcional**:
+
+##### Comparativa: Estilo Tradicional vs Modo Pipeline
+
+```kotlin
+val calificaciones = listOf(45, 92, 60, 30, 88, 74, 98, 50)
+
+// ❌ ENFOQUE TRADICIONAL (Variables intermedias redundantes y pasos desconectados):
+val aprobados = calificaciones.filtrar { it >= 50 }
+val formateados = aprobados.transformar { "Alumno: $it/100" }
+val listaFinal = formateados.collect()
+
+// ✔️ ENFOQUE EN MODO PIPELINE (Operaciones concatenadas fluidamente de principio a fin):
+val reporteCompleto = calificaciones
+    .filtrar { it >= 50 }                                // 1. Operación intermedia: Filtrar
+    .transformar { "Alumno con calificación: $it/100" } // 2. Operación intermedia: Transformar
+    .collect()                                           // 3. Operación terminal: RECUPERA TODO EL CONTENIDO
+```
+
+##### Código Completo Ejecutable
+
+```kotlin
+fun esNotaDestacada(nota: Int): Boolean = nota >= 85
+
+fun main() {
+    val calificaciones = listOf(45, 92, 60, 30, 88, 74, 98, 50)
+
+    println("=== 1. MODO PIPELINE: RECUPERAR TODO EL CONTENIDO EN UNA LISTA ===")
+    // Las operaciones se concatenan fluidamente y collect() devuelve la lista completa resultante:
+    val alumnosAprobados: List<String> = calificaciones
+        .filtrar { it >= 50 }
+        .transformar { "Alumno con calificación: $it/100" }
+        .collect() // <- Cierre terminal: recupera todo el contenido
+
+    // Comprobamos el contenido íntegro recuperado:
+    println("Total de aprobados recuperados: ${alumnosAprobados.size}")
+    alumnosAprobados.forEach { println(" - $it") }
+
+    println("\n=== 2. MODO PIPELINE: CONSUMO REACTIVO CON LAMBDA EN COLLECT ===")
+    // Concatenación donde collect procesa directamente cada elemento que fluye por el pipeline:
+    calificaciones
+        .filtrar { it >= 90 }
+        .transformar { "Sobresaliente directo: $it pts" }
+        .collect { elemento ->
+            println("Notificación al tutor -> $elemento")
+        }
+
+    println("\n=== 3. MODO PIPELINE CON REFERENCIA A FUNCIÓN (::) ===")
+    calificaciones
+        .filtrar(::esNotaDestacada)
+        .transformar { "⭐ Calificación de Honor: $it pts" }
+        .collect(::println)
+}
+```
+
+#### Salida en consola:
+
+```text
+=== 1. MODO PIPELINE: RECUPERAR TODO EL CONTENIDO EN UNA LISTA ===
+Total de aprobados recuperados: 6
+ - Alumno con calificación: 92/100
+ - Alumno con calificación: 60/100
+ - Alumno con calificación: 88/100
+ - Alumno con calificación: 74/100
+ - Alumno con calificación: 98/100
+ - Alumno con calificación: 50/100
+
+=== 2. MODO PIPELINE: CONSUMO REACTIVO CON LAMBDA EN COLLECT ===
+Notificación al tutor -> Sobresaliente directo: 92 pts
+Notificación al tutor -> Sobresaliente directo: 98 pts
+
+=== 3. MODO PIPELINE CON REFERENCIA A FUNCIÓN (::) ===
+⭐ Calificación de Honor: 92 pts
+⭐ Calificación de Honor: 88 pts
+⭐ Calificación de Honor: 98 pts
+```
+
+!!! success "La conexión directa con Android y Kotlin Flows"
+    Este mismo diseño arquitectónico es exactamente el que utilizarás en Android al trabajar con **Kotlin Flows** y **Colecciones Funcionales**:
+    
+    - **En Colecciones:** `lista.filter { ... }.map { ... }.forEach { ... }`
+    - **En Corrutinas / Flows:** `repositorio.obtenerDatos().filter { ... }.map { ... }.collect { ... }`
+    
+    Comprender cómo las funciones de orden superior se encadenan unas a otras y se alimentan mediante lambdas es la llave maestra para entender toda la reactividad de Android.
 
 ---
 
@@ -508,49 +827,23 @@ El diseño visual de **Jetpack Compose** descansa enteramente sobre las convenci
 
 ---
 
-### 4.1. 🟡 Regla 1: Sintaxis de Lambda Colgante (*Trailing Lambda*)
+### 4.1. 🟡 Regla 1: Jerarquías Visuales con Trailing Lambdas en Compose
 
-En Kotlin, **si el último parámetro de una función es una lambda, dicha lambda puede colocarse FUERA de los paréntesis ordinarios `()`**:
-
-```kotlin
-// Sintaxis convencional (dentro de los paréntesis):
-ejecutarCalculo(10, 5, { x, y -> x * y })
-
-// Sintaxis Trailing Lambda (la última lambda se extrae fuera):
-ejecutarCalculo(10, 5) { x, y ->
-    x * y
-}
-```
-
-Si la lambda es el **único parámetro** que recibe la función, **los paréntesis `()` pueden omitirse por completo**:
+Como acabamos de estudiar en la sección anterior, la **Trailing Lambda** permite extraer la última función fuera de los paréntesis. En **Jetpack Compose**, este mecanismo es el responsable directo de que la interfaz de usuario se declare como un árbol jerárquico limpio y legible en lugar de una maraña de paréntesis anidados:
 
 ```kotlin
-fun ejecutarTarea(bloque: () -> Unit) {
-    println("[SISTEMA]: Iniciando tarea...")
-    bloque()
-}
-
-// Se omiten los paréntesis ():
-ejecutarTarea {
-    println("Sincronizando biblioteca de juegos con la nube...")
-}
-```
-
-#### ¿Cómo se traduce esto en Jetpack Compose?
-
-En Compose, los botones, tarjetas y pantallas no son etiquetas XML, sino llamadas a funciones de Kotlin que aprovechan esta regla:
-
-```kotlin
-// En Jetpack Compose:
-// Button(onClick: () -> Unit, content: @Composable () -> Unit)
+// En Jetpack Compose real:
+// Button(onClick = () -> Unit, content = @Composable () -> Unit)
 Button(onClick = { registrarClic() }) {
     Text(text = "Guardar Partida")
 }
 ```
 
-1. `onClick = { ... }` se pasa como argumento con nombre entre los paréntesis `()`.
+Fíjate en cómo funciona esta convención:
+
+1. `onClick = { registrarClic() }` se pasa como argumento con nombre entre los paréntesis `()`.
 2. `{ Text(...) }` es el último parámetro (`content`), por lo que **se extrae fuera de los paréntesis**.
-3. El resultado es un código visualmente jerárquico que parece un lenguaje declarativo (como HTML/Flutter), pero es **100% código Kotlin estándar**.
+3. El resultado es un código visualmente anidado y estructurado que parece un lenguaje declarativo (como HTML o Flutter), pero es **100% código Kotlin estándar**.
 
 ---
 
