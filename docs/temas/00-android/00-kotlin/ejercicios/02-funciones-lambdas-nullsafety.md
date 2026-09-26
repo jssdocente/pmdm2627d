@@ -1331,26 +1331,54 @@ Resultado: Formato de respuesta no soportado (devuelve null con seguridad)
 
 ---
 
-### Ejercicio 2.13: Funciones de Extensión
+### Ejercicio 2.13: Funciones de Extensión y el Receptor `this`
 📄 **Archivo:** `E13_FuncionesExtension.kt`  
 📚 **Teoría de referencia:** [Funciones de Extensión](../13-funciones-lambdas.md#5-funciones-de-extension-extension-functions)
 
 #### 1. Enunciado y Requisitos
 
-1. Las funciones de extensión permiten añadir métodos a clases existentes (incluso de librerías externas) sin heredar de ellas.
+En Kotlin, las **funciones de extensión** permiten añadir nuevas funciones a tipos existentes (incluso clases del sistema como `String`, `Int` o `Double`) sin tener acceso a su código fuente ni recurrir a la herencia. 
 
-2. Define una función de extensión `fun Double.aMonedaEuro(): String` que devuelva el número con dos decimales y el símbolo `"€"`.
+El tipo que precede al punto (`String.`, `Int.`) se denomina **tipo receptor (*receiver type*)**. Dentro del cuerpo de la función de extensión, la palabra reservada **`this`** representa la instancia concreta sobre la que se realiza la invocación (*receiver object*).
 
-3. Define una función de extensión `fun String.esCorreoValido(): Boolean` que compruebe si contiene `'@'` y termina en `".com"` o `".es"`.
+1. **El Concepto de `this` (Receptor Numérico y de Texto):**
 
-4. Pruébalas en `main()`.
+    - Define una función de extensión `fun Double.aMonedaEuro(): String` que formatee el número decimal con dos decimales y el sufijo `"€"`. Dentro del cuerpo, `this` hace referencia al propio valor `Double` sobre el que se llama.
+
+    - Define una función de extensión `fun Int.aFormatoMinutosYSegundos(): String` que interprete el entero en `this` como una cantidad de segundos y lo convierta a una cadena con formato `"MM:SS"` (por ejemplo, `125` segundos se convierte en `"02:05"` y `59` en `"00:59"`).
+
+2. **Extensiones con Parámetros Adicionales y Valores por Defecto:**
+
+    - Define una función de extensión `fun String.truncar(longitudMaxima: Int, sufijo: String = "..."): String`.
+
+    - Si la longitud de la cadena (`this.length`) es menor o igual a `longitudMaxima`, devuelve `this` sin cambios.
+
+    - Si supera el límite, extrae los primeros caracteres con `this.take(longitudMaxima)` y concatena el `sufijo`.
+
+3. **Extensiones sobre Tipos Nulables (`String?`):**
+
+    - Define una función de extensión `fun String?.oPorDefecto(valorDefecto: String): String`.
+
+    - Fíjate en que el receptor es `String?` (puede ser nulo). Dentro del cuerpo, `this` tiene tipo `String?`. Utiliza el operador Elvis para devolver `this ?: valorDefecto`.
+
+    - Comprueba desde `main()` que esta función puede invocarse directamente sobre una variable con valor `null` sin provocar ningún `NullPointerException`.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Precio del pase de batalla: 19.99 €
-¿'alumno@ies.es' es correo válido?: true
-¿'sin_arroba.es' es correo válido?: false
+=== 1. EL RECEPTOR 'THIS' EN TIPOS NUMÉRICOS ===
+Precio formateado: 19.99 €
+Duración de partida (125 seg): 02:05
+Duración de partida (59 seg): 00:59
+
+=== 2. EXTENSIÓN CON PARÁMETROS ADICIONALES ===
+Texto corto: 'Elden Ring'
+Texto truncado: 'The Legend of Zelda: Tears of the Kingdom...'
+Texto truncado con sufijo personalizado: 'The Legend of Zelda: Tears of the Kingdom [LEER MÁS]'
+
+=== 3. EXTENSIÓN SOBRE TIPO NULABLE (String?) ===
+Valor seguro con texto real: 'Jugador_Activo'
+Valor seguro con null: 'Invitado_Temporal'
 ```
 
 #### 3. Solución Comentada
@@ -1358,20 +1386,61 @@ Precio del pase de batalla: 19.99 €
     ```kotlin
     package b02_funciones_lambdas
 
-    fun Double.aMonedaEuro(): String = "%.2f €".format(this)
+    // 1. Extensiones numéricas utilizando 'this' (el valor sobre el que se invoca la función):
+    fun Double.aMonedaEuro(): String {
+        // 'this' es la instancia concreta de Double
+        return "%.2f €".format(this)
+    }
 
-    fun String.esCorreoValido(): Boolean =
-        this.contains('@') && (this.endsWith(".com") || this.endsWith(".es"))
+    fun Int.aFormatoMinutosYSegundos(): String {
+        // 'this' representa los segundos totales
+        val minutos = this / 60
+        val segundosRestantes = this % 60
+        return "%02d:%02d".format(minutos, segundosRestantes)
+    }
+
+    // 2. Extensión con parámetros adicionales y valores por defecto:
+    fun String.truncar(longitudMaxima: Int, sufijo: String = "..."): String {
+        // Podemos usar 'this.length' o directamente 'length' (this implícito)
+        return if (this.length <= longitudMaxima) {
+            this
+        } else {
+            "${this.take(longitudMaxima)}$sufijo"
+        }
+    }
+
+    // 3. Extensión sobre tipo NULABLE (String?):
+    // ¡En Kotlin podemos invocar extensiones sobre null de forma totalmente segura!
+    fun String?.oPorDefecto(valorDefecto: String): String {
+        // Dentro de la función, 'this' es de tipo String?, por lo que aplicamos Elvis:
+        return this ?: valorDefecto
+    }
 
     fun main() {
+        println("=== 1. EL RECEPTOR 'THIS' EN TIPOS NUMÉRICOS ===")
         val precio = 19.99
-        println("Precio del pase de batalla: ${precio.aMonedaEuro()}")
+        println("Precio formateado: ${precio.aMonedaEuro()}")
 
-        val c1 = "alumno@ies.es"
-        val c2 = "sin_arroba.es"
+        val tiempo1 = 125
+        val tiempo2 = 59
+        println("Duración de partida ($tiempo1 seg): ${tiempo1.aFormatoMinutosYSegundos()}")
+        println("Duración de partida ($tiempo2 seg): ${tiempo2.aFormatoMinutosYSegundos()}")
 
-        println("¿'$c1' es correo válido?: ${c1.esCorreoValido()}")
-        println("¿'$c2' es correo válido?: ${c2.esCorreoValido()}")
+        println("\n=== 2. EXTENSIÓN CON PARÁMETROS ADICIONALES ===")
+        val tituloCorto = "Elden Ring"
+        val tituloLargo = "The Legend of Zelda: Tears of the Kingdom"
+
+        println("Texto corto: '${tituloCorto.truncar(20)}'")
+        println("Texto truncado: '${tituloLargo.truncar(25)}'")
+        println("Texto truncado con sufijo personalizado: '${tituloLargo.truncar(25, " [LEER MÁS]")}'")
+
+        println("\n=== 3. EXTENSIÓN SOBRE TIPO NULABLE (String?) ===")
+        val nickValido: String? = "Jugador_Activo"
+        val nickNulo: String? = null
+
+        // Ambas llamadas son seguras; nickNulo no lanza NullPointerException:
+        println("Valor seguro con texto real: '${nickValido.oPorDefecto("Invitado_Temporal")}'")
+        println("Valor seguro con null: '${nickNulo.oPorDefecto("Invitado_Temporal")}'")
     }
     ```
 

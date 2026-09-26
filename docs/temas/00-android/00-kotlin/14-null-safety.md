@@ -132,20 +132,49 @@ println(texto) // Imprime null (en lugar de lanzar un error en tiempo de ejecuci
 
 ## 5. El Modismo Estrella en Android: `objeto?.let { ... }`
 
-La combinación del operador de llamada segura `?.` con la función de ámbito `let` es la forma más idiomática y habitual en Kotlin para ejecutar un bloque de código **únicamente si el objeto no es nulo**:
+En este punto te presentamos **`let`**, una función especial que pertenece a la familia de las **Scope Functions (Funciones de Ámbito)** de Kotlin. Aunque estudiaremos en detalle toda esta familia más adelante en el [Tema 31: Scope Functions](31-scope-functions.md), es imprescindible introducir `let` aquí por una razón pedagógica clave: **es el modismo estándar y omnipresente en Kotlin para trabajar con referencias anulables**.
 
-```kotlin
-fun enviarNotificacion(email: String?) {
-    email?.let { direccion ->
-        // Este bloque SOLO se ejecuta si 'email' NO es null
-        println("Enviando correo a: $direccion")
-        println("Longitud del correo: ${direccion.length}")
+La combinación del operador de llamada segura con `let` (`objeto?.let { ... }`) permite ejecutar un bloque de código **únicamente si el objeto no es nulo**, convirtiéndolo dentro del bloque en un valor seguro y no anulable referenciado mediante `it` (o con un nombre descriptivo asignado por ti).
+
+=== "Kotlin (Modismo Idiomático con ?.let)"
+    ```kotlin
+    fun enviarNotificacion(email: String?) {
+        // El bloque SOLO se ejecuta si 'email' NO es null:
+        email?.let { direccion ->
+            // Dentro de las llaves, 'direccion' es garantizada como String (NO nula):
+            println("Enviando correo a: $direccion")
+            println("Longitud del correo: ${direccion.length}")
+        }
     }
-}
 
-enviarNotificacion(null) // No hace nada, no imprime nada y no falla
-enviarNotificacion("alumno@dam.es") // Imprime los mensajes
-```
+    fun main() {
+        enviarNotificacion(null)              // No hace nada, no entra al bloque y jamás falla
+        enviarNotificacion("alumno@dam.es")  // Imprime los datos con seguridad
+    }
+    ```
+
+=== "Java (Comprobación Tradicional con if)"
+    ```java
+    public class NotificadorJava {
+        public static void enviarNotificacion(String email) {
+            // En Java requiere comprobaciones defensivas manuales:
+            if (email != null) {
+                System.out.println("Enviando correo a: " + email);
+                System.out.println("Longitud del correo: " + email.length());
+            }
+        }
+    }
+    ```
+
+### ¿Por qué `objeto?.let` es superior a `if (objeto != null)`?
+
+En apariencia, `?.let` hace lo mismo que un `if (email != null)`. Sin embargo, en el desarrollo real en Android resuelve un problema crítico:
+
+1. **Variables mutables (`var` o propiedades de clase):** En Java y Kotlin, si una variable es mutable (`var`) o proviene de otra clase, un simple `if (variable != null)` no garantiza que otro hilo no la transforme en `null` una milésima de segundo después (lo que provocaría un NPE dentro del propio `if`).
+2. **Evaluación atómica y segura:** Con `variable?.let { ... }`, la variable se evalúa **una sola vez**, se extrae su valor y se pasa como parámetro inmutable (`it`) al bloque. Dentro del cuerpo de la lambda, es imposible que se vuelva nula.
+
+!!! info "📚 Anticipo: La Familia de las Scope Functions"
+    `let` es solo una de las 5 **Scope Functions** que ofrece la biblioteca estándar de Kotlin (`let`, `apply`, `also`, `run`, `with`). En el [Tema 31: Scope Functions](31-scope-functions.md) descubriremos a sus "hermanas", aprenderemos a diferenciarlas fácilmente y veremos cómo eliminan el código repetitivo en la configuración de objetos y pantallas.
 
 ---
 

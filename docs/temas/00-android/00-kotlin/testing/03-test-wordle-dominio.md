@@ -1,6 +1,6 @@
 # Taller de Testing 3: Wordle Engine con TDD (Dominio, Data Classes y Excepciones)
 
-En el [Reto 3.18 de POO y Tipos Sellados](../ejercicios/03-poo-sealed-types.md#reto-318-el-motor-de-wordle-en-consola-poo-data-classes-y-dominio) modelaste el núcleo de validación para el juego de palabras **Wordle**, apoyándote en `enum class`, `data class` y el patrón de estado inmutable `PartidaWordle`.
+En el [Reto 3.19 de POO y Tipos Sellados](../ejercicios/03-poo-sealed-types.md#reto-319-el-motor-de-wordle-en-consola-poo-data-classes-y-dominio) modelaste el núcleo de validación para el juego de palabras **Wordle**, apoyándote en `enum class`, `data class` y el patrón de estado inmutable `PartidaWordle`.
 
 En este tercer taller continuaremos aplicando la metodología **TDD (*Test-Driven Development*)** para abordar tres competencias fundamentales del testing profesional en Kotlin y Android:
 

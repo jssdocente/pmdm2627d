@@ -201,14 +201,14 @@ Notas aprobadas: [7.0, 9.5, 6.0, 8.8] (Total: 4 alumnos)
 
 ##### 1. Enunciado y Requisitos
 
-1. Crea una clase mutable sencilla `class PerfilUsuario { var nombre: String = ""; var puntos: Int = 0 }`.
+1. Crea una clase mutable de configuración `class ConfiguradorAlerta { var titulo: String = ""; var prioridad: Int = 0 }`.
 2. Instancia y configura el objeto en un solo paso utilizando `.apply { ... }`.
-3. Encadena un bloque `.also { ... }` para imprimir un mensaje de traza informando de que el perfil ha sido inicializado.
+3. Encadena un bloque `.also { ... }` para imprimir un mensaje de traza informando de que la alerta ha sido preparada.
 
 ##### 2. Salida Esperada
 ```text
-[TRAZA DE LOG]: Perfil inicializado para Gamer_Pro
-Perfil configurado: Gamer_Pro con 250 puntos
+[TRAZA DE LOG]: Alerta preparada para Descarga de Recursos
+Alerta configurada: Descarga de Recursos (Prioridad: 250)
 ```
 
 ##### 3. Solución Comentada
@@ -216,22 +216,22 @@ Perfil configurado: Gamer_Pro con 250 puntos
     ```kotlin
     package b04_colecciones
 
-    class PerfilUsuario {
-        var nombre: String = ""
-        var puntos: Int = 0
+    class ConfiguradorAlerta {
+        var titulo: String = ""
+        var prioridad: Int = 0
     }
 
     fun main() {
-        val usuario = PerfilUsuario().apply {
+        val alerta = ConfiguradorAlerta().apply {
             // 'this' es el objeto configurado:
-            nombre = "Gamer_Pro"
-            puntos = 250
+            titulo = "Descarga de Recursos"
+            prioridad = 250
         }.also {
             // 'it' es el objeto recién configurado, ideal para logging sin alterar el retorno:
-            println("[TRAZA DE LOG]: Perfil inicializado para ${it.nombre}")
+            println("[TRAZA DE LOG]: Alerta preparada para ${it.titulo}")
         }
 
-        println("Perfil configurado: ${usuario.nombre} con ${usuario.puntos} puntos")
+        println("Alerta configurada: ${alerta.titulo} (Prioridad: ${alerta.prioridad})")
     }
     ```
 

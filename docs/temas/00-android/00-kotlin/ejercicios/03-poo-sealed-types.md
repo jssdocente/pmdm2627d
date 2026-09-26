@@ -11,6 +11,7 @@ Ubicación en tu proyecto: `src/main/kotlin/b03_poo_sealed/`
     - [Programación Orientada a Objetos (Clases, Herencia e Interfaces)](../21-poo.md)
     - [Singletons y Companion Object (Objetos y Factorías)](../22-objetos-anonimos.md)
     - [Data Classes (Modelos de Datos Inmutables)](../23-data-classes.md)
+    - [Funciones de Extensión sobre Clases](../13-funciones-lambdas.md#5-funciones-de-extension-extension-functions)
     - [Enum Classes (Tipos Enumerados y `.entries`)](../24-enum-classes.md)
     - [Genéricos (Parámetros de Tipo y Covarianza)](../25-genericos.md)
     - [Tipos Sellados (Sealed Classes/Interfaces y UI State)](../26-sealed-classes.md)
@@ -1650,7 +1651,136 @@ Navegando a: pantalla_detalle/42 -> Cargando datos del juego ID = 42
 
 ---
 
-### Reto 3.18: El Motor de Wordle en Consola (*POO, Data Classes y Dominio*)
+### Ejercicio 3.18: Funciones y Propiedades de Extensión sobre Modelos (`data class`)
+📄 **Archivo:** `E18_ExtensionesDataClasses.kt`  
+📚 **Teoría de referencia:** [Funciones de Extensión](../13-funciones-lambdas.md#5-funciones-de-extension-extension-functions) y [Data Classes](../23-data-classes.md)
+
+#### 1. Enunciado y Requisitos
+
+En la arquitectura moderna de Android (MVVM / Clean Architecture), las **`data class`** representan modelos de datos puros (entidades de red o entidades de base de datos Room). Para respetar el **Principio de Responsabilidad Única (SRP)** y no "contaminar" estas clases con lógica de presentación, formateo visual o reglas de cálculo de la interfaz, en Kotlin se utilizan **funciones y propiedades de extensión**.
+
+1. **Definición de la Entidad Pura:**
+
+    - Modela la entidad de datos:
+      ```kotlin
+      data class Videojuego(
+          val id: Long,
+          val titulo: String,
+          val precioBase: Double,
+          val descuentoPorcentaje: Int = 0,
+          val terminado: Boolean = false
+      )
+      ```
+
+2. **Función de Extensión con Lógica de Negocio:**
+
+    - Implementa `fun Videojuego.calcularPrecioFinal(): Double`.
+    - Utiliza `this` para acceder a las propiedades del objeto receptor y calcular el precio tras aplicar el descuento: `this.precioBase * (1.0 - this.descuentoPorcentaje / 100.0)`.
+
+3. **Propiedad de Extensión (*Extension Property*):**
+
+    - Añade una propiedad calculada `val Videojuego.esOfertaDestacada: Boolean` mediante un getter personalizado `get()` que devuelva `true` si el descuento es igual o superior al 20%.
+
+4. **Función de Extensión para Presentación en UI:**
+
+    - Implementa `fun Videojuego.formatearFicha(): String` que devuelva un texto listo para la pantalla: `"[#$id] '$titulo' | Precio: ${"%.2f".format(calcularPrecioFinal())} € (Dto: ${descuentoPorcentaje}%)"`.
+
+5. **Extensiones sobre Colecciones y Tipos Nulables de la Clase:**
+
+    - Implementa una extensión sobre listas: `fun List<Videojuego>.filtrarOfertas(): List<Videojuego> = this.filter { it.esOfertaDestacada }`.
+    - Implementa una extensión sobre el modelo nulable: `fun Videojuego?.tituloOSinSeleccion(): String = this?.titulo ?: "Ningún videojuego seleccionado"`.
+
+6. **Comprobación en `main()`:**
+
+    - Crea una lista con al menos 3 videojuegos: uno con 25% de descuento, otro con 10% y otro a precio completo (0%).
+    - Muestra sus fichas formateadas, comprueba la propiedad `esOfertaDestacada`, filtra las ofertas destacadas y prueba la extensión sobre una referencia nula.
+
+#### 2. Salida Esperada en Consola
+
+```text
+=== EXTENSIONES SOBRE MODELOS DE DATOS (DATA CLASSES) ===
+Ficha Zelda: [#101] 'The Legend of Zelda' | Precio: 52.49 € (Dto: 25%)
+¿Zelda es oferta destacada?: true
+
+Ficha Hollow Knight: [#102] 'Hollow Knight' | Precio: 14.99 € (Dto: 0%)
+¿Hollow Knight es oferta destacada?: false
+
+=== OFERTAS DESTACADAS FILTRADAS CON EXTENSIÓN ===
+- The Legend of Zelda (25% dto.)
+
+=== EXTENSIÓN SOBRE DATA CLASS NULABLE (Videojuego?) ===
+Juego seleccionado: The Legend of Zelda
+Juego no seleccionado (null): Ningún videojuego seleccionado
+```
+
+#### 3. Solución Comentada
+??? tip "Ver solución comentada"
+    ```kotlin
+    package b03_poo_sealed
+
+    // 1. Entidad pura de datos (sin lógica visual ni de formateo):
+    data class Videojuego(
+        val id: Long,
+        val titulo: String,
+        val precioBase: Double,
+        val descuentoPorcentaje: Int = 0,
+        val terminado: Boolean = false
+    )
+
+    // 2. Función de extensión con cálculo de negocio:
+    fun Videojuego.calcularPrecioFinal(): Double {
+        return this.precioBase * (1.0 - this.descuentoPorcentaje / 100.0)
+    }
+
+    // 3. Propiedad de extensión (calculada, sin campo backing field):
+    val Videojuego.esOfertaDestacada: Boolean
+        get() = this.descuentoPorcentaje >= 20
+
+    // 4. Función de extensión de formateo para la UI:
+    fun Videojuego.formatearFicha(): String {
+        return "[#$id] '$titulo' | Precio: ${"%.2f".format(calcularPrecioFinal())} € (Dto: ${descuentoPorcentaje}%)"
+    }
+
+    // 5. Extensión sobre colecciones de la clase:
+    fun List<Videojuego>.filtrarOfertas(): List<Videojuego> {
+        return this.filter { it.esOfertaDestacada }
+    }
+
+    // 5b. Extensión sobre el modelo NULABLE:
+    fun Videojuego?.tituloOSinSeleccion(): String {
+        return this?.titulo ?: "Ningún videojuego seleccionado"
+    }
+
+    fun main() {
+        val zelda = Videojuego(101L, "The Legend of Zelda", 69.99, 25)
+        val hollow = Videojuego(102L, "Hollow Knight", 14.99, 0)
+        val celeste = Videojuego(103L, "Celeste", 19.99, 10)
+
+        val catalogo = listOf(zelda, hollow, celeste)
+
+        println("=== EXTENSIONES SOBRE MODELOS DE DATOS (DATA CLASSES) ===")
+        println("Ficha Zelda: ${zelda.formatearFicha()}")
+        println("¿Zelda es oferta destacada?: ${zelda.esOfertaDestacada}")
+
+        println("\nFicha Hollow Knight: ${hollow.formatearFicha()}")
+        println("¿Hollow Knight es oferta destacada?: ${hollow.esOfertaDestacada}")
+
+        println("\n=== OFERTAS DESTACADAS FILTRADAS CON EXTENSIÓN ===")
+        val destacadas = catalogo.filtrarOfertas()
+        destacadas.forEach { println("- ${it.titulo} (${it.descuentoPorcentaje}% dto.)") }
+
+        println("\n=== EXTENSIÓN SOBRE DATA CLASS NULABLE (Videojuego?) ===")
+        val juegoActivo: Videojuego? = zelda
+        val juegoNulo: Videojuego? = null
+
+        println("Juego seleccionado: ${juegoActivo.tituloOSinSeleccion()}")
+        println("Juego no seleccionado (null): ${juegoNulo.tituloOSinSeleccion()}")
+    }
+    ```
+
+---
+
+### Reto 3.19: El Motor de Wordle en Consola (*POO, Data Classes y Dominio*)
 📄 **Archivo:** `Reto03_WordleEngine.kt`  
 📚 **Teoría de referencia:** [El Método copy() y la Inmutabilidad](../23-data-classes.md#3-el-metodo-copy-mutacion-inmutable) y [El Dúo Estrella: enum y when Exhaustivo](../24-enum-classes.md#4-el-duo-estrella-enum-y-la-expresion-when-exhaustiva)
 

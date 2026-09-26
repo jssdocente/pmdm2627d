@@ -1014,32 +1014,131 @@ fun probarRetornos() {
 
 ## 5. 🟡 Funciones de Extensión (*Extension Functions*)
 
-Kotlin permite añadir nuevos métodos a clases existentes (incluso de librerías de terceros o clases estándar del JDK como `String` o `Double`) **sin necesidad de heredar de ellas ni recurrir al patrón clásico `StringUtils`**:
+Las **funciones de extensión** son una de las características más potentes de Kotlin. Permiten añadir nuevos métodos o propiedades a clases existentes (incluso del SDK de Android, librerías externas o clases estándar de Java como `String`, `Int` o `List`) **sin tener que heredar de ellas, sin modificar su código fuente y sin recurrir al arcaico patrón de clases de utilidad `StringUtils` o `MathUtils`**.
+
+---
+
+### 5.1. Anatomía de una Función de Extensión y el Receptor `this`
+
+Para declarar una función de extensión, se antepone el tipo al que se desea dotar de la nueva funcionalidad (*Tipo Receptor*) antes del nombre de la función:
+
+```kotlin
+fun TipoReceptor.nombreFuncion(parametros): TipoRetorno {
+    // 'this' hace referencia a la instancia sobre la que se invoca la función
+}
+```
+
+- **Tipo Receptor (*Receiver Type*):** La clase a la que le estamos "inyectando" el método (ej. `String.`, `Double.`, `List<Int>.`).
+- **Objeto Receptor (`this`):** Dentro del cuerpo de la función, la palabra reservada **`this`** apunta directamente a la instancia concreta sobre la que se realiza la llamada con el operador punto `.`.
+- **`this` explícito vs. implícito:** Al igual que en los métodos ordinarios de una clase, puedes escribir `this.length` o directamente omitir `this` y escribir `length`.
 
 ```kotlin
 import java.text.NumberFormat
 import java.util.Locale
 
-// Añadimos el método 'esEmailValido' a la clase String
-fun String.esEmailValido(): Boolean {
-    return this.contains("@") && this.contains(".")
+// 1. Añadimos 'aMonedaEuro' a la clase Double estándar
+fun Double.aMonedaEuro(): String {
+    // 'this' es el valor de tipo Double receptor:
+    return "%.2f €".format(this)
 }
 
-// Añadimos 'aMoneda' a Double con soporte de internacionalización
-fun Double.aMoneda(locale: Locale = Locale.getDefault()): String {
-    return NumberFormat.getCurrencyInstance(locale).format(this)
+// 2. Añadimos 'recortar' a la clase String con parámetros adicionales
+fun String.recortar(maxCaracteres: Int, sufijo: String = "..."): String {
+    // Usamos 'this' para consultar la longitud de la cadena receptora:
+    return if (this.length > maxCaracteres) {
+        "${this.take(maxCaracteres)}$sufijo"
+    } else {
+        this
+    }
 }
 
 fun main() {
-    val correo = "estudiante@dam.es"
-    println(correo.esEmailValido()) // true
+    val precio = 59.99
+    // Invocamos la extensión como si fuera un método nativo de Double:
+    println(precio.aMonedaEuro()) // "59.99 €"
 
-    val saldo = 49.99
-    println(saldo.aMoneda()) // "49,99 €" (en España)
+    val sinopsis = "Una aventura épica a través de las tierras intermedias..."
+    println(sinopsis.recortar(20)) // "Una aventura épica a..."
 }
 ```
 
 ---
+
+### 5.2. ¿Qué ocurre bajo el capó? (El Secreto de la JVM)
+
+Es vital comprender que **Kotlin no modifica mágicamente el archivo `.class` ni la estructura interna de la clase receptora**.
+
+En tiempo de compilación, Kotlin traduce la función de extensión a un **método estático ordinario de Java**, donde la instancia receptora `this` se pasa de forma transparente como el **primer parámetro**:
+
+=== "Kotlin (Lo que escribes)"
+    ```kotlin
+    fun String.esEmailValido(): Boolean {
+        return this.contains("@") && this.contains(".")
+    }
+
+    // Invocación fluida orientada a objetos:
+    val email = "profesor@pmdm.es"
+    val valido = email.esEmailValido()
+    ```
+
+=== "Java / Bytecode JVM (Lo que genera el compilador)"
+    ```java
+    public final class ExtensionesKt {
+        // En Java se compila como un método estático puro:
+        public static boolean esEmailValido(String $this$esEmailValido) {
+            return $this$esEmailValido.contains("@") && $this$esEmailValido.contains(".");
+        }
+    }
+
+    // Invocación real en la JVM:
+    String email = "profesor@pmdm.es";
+    boolean valido = ExtensionesKt.esEmailValido(email);
+    ```
+
+!!! note "Resolución Estática (*Static Dispatch*)"
+    Dado que las extensiones se compilan a métodos estáticos, **se resuelven estáticamente en tiempo de compilación**, no dinámicamente por polimorfismo. Si una clase ya tiene un método miembro con exactamente la misma firma y parámetros, el compilador **siempre dará prioridad al miembro original sobre la extensión**.
+
+---
+
+### 5.3. Extensiones sobre Tipos Nulables (`Receptor?`)
+
+En Kotlin podemos definir funciones de extensión sobre **tipos que pueden ser nulos** (`String?`, `Int?`). Esto permite invocar la función incluso cuando la variable contiene `null`, encapsulando la seguridad dentro de la propia función:
+
+```kotlin
+// El tipo receptor es String? (nulable):
+fun String?.oSiEsNulo(valorRespaldo: String): String {
+    // 'this' es de tipo String?, por lo que podemos usar el operador Elvis:
+    return this ?: valorRespaldo
+}
+
+fun main() {
+    val usuarioLogueado: String? = "PixelHero"
+    val usuarioAnonimo: String? = null
+
+    // Ambas llamadas son seguras y no lanzan NullPointerException:
+    println(usuarioLogueado.oSiEsNulo("Invitado")) // "PixelHero"
+    println(usuarioAnonimo.oSiEsNulo("Invitado"))   // "Invitado"
+}
+```
+
+---
+
+### 5.4. Propiedades de Extensión (*Extension Properties*)
+
+Además de funciones, Kotlin permite extender clases con **propiedades calculadas de solo lectura**:
+
+```kotlin
+// Añadimos una propiedad de solo lectura a String:
+val String.primerCaracter: Char?
+    get() = if (this.isNotEmpty()) this[0] else null
+
+fun main() {
+    println("Kotlin".primerCaracter) // 'K'
+    println("".primerCaracter)       // null
+}
+```
+
+*(Nota: Las propiedades de extensión no tienen campo de respaldo `field` ni pueden almacenar nuevo estado; únicamente calculan valores mediante su `get()` basándose en las propiedades públicas del receptor).*
 
 ## 6. 🔴 Rendimiento y Bytecode: Funciones `inline`
 
