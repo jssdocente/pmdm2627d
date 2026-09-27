@@ -1712,29 +1712,35 @@ El jugador debe descubrir una palabra secreta oculta adivinando sus letras una a
 
 | Elemento | Tipo de Dato | Función en el Juego |
 | :--- | :--- | :--- |
-| **Palabra Secreta** | `val palabraSecreta: String` | La palabra oculta a resolver (ej. `"KOTLIN"`). |
+| **Palabra Secreta** | `val palabraSecreta: String` | Obtenida al azar mediante un `when` con `(1..4).random()` (ej. `"KOTLIN"`, `"COMPOSE"`). |
 | **Letras Probadas** | `var letrasProbadas: String` | Cadena inmutable acumuladora con todas las letras intentadas. |
-| **Marcador de Vidas** | `var vidasRestantes: Int` | Inicia en `6`. Cada fallo resta `1`. Si llega a `0`, se pierde. |
-| **Máscara de Visualización** | Obtenida con `.enmascarar()` | Muestra las letras acertadas y guiones bajos `_` en las ocultas. |
+| **Marcador de Vidas** | `var vidasRestantes: Int` | Inicia en `6`. Cada fallo resta `1`. Si llega a `0`, se pierde la partida. |
+| **Máscara de Visualización** | Obtenida con `.enmascarar()` | Muestra las letras acertadas y guiones bajos `_` en las ocultas (ej. `"_ O _ _ _ _"`). |
+| **Bolsas de Caracteres** | `val bancoVocales: String`<br/>`val bancoConsonantes: String` | Cadenas con letras disponibles (`"AEIOU?"` y `"RSTLNPMBCDFGHJKLZ?"`) donde `'?'` simula una entrada nula. |
 
 ###### B. Ciclo de Vida de Cada Intento (Paso a Paso)
 
-En cada ronda, el jugador propone una letra (`letraInput: Char?`). Dado que la entrada puede proceder de un teclado, formulario o sensor, este carácter es potencialmente nulo. La función de orden superior `procesarIntento(...)` analiza la jugada y ejecuta la respuesta adecuada mediante callbacks:
+En cada ronda, el juego simula a un jugador inteligente de consola mediante una estrategia por turnos:
 
-1. **Fase 1 — Validación con Null Safety (Cláusula de Guarda):**  
-   Si `letraInput` es nulo (`null`), se invoca de inmediato el callback **`alErrorInput()`** y la ejecución finaliza con un `return`. El turno no penaliza al jugador con pérdida de vidas.
+1. **Selección de Letra según el Turno:**  
+   - Si el turno es **múltiplo de 3 (`turno % 3 == 0`)**, se extrae un carácter aleatorio de `bancoVocales`.
+   - En cualquier otro caso, se extrae de `bancoConsonantes`.
+   - Si el carácter sorteado es el comodín `'?'`, se pasa un valor `null` a la función para poner a prueba el mecanismo de **Null Safety**. En caso contrario, se pasa el carácter en mayúsculas.
 
-2. **Fase 2 — Normalización y Comprobación de Repetición:**  
-   La letra se normaliza a mayúsculas (`uppercaseChar()`). Si la letra ya existe dentro de `letrasProbadas` (`letra in letrasProbadas`), se invoca el callback **`alRepetir(letra)`** informando al jugador, sin modificar las vidas ni las letras probadas.
+2. **Fase 1 — Validación con Null Safety (Cláusula de Guarda):**  
+   Si `letraInput` es nulo (`null`), se invoca de inmediato el callback **`onErrorInput()`** y la ejecución finaliza con un `return`. El turno no penaliza al jugador con pérdida de vidas.
 
-3. **Fase 3 — Resolución del Intento (Acierto o Fallo):**  
+3. **Fase 2 — Normalización y Comprobación de Repetición:**  
+   La letra se normaliza a mayúsculas (`uppercaseChar()`). Si la letra ya existe dentro de `letrasProbadas` (`letra in letrasProbadas`), se invoca el callback **`onRepetir(letra)`** informando al jugador, sin modificar las vidas ni las letras probadas.
+
+4. **Fase 3 — Resolución del Intento (Acierto o Fallo):**  
    Si la letra es nueva, se concatena a la cadena de intentos (`nuevasProbadas = letrasProbadas + letra`):
 
-    - **Acierto:** Si la letra está en la palabra secreta (`letra in palabraSecreta`), se invoca el callback **`alAcertar(letra, nuevasProbadas)`**. Las vidas se mantienen intactas.
+    - **Acierto:** Si la letra está en la palabra secreta (`letra in palabraSecreta`), se invoca el callback **`onAcertar(letra, nuevasProbadas)`**. Las vidas se mantienen intactas.
 
-    - **Fallo:** Si la letra no pertenece a la palabra secreta, se decrementa el contador de vidas (`vidasRestantes - 1`) y se invoca el callback **`alFallar(letra, nuevasProbadas, vidasRestantes)`**.
+    - **Fallo:** Si la letra no pertenece a la palabra secreta, se decrementa el contador de vidas (`vidasRestantes - 1`) y se invoca el callback **`onFallar(letra, nuevasProbadas, vidasRestantes)`**.
 
-4. **Fase 4 — Comprobación de Fin de Partida:**  
+5. **Fase 4 — Comprobación de Fin de Partida:**  
    Tras cada intento, se evalúa si la partida ha alcanzado una condición terminal:
 
     - **🏆 Victoria:** Si la función de extensión `.estaAdivinada(letrasProbadas)` devuelve `true`, significa que todas las letras de la palabra secreta están descubiertas.
@@ -1747,25 +1753,25 @@ En cada ronda, el jugador propone una letra (`letraInput: Char?`). Dado que la e
 
 Para completar el reto de forma rigurosa respetando el nivel pedagógico del Bloque 2:
 
-1. **RF-01 (Prohibición de Clases y Colecciones Avanzadas):** Queda terminantemente prohibido el uso de `class`, `data class`, `List`, `Set` o `Map`. El estado debe gestionarse exclusivamente con cadenas inmutables (`String`) y tipos primitivos.
+1. **RF-01 (Prohibición de Clases y Colecciones Avanzadas):** Queda terminantemente prohibido el uso de `class`, `data class`, `List`, `Set`, `Map` o `Array`. El estado y las bolsas de letras deben gestionarse exclusivamente con cadenas inmutables (`String`) y tipos primitivos.
 
 2. **RF-02 (Función de Extensión de Enmascaramiento):** Implementa `fun String.enmascarar(probadas: String): String` que devuelva la palabra formateada con las letras acertadas visibles y las no probadas sustituidas por un guion bajo `'_'`, separadas por espacios (ej. `"_ O _ _ _ _"`).
 
 3. **RF-03 (Función de Extensión de Verificación de Victoria):** Implementa `fun String.estaAdivinada(probadas: String): Boolean` que determine si la totalidad de los caracteres de la palabra están presentes en `probadas`.
 
-4. **RF-04 (Función de Orden Superior con 4 Callbacks Tipados):** Define `fun procesarIntento(...)` recibiendo los parámetros de estado y 4 funciones lambda para los eventos:
+4. **RF-04 (Función de Orden Superior con 4 Callbacks Tipados con Prefijo `on...`):** Define `fun procesarIntento(...)` recibiendo los parámetros de estado y 4 funciones lambda para los eventos:
 
-    - `alAcertar: (letra: Char, nuevasProbadas: String) -> Unit`
+    - `onAcertar: (letra: Char, nuevasProbadas: String) -> Unit`
 
-    - `alFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit`
+    - `onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit`
 
-    - `alRepetir: (letra: Char) -> Unit`
+    - `onRepetir: (letra: Char) -> Unit`
 
-    - `alErrorInput: () -> Unit`
+    - `onErrorInput: () -> Unit`
 
-5. **RF-05 (Manejo Estricto de Null Safety):** Extrae el carácter seguro utilizando llamada segura y operador Elvis (`letraInput?.uppercaseChar() ?: run { ...; return }`).
+5. **RF-05 (Manejo Estricto de Null Safety):** Extrae el carácter seguro utilizando llamada segura y operador Elvis (`letraInput?.uppercaseChar() ?: run { onErrorInput(); return }`).
 
-6. **RF-06 (Simulación Completa de Partida en `main()`):** Ejecuta una partida simulada que cubra obligatoriamente los cuatro posibles caminos de ejecución: un acierto, un fallo, una letra repetida, una entrada nula (`null`) y una secuencia final que culmine en victoria.
+6. **RF-06 (Bucle Dinámico de Partida en `main()`):** Implementa un bucle `while (vidasRestantes > 0 && !palabraSecreta.estaAdivinada(letrasProbadas))` que seleccione la palabra secreta con un `when ((1..4).random())`, alterne vocales en múltiplos de 3 (`turno % 3 == 0`) y consonantes en los demás, gestione el comodín `'?'` para `null` y ejecute los 4 callbacks adecuadamente.
 
 ---
 
@@ -1774,27 +1780,30 @@ Para completar el reto de forma rigurosa respetando el nivel pedagógico del Blo
     flowchart TD
         Entrada(["letraInput: Char?"]) --> NullCheck{"¿letraInput != null?<br/>(letraInput?.uppercaseChar())"}
         
-        NullCheck -- "Es null" --> CallbackError["Invocar lambda: alErrorInput()"]
+        NullCheck -- "Es null" --> CallbackError["Invocar lambda: onErrorInput()"]
         NullCheck -- "Válido" --> YaProbada{"¿letra in letrasProbadas?"}
         
-        YaProbada -- "Sí" --> CallbackRepetir["Invocar lambda: alRepetir(letra)"]
+        YaProbada -- "Sí" --> CallbackRepetir["Invocar lambda: onRepetir(letra)"]
         YaProbada -- "No" --> Acierto{"¿letra in palabraSecreta?"}
         
-        Acierto -- "Sí" --> CallbackAcierto["Invocar lambda: alAcertar(letra, probadas + letra)"]
-        Acierto -- "No" --> CallbackFallo["Invocar lambda: alFallar(letra, probadas + letra, vidas - 1)"]
+        Acierto -- "Sí" --> CallbackAcierto["Invocar lambda: onAcertar(letra, probadas + letra)"]
+        Acierto -- "No" --> CallbackFallo["Invocar lambda: onFallar(letra, probadas + letra, vidas - 1)"]
     ```
 
 ??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
     Antes de examinar la solución o las pistas, reflexiona sobre estos principios de diseño funcional:
 
-    - **¿Cómo acumulamos letras sin utilizar un `Set<Char>`?**  
-      En Kotlin, un `String` es una secuencia inmutable de caracteres. Puedes acumular letras en una variable `var letrasProbadas = ""` y concatenar nuevas letras con `letrasProbadas += letra`. El operador `in` comprueba pertenencia de un `Char` en un `String` de forma instantánea.
+    - **¿Cómo simulamos valores `null` aleatorios si solo usamos cadenas de texto (`String`)?**  
+      Un `String` contiene caracteres primitivos `Char` no nulos. Para simular entradas nulas del usuario sin colecciones, introducimos un carácter comodín (como `'?'`). Al tomar un carácter con `.random()`, si coincide con `'?'` generamos un valor `null` (`if (char == '?') null else char`), poniendo a prueba el control de nulos (*Null Safety*).
 
-    - **¿Por qué emplear callbacks en lugar de retornar códigos de estado enteros (ej. 0 = OK, 1 = Error)?**  
-      En interfaces reactivas modernas como Jetpack Compose o Flutter, los componentes no consultan códigos de retorno, sino que emiten eventos hacia arriba (*event bubbling*) mediante lambdas (`onClick`, `onValueChange`). Este patrón desacopla la lógica del juego de la presentación.
+    - **¿Por qué alternar consonantes y vocales con `turno % 3 == 0`?**  
+      Aplica el operador módulo visto en el Bloque 1 para modelar una estrategia de juego clásica: probar dos consonantes frecuentes por cada vocal, en lugar de jugadas estáticas o repetitivas.
+
+    - **¿Por qué prefijar los callbacks con `on...` (`onAcertar`, `onFallar`, etc.) en lugar de `al...`?**  
+      Es el estándar absoluto en Kotlin y en **Jetpack Compose** (`onClick`, `onValueChange`, `onDismissRequest`). En la arquitectura declarativa de Compose, los eventos siempre fluyen hacia arriba a través de lambdas nombradas con `on`.
 
     - **¿Por qué la cláusula de guarda con Elvis utiliza `?: run { ... return }`?**  
-      Permite ejecutar un bloque de código secundario (el callback de error) y forzar la salida inmediata de la función sin anidar bloques `if-else` profundos, manteniendo el código plano y legible.
+      Permite invocar el callback de error y forzar la salida inmediata de la función sin anidar bloques `if-else` profundos, manteniendo el código plano y legible.
 
 ??? tip "💡 Pistas Progresivas de Ayuda (Abrir solo si te atascas)"
     === "Pista 1: Enmascarar caracteres sobre String"
@@ -1808,7 +1817,7 @@ Para completar el reto de forma rigurosa respetando el nivel pedagógico del Blo
         Usa el operador Elvis para capturar si la entrada es nula antes de procesar:
         ```kotlin
         val letra = letraInput?.uppercaseChar() ?: run {
-            alErrorInput()
+            onErrorInput()
             return
         }
         ```
@@ -1820,31 +1829,37 @@ Para completar el reto de forma rigurosa respetando el nivel pedagógico del Blo
             this.all { c -> c in probadas }
         ```
 
-??? example "🖥️ Ver Salida Esperada en Consola (Ejemplo de Partida)"
+??? example "🖥️ Ver Salida Esperada en Consola (Ejemplo de Partida Dinámica)"
     ```text
     === EL AHORCADO KOTLIN (LAMBDAS & NULL SAFETY) ===
     Palabra: _ _ _ _ _ _ | Vidas: 6 | Letras probadas: ''
 
-    -> Intentando con 'O'...
-    ¡Acierto! La letra 'O' está en la palabra.
-    Palabra: _ O _ _ _ _ | Vidas: 6 | Letras probadas: 'O'
+    --- Turno 1 [CONSONANTE] -> Letra propuesta: R ---
+      ¡Acierto! La letra 'R' está en la palabra secreta.
+      Estado: _ _ _ _ _ _ | Vidas: 6 | Probadas: 'R'
 
-    -> Intentando con 'Z'...
-    ¡Fallo! La letra 'Z' no está. Vidas restantes: 5
-    Palabra: _ O _ _ _ _ | Vidas: 5 | Letras probadas: 'OZ'
+    --- Turno 2 [CONSONANTE] -> Letra propuesta: S ---
+      ¡Fallo! La letra 'S' NO está en la palabra secreta. Vidas restantes: 5
+      Estado: _ _ _ _ _ _ | Vidas: 5 | Probadas: 'RS'
 
-    -> Intentando con null (entrada no válida)...
-    [ALERTA NULL]: No se ha introducido ninguna letra válida.
+    --- Turno 3 [VOCAL] -> Letra propuesta: null (error de entrada) ---
+      [ALERTA NULL SAFETY]: Entrada no válida recibida. Turno omitido sin penalización.
+      Estado: _ _ _ _ _ _ | Vidas: 5 | Probadas: 'RS'
 
-    -> Intentando con 'K', 'T', 'L', 'I', 'N'...
-    ¡VICTORIA! 🎉 Has completado la palabra secreta: KOTLIN
+    --- Turno 4 [CONSONANTE] -> Letra propuesta: R ---
+      La letra 'R' ya había sido probada previamente. No pierdes vidas.
+      Estado: _ _ _ _ _ _ | Vidas: 5 | Probadas: 'RS'
+
+    ... (turnos sucesivos) ...
+
+    🏆 ¡VICTORIA! Has completado la palabra secreta: KOTLIN
     ```
 
 ??? tip "💻 Ver Solución Comentada Paso a Paso"
     ```kotlin
     package b02_funciones_lambdas
 
-    // 1. Función de extensión sobre String para ocultar caracteres
+    // 1. Función de extensión sobre String para enmascarar caracteres
     fun String.enmascarar(probadas: String): String {
         return this.map { c -> if (c in probadas) c else '_' }.joinToString(" ")
     }
@@ -1860,111 +1875,97 @@ Para completar el reto de forma rigurosa respetando el nivel pedagógico del Blo
         palabraSecreta: String,
         letrasProbadas: String,
         vidasActuales: Int,
-        alAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
-        alFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
-        alRepetir: (letra: Char) -> Unit,
-        alErrorInput: () -> Unit
+        onAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
+        onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
+        onRepetir: (letra: Char) -> Unit,
+        onErrorInput: () -> Unit
     ) {
-        // Cláusula de guarda con Null Safety: safe call y elvis con return
+        // Cláusula de guarda con Null Safety: llamada segura y elvis con return
         val letra = letraInput?.uppercaseChar() ?: run {
-            alErrorInput()
+            onErrorInput()
             return
         }
 
+        // Si ya fue probada, notificamos y salimos sin penalizar vidas
         if (letra in letrasProbadas) {
-            alRepetir(letra)
+            onRepetir(letra)
             return
         }
 
         val nuevasProbadas = letrasProbadas + letra
 
+        // Verificamos pertenencia a la palabra secreta
         if (letra in palabraSecreta) {
-            alAcertar(letra, nuevasProbadas)
+            onAcertar(letra, nuevasProbadas)
         } else {
             val nuevasVidas = vidasActuales - 1
-            alFallar(letra, nuevasProbadas, nuevasVidas)
+            onFallar(letra, nuevasProbadas, nuevasVidas)
         }
     }
 
     fun main() {
-        println("=== EL AHORCADO KOTLIN (LAMBDAS & NULL SAFETY) ===")
+        // Banco de palabras resuelto sin colecciones (usando when y random del Bloque 1):
+        val palabraSecreta = when ((1..4).random()) {
+            1 -> "KOTLIN"
+            2 -> "COMPOSE"
+            3 -> "ANDROID"
+            else -> "CORRUTINA"
+        }
 
-        val palabraSecreta = "KOTLIN"
+        // Bolsas de letras en String (el comodín '?' simula una entrada nula):
+        val bancoVocales = "AEIOU?"
+        val bancoConsonantes = "RSTLNPMBCDFGHJKLZ?"
+
         var letrasProbadas = ""
         var vidasRestantes = 6
+        var turno = 1
 
-        println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Letras probadas: '$letrasProbadas'")
+        println("=== EL AHORCADO KOTLIN (LAMBDAS & NULL SAFETY) ===")
+        println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Letras probadas: ''\n")
 
-        // Intento 1: Acierto
-        println("\n-> Intentando con 'O'...")
-        procesarIntento(
-            letraInput = 'O',
-            palabraSecreta = palabraSecreta,
-            letrasProbadas = letrasProbadas,
-            vidasActuales = vidasRestantes,
-            alAcertar = { letra, nuevasProbadas ->
-                letrasProbadas = nuevasProbadas
-                println("¡Acierto! La letra '$letra' está en la palabra.")
-            },
-            alFallar = { _, nuevasProbadas, nuevasVidas ->
-                letrasProbadas = nuevasProbadas
-                vidasRestantes = nuevasVidas
-            },
-            alRepetir = { println("La letra '$it' ya había sido probada.") },
-            alErrorInput = { println("[ERROR]: Letra nula") }
-        )
-        println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Letras probadas: '$letrasProbadas'")
+        // Bucle dinámico de partida: continúa hasta ganar o agotar vidas
+        while (vidasRestantes > 0 && !palabraSecreta.estaAdivinada(letrasProbadas)) {
+            // Regla: múltiplo de 3 toca vocal; en caso contrario, consonante
+            val esTurnoVocal = (turno % 3 == 0)
+            val tipoLetra = if (esTurnoVocal) "VOCAL" else "CONSONANTE"
+            val bolsaLetras = if (esTurnoVocal) bancoVocales else bancoConsonantes
 
-        // Intento 2: Fallo
-        println("\n-> Intentando con 'Z'...")
-        procesarIntento(
-            letraInput = 'Z',
-            palabraSecreta = palabraSecreta,
-            letrasProbadas = letrasProbadas,
-            vidasActuales = vidasRestantes,
-            alAcertar = { _, nuevasProbadas -> letrasProbadas = nuevasProbadas },
-            alFallar = { letra, nuevasProbadas, nuevasVidas ->
-                letrasProbadas = nuevasProbadas
-                vidasRestantes = nuevasVidas
-                println("¡Fallo! La letra '$letra' no está. Vidas restantes: $nuevasVidas")
-            },
-            alRepetir = { println("La letra '$it' ya había sido probada.") },
-            alErrorInput = { println("[ERROR]: Letra nula") }
-        )
-        println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Letras probadas: '$letrasProbadas'")
+            val charSorteado = bolsaLetras.random()
+            val letraTurno: Char? = if (charSorteado == '?') null else charSorteado
 
-        // Intento 3: Entrada Nula
-        println("\n-> Intentando con null (entrada no válida)...")
-        procesarIntento(
-            letraInput = null,
-            palabraSecreta = palabraSecreta,
-            letrasProbadas = letrasProbadas,
-            vidasActuales = vidasRestantes,
-            alAcertar = { _, _ -> },
-            alFallar = { _, _, _ -> },
-            alRepetir = {},
-            alErrorInput = { println("[ALERTA NULL]: No se ha introducido ninguna letra válida.") }
-        )
+            println("--- Turno $turno [$tipoLetra] -> Letra propuesta: ${letraTurno ?: "null (error de entrada)"} ---")
 
-        // Intento 4: Secuencia de letras ganadoras
-        println("\n-> Intentando con 'K', 'T', 'L', 'I', 'N'...")
-        val letrasRestantes = "KTLIN"
-        for (i in 0 until letrasRestantes.length) {
-            val charActual = letrasRestantes[i]
             procesarIntento(
-                letraInput = charActual,
+                letraInput = letraTurno,
                 palabraSecreta = palabraSecreta,
                 letrasProbadas = letrasProbadas,
                 vidasActuales = vidasRestantes,
-                alAcertar = { _, nuevasProbadas -> letrasProbadas = nuevasProbadas },
-                alFallar = { _, _, _ -> },
-                alRepetir = {},
-                alErrorInput = {}
+                onAcertar = { letra, nuevasProbadas ->
+                    letrasProbadas = nuevasProbadas
+                    println("  ¡Acierto! La letra '$letra' está en la palabra secreta.")
+                },
+                onFallar = { letra, nuevasProbadas, nuevasVidas ->
+                    letrasProbadas = nuevasProbadas
+                    vidasRestantes = nuevasVidas
+                    println("  ¡Fallo! La letra '$letra' NO está en la palabra secreta. Vidas restantes: $nuevasVidas")
+                },
+                onRepetir = { letra ->
+                    println("  La letra '$letra' ya había sido probada previamente. No pierdes vidas.")
+                },
+                onErrorInput = {
+                    println("  [ALERTA NULL SAFETY]: Entrada no válida recibida. Turno omitido sin penalización.")
+                }
             )
+
+            println("  Estado: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Probadas: '$letrasProbadas'\n")
+            turno++
         }
 
+        // Resolución final
         if (palabraSecreta.estaAdivinada(letrasProbadas)) {
-            println("¡VICTORIA! 🎉 Has completado la palabra secreta: $palabraSecreta")
+            println("🏆 ¡VICTORIA! 🎉 Has completado la palabra secreta: $palabraSecreta")
+        } else {
+            println("💀 ¡DERROTA! 🪢 Te has quedado sin vidas. La palabra era: $palabraSecreta")
         }
     }
     ```

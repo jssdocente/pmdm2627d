@@ -67,20 +67,20 @@ fun String.estaAdivinada(probadas: String): Boolean {
 
 /**
  * Analiza el intento del jugador gestionando Null Safety y disparando el callback adecuado:
- * - alErrorInput: si letraInput es null (no altera vidas ni probadas).
- * - alRepetir: si la letra ya estaba en letrasProbadas (no altera vidas).
- * - alAcertar: si la letra es nueva y pertenece a la palabra secreta (no altera vidas).
- * - alFallar: si la letra es nueva y NO pertenece a la palabra (decrementa vidas en 1).
+ * - onErrorInput: si letraInput es null (no altera vidas ni probadas).
+ * - onRepetir: si la letra ya estaba en letrasProbadas (no altera vidas).
+ * - onAcertar: si la letra es nueva y pertenece a la palabra secreta (no altera vidas).
+ * - onFallar: si la letra es nueva y NO pertenece a la palabra (decrementa vidas en 1).
  */
 fun procesarIntento(
     letraInput: Char?,
     palabraSecreta: String,
     letrasProbadas: String,
     vidasActuales: Int,
-    alAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
-    alFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
-    alRepetir: (letra: Char) -> Unit,
-    alErrorInput: () -> Unit
+    onAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
+    onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
+    onRepetir: (letra: Char) -> Unit,
+    onErrorInput: () -> Unit
 ) {
     TODO("Misión 3: Implementar lógica de orden superior con callbacks y Null Safety")
 }
@@ -165,7 +165,7 @@ class MotorAhorcadoTest {
     // ========================================================================
 
     @Test
-    fun `entrada nula invoca unicamente alErrorInput sin penalizar vidas ni letras`() {
+    fun `entrada nula invoca unicamente onErrorInput sin penalizar vidas ni letras`() {
         var errorInvocado = false
 
         procesarIntento(
@@ -173,17 +173,17 @@ class MotorAhorcadoTest {
             palabraSecreta = "KOTLIN",
             letrasProbadas = "A",
             vidasActuales = 6,
-            alAcertar = { _, _ -> fail("No debía invocarse alAcertar con input null") },
-            alFallar = { _, _, _ -> fail("No debía invocarse alFallar con input null") },
-            alRepetir = { fail("No debía invocarse alRepetir con input null") },
-            alErrorInput = { errorInvocado = true }
+            onAcertar = { _, _ -> fail("No debía invocarse onAcertar con input null") },
+            onFallar = { _, _, _ -> fail("No debía invocarse onFallar con input null") },
+            onRepetir = { fail("No debía invocarse onRepetir con input null") },
+            onErrorInput = { errorInvocado = true }
         )
 
-        assertTrue(errorInvocado, "Debió ejecutarse el callback alErrorInput")
+        assertTrue(errorInvocado, "Debió ejecutarse el callback onErrorInput")
     }
 
     @Test
-    fun `proponer letra repetida invoca unicamente alRepetir con la letra normalizada`() {
+    fun `proponer letra repetida invoca unicamente onRepetir con la letra normalizada`() {
         var letraRepetida: Char? = null
 
         procesarIntento(
@@ -191,17 +191,17 @@ class MotorAhorcadoTest {
             palabraSecreta = "KOTLIN",
             letrasProbadas = "AO",
             vidasActuales = 6,
-            alAcertar = { _, _ -> fail("No debía invocarse alAcertar con letra repetida") },
-            alFallar = { _, _, _ -> fail("No debía invocarse alFallar con letra repetida") },
-            alRepetir = { letra -> letraRepetida = letra },
-            alErrorInput = { fail("No debía invocarse alErrorInput con letra válida") }
+            onAcertar = { _, _ -> fail("No debía invocarse onAcertar con letra repetida") },
+            onFallar = { _, _, _ -> fail("No debía invocarse onFallar con letra repetida") },
+            onRepetir = { letra -> letraRepetida = letra },
+            onErrorInput = { fail("No debía invocarse onErrorInput con letra válida") }
         )
 
         assertEquals('O', letraRepetida, "Debió avisar de la repetición con la letra en mayúsculas")
     }
 
     @Test
-    fun `acertar letra nueva invoca alAcertar con nuevas probadas y vidas intactas`() {
+    fun `acertar letra nueva invoca onAcertar con nuevas probadas y vidas intactas`() {
         var letraAcertada: Char? = null
         var probadasActualizadas = ""
 
@@ -210,13 +210,13 @@ class MotorAhorcadoTest {
             palabraSecreta = "KOTLIN",
             letrasProbadas = "A",
             vidasActuales = 5,
-            alAcertar = { letra, nuevasProbadas ->
+            onAcertar = { letra, nuevasProbadas ->
                 letraAcertada = letra
                 probadasActualizadas = nuevasProbadas
             },
-            alFallar = { _, _, _ -> fail("No debía fallar con una letra correcta") },
-            alRepetir = { fail("No debía repetir una letra nueva") },
-            alErrorInput = { fail("No debía dar error de input") }
+            onFallar = { _, _, _ -> fail("No debía fallar con una letra correcta") },
+            onRepetir = { fail("No debía repetir una letra nueva") },
+            onErrorInput = { fail("No debía dar error de input") }
         )
 
         assertEquals('K', letraAcertada)
@@ -224,7 +224,7 @@ class MotorAhorcadoTest {
     }
 
     @Test
-    fun `fallar letra nueva invoca alFallar restando exactamente una vida`() {
+    fun `fallar letra nueva invoca onFallar restando exactamente una vida`() {
         var letraFallada: Char? = null
         var probadasActualizadas = ""
         var vidasRestantes = -1
@@ -234,14 +234,14 @@ class MotorAhorcadoTest {
             palabraSecreta = "KOTLIN",
             letrasProbadas = "A",
             vidasActuales = 6,
-            alAcertar = { _, _ -> fail("No debía acertar con letra inexistente") },
-            alFallar = { letra, nuevasProbadas, vidas ->
+            onAcertar = { _, _ -> fail("No debía acertar con letra inexistente") },
+            onFallar = { letra, nuevasProbadas, vidas ->
                 letraFallada = letra
                 probadasActualizadas = nuevasProbadas
                 vidasRestantes = vidas
             },
-            alRepetir = { fail("No debía repetir una letra nueva") },
-            alErrorInput = { fail("No debía dar error de input") }
+            onRepetir = { fail("No debía repetir una letra nueva") },
+            onErrorInput = { fail("No debía dar error de input") }
         )
 
         assertEquals('Z', letraFallada)
@@ -323,11 +323,11 @@ Lanza las pruebas de victoria:
 
 Este es el núcleo reactivo del juego. Observa cómo aplicamos los operadores aprendidos en el Bloque 2:
 
-1. **Llamada segura y Elvis como cláusula de guarda:** `letraInput?.uppercaseChar() ?: run { alErrorInput(); return }`. Si la entrada es `null`, dispara el callback de error y sale de inmediato sin tocar nada más.
-2. **Comprobación de repetición:** Si `letra in letrasProbadas`, invocamos `alRepetir(letra)` y salimos con `return`.
+1. **Llamada segura y Elvis como cláusula de guarda:** `letraInput?.uppercaseChar() ?: run { onErrorInput(); return }`. Si la entrada es `null`, dispara el callback de error y sale de inmediato sin tocar nada más.
+2. **Comprobación de repetición:** Si `letra in letrasProbadas`, invocamos `onRepetir(letra)` y salimos con `return`.
 3. **Acierto vs Fallo:** Si no estaba repetida, calculamos `val nuevasProbadas = letrasProbadas + letra`:
-    - Si `letra in palabraSecreta` → invocamos `alAcertar(letra, nuevasProbadas)`.
-    - Si no → invocamos `alFallar(letra, nuevasProbadas, vidasActuales - 1)`.
+    - Si `letra in palabraSecreta` → invocamos `onAcertar(letra, nuevasProbadas)`.
+    - Si no → invocamos `onFallar(letra, nuevasProbadas, vidasActuales - 1)`.
 
 ```kotlin
 fun procesarIntento(
@@ -335,20 +335,20 @@ fun procesarIntento(
     palabraSecreta: String,
     letrasProbadas: String,
     vidasActuales: Int,
-    alAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
-    alFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
-    alRepetir: (letra: Char) -> Unit,
-    alErrorInput: () -> Unit
+    onAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
+    onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
+    onRepetir: (letra: Char) -> Unit,
+    onErrorInput: () -> Unit
 ) {
     // 1. Cláusula de guarda ante nulos
     val letra = letraInput?.uppercaseChar() ?: run {
-        alErrorInput()
+        onErrorInput()
         return
     }
 
     // 2. Comprobación de repetición
     if (letra in letrasProbadas) {
-        alRepetir(letra)
+        onRepetir(letra)
         return
     }
 
@@ -356,10 +356,10 @@ fun procesarIntento(
     val nuevasProbadas = letrasProbadas + letra
 
     if (letra in palabraSecreta) {
-        alAcertar(letra, nuevasProbadas)
+        onAcertar(letra, nuevasProbadas)
     } else {
         val nuevasVidas = vidasActuales - 1
-        alFallar(letra, nuevasProbadas, nuevasVidas)
+        onFallar(letra, nuevasProbadas, nuevasVidas)
     }
 }
 ```
@@ -418,19 +418,19 @@ fun main() {
             palabraSecreta = palabraSecreta,
             letrasProbadas = letrasProbadas,
             vidasActuales = vidasRestantes,
-            alAcertar = { letra, nuevasProbadas ->
+            onAcertar = { letra, nuevasProbadas ->
                 letrasProbadas = nuevasProbadas
                 println("¡Acierto! La letra '$letra' está en la palabra.")
             },
-            alFallar = { letra, nuevasProbadas, vidas ->
+            onFallar = { letra, nuevasProbadas, vidas ->
                 letrasProbadas = nuevasProbadas
                 vidasRestantes = vidas
                 println("¡Fallo! La letra '$letra' no está. Vidas restantes: $vidas")
             },
-            alRepetir = { letra ->
+            onRepetir = { letra ->
                 println("La letra '$letra' ya había sido probada.")
             },
-            alErrorInput = {
+            onErrorInput = {
                 println("[ALERTA]: Entrada no válida (null). Turno no penalizado.")
             }
         )
