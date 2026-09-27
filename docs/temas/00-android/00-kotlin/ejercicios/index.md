@@ -28,23 +28,95 @@ pmdm-kotlin-lab/
 
 1. Abre IntelliJ IDEA y selecciona **New Project**.
 
-2. **Name:** `pmdm-kotlin-lab`
+2. En el panel izquierdo de generadores, asegúrate de tener seleccionado **Kotlin**.
 
-3. **Language:** `Kotlin`
+3. Configura los campos principales de la ventana:
 
-4. **Build system:** `Gradle`
+    - **Name:** `pmdm-kotlin-lab`
+    - **Location:** Directorio de trabajo local donde guardes tus prácticas del módulo.
+    - **Build system:** `Gradle` *(el sistema oficial de compilación y empaquetado en el ecosistema Android)*.
+    - **JDK:** Java 17 o superior (**Java 21 recomendado**).
+    - **Gradle DSL:** `Kotlin` *(utiliza `build.gradle.kts` con tipado estático, autocompletado y validación de errores en tiempo de edición)*.
+    - **Add sample code:** ❌ *Desmarcado* (para evitar la creación de archivos `Main.kt` genéricos en la raíz).
+    - **Generate multi-module build:** ❌ *Desmarcado*.
 
-5. **JDK:** Java 17 o superior (Java 21 recomendado).
+4. Despliega la pestaña **Advanced Settings** y configura:
 
-6. Haz clic en **Create**.
+    - **Gradle distribution:** Selecciona siempre **`Wrapper`**.
+    - **Gradle version:** `Auto-select` (o la versión propuesta por el IDE).
+    - **GroupId:** Identificador de grupo en notación de dominio inverso (ej. `es.ies.pmdm` o `com.tu_apellido`).
+    - **ArtifactId:** `pmdm-kotlin-lab`.
 
-### Paso 2: Archivo `build.gradle.kts`
+5. Haz clic en **Create**.
 
-Abre el archivo `build.gradle.kts` generado en la raíz del proyecto y asegúrate de que incluya la dependencia oficial de corrutinas para los ejercicios avanzados:
+!!! info "💡 ¿Por qué es vital usar Gradle `Wrapper` en lugar de `Local installation`?"
+    - **Gradle Wrapper (`./gradlew`):** Es el estándar absoluto en la industria profesional y en Android. Genera en la raíz del proyecto los ejecutables `./gradlew` (macOS/Linux), `gradlew.bat` (Windows) y `gradle/wrapper/gradle-wrapper.properties`.
+    - **Cero dependencias locales:** El alumno **no necesita tener Gradle instalado en su sistema operativo**. La primera vez que compila o sincroniza, el propio Wrapper descarga automáticamente la versión exacta requerida.
+    - **Entorno homogéneo y reproducible:** Garantiza que el código compile de forma idéntica en cualquier sistema operativo (Windows, Mac o Linux) y nos permitirá ejecutar las suites de pruebas automatizadas desde la terminal con `./gradlew test`.
+
+### Paso 2: Anatomía y Propósito de los Archivos del Proyecto
+
+Una vez generado el proyecto, IntelliJ IDEA mostrará en el explorador de archivos izquierdo la siguiente estructura de ficheros:
+
+```text
+pmdm-kotlin-lab/
+├── .gradle/             <-- Caché interna y metadatos del motor de compilación Gradle
+├── .idea/               <-- Configuración interna del proyecto en IntelliJ IDEA
+├── gradle/
+│   └── wrapper/
+│       ├── gradle-wrapper.jar         <-- Binario ejecutable que descarga Gradle
+│       └── gradle-wrapper.properties  <-- Especifica la versión exacta de Gradle a usar
+├── src/
+│   ├── main/
+│   │   └── kotlin/      <-- Código fuente de la aplicación (nuestros ejercicios y retos)
+│   └── test/
+│       └── kotlin/      <-- Pruebas unitarias automatizadas (JUnit / kotlin.test)
+├── .gitignore           <-- Archivos temporales y de caché que Git debe ignorar
+├── build.gradle.kts     <-- Script principal de compilación, plugins y dependencias
+├── gradle.properties    <-- Parámetros de la JVM y rendimiento del demonio de Gradle
+├── gradlew              <-- Script ejecutable de consola para macOS y Linux
+├── gradlew.bat          <-- Script ejecutable por lotes para Windows
+└── settings.gradle.kts  <-- Configuración global inicial del proyecto y módulos
+```
+
+#### ¿Qué función cumple cada archivo?
+
+- **`settings.gradle.kts` (Configuración Inicial):**  
+  Es el **primer archivo** que Gradle lee al arrancar. Define el nombre del proyecto raíz (`rootProject.name = "pmdm-kotlin-lab"`) y los repositorios globales para descargar plugins. En proyectos más avanzados o en Android, aquí se declaran también los submódulos que componen la aplicación (`include(":app")`).
+
+- **`build.gradle.kts` (El Script Principal de Construcción):**  
+  Es el archivo más importante para el programador. En él se configuran:
+    - Los **plugins** necesarios (por ejemplo, el plugin oficial de Kotlin para JVM).
+    - La versión de **Java** de destino.
+    - Los **repositorios** de descarga de librerías (`mavenCentral()`).
+    - Las **dependencias externas** que requiere nuestro código (como la biblioteca oficial de Corrutinas o las herramientas de testing).
+
+- **`gradlew` (macOS/Linux) y `gradlew.bat` (Windows):**  
+  Son los scripts ejecutables del **Gradle Wrapper**. Permiten compilar el proyecto o ejecutar tareas por consola (`./gradlew test`, `./gradlew build`) desde cualquier terminal, sin necesidad de abrir IntelliJ IDEA y sin tener Gradle preinstalado en el ordenador.
+
+- **Carpeta `gradle/wrapper/`:**  
+  Aloja el archivo `gradle-wrapper.properties`, que indica la URL oficial y la versión binaria de Gradle que debe descargarse, junto con el archivo auxiliar `gradle-wrapper.jar`. Ambos deben estar siempre incluidos en el repositorio de control de versiones.
+
+- **`gradle.properties`:**  
+  Permite definir parámetros de configuración para la máquina virtual de Java que ejecuta Gradle, como la memoria RAM máxima asignada al demonio de compilación (`org.gradle.jvmargs=-Xmx2048m`).
+
+- **Estructura de Directorios `src/`:**  
+  Sigue la convención estándar adoptada universalmente por Maven y Gradle:
+    - **`src/main/kotlin/`:** Directorio raíz de nuestro código fuente. Aquí crearemos los paquetes temáticos del curso (`b01_fundamentos`, `b02_funciones_lambdas`, etc.).
+    - **`src/test/kotlin/`:** Directorio reservado exclusivamente para las suites de pruebas unitarias automatizadas con `kotlin.test` y JUnit.
+
+- **Carpetas Ocultas (`.gradle/` y `.idea/`):**  
+  Son generadas automáticamente por las herramientas para guardar cachés locales, índices de búsqueda y configuraciones del editor. **Nunca deben modificarse manualmente ni subirse a Git** (ya vienen convenientemente ignoradas dentro del archivo `.gitignore`).
+
+---
+
+### Paso 3: Configuración de Dependencias en `build.gradle.kts`
+
+Abre el archivo `build.gradle.kts` generado en la raíz del proyecto y comprueba que incluya la configuración base y la biblioteca de corrutinas para los bloques avanzados:
 
 ```kotlin
 plugins {
-    kotlin("jvm") version "1.9.24" // O versión actual instalada
+    kotlin("jvm") version "2.1.0" // O la versión generada por el asistente (ej. 2.x)
     application
 }
 
@@ -56,7 +128,7 @@ repositories {
 }
 
 dependencies {
-    // Biblioteca de Corrutinas para pruebas en consola (Bloque 5 y 6)
+    // Biblioteca de Corrutinas para pruebas en consola (Bloques 5 y 6)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
     
     testImplementation(kotlin("test"))
@@ -65,9 +137,82 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+// Permite ejecutar cualquier archivo con: ./gradlew ejecutar -P clase=...
+tasks.register<JavaExec>("ejecutar") {
+    group = "application"
+    description = "Ejecuta cualquier fichero Kotlin con fun main()"
+    classpath = sourceSets["main"].runtimeClasspath
+
+    // Toma la clase indicada con -P clase=... (o -Pclase=...)
+    val targetClass = project.findProperty("clase") as? String
+        ?: ""
+
+    if (targetClass.isNotEmpty()) {
+        mainClass.set(targetClass)
+    }
+}
 ```
 
-Haz clic en el icono del elefante de Gradle con la flecha azul (o pulsa `Ctrl + Shift + O` / `Cmd + Shift + I`) para sincronizar las dependencias.
+??? info "🔍 Anatomía detallada: ¿Qué hace cada línea de `build.gradle.kts` y por qué es imprescindible?"
+    
+    - **`plugins { kotlin("jvm") version "..." }` (Motor del Lenguaje):**  
+      Gradle es un motor genérico que desconoce qué es Kotlin. Esta línea descarga el compilador oficial de JetBrains (`kotlinc`) y "enseña" a Gradle cómo compilar los archivos `.kt` hacia bytecode de la Máquina Virtual de Java (`.class`).  
+      *(📖 **Referencia con Android:** En el módulo de desarrollo móvil utilizaremos el plugin de aplicaciones Android `com.android.application` junto al plugin del compilador de Compose, como se explica en profundidad en [Herramientas: Anatomía de build.gradle.kts](../../00-tools/02-build-gradle.md). En este laboratorio inicial usamos `kotlin("jvm")` porque ejecutamos algoritmos y lógica de consola sin necesidad de emuladores).*
+
+    - **`application` (Empaquetado y Ejecución):**  
+      Plugin auxiliar de Gradle que añade capacidades de ejecución de aplicaciones en la JVM.
+
+    - **`group` y `version` (Metadatos del Proyecto):**  
+      Establecen las coordenadas Maven del proyecto. `group` identifica al autor u organización (`es.ies.pmdm`), y `version` gestiona el versionado semántico del código.
+
+    - **`repositories { mavenCentral() }` (Almacén de Librerías):**  
+      Indica a Gradle el servidor seguro en la nube de donde debe descargar automáticamente las dependencias externas (bibliotecas JAR) sin tener que copiarlas a mano.
+
+    - **`dependencies { ... }` (Librerías Externas):**  
+      Aquí se declaran las herramientas que necesita el proyecto:
+        - `implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")`: Descarga la librería oficial de **corrutinas y programación reactiva (`StateFlow`)**, esencial para resolver los retos asíncronos del Bloque 5 y el proyecto integrador.
+        - `testImplementation(kotlin("test"))`: Proporciona las funciones de aserción estándar (`assertEquals`, `assertTrue`) para verificar la corrección del código en `src/test/kotlin/`.
+
+    - **`tasks.test { useJUnitPlatform() }` (Motor de Testing):**  
+      Configura la tarea de ejecución de pruebas para que utilice el motor moderno **JUnit Platform (JUnit 5)**, permitiendo que `./gradlew test` genere los informes interactivos de calidad en formato HTML.
+
+    - **`tasks.register<JavaExec>("ejecutar") { ... }` (Lanzador Dinámico de Ejercicios):**  
+      Registra una tarea personalizada de ejecución Java. Permite pasarle por parámetro cualquier archivo `.kt` del proyecto (con `-P clase=...`) sin tener que modificar el archivo `build.gradle.kts` cada vez que quieras probar un ejercicio diferente.
+
+Haz clic en el icono del elefante de Gradle con la flecha azul (o pulsa `Ctrl + Shift + O` en Windows/Linux o `Cmd + Shift + I` en macOS) para sincronizar las dependencias.
+
+---
+
+### Paso 4: Dos Formas de Ejecutar tus Ejercicios
+
+Una vez sincronizado el proyecto, puedes ejecutar cualquier ejercicio tanto desde el entorno visual como desde la terminal:
+
+#### 1. Desde el Entorno Gráfico (IntelliJ IDEA)
+En cualquier archivo `.kt` que contenga una función `fun main()`, verás un **icono verde de reproducción (▶)** en el margen izquierdo del editor. Haz clic sobre él y selecciona **Run**.
+
+#### 2. Desde la Terminal con Gradle Wrapper
+Para ejecutar cualquier ejercicio directamente desde la línea de comandos, utiliza la tarea `ejecutar` pasando el nombre completo de la clase mediante `-P clase=...`:
+
+!!! tip "💡 La Regla del sufijo `Kt` en Bytecode"
+    En Kotlin, cuando un archivo contiene directamente funciones como `fun main()` sin una `class` exterior, el compilador genera internamente una clase en la JVM añadiendo el sufijo **`Kt`** al nombre del fichero:
+    
+    - **Fichero fuente:** `src/main/kotlin/b01_fundamentos/E00_CalentamientoFundamentos.kt`
+    - **Nombre de clase compilada:** `b01_fundamentos.E00_CalentamientoFundamentosKt`
+
+Abre tu terminal en la raíz de `pmdm-kotlin-lab` y ejecuta el comando según tu sistema operativo:
+
+=== "macOS / Linux"
+    ```bash
+    ./gradlew ejecutar -P clase=b01_fundamentos.E00_CalentamientoFundamentosKt
+    ```
+
+=== "Windows (CMD / PowerShell)"
+    ```cmd
+    gradlew.bat ejecutar -P clase=b01_fundamentos.E00_CalentamientoFundamentosKt
+    ```
+
+*(Gradle compilará automáticamente los cambios que hayas hecho en el código, configurará el classpath con todas las librerías necesarias y mostrará la salida en la terminal).*
 
 ---
 

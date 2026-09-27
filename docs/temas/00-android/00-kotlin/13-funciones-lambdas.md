@@ -102,6 +102,60 @@ crearPerfilUsuario(
 
 ---
 
+### 1.4. Número Variable de Argumentos (`vararg`) y el Operador Spread (`*`)
+
+En ocasiones necesitamos que una función acepte una cantidad indeterminada de argumentos del mismo tipo (por ejemplo, registrar una serie de eventos o calcular la suma de bonificaciones en un juego).
+
+En Java esto se resolvía con los puntos suspensivos (`int... numeros`). En Kotlin se utiliza el modificador **`vararg`**:
+
+```kotlin
+fun sumarTodo(vararg numeros: Int): Int {
+    // Dentro de la función, 'numeros' se comporta como un Array (IntArray):
+    var acumulado = 0
+    for (n in numeros) {
+        acumulado += n
+    }
+    return acumulado
+}
+
+fun main() {
+    // Podemos suministrar tantos argumentos individuales como deseemos:
+    val suma1 = sumarTodo(5, 10)
+    val suma2 = sumarTodo(1, 2, 3, 4, 5, 6)
+    val suma3 = sumarTodo() // Válido: pasar 0 argumentos devuelve 0
+
+    println("Suma 1: $suma1 | Suma 2: $suma2 | Suma 3: $suma3")
+}
+```
+
+#### El Operador Spread (`*`): Desempaquetado de Arrays
+¿Qué ocurre si los valores ya están almacenados en un array y queremos pasárselos a una función con `vararg`?
+
+A diferencia de Java, donde se podía pasar el array directamente, en Kotlin **no puedes entregar un array tal cual**, porque el compilador espera valores sueltos de tipo `Int`, no un contenedor `IntArray`. 
+
+Para solucionar esto, Kotlin proporciona el **operador spread (`*`)**, que antepuesto a un array lo "desempaqueta" o "esparce", pasando cada uno de sus elementos como argumentos independientes:
+
+```kotlin
+fun main() {
+    val bonificaciones = intArrayOf(100, 250, 50)
+
+    // ❌ Error de compilación: Type mismatch (esperaba Int, recibió IntArray):
+    // val totalError = sumarTodo(bonificaciones)
+
+    // ✔️ Correcto: el operador spread (*) desempaqueta los valores individuales:
+    val total = sumarTodo(*bonificaciones)
+    println("Puntuación total: $total") // Imprime 400
+
+    // Incluso podemos combinar elementos sueltos con arrays desempaquetados en la misma llamada:
+    val granTotal = sumarTodo(10, *bonificaciones, 500)
+    println("Gran total combinado: $granTotal") // Imprime 910
+}
+```
+
+!!! info "Reglas clave de `vararg` en Kotlin"
+    - **Solo un `vararg` por función:** Por claridad y resolución de firmas, solo un parámetro puede llevar el modificador `vararg`.
+    - **Parámetros posteriores con nombre:** Si después de un parámetro `vararg` declaras otros parámetros ordinarios, al invocar la función debes suministrarlos obligatoriamente usando **argumentos con nombre** (ej. `fun registrar(vararg msgs: String, nivel: Int)` se invoca como `registrar("alerta", "error", nivel = 3)`).
+
 ## 2. 🟡 El Puente Pedagógico: De la Función Tradicional a la Lambda
 
 Muchos estudiantes que provienen de Java tradicional perciben las expresiones lambda como una sintaxis extraña o "mágica". Sin embargo, **una lambda no es más que una función normal simplificada paso a paso**.

@@ -739,7 +739,7 @@ Boton [Texto: 'Guardar', Color: #6200EE, Habilitado: false, Padding: 32dp]
 
 ### Ejercicio 2.3: Número Variable de Argumentos (`vararg`)
 📄 **Archivo:** `E03_Varargs.kt`  
-📚 **Teoría de referencia:** [Declaración de Funciones e Inmutabilidad de Parámetros](../13-funciones-lambdas.md#11-inmutabilidad-de-los-parametros)
+📚 **Teoría de referencia:** [Número Variable de Argumentos (vararg) y Operador Spread](../13-funciones-lambdas.md#14-numero-variable-de-argumentos-vararg-y-el-operador-spread)
 
 #### 1. Enunciado y Requisitos
 

@@ -20,7 +20,30 @@ Ubicación en tu proyecto: `src/main/kotlin/b01_fundamentos/`
 
 Esta fase inicial de entrenamiento rápido contiene **10 micro-ejercicios atómicos** diseñados para que mecanices la sintaxis fundamental de Kotlin, asimiles la inmutabilidad y experimentes el salto cualitativo respecto a Java.
 
-📁 **Archivo de trabajo para esta fase:** Crea el archivo `E00_CalentamientoFundamentos.kt` dentro de la carpeta `src/main/kotlin/b01_fundamentos/`. Cada ejercicio puede ser una función llamada desde `fun main()`.
+📁 **Estructura del archivo de trabajo:** Crea un único archivo `E00_CalentamientoFundamentos.kt` dentro de `src/main/kotlin/b01_fundamentos/`.  
+Para evitar tener que renombrar o crear múltiples funciones `main()`, **todo el calentamiento se ejecuta dentro de un único `fun main()`**, organizando cada ejercicio en un **bloque de ámbito independiente con la sintaxis `run { ... }`**:
+
+```kotlin
+package b01_fundamentos
+
+fun main() {
+    println("==================================================")
+    println("🏋️ GIMNASIO DE SINTAXIS: FUNDAMENTOS DE KOTLIN")
+    println("==================================================\n")
+
+    // Ve añadiendo aquí los bloques run { ... } de cada ejercicio
+}
+```
+
+??? question "🔍 ¿Qué significa la sintaxis `run { ... }` y por qué la usamos aquí?"
+    En Kotlin, si abres unas llaves sueltas `{ ... }` dentro de una función, el compilador **no crea un simple bloque de código como en Java o C++**, sino que crea una **expresión lambda** (un trozo de código que no se ejecuta a menos que alguien lo invoque). Por tanto, el código quedaría inerte y el editor mostraría la advertencia *«The expression is unused»*.
+
+    Para solucionar esto de forma limpia y sin necesidad de crear funciones independientes (que estudiaremos en el Bloque 2), usamos la función estándar **`run { ... }`**:
+
+    - **Ejecución Inmediata:** `run { ... }` ejecuta al instante todo el código contenido entre sus llaves.
+    - **Ámbito Aislado (*Lexical Scope*):** Todas las variables que declares dentro de un bloque `run { ... }` (como `val usuario` o `val vidas`) solo existen dentro de esas llaves. Al terminar el bloque, desaparecen de la memoria.
+    - **Cero Conflictos de Nombres:** Gracias a este aislamiento, puedes reutilizar nombres de variables habituales en varios ejercicios distintos dentro del mismo `main()` sin que el compilador proteste por declaraciones duplicadas (*Conflicting declarations*).
+    - **Comodidad Total:** Mantienes un único archivo de calentamiento, y al pulsar el botón verde de ejecución (▶) en `main()`, se ejecutarán secuencialmente todos los ejercicios que hayas completado.
 
 ---
 
@@ -33,11 +56,12 @@ Esta fase inicial de entrenamiento rápido contiene **10 micro-ejercicios atómi
 ##### 1. Concepto y Código Resuelto
 En Java, las variables son mutables por defecto a menos que se use la palabra clave `final`. En Kotlin, la inmutabilidad es un principio de diseño de primer nivel: se promueve el uso sistemático de `val` (solo lectura) y se restringe `var` a casos estrictamente necesarios.
 
-=== "Kotlin"
+=== "Kotlin (Bloque a añadir en main)"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.1: Inmutabilidad Estricta ---
+    run {
+        println("--- 0.1: Inmutabilidad (val vs var) ---")
 
-    fun main() {
         // Referencia inmutable: una vez asignada, su valor no puede cambiar
         val nombreApp: String = "GameVault"
 
@@ -45,13 +69,13 @@ En Java, las variables son mutables por defecto a menos que se use la palabra cl
         var contadorDescargas: Int = 100
         contadorDescargas += 25
 
-        println("App: $nombreApp | Descargas acumuladas: $contadorDescargas")
+        println("App: $nombreApp | Descargas acumuladas: $contadorDescargas\n")
 
         // nombreApp = "OtroNombre" // ❌ ERROR DE COMPILACIÓN: Val cannot be reassigned
     }
     ```
 
-=== "Java"
+=== "Java (Equivalente Tradicional)"
     ```java
     public class CalentamientoVariablesJava {
         public static void main(String[] args) {
@@ -70,6 +94,7 @@ En Java, las variables son mutables por defecto a menos que se use la palabra cl
 
 ##### 2. Salida en Consola
 ```text
+--- 0.1: Inmutabilidad (val vs var) ---
 App: GameVault | Descargas acumuladas: 125
 ```
 
@@ -82,22 +107,23 @@ App: GameVault | Descargas acumuladas: 125
 ##### 1. Concepto y Código Resuelto
 En Java, concatenar variables con texto requiere encadenar operadores `+` o invocar métodos de `StringBuilder`. En Kotlin, se interpolan variables directamente con `$variable` y expresiones complejas con `${expresion}`.
 
-=== "Kotlin"
+=== "Kotlin (Bloque a añadir en main)"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.2: String Templates ---
+    run {
+        println("--- 0.2: String Templates ---")
 
-    fun main() {
         val usuario = "Link"
         val vidas = 3
         val corazonPorVida = 4
 
         // Interpolación directa y evaluación de expresiones matemáticas en la cadena:
         val informe = "El héroe $usuario tiene $vidas vidas (Total corazones: ${vidas * corazonPorVida})"
-        println(informe)
+        println("$informe\n")
     }
     ```
 
-=== "Java"
+=== "Java (Equivalente Tradicional)"
     ```java
     public class StringTemplatesJava {
         public static void main(String[] args) {
@@ -114,6 +140,7 @@ En Java, concatenar variables con texto requiere encadenar operadores `+` o invo
 
 ##### 2. Salida en Consola
 ```text
+--- 0.2: String Templates ---
 El héroe Link tiene 3 vidas (Total corazones: 12)
 ```
 
@@ -131,6 +158,7 @@ El héroe Link tiene 3 vidas (Total corazones: 12)
 
 ##### 2. Salida Esperada
 ```text
+--- 0.3: Tipos Numéricos y Separadores ---
 Oro acumulado: 1500000 (Tipo: Int)
 Multiplicador: 1.75 (Tipo: Float)
 ```
@@ -138,14 +166,15 @@ Multiplicador: 1.75 (Tipo: Float)
 ##### 3. Solución Comentada
 ??? tip "Ver solución comentada"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.3: Tipos Numéricos y Separadores ---
+    run {
+        println("--- 0.3: Tipos Numéricos y Separadores ---")
 
-    fun main() {
         val monedasOro = 1_500_000
         val multiplicadorXP = 1.75f
 
         println("Oro acumulado: $monedasOro (Tipo: ${monedasOro::class.simpleName})")
-        println("Multiplicador: $multiplicadorXP (Tipo: ${multiplicadorXP::class.simpleName})")
+        println("Multiplicador: $multiplicadorXP (Tipo: ${multiplicadorXP::class.simpleName})\n")
     }
     ```
 
@@ -164,6 +193,7 @@ A diferencia de Java, en Kotlin los tipos numéricos menores no se promocionan a
 
 ##### 2. Salida Esperada
 ```text
+--- 0.4: Conversiones Numéricas Explícitas ---
 Puntos en formato Long: 42
 Puntos en formato Double: 42.0 | Mitad exacta: 21.0
 ```
@@ -171,9 +201,10 @@ Puntos en formato Double: 42.0 | Mitad exacta: 21.0
 ##### 3. Solución Comentada
 ??? tip "Ver solución comentada"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.4: Conversiones Numéricas Explícitas ---
+    run {
+        println("--- 0.4: Conversiones Numéricas Explícitas ---")
 
-    fun main() {
         val puntosEnteros: Int = 42
 
         // val puntosLongError: Long = puntosEnteros // ❌ No compila sin conversión
@@ -181,7 +212,7 @@ Puntos en formato Double: 42.0 | Mitad exacta: 21.0
         val puntosDouble: Double = puntosEnteros.toDouble()
 
         println("Puntos en formato Long: $puntosLong")
-        println("Puntos en formato Double: $puntosDouble | Mitad exacta: ${puntosDouble / 2}")
+        println("Puntos en formato Double: $puntosDouble | Mitad exacta: ${puntosDouble / 2}\n")
     }
     ```
 
@@ -199,6 +230,7 @@ Puntos en formato Double: 42.0 | Mitad exacta: 21.0
 
 ##### 2. Salida Esperada
 ```text
+--- 0.5: Cadenas Multilínea ---
 [SABIO ANCIANO]:
 "Es peligroso ir solo, toma esto."
 Objeto recibido: Espada de Madera
@@ -207,9 +239,10 @@ Objeto recibido: Espada de Madera
 ##### 3. Solución Comentada
 ??? tip "Ver solución comentada"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.5: Bloques Multilínea ---
+    run {
+        println("--- 0.5: Cadenas Multilínea ---")
 
-    fun main() {
         val objeto = "Espada de Madera"
         val dialogo = """
             [SABIO ANCIANO]:
@@ -217,7 +250,7 @@ Objeto recibido: Espada de Madera
             Objeto recibido: $objeto
         """.trimIndent()
 
-        println(dialogo)
+        println("$dialogo\n")
     }
     ```
 
@@ -232,21 +265,22 @@ Objeto recibido: Espada de Madera
 ##### 1. Concepto y Código Resuelto
 En Java, el condicional `if` es una sentencia (*statement*) que no devuelve valor, obligando a usar el operador ternario `condicion ? valor1 : valor2`. En Kotlin, `if` es una **expresión** que devuelve un valor evaluado, haciendo redundante el operador ternario.
 
-=== "Kotlin"
+=== "Kotlin (Bloque a añadir en main)"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.6: if como Expresión ---
+    run {
+        println("--- 0.6: if como Expresión ---")
 
-    fun main() {
         val salud = 45
 
         // 'if' devuelve un valor que se asigna directamente a la constante inmutable:
         val estado = if (salud > 50) "Saludable" else "Crítico"
 
-        println("Estado del héroe: $estado")
+        println("Estado del héroe: $estado\n")
     }
     ```
 
-=== "Java"
+=== "Java (Equivalente Tradicional)"
     ```java
     public class IfTernarioJava {
         public static void main(String[] args) {
@@ -262,6 +296,7 @@ En Java, el condicional `if` es una sentencia (*statement*) que no devuelve valo
 
 ##### 2. Salida en Consola
 ```text
+--- 0.6: if como Expresión ---
 Estado del héroe: Crítico
 ```
 
@@ -274,11 +309,12 @@ Estado del héroe: Crítico
 ##### 1. Concepto y Código Resuelto
 El clásico `switch` de Java arrastra problemas históricos (olvido de `break`, caídas en cascada no deseadas). La expresión `when` de Kotlin no requiere `break`, es exhaustiva y puede retornar un valor de forma directa.
 
-=== "Kotlin"
+=== "Kotlin (Bloque a añadir en main)"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.7: when Básico ---
+    run {
+        println("--- 0.7: when Básico ---")
 
-    fun main() {
         val tecla = 'W'
 
         val direccion = when (tecla) {
@@ -289,7 +325,7 @@ El clásico `switch` de Java arrastra problemas históricos (olvido de `break`, 
             else -> "Quieto (tecla no reconocida)"
         }
 
-        println("Acción ejecutada: $direccion")
+        println("Acción ejecutada: $direccion\n")
     }
     ```
 
@@ -329,6 +365,7 @@ El clásico `switch` de Java arrastra problemas históricos (olvido de `break`, 
 
 ##### 2. Salida en Consola
 ```text
+--- 0.7: when Básico ---
 Acción ejecutada: Avanzar hacia el Norte
 ```
 
@@ -351,15 +388,17 @@ Acción ejecutada: Avanzar hacia el Norte
 
 ##### 2. Salida Esperada
 ```text
+--- 0.8: when con Rangos Numéricos ---
 Nivel 17 clasificado en categoría: Intermedio
 ```
 
 ##### 3. Solución Comentada
 ??? tip "Ver solución comentada"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.8: when con Rangos Numéricos ---
+    run {
+        println("--- 0.8: when con Rangos Numéricos ---")
 
-    fun main() {
         val nivelJugador = 17
 
         val rango = when (nivelJugador) {
@@ -369,7 +408,7 @@ Nivel 17 clasificado en categoría: Intermedio
             else -> "Maestro Supremo"
         }
 
-        println("Nivel $nivelJugador clasificado en categoría: $rango")
+        println("Nivel $nivelJugador clasificado en categoría: $rango\n")
     }
     ```
 
@@ -387,6 +426,7 @@ En lugar del bucle clásico `for (int i = 10; i >= 0; i -= 2)` de Java:
 
 ##### 2. Salida Esperada
 ```text
+--- 0.9: Progresiones con downTo y step ---
 T-10
 T-8
 T-6
@@ -399,13 +439,14 @@ T-0
 ##### 3. Solución Comentada
 ??? tip "Ver solución comentada"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.9: Progresiones con downTo y step ---
+    run {
+        println("--- 0.9: Progresiones con downTo y step ---")
 
-    fun main() {
         for (segundos in 10 downTo 0 step 2) {
             println("T-$segundos")
         }
-        println("¡Despegue!")
+        println("¡Despegue!\n")
     }
     ```
 
@@ -425,6 +466,7 @@ Comprueba este comportamiento creando dos instancias distintas de cadenas con el
 
 ##### 2. Salida Esperada
 ```text
+--- 0.10: Igualdad Estructural vs Referencial ---
 ¿Tienen el mismo contenido (==)? true
 ¿Apuntan al mismo objeto en memoria (===)? false
 ```
@@ -432,14 +474,15 @@ Comprueba este comportamiento creando dos instancias distintas de cadenas con el
 ##### 3. Solución Comentada
 ??? tip "Ver solución comentada"
     ```kotlin
-    package b01_fundamentos
+    // --- Ejercicio 0.10: Igualdad Estructural vs Referencial ---
+    run {
+        println("--- 0.10: Igualdad Estructural vs Referencial ---")
 
-    fun main() {
         val texto1 = String(charArrayOf('D', 'A', 'M'))
         val texto2 = String(charArrayOf('D', 'A', 'M'))
 
         println("¿Tienen el mismo contenido (==)? ${texto1 == texto2}")
-        println("¿Apuntan al mismo objeto en memoria (===)? ${texto1 === texto2}")
+        println("¿Apuntan al mismo objeto en memoria (===)? ${texto1 === texto2}\n")
     }
     ```
 
