@@ -75,6 +75,8 @@ nav:
           - "Testing en Android y KMP": temas/00-android/02-arquitectura/06-testing-android-kmp.md
           - "Glosario de Patrones": temas/00-android/02-arquitectura/05-glosario-patrones.md
   - "UT1 - Visión General y Entorno de desarrollo": temas/01/index.md
+  # - "Proyecto Intermodular":
+  #    - "Requisitos": temas/proyectos/proyecto-intermodular/requisitos-pmdm.md
   # - "UT2 - Programación de aplicaciones de móviles con Android":
   #   - "Inicio": temas/02/index.md
   #   - "2.1. Primeros pasos": temas/02/2.1-primeros-pasos.md
