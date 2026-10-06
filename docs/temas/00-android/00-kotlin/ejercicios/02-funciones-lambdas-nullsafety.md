@@ -1341,33 +1341,32 @@ En Kotlin, las **funciones de extensión** permiten añadir nuevas funciones a t
 
 El tipo que precede al punto (`String.`, `Int.`) se denomina **tipo receptor (*receiver type*)**. Dentro del cuerpo de la función de extensión, la palabra reservada **`this`** representa la instancia concreta sobre la que se realiza la invocación (*receiver object*).
 
-1. **El Concepto de `this` (Receptor Numérico y de Texto):**
+1. **El Concepto de `this`, Formateo y `Locale` (`java.util.Locale`):**
 
-    - Define una función de extensión `fun Double.aMonedaEuro(): String` que formatee el número decimal con dos decimales y el sufijo `"€"`. Dentro del cuerpo, `this` hace referencia al propio valor `Double` sobre el que se llama.
-
-    - Define una función de extensión `fun Int.aFormatoMinutosYSegundos(): String` que interprete el entero en `this` como una cantidad de segundos y lo convierta a una cadena con formato `"MM:SS"` (por ejemplo, `125` segundos se convierte en `"02:05"` y `59` en `"00:59"`).
+    - **¿Qué es un `Locale`?** La clase `java.util.Locale` representa una región geográfica, política o cultural específica (idioma y país). Afecta directamente al formateo numérico: en países anglosajones (como EE. UU. o Reino Unido) el separador de decimales es el punto (`19.99`), mientras que en España y gran parte de Europa se utiliza la coma decimal (`19,99`).
+    - **¿Por qué es crucial especificarlo?** Si usamos `"%.2f".format(this)` sin indicar un `Locale`, Kotlin utiliza el `Locale.getDefault()` del sistema operativo donde se ejecute el código. Esto puede provocar comportamientos impredecibles en Android según el idioma configurado en el teléfono del usuario o causar fallos en tests automáticos.
+    - **Sintaxis de formato con `Locale`:** En Kotlin podemos pasar el `Locale` directamente como primer argumento de `.format()` sobre una plantilla de texto: `"%.2f €".format(locale, this)` (o de forma estática `String.format(locale, "%.2f €", this)`).
+    - **Requisito:** Define una función de extensión `fun Double.aMonedaEuro(locale: Locale = Locale("es", "ES")): String` que formatee el número decimal con dos decimales y el sufijo `"€"`. Al recibir un parámetro con valor por defecto `Locale("es", "ES")`, permite obtener por defecto el estándar español con coma decimal (`"19,99 €"`), pero ofrece la flexibilidad de forzar cualquier otro (como `Locale.US` para `"19.99 €"`).
+    - Define también una función de extensión `fun Int.aFormatoMinutosYSegundos(): String` que interprete el entero en `this` como una cantidad de segundos y lo convierta a una cadena con formato `"MM:SS"` (por ejemplo, `125` segundos se convierte en `"02:05"` y `59` en `"00:59"`).
 
 2. **Extensiones con Parámetros Adicionales y Valores por Defecto:**
 
     - Define una función de extensión `fun String.truncar(longitudMaxima: Int, sufijo: String = "..."): String`.
-
     - Si la longitud de la cadena (`this.length`) es menor o igual a `longitudMaxima`, devuelve `this` sin cambios.
-
     - Si supera el límite, extrae los primeros caracteres con `this.take(longitudMaxima)` y concatena el `sufijo`.
 
 3. **Extensiones sobre Tipos Nulables (`String?`):**
 
     - Define una función de extensión `fun String?.oPorDefecto(valorDefecto: String): String`.
-
     - Fíjate en que el receptor es `String?` (puede ser nulo). Dentro del cuerpo, `this` tiene tipo `String?`. Utiliza el operador Elvis para devolver `this ?: valorDefecto`.
-
     - Comprueba desde `main()` que esta función puede invocarse directamente sobre una variable con valor `null` sin provocar ningún `NullPointerException`.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-=== 1. EL RECEPTOR 'THIS' EN TIPOS NUMÉRICOS ===
-Precio formateado: 19.99 €
+=== 1. EL RECEPTOR 'THIS' EN TIPOS NUMÉRICOS (CON LOCALE) ===
+Precio formateado (ES - por defecto con coma): 19,99 €
+Precio formateado (US - forzado con punto): 19.99 €
 Duración de partida (125 seg): 02:05
 Duración de partida (59 seg): 00:59
 
@@ -1386,10 +1385,12 @@ Valor seguro con null: 'Invitado_Temporal'
     ```kotlin
     package b02_funciones_lambdas
 
-    // 1. Extensiones numéricas utilizando 'this' (el valor sobre el que se invoca la función):
-    fun Double.aMonedaEuro(): String {
-        // 'this' es la instancia concreta de Double
-        return "%.2f €".format(this)
+    import java.util.Locale
+
+    // 1. Extensiones numéricas utilizando 'this' y formato seguro con Locale:
+    fun Double.aMonedaEuro(locale: Locale = Locale("es", "ES")): String {
+        // 'this' es la instancia concreta de Double; pasamos 'locale' a format()
+        return "%.2f €".format(locale, this)
     }
 
     fun Int.aFormatoMinutosYSegundos(): String {
@@ -1417,9 +1418,12 @@ Valor seguro con null: 'Invitado_Temporal'
     }
 
     fun main() {
-        println("=== 1. EL RECEPTOR 'THIS' EN TIPOS NUMÉRICOS ===")
+        println("=== 1. EL RECEPTOR 'THIS' EN TIPOS NUMÉRICOS (CON LOCALE) ===")
         val precio = 19.99
-        println("Precio formateado: ${precio.aMonedaEuro()}")
+        // Llamada usando el Locale por defecto configurado (España, coma decimal):
+        println("Precio formateado (ES - por defecto con coma): ${precio.aMonedaEuro()}")
+        // Llamada forzando Locale internacional (EE.UU., punto decimal):
+        println("Precio formateado (US - forzado con punto): ${precio.aMonedaEuro(Locale.US)}")
 
         val tiempo1 = 125
         val tiempo2 = 59
@@ -1466,22 +1470,25 @@ En el desarrollo moderno con Kotlin y en las arquitecturas reactivas de Android 
 
 3. **Operaciones Terminales de Recolección (`collect`):**
 
-    - **Variante 1 (`collect(): List<String>`):** Recupera **todo el contenido resultante** del pipeline en una nueva lista final para poder almacenarla en variables, pasarla a un ViewModel o persistirla.
+    - **Variante 1 (`collect(separador: String = ", "): String`):** Recupera y condensa todos los elementos resultantes en un único **`String` resumen**. Debe indicarse explícitamente a los alumnos que la implementen apoyándose en la función de unión de colecciones de Kotlin **`joinToString(...)`** (familia `join...`), permitiendo configurar el separador textual mediante un valor por defecto.
     - **Variante 2 (`collect(accion: (String) -> Unit)`):** Recupera y entrega cada elemento uno a uno a la lambda `accion` para su consumo reactivo inmediato.
 
 4. **El Pipeline en Acción desde `main()`:**
 
     - Dada la lista `val puntuaciones = listOf(35, 80, 95, 42, 60, 20, 100, 75)`:
     - **Contraste con el estilo tradicional:** Comenta la diferencia entre almacenar pasos intermedios en variables sueltas y escribir en **Modo Pipeline Fluido**.
-    - **Caso 1:** Concatena `.filtrar { it >= 60 }.transformar { "Jugador con $it pts" }.collect()` y almacena todo el contenido recuperado en una variable inmutable.
+    - **Caso 1:** Concatena `.filtrar { it >= 60 }.transformar { "Jugador con $it pts" }.collect()` para obtener el `String` resumen con los aprobados (mostrando tanto la versión por defecto en una línea como la versión en lista vertical con separador `"\n - "`).
     - **Caso 2:** Concatena con consumo reactivo directo mediante `.collect { println(...) }` para puntuaciones sobresalientes (`>= 95`).
     - **Caso 3:** Concatena utilizando una referencia a función existente con el operador `::`.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-=== 1. MODO PIPELINE: RECUPERAR TODO EL CONTENIDO EN UNA LISTA ===
-Total de puntuaciones aprobadas recuperadas: 5
+=== 1. MODO PIPELINE: OBTENER UN STRING RESUMEN CON COLLECT (JOINTOSTRING) ===
+Resumen de aprobados en una línea:
+Jugador con 80 pts, Jugador con 95 pts, Jugador con 60 pts, Jugador con 100 pts, Jugador con 75 pts
+
+Resumen en formato lista vertical:
  - Jugador con 80 pts
  - Jugador con 95 pts
  - Jugador con 60 pts
@@ -1525,13 +1532,9 @@ Jugador con 75 pts
         return resultado
     }
 
-    // 3. Operación terminal: Variante 1 -> Recupera todo el contenido en una lista
-    fun List<String>.collect(): List<String> {
-        val copiaFinal = mutableListOf<String>()
-        for (item in this) {
-            copiaFinal.add(item)
-        }
-        return copiaFinal
+    // 3. Operación terminal: Variante 1 -> Genera un String resumen apoyándose en joinToString
+    fun List<String>.collect(separador: String = ", "): String {
+        return this.joinToString(separator = separador)
     }
 
     // 3. Operación terminal: Variante 2 -> Procesa/consume cada elemento reactivamente
@@ -1551,15 +1554,21 @@ Jugador con 75 pts
         // val paso2 = paso1.transformar { "Jugador con $it pts" }
         // val listaFinal = paso2.collect()
 
-        println("=== 1. MODO PIPELINE: RECUPERAR TODO EL CONTENIDO EN UNA LISTA ===")
-        // ✔️ ENFOQUE PIPELINE FLUIDO: Concatenación con '.' y cierre con collect():
-        val rankingAprobados: List<String> = puntuaciones
+        println("=== 1. MODO PIPELINE: OBTENER UN STRING RESUMEN CON COLLECT (JOINTOSTRING) ===")
+        // ✔️ ENFOQUE PIPELINE FLUIDO: Concatenación con '.' y cierre con collect() produciendo un String:
+        val resumenLinea: String = puntuaciones
             .filtrar { it >= 60 }
             .transformar { "Jugador con $it pts" }
-            .collect() // <- Recupera todo el contenido resultante
+            .collect() // Usa separador por defecto ", " gracias a joinToString
 
-        println("Total de puntuaciones aprobadas recuperadas: ${rankingAprobados.size}")
-        rankingAprobados.forEach { println(" - $it") }
+        println("Resumen de aprobados en una línea:\n$resumenLinea")
+
+        val resumenLista: String = puntuaciones
+            .filtrar { it >= 60 }
+            .transformar { "Jugador con $it pts" }
+            .collect(separador = "\n - ")
+
+        println("\nResumen en formato lista vertical:\n - $resumenLista")
 
         println("\n=== 2. MODO PIPELINE: CONSUMO REACTIVO CON LAMBDA EN COLLECT ===")
         puntuaciones
@@ -1720,14 +1729,14 @@ El jugador debe descubrir una palabra secreta oculta adivinando sus letras una a
 
 ###### B. Ciclo de Vida de Cada Intento (Paso a Paso)
 
-En cada ronda, el juego simula a un jugador inteligente de consola mediante una estrategia por turnos:
+En cada ronda, el bucle principal simula a un jugador inteligente de consola mediante una estrategia por turnos, delegando la evaluación completa de cada jugada en el método central **`procesarIntento(...)`**:
 
 1. **Selección de Letra según el Turno:**  
    - Si el turno es **múltiplo de 3 (`turno % 3 == 0`)**, se extrae un carácter aleatorio de `bancoVocales`.
    - En cualquier otro caso, se extrae de `bancoConsonantes`.
-   - Si el carácter sorteado es el comodín `'?'`, se pasa un valor `null` a la función para poner a prueba el mecanismo de **Null Safety**. En caso contrario, se pasa el carácter en mayúsculas.
+   - Si el carácter sorteado es el comodín `'?'`, se pasa un valor `null` al parámetro `letraInput` de `procesarIntento` para poner a prueba el mecanismo de **Null Safety**. En caso contrario, se pasa el carácter en mayúsculas.
 
-2. **Fase 1 — Validación con Null Safety (Cláusula de Guarda):**  
+2. **Fase 1 — Validación con Null Safety (Cláusula de Guarda en `procesarIntento`):**  
    Si `letraInput` es nulo (`null`), se invoca de inmediato el callback **`onErrorInput()`** y la ejecución finaliza con un `return`. El turno no penaliza al jugador con pérdida de vidas.
 
 3. **Fase 2 — Normalización y Comprobación de Repetición:**  
@@ -1759,19 +1768,40 @@ Para completar el reto de forma rigurosa respetando el nivel pedagógico del Blo
 
 3. **RF-03 (Función de Extensión de Verificación de Victoria):** Implementa `fun String.estaAdivinada(probadas: String): Boolean` que determine si la totalidad de los caracteres de la palabra están presentes en `probadas`.
 
-4. **RF-04 (Función de Orden Superior con 4 Callbacks Tipados con Prefijo `on...`):** Define `fun procesarIntento(...)` recibiendo los parámetros de estado y 4 funciones lambda para los eventos:
+4. **RF-04 (Función Central de Juego `procesarIntento` con Callbacks Reactivos):**
 
-    - `onAcertar: (letra: Char, nuevasProbadas: String) -> Unit`
+    Toda la lógica de evaluación del turno debe residir en el método `procesarIntento`. Esta función no debe contener sentencias `println()` ni gestionar la consola: su única responsabilidad es analizar el intento recibido y delegar el control y la actualización del estado al bucle principal mediante 4 funciones lambda (*callbacks*), siguiendo el patrón *State Hoisting* de Jetpack Compose:
 
-    - `onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit`
+    ```kotlin
+    fun procesarIntento(
+        letraInput: Char?,
+        palabraSecreta: String,
+        letrasProbadas: String,
+        vidasActuales: Int,
+        onAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
+        onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
+        onRepetir: (letra: Char) -> Unit,
+        onErrorInput: () -> Unit
+    )
+    ```
 
-    - `onRepetir: (letra: Char) -> Unit`
+    **Parámetros de estado y entrada:**
 
-    - `onErrorInput: () -> Unit`
+    - **`letraInput: Char?`**: El carácter propuesto en el turno actual. Se define expresamente como nulable (`Char?`) para poner a prueba el mecanismo de seguridad ante nulos (*Null Safety*) cuando se reciba una entrada no válida o el comodín `'?'`.
+    - **`palabraSecreta: String`**: La palabra oculta que el jugador debe descubrir.
+    - **`letrasProbadas: String`**: Cadena acumuladora con las letras intentadas hasta este turno.
+    - **`vidasActuales: Int`**: Número de vidas disponibles antes de evaluar el intento actual.
 
-5. **RF-05 (Manejo Estricto de Null Safety):** Extrae el carácter seguro utilizando llamada segura y operador Elvis (`letraInput?.uppercaseChar() ?: run { onErrorInput(); return }`).
+    **Parámetros de eventos (*callbacks* reactivos tipados con prefijo `on...`):**
 
-6. **RF-06 (Bucle Dinámico de Partida en `main()`):** Implementa un bucle `while (vidasRestantes > 0 && !palabraSecreta.estaAdivinada(letrasProbadas))` que seleccione la palabra secreta con un `when ((1..4).random())`, alterne vocales en múltiplos de 3 (`turno % 3 == 0`) y consonantes en los demás, gestione el comodín `'?'` para `null` y ejecute los 4 callbacks adecuadamente.
+    - **`onAcertar: (letra: Char, nuevasProbadas: String) -> Unit`**: Se invoca cuando la letra introducida es válida, nueva y está presente en la palabra secreta. Recibe la letra acertada y la nueva cadena actualizada de letras probadas (`letrasProbadas + letra`). Las vidas se mantienen intactas.
+    - **`onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit`**: Se invoca cuando la letra introducida es válida, nueva y NO pertenece a la palabra secreta. Recibe la letra errónea, la cadena de probadas actualizada y las vidas restantes reducidas en 1 (`vidasActuales - 1`).
+    - **`onRepetir: (letra: Char) -> Unit`**: Se invoca cuando la letra ya figuraba previamente en `letrasProbadas`. Notifica al jugador sin penalizar vidas ni modificar las letras probadas.
+    - **`onErrorInput: () -> Unit`**: Se invoca de inmediato si `letraInput` es `null`, abortando el procesamiento de forma segura mediante un retorno anticipado sin penalizar vidas ni alterar el estado.
+
+5. **RF-05 (Manejo Estricto de Null Safety en `procesarIntento`):** Dentro del cuerpo de `procesarIntento`, extrae el carácter seguro utilizando llamada segura y el operador Elvis con retorno anticipado (`val letra = letraInput?.uppercaseChar() ?: run { onErrorInput(); return }`).
+
+6. **RF-06 (Bucle Dinámico de Partida en `main()` e Invocación a `procesarIntento`):** Implementa en `main()` un bucle `while (vidasRestantes > 0 && !palabraSecreta.estaAdivinada(letrasProbadas))` que seleccione la palabra secreta con un `when ((1..4).random())`, alterne vocales en múltiplos de 3 (`turno % 3 == 0`) y consonantes en los demás, gestione el comodín `'?'` para pasar `null` a `procesarIntento(...)`, e implemente las 4 lambdas pasadas como argumento para actualizar el estado del juego (`letrasProbadas`, `vidasRestantes`) e imprimir la retroalimentación en consola.
 
 ---
 
