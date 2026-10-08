@@ -44,9 +44,22 @@ Pega el siguiente esqueleto con las firmas de función vacías que lanzan `TODO(
 package b02_funciones_lambdas.tdd
 
 // ============================================================================
-// CONTRATO DEL MOTOR DE AHORCADO (TDD)
+// CONTRATO DEL MOTOR DE AHORCADO (TDD CON ARQUITECTURA DE ESTADO)
 // Tu objetivo es sustituir cada TODO() por la lógica que haga pasar los tests.
 // ============================================================================
+
+enum class EstadoPartida {
+    JUGANDO,
+    VICTORIA,
+    DERROTA
+}
+
+enum class EventoTurno {
+    ACIERTO,
+    FALLO,
+    LETRA_REPETIDA,
+    ENTRADA_NULA
+}
 
 /**
  * Devuelve la palabra con las letras acertadas visibles y las no probadas sustituidas
@@ -66,23 +79,28 @@ fun String.estaAdivinada(probadas: String): Boolean {
 }
 
 /**
- * Analiza el intento del jugador gestionando Null Safety y disparando el callback adecuado:
- * - onErrorInput: si letraInput es null (no altera vidas ni probadas).
- * - onRepetir: si la letra ya estaba en letrasProbadas (no altera vidas).
- * - onAcertar: si la letra es nueva y pertenece a la palabra secreta (no altera vidas).
- * - onFallar: si la letra es nueva y NO pertenece a la palabra (decrementa vidas en 1).
+ * Contenedor inmutable que almacena todo el estado del juego.
+ */
+data class EstadoAhorcado(
+    val palabraSecreta: String,
+    val letrasProbadas: String = "",
+    val vidasRestantes: Int = 6,
+    val estado: EstadoPartida = EstadoPartida.JUGANDO
+) {
+    val mascara: String
+        get() = palabraSecreta.enmascarar(letrasProbadas)
+}
+
+/**
+ * Función pura de transición: evalúa el intento del jugador, emite el evento de notificación
+ * a través de la lambda y retorna un nuevo EstadoAhorcado inmutable con copy().
  */
 fun procesarIntento(
+    estadoActual: EstadoAhorcado,
     letraInput: Char?,
-    palabraSecreta: String,
-    letrasProbadas: String,
-    vidasActuales: Int,
-    onAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
-    onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
-    onRepetir: (letra: Char) -> Unit,
-    onErrorInput: () -> Unit
-) {
-    TODO("Misión 3: Implementar lógica de orden superior con callbacks y Null Safety")
+    onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit
+): EstadoAhorcado {
+    TODO("Misión 3: Implementar transición de estados con Null Safety y notificación")
 }
 ```
 
@@ -161,92 +179,85 @@ class MotorAhorcadoTest {
     }
 
     // ========================================================================
-    // ⚡ MISIÓN 3: PRUEBAS DE EVENTOS CON CALLBACKS Y NULL SAFETY
+    // ⚡ MISIÓN 3: PRUEBAS DE TRANSICIÓN DE ESTADO Y NOTIFICACIONES
     // ========================================================================
 
     @Test
-    fun `entrada nula invoca unicamente onErrorInput sin penalizar vidas ni letras`() {
-        var errorInvocado = false
+    fun `entrada nula notifica ENTRADA_NULA y mantiene estado intacto`() {
+        var eventoRecibido: EventoTurno? = null
+        val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", vidasRestantes = 6)
 
-        procesarIntento(
-            letraInput = null,
-            palabraSecreta = "KOTLIN",
-            letrasProbadas = "A",
-            vidasActuales = 6,
-            onAcertar = { _, _ -> fail("No debía invocarse onAcertar con input null") },
-            onFallar = { _, _, _ -> fail("No debía invocarse onFallar con input null") },
-            onRepetir = { fail("No debía invocarse onRepetir con input null") },
-            onErrorInput = { errorInvocado = true }
-        )
+        val nuevoEstado = procesarIntento(estadoInicial, null) { evento, _ ->
+            eventoRecibido = evento
+        }
 
-        assertTrue(errorInvocado, "Debió ejecutarse el callback onErrorInput")
+        assertEquals(EventoTurno.ENTRADA_NULA, eventoRecibido)
+        assertEquals(estadoInicial, nuevoEstado, "El estado debe permanecer idéntico")
     }
 
     @Test
-    fun `proponer letra repetida invoca unicamente onRepetir con la letra normalizada`() {
-        var letraRepetida: Char? = null
+    fun `proponer letra repetida notifica LETRA_REPETIDA y mantiene estado intacto`() {
+        var eventoRecibido: EventoTurno? = null
+        var letraNotificada: Char? = null
+        val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "AO", vidasRestantes = 6)
 
-        procesarIntento(
-            letraInput = 'o', // En minúscula para probar normalización
-            palabraSecreta = "KOTLIN",
-            letrasProbadas = "AO",
-            vidasActuales = 6,
-            onAcertar = { _, _ -> fail("No debía invocarse onAcertar con letra repetida") },
-            onFallar = { _, _, _ -> fail("No debía invocarse onFallar con letra repetida") },
-            onRepetir = { letra -> letraRepetida = letra },
-            onErrorInput = { fail("No debía invocarse onErrorInput con letra válida") }
-        )
+        val nuevoEstado = procesarIntento(estadoInicial, 'o') { evento, letra ->
+            eventoRecibido = evento
+            letraNotificada = letra
+        }
 
-        assertEquals('O', letraRepetida, "Debió avisar de la repetición con la letra en mayúsculas")
+        assertEquals(EventoTurno.LETRA_REPETIDA, eventoRecibido)
+        assertEquals('O', letraNotificada, "Debió normalizar la letra a mayúsculas")
+        assertEquals(estadoInicial, nuevoEstado, "No debe alterar vidas ni probadas")
     }
 
     @Test
-    fun `acertar letra nueva invoca onAcertar con nuevas probadas y vidas intactas`() {
-        var letraAcertada: Char? = null
-        var probadasActualizadas = ""
+    fun `acertar letra nueva notifica ACIERTO y actualiza letras probadas con vidas intactas`() {
+        var eventoRecibido: EventoTurno? = null
+        val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "A", vidasRestantes = 5)
 
-        procesarIntento(
-            letraInput = 'k',
-            palabraSecreta = "KOTLIN",
-            letrasProbadas = "A",
-            vidasActuales = 5,
-            onAcertar = { letra, nuevasProbadas ->
-                letraAcertada = letra
-                probadasActualizadas = nuevasProbadas
-            },
-            onFallar = { _, _, _ -> fail("No debía fallar con una letra correcta") },
-            onRepetir = { fail("No debía repetir una letra nueva") },
-            onErrorInput = { fail("No debía dar error de input") }
-        )
+        val nuevoEstado = procesarIntento(estadoInicial, 'k') { evento, _ ->
+            eventoRecibido = evento
+        }
 
-        assertEquals('K', letraAcertada)
-        assertEquals("AK", probadasActualizadas)
+        assertEquals(EventoTurno.ACIERTO, eventoRecibido)
+        assertEquals("AK", nuevoEstado.letrasProbadas)
+        assertEquals(5, nuevoEstado.vidasRestantes)
+        assertEquals(EstadoPartida.JUGANDO, nuevoEstado.estado)
     }
 
     @Test
-    fun `fallar letra nueva invoca onFallar restando exactamente una vida`() {
-        var letraFallada: Char? = null
-        var probadasActualizadas = ""
-        var vidasRestantes = -1
+    fun `fallar letra nueva notifica FALLO y resta exactamente una vida`() {
+        var eventoRecibido: EventoTurno? = null
+        val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "A", vidasRestantes = 6)
 
-        procesarIntento(
-            letraInput = 'Z',
-            palabraSecreta = "KOTLIN",
-            letrasProbadas = "A",
-            vidasActuales = 6,
-            onAcertar = { _, _ -> fail("No debía acertar con letra inexistente") },
-            onFallar = { letra, nuevasProbadas, vidas ->
-                letraFallada = letra
-                probadasActualizadas = nuevasProbadas
-                vidasRestantes = vidas
-            },
-            onRepetir = { fail("No debía repetir una letra nueva") },
-            onErrorInput = { fail("No debía dar error de input") }
-        )
+        val nuevoEstado = procesarIntento(estadoInicial, 'Z') { evento, _ ->
+            eventoRecibido = evento
+        }
 
-        assertEquals('Z', letraFallada)
-        assertEquals("AZ", probadasActualizadas)
-        assertEquals(5, vidasRestantes, "Un fallo debe reducir las vidas de 6 a 5")
+        assertEquals(EventoTurno.FALLO, eventoRecibido)
+        assertEquals("AZ", nuevoEstado.letrasProbadas)
+        assertEquals(5, nuevoEstado.vidasRestantes, "Un fallo debe reducir vidas de 6 a 5")
+        assertEquals(EstadoPartida.JUGANDO, nuevoEstado.estado)
+    }
+
+    @Test
+    fun `descubrir la ultima letra transiciona el estado a VICTORIA`() {
+        val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "KOTLI", vidasRestantes = 3)
+
+        val nuevoEstado = procesarIntento(estadoInicial, 'N') { _, _ -> }
+
+        assertEquals(EstadoPartida.VICTORIA, nuevoEstado.estado)
+    }
+
+    @Test
+    fun `quedarse sin vidas transiciona el estado a DERROTA`() {
+        val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "A", vidasRestantes = 1)
+
+        val nuevoEstado = procesarIntento(estadoInicial, 'X') { _, _ -> }
+
+        assertEquals(EstadoPartida.DERROTA, nuevoEstado.estado)
+        assertEquals(0, nuevoEstado.vidasRestantes)
     }
 }
 ```
@@ -319,47 +330,54 @@ Lanza las pruebas de victoria:
 
 ---
 
-### Misión 3: Implementar `procesarIntento` (Callbacks y Null Safety)
+### Misión 3: Implementar `procesarIntento` (Arquitectura de Estado y Notificación)
 
-Este es el núcleo reactivo del juego. Observa cómo aplicamos los operadores aprendidos en el Bloque 2:
+Este es el núcleo de transición de estados del juego:
 
-1. **Llamada segura y Elvis como cláusula de guarda:** `letraInput?.uppercaseChar() ?: run { onErrorInput(); return }`. Si la entrada es `null`, dispara el callback de error y sale de inmediato sin tocar nada más.
-2. **Comprobación de repetición:** Si `letra in letrasProbadas`, invocamos `onRepetir(letra)` y salimos con `return`.
-3. **Acierto vs Fallo:** Si no estaba repetida, calculamos `val nuevasProbadas = letrasProbadas + letra`:
-    - Si `letra in palabraSecreta` → invocamos `onAcertar(letra, nuevasProbadas)`.
-    - Si no → invocamos `onFallar(letra, nuevasProbadas, vidasActuales - 1)`.
+1. **Cláusula de guarda con Null Safety:** `letraInput?.uppercaseChar() ?: run { onNotificacion(EventoTurno.ENTRADA_NULA, null); return estadoActual }`.
+2. **Comprobación de repetición:** Si `letra in estadoActual.letrasProbadas`, notificamos `EventoTurno.LETRA_REPETIDA` y retornamos `estadoActual` sin cambios.
+3. **Acierto vs Fallo:**
+    - Si `letra in estadoActual.palabraSecreta` → notificamos `EventoTurno.ACIERTO` y comprobamos si la palabra queda totalmente adivinada para pasar a `EstadoPartida.VICTORIA`.
+    - Si no → notificamos `EventoTurno.FALLO` y comprobamos si las vidas restantes llegan a 0 para pasar a `EstadoPartida.DERROTA`.
+4. En ambos casos, generamos y retornamos un **nuevo estado inmutable con `.copy()`**.
 
 ```kotlin
 fun procesarIntento(
+    estadoActual: EstadoAhorcado,
     letraInput: Char?,
-    palabraSecreta: String,
-    letrasProbadas: String,
-    vidasActuales: Int,
-    onAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
-    onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
-    onRepetir: (letra: Char) -> Unit,
-    onErrorInput: () -> Unit
-) {
+    onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit
+): EstadoAhorcado {
     // 1. Cláusula de guarda ante nulos
     val letra = letraInput?.uppercaseChar() ?: run {
-        onErrorInput()
-        return
+        onNotificacion(EventoTurno.ENTRADA_NULA, null)
+        return estadoActual
     }
 
     // 2. Comprobación de repetición
-    if (letra in letrasProbadas) {
-        onRepetir(letra)
-        return
+    if (letra in estadoActual.letrasProbadas) {
+        onNotificacion(EventoTurno.LETRA_REPETIDA, letra)
+        return estadoActual
     }
 
-    // 3. Letra nueva: evaluar acierto o fallo
-    val nuevasProbadas = letrasProbadas + letra
+    val nuevasProbadas = estadoActual.letrasProbadas + letra
 
-    if (letra in palabraSecreta) {
-        onAcertar(letra, nuevasProbadas)
+    // 3. Evaluar acierto o fallo
+    return if (letra in estadoActual.palabraSecreta) {
+        onNotificacion(EventoTurno.ACIERTO, letra)
+        val victoria = estadoActual.palabraSecreta.estaAdivinada(nuevasProbadas)
+        estadoActual.copy(
+            letrasProbadas = nuevasProbadas,
+            estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO
+        )
     } else {
-        val nuevasVidas = vidasActuales - 1
-        onFallar(letra, nuevasProbadas, nuevasVidas)
+        val nuevasVidas = estadoActual.vidasRestantes - 1
+        onNotificacion(EventoTurno.FALLO, letra)
+        val derrota = (nuevasVidas <= 0)
+        estadoActual.copy(
+            letrasProbadas = nuevasProbadas,
+            vidasRestantes = nuevasVidas,
+            estado = if (derrota) EstadoPartida.DERROTA else EstadoPartida.JUGANDO
+        )
     }
 }
 ```
@@ -382,7 +400,7 @@ Lanza ahora toda la suite de pruebas del subpaquete TDD:
 > Task :testClasses UP-TO-DATE
 > Task :test
 
-BUILD SUCCESSFUL in 350ms
+BUILD SUCCESSFUL in 320ms
 3 actionable tasks: 1 executed, 2 up-to-date
 ```
 
@@ -401,51 +419,34 @@ Al final de `MotorAhorcado.kt`, añade la función de ejecución:
 
 ```kotlin
 fun main() {
-    val palabraSecreta = "KOTLIN"
-    var letrasProbadas = ""
-    var vidasRestantes = 6
+    var estado = EstadoAhorcado(palabraSecreta = "KOTLIN")
 
     println("=== EL AHORCADO (MOTOR VERIFICADO CON TDD) ===")
-    println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes\n")
+    println("Palabra: ${estado.mascara} | Vidas: ${estado.vidasRestantes}\n")
 
     val turnosSimulados = listOf('O', 'Z', null, 'K', 'T', 'L', 'I', 'N')
 
     for (intento in turnosSimulados) {
         println("-> Jugador propone: '$intento'")
 
-        procesarIntento(
-            letraInput = intento,
-            palabraSecreta = palabraSecreta,
-            letrasProbadas = letrasProbadas,
-            vidasActuales = vidasRestantes,
-            onAcertar = { letra, nuevasProbadas ->
-                letrasProbadas = nuevasProbadas
-                println("¡Acierto! La letra '$letra' está en la palabra.")
-            },
-            onFallar = { letra, nuevasProbadas, vidas ->
-                letrasProbadas = nuevasProbadas
-                vidasRestantes = vidas
-                println("¡Fallo! La letra '$letra' no está. Vidas restantes: $vidas")
-            },
-            onRepetir = { letra ->
-                println("La letra '$letra' ya había sido probada.")
-            },
-            onErrorInput = {
-                println("[ALERTA]: Entrada no válida (null). Turno no penalizado.")
+        estado = procesarIntento(estado, intento) { evento, letra ->
+            when (evento) {
+                EventoTurno.ACIERTO -> println("  ✅ [NOTIFICACIÓN]: ¡Acierto con '$letra'!")
+                EventoTurno.FALLO -> println("  ❌ [NOTIFICACIÓN]: ¡Fallo con '$letra'!")
+                EventoTurno.LETRA_REPETIDA -> println("  ⚠️ [NOTIFICACIÓN]: Letra '$letra' ya probada.")
+                EventoTurno.ENTRADA_NULA -> println("  🛑 [NOTIFICACIÓN]: Entrada nula recibida. Sin penalización.")
             }
-        )
-
-        println("Estado: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes\n")
-
-        if (palabraSecreta.estaAdivinada(letrasProbadas)) {
-            println("🏆 ¡VICTORIA HEROICA! Has descubierto la palabra secreta: $palabraSecreta")
-            return
         }
 
-        if (vidasRestantes <= 0) {
-            println("💀 ¡HAS SIDO AHORCADO! La palabra era: $palabraSecreta")
-            return
-        }
+        println("  Marcador: ${estado.mascara} | Vidas: ${estado.vidasRestantes}\n")
+
+        if (estado.estado != EstadoPartida.JUGANDO) break
+    }
+
+    when (estado.estado) {
+        EstadoPartida.VICTORIA -> println("🏆 ¡VICTORIA HEROICA! Has completado: ${estado.palabraSecreta}")
+        EstadoPartida.DERROTA -> println("💀 ¡HAS SIDO AHORCADO! La palabra era: ${estado.palabraSecreta}")
+        EstadoPartida.JUGANDO -> Unit
     }
 }
 ```

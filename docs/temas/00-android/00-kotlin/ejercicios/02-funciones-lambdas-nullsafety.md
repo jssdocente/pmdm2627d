@@ -1470,7 +1470,7 @@ En el desarrollo moderno con Kotlin y en las arquitecturas reactivas de Android 
 
 3. **Operaciones Terminales de Recolección (`collect`):**
 
-    - **Variante 1 (`collect(separador: String = ", "): String`):** Recupera y condensa todos los elementos resultantes en un único **`String` resumen**. Debe indicarse explícitamente a los alumnos que la implementen apoyándose en la función de unión de colecciones de Kotlin **`joinToString(...)`** (familia `join...`), permitiendo configurar el separador textual mediante un valor por defecto.
+    - **Variante 1 (`collect(separador: String = ", "): String`):** Recupera y condensa todos los elementos resultantes en un único **`String` resumen**. Se debe utilizar la función de unión de colecciones de Kotlin **`joinToString(...)`** (familia `join...`), permitiendo configurar el separador textual mediante un valor por defecto.
     - **Variante 2 (`collect(accion: (String) -> Unit)`):** Recupera y entrega cada elemento uno a uno a la lambda `accion` para su consumo reactivo inmediato.
 
 4. **El Pipeline en Acción desde `main()`:**
@@ -1698,243 +1698,291 @@ Capturada excepción semántica: El texto no puede ser nulo en esta operación
 
 ## 🔴 Nivel Avanzado (Reto Lúdico)
 
-### Reto 2.17: El Juego del Ahorcado Funcional (*Hangman con Callbacks y Null Safety*)
+### Reto 2.17: El Juego del Ahorcado con Arquitectura de Estado (*State & Callbacks*)
 📄 **Archivo:** `Reto02_AhorcadoJuego.kt`  
-📚 **Teoría de referencia:** [Funciones de Orden Superior](../13-funciones-lambdas.md#3-funciones-de-orden-superior-higher-order-functions) y [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
+📚 **Teoría de referencia:** [Funciones de Orden Superior](../13-funciones-lambdas.md#3-funciones-de-orden-superior-higher-order-functions), [Funciones de Extensión](../13-funciones-lambdas.md#5-funciones-de-extension-extension-functions) y [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
 
-#### 1. Contexto y Misión
+#### 1. Contexto Pedagógico: El Concepto de "Estado" (*State*) y el Desacoplamiento
 
-En este reto construirás la lógica central del clásico juego de palabras **El Ahorcado**, aplicando el paradigma funcional de Kotlin y los mecanismos de **Null Safety** aprendidos en el Bloque 2.
+En el desarrollo de software moderno —y de manera capital en **Jetpack Compose**— las aplicaciones se diseñan separando estrictamente la **lógica del negocio** de la **capa de presentación** (interfaz de usuario).
 
-La meta formativa es trasladar la arquitectura de eventos y estado de **Jetpack Compose** a un ejercicio puro de consola:
+Para conseguir este desacoplamiento, aplicamos el concepto de **Estado (*State*)**:
 
-- Funciones de extensión para enriquecer tipos existentes (`String`).
-- Funciones de orden superior que delegan el resultado de eventos a través de lambdas (*callbacks*).
-- Operadores de seguridad ante nulos (`?.`, operador Elvis `?:`, retorno anticipado seguro).
-- Tipos básicos inmutables (`String`, `Char`, `Int`, `Boolean`), **sin utilizar colecciones (`Set`/`List`) ni clases personalizadas**.
+1. **Toda la información del juego reside junta en un contenedor inmutable:** En lugar de tener variables sueltas y dispersas (`palabraSecreta`, `vidasRestantes`, `letrasProbadas`), agrupamos toda la fotografía del juego en una única estructura: `data class EstadoAhorcado`.
 
-##### 🎮 La Dinámica del Juego Explicada
+2. **El algoritmo es agnóstico a la representación:** La función central `procesarIntento(...)` recibe el estado actual y una letra de entrada, y **lo único que hace es calcular y retornar un NUEVO estado**. La función no contiene ningún `println()` ni sabe si el resultado se mostrará en una consola de texto, en una pantalla táctil de un móvil o en una animación 3D.
 
-El jugador debe descubrir una palabra secreta oculta adivinando sus letras una a una antes de agotar sus **6 vidas disponibles**.
+3. **Notificación desacoplada mediante lambdas:** Para comunicar lo que ocurre en cada jugada (un acierto, un fallo, una letra repetida o un error nulo), la función emite un **evento tipado** (`enum class EventoTurno`) a través de un callback lambda, permitiendo que la capa visual reaccione como considere oportuno.
 
-###### A. Componentes y Recursos de la Partida
+##### 🔄 El Juego como una Máquina de Estados
 
-| Elemento | Tipo de Dato | Función en el Juego |
-| :--- | :--- | :--- |
-| **Palabra Secreta** | `val palabraSecreta: String` | Obtenida al azar mediante un `when` con `(1..4).random()` (ej. `"KOTLIN"`, `"COMPOSE"`). |
-| **Letras Probadas** | `var letrasProbadas: String` | Cadena inmutable acumuladora con todas las letras intentadas. |
-| **Marcador de Vidas** | `var vidasRestantes: Int` | Inicia en `6`. Cada fallo resta `1`. Si llega a `0`, se pierde la partida. |
-| **Máscara de Visualización** | Obtenida con `.enmascarar()` | Muestra las letras acertadas y guiones bajos `_` en las ocultas (ej. `"_ O _ _ _ _"`). |
-| **Bolsas de Caracteres** | `val bancoVocales: String`<br/>`val bancoConsonantes: String` | Cadenas con letras disponibles (`"AEIOU?"` y `"RSTLNPMBCDFGHJKLZ?"`) donde `'?'` simula una entrada nula. |
+El juego puede modelarse formalmente como una **máquina de estados finita**. A partir de un estado inicial `JUGANDO`, cada intento actúa como una entrada que produce una transición hacia un nuevo estado:
 
-###### B. Ciclo de Vida de Cada Intento (Paso a Paso)
+```mermaid
+stateDiagram-v2
+    [*] --> JUGANDO: Iniciar partida (6 vidas)
+    
+    state JUGANDO {
+        [*] --> EvaluandoIntento
+        
+        EvaluandoIntento --> LetraNula: letraInput == null
+        LetraNula --> EsperandoJugada: Notifica ENTRADA_NULA (0 penalización)
+        
+        EvaluandoIntento --> LetraRepetida: letra in probadas
+        LetraRepetida --> EsperandoJugada: Notifica LETRA_REPETIDA (0 penalización)
+        
+        EvaluandoIntento --> Acierto: letra in palabraSecreta
+        Acierto --> EsperandoJugada: Notifica ACIERTO (vidas intactas)
+        
+        EvaluandoIntento --> Fallo: letra not in palabraSecreta
+        Fallo --> EsperandoJugada: Notifica FALLO (vidas - 1)
+    }
 
-En cada ronda, el bucle principal simula a un jugador inteligente de consola mediante una estrategia por turnos, delegando la evaluación completa de cada jugada en el método central **`procesarIntento(...)`**:
-
-1. **Selección de Letra según el Turno:**  
-   - Si el turno es **múltiplo de 3 (`turno % 3 == 0`)**, se extrae un carácter aleatorio de `bancoVocales`.
-   - En cualquier otro caso, se extrae de `bancoConsonantes`.
-   - Si el carácter sorteado es el comodín `'?'`, se pasa un valor `null` al parámetro `letraInput` de `procesarIntento` para poner a prueba el mecanismo de **Null Safety**. En caso contrario, se pasa el carácter en mayúsculas.
-
-2. **Fase 1 — Validación con Null Safety (Cláusula de Guarda en `procesarIntento`):**  
-   Si `letraInput` es nulo (`null`), se invoca de inmediato el callback **`onErrorInput()`** y la ejecución finaliza con un `return`. El turno no penaliza al jugador con pérdida de vidas.
-
-3. **Fase 2 — Normalización y Comprobación de Repetición:**  
-   La letra se normaliza a mayúsculas (`uppercaseChar()`). Si la letra ya existe dentro de `letrasProbadas` (`letra in letrasProbadas`), se invoca el callback **`onRepetir(letra)`** informando al jugador, sin modificar las vidas ni las letras probadas.
-
-4. **Fase 3 — Resolución del Intento (Acierto o Fallo):**  
-   Si la letra es nueva, se concatena a la cadena de intentos (`nuevasProbadas = letrasProbadas + letra`):
-
-    - **Acierto:** Si la letra está en la palabra secreta (`letra in palabraSecreta`), se invoca el callback **`onAcertar(letra, nuevasProbadas)`**. Las vidas se mantienen intactas.
-
-    - **Fallo:** Si la letra no pertenece a la palabra secreta, se decrementa el contador de vidas (`vidasRestantes - 1`) y se invoca el callback **`onFallar(letra, nuevasProbadas, vidasRestantes)`**.
-
-5. **Fase 4 — Comprobación de Fin de Partida:**  
-   Tras cada intento, se evalúa si la partida ha alcanzado una condición terminal:
-
-    - **🏆 Victoria:** Si la función de extensión `.estaAdivinada(letrasProbadas)` devuelve `true`, significa que todas las letras de la palabra secreta están descubiertas.
-
-    - **💀 Derrota:** Si `vidasRestantes <= 0`, el ahorcado se completa y la partida termina en derrota.
+    JUGANDO --> VICTORIA: todas las letras descubiertas
+    JUGANDO --> DERROTA: vidasRestantes == 0
+    
+    VICTORIA --> [*]: Fin de partida (Éxito)
+    DERROTA --> [*]: Fin de partida (Ahorcado)
+```
 
 ---
 
-#### 2. Requisitos Funcionales
+#### 2. Código Base Inicial
 
-Para completar el reto de forma rigurosa respetando el nivel pedagógico del Bloque 2:
+Para que puedas centrarte al 100% en la **arquitectura de estado**, las **funciones de extensión** y la **lógica pura con lambdas** sin perder tiempo en la mecánica de simulación de turnos o en formatear la consola, se te proporciona el archivo base con la función `main()` ya implementada.
 
-1. **RF-01 (Prohibición de Clases y Colecciones Avanzadas):** Queda terminantemente prohibido el uso de `class`, `data class`, `List`, `Set`, `Map` o `Array`. El estado y las bolsas de letras deben gestionarse exclusivamente con cadenas inmutables (`String`) y tipos primitivos.
+Copia esta plantilla en tu archivo `Reto02_AhorcadoJuego.kt` y completa las piezas marcadas con `TODO()`:
 
-2. **RF-02 (Función de Extensión de Enmascaramiento):** Implementa `fun String.enmascarar(probadas: String): String` que devuelva la palabra formateada con las letras acertadas visibles y las no probadas sustituidas por un guion bajo `'_'`, separadas por espacios (ej. `"_ O _ _ _ _"`).
+```kotlin
+package b02_funciones_lambdas
 
-3. **RF-03 (Función de Extensión de Verificación de Victoria):** Implementa `fun String.estaAdivinada(probadas: String): Boolean` que determine si la totalidad de los caracteres de la palabra están presentes en `probadas`.
+// 1. TODO: Define los enumerados para el ciclo de vida continuo y los eventos del turno
 
-4. **RF-04 (Función Central de Juego `procesarIntento` con Callbacks Reactivos):**
+TODO("Define los enums")
 
-    Toda la lógica de evaluación del turno debe residir en el método `procesarIntento`. Esta función no debe contener sentencias `println()` ni gestionar la consola: su única responsabilidad es analizar el intento recibido y delegar el control y la actualización del estado al bucle principal mediante 4 funciones lambda (*callbacks*), siguiendo el patrón *State Hoisting* de Jetpack Compose:
+// 2. TODO: Implementa las funciones de extensión sobre String
+fun String.enmascarar(probadas: String): String {
+    TODO("Implementar enmascaramiento con '_' y espacios usando map y joinToString")
+}
 
-    ```kotlin
-    fun procesarIntento(
-        letraInput: Char?,
-        palabraSecreta: String,
-        letrasProbadas: String,
-        vidasActuales: Int,
-        onAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
-        onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
-        onRepetir: (letra: Char) -> Unit,
-        onErrorInput: () -> Unit
-    )
-    ```
+fun String.estaAdivinada(probadas: String): Boolean {
+    TODO("Implementar comprobación de victoria usando all")
+}
 
-    **Parámetros de estado y entrada:**
+// 3. TODO: Define la data class inmutable del estado del juego
+TODO(Define la data class inmutable del estado del juego)
 
-    - **`letraInput: Char?`**: El carácter propuesto en el turno actual. Se define expresamente como nulable (`Char?`) para poner a prueba el mecanismo de seguridad ante nulos (*Null Safety*) cuando se reciba una entrada no válida o el comodín `'?'`.
-    - **`palabraSecreta: String`**: La palabra oculta que el jugador debe descubrir.
-    - **`letrasProbadas: String`**: Cadena acumuladora con las letras intentadas hasta este turno.
-    - **`vidasActuales: Int`**: Número de vidas disponibles antes de evaluar el intento actual.
+// 4. TODO: Implementa el algoritmo de transición de estados desacoplado
+fun procesarIntento(
+    estadoActual: EstadoAhorcado,
+    letraInput: Char?,
+    onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit
+): EstadoAhorcado {
+    TODO("Implementar transición de estado con Null Safety y notificación")
+}
 
-    **Parámetros de eventos (*callbacks* reactivos tipados con prefijo `on...`):**
+// ============================================================================
+// 🎮 PUNTO DE ENTRADA: INICIALIZACIÓN PROPORCIONADA
+// Se te facilita la configuración inicial de la partida para que construyas
+// el bucle interactivo que consume el estado y gestiona las notificaciones.
+// ============================================================================
+fun main() {
+    val palabraSecreta = when ((1..4).random()) {
+        1 -> "KOTLIN"
+        2 -> "COMPOSE"
+        3 -> "ANDROID"
+        else -> "CORRUTINA"
+    }
 
-    - **`onAcertar: (letra: Char, nuevasProbadas: String) -> Unit`**: Se invoca cuando la letra introducida es válida, nueva y está presente en la palabra secreta. Recibe la letra acertada y la nueva cadena actualizada de letras probadas (`letrasProbadas + letra`). Las vidas se mantienen intactas.
-    - **`onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit`**: Se invoca cuando la letra introducida es válida, nueva y NO pertenece a la palabra secreta. Recibe la letra errónea, la cadena de probadas actualizada y las vidas restantes reducidas en 1 (`vidasActuales - 1`).
-    - **`onRepetir: (letra: Char) -> Unit`**: Se invoca cuando la letra ya figuraba previamente en `letrasProbadas`. Notifica al jugador sin penalizar vidas ni modificar las letras probadas.
-    - **`onErrorInput: () -> Unit`**: Se invoca de inmediato si `letraInput` es `null`, abortando el procesamiento de forma segura mediante un retorno anticipado sin penalizar vidas ni alterar el estado.
+    // Bolsa de caracteres donde '?' simula una entrada nula (Null Safety)
+    val bolsaLetras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ??"
+    var estado = EstadoAhorcado(palabraSecreta = palabraSecreta)
+    var turno = 1
 
-5. **RF-05 (Manejo Estricto de Null Safety en `procesarIntento`):** Dentro del cuerpo de `procesarIntento`, extrae el carácter seguro utilizando llamada segura y el operador Elvis con retorno anticipado (`val letra = letraInput?.uppercaseChar() ?: run { onErrorInput(); return }`).
+    println("=== EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO & LAMBDAS) ===")
+    println("Palabra: ${estado.mascara} | Vidas: ${estado.vidasRestantes} | Probadas: ''\n")
 
-6. **RF-06 (Bucle Dinámico de Partida en `main()` e Invocación a `procesarIntento`):** Implementa en `main()` un bucle `while (vidasRestantes > 0 && !palabraSecreta.estaAdivinada(letrasProbadas))` que seleccione la palabra secreta con un `when ((1..4).random())`, alterne vocales en múltiplos de 3 (`turno % 3 == 0`) y consonantes en los demás, gestione el comodín `'?'` para pasar `null` a `procesarIntento(...)`, e implemente las 4 lambdas pasadas como argumento para actualizar el estado del juego (`letrasProbadas`, `vidasRestantes`) e imprimir la retroalimentación en consola.
+    // TODO: 5. Implementa el bucle de juego y la capa de presentación:
+    // - Itera mientras estado.estado sea EstadoPartida.JUGANDO
+    // - Extrae un carácter aleatorio de bolsaLetras (si es '?' pasa null a procesarIntento)
+    // - Invoca procesarIntento pasando la lambda onNotificacion para mostrar los mensajes con when(evento)
+    // - Imprime el marcador tras cada turno e incrementa el contador de turnos
+    // - Al terminar el bucle, muestra el mensaje de VICTORIA o DERROTA según estado.estado
+}
+```
 
 ---
 
-??? info "📊 Ver Modelo Mental del Reto (Diagrama de Flujo con Lambdas)"
-    ```mermaid
-    flowchart TD
-        Entrada(["letraInput: Char?"]) --> NullCheck{"¿letraInput != null?<br/>(letraInput?.uppercaseChar())"}
-        
-        NullCheck -- "Es null" --> CallbackError["Invocar lambda: onErrorInput()"]
-        NullCheck -- "Válido" --> YaProbada{"¿letra in letrasProbadas?"}
-        
-        YaProbada -- "Sí" --> CallbackRepetir["Invocar lambda: onRepetir(letra)"]
-        YaProbada -- "No" --> Acierto{"¿letra in palabraSecreta?"}
-        
-        Acierto -- "Sí" --> CallbackAcierto["Invocar lambda: onAcertar(letra, probadas + letra)"]
-        Acierto -- "No" --> CallbackFallo["Invocar lambda: onFallar(letra, probadas + letra, vidas - 1)"]
-    ```
+#### 3. Requisitos Funcionales (Tu Misión)
+
+Tu objetivo es sustituir los bloques `TODO()` de la plantilla anterior cumpliendo las siguientes especificaciones:
+
+1. **RF-01 (Dominio con Enumerados):**
+    - `EstadoPartida`: Con los estados `JUGANDO`, `VICTORIA` y `DERROTA`.
+    - `EventoTurno`: Con las notificaciones `ACIERTO`, `FALLO`, `LETRA_REPETIDA` y `ENTRADA_NULA`.
+
+2. **RF-02 (Funciones de Extensión sobre `String`):**
+    - `fun String.enmascarar(probadas: String): String`: Recorre `this` con `.map` mostrando el carácter si está en `probadas` o `'_'` en caso contrario, y únelo con espacios mediante `.joinToString(" ")`.
+    - `fun String.estaAdivinada(probadas: String): Boolean`: Comprueba de forma declarativa con `this.all { ... }` si todos los caracteres de la palabra están presentes en `probadas`.
+
+3. **RF-03 (Contenedor de Estado Inmutable `EstadoAhorcado`):**
+    - Propiedades: `val palabraSecreta: String`, `val letrasProbadas: String = ""`, `val vidasRestantes: Int = 6`, `val estado: EstadoPartida = EstadoPartida.JUGANDO`.
+    - Propiedad computada: `val mascara: String get() = palabraSecreta.enmascarar(letrasProbadas)`.
+
+4. **RF-04 (Motor de Transición Pura `procesarIntento`):**
+    - Firma: `fun procesarIntento(estadoActual: EstadoAhorcado, letraInput: Char?, onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit): EstadoAhorcado`.
+    - **Fase 1 (Null Safety):** Si `letraInput` es nulo, invoca `onNotificacion(EventoTurno.ENTRADA_NULA, null)` y retorna `estadoActual` sin cambios.
+    - **Fase 2 (Repetición):** Normaliza a mayúsculas (`letraInput.uppercaseChar()`). Si la letra ya existe en `estadoActual.letrasProbadas`, invoca `onNotificacion(EventoTurno.LETRA_REPETIDA, letra)` y retorna `estadoActual` sin penalizar vidas.
+    - **Fase 3 (Acierto):** Si la letra está en `palabraSecreta`, añade la letra a probadas, dispara `onNotificacion(EventoTurno.ACIERTO, letra)` y comprueba victoria con `.estaAdivinada(...)`. Retorna el nuevo estado con `.copy()`.
+    - **Fase 4 (Fallo):** Si la letra no está en la palabra, resta 1 vida, dispara `onNotificacion(EventoTurno.FALLO, letra)` y comprueba si las vidas llegan a 0 para pasar a `DERROTA`. Retorna el nuevo estado con `.copy()`.
+
+5. **RF-05 (Bucle de Simulación en `main()`):**
+    - A partir de la inicialización proporcionada, implementa el bucle `while (estado.estado == EstadoPartida.JUGANDO)`.
+    - En cada ronda, extrae un carácter aleatorio de `bolsaLetras` y pásalo a `procesarIntento(...)` (convirtiendo `'?'` en `null` para simular entradas inválidas).
+    - Implementa la lambda `onNotificacion` gestionando un `when (evento)` para imprimir el feedback correspondiente.
+    - Imprime el estado visual del marcador tras cada turno e informa del desenlace final al concluir la partida (`when (estado.estado)`).
+
+---
 
 ??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
-    Antes de examinar la solución o las pistas, reflexiona sobre estos principios de diseño funcional:
+    - **¿Por qué `procesarIntento` retorna un nuevo objeto en lugar de modificar el existente?**  
+      En Kotlin y Jetpack Compose, los estados son inmutables. Modificar directamente las propiedades de un objeto no genera eventos de recomposición fiables; crear una copia nueva con `.copy()` permite a los sistemas reactivos detectar el cambio instantáneamente (*Unidirectional Data Flow*).
 
-    - **¿Cómo simulamos valores `null` aleatorios si solo usamos cadenas de texto (`String`)?**  
-      Un `String` contiene caracteres primitivos `Char` no nulos. Para simular entradas nulas del usuario sin colecciones, introducimos un carácter comodín (como `'?'`). Al tomar un carácter con `.random()`, si coincide con `'?'` generamos un valor `null` (`if (char == '?') null else char`), poniendo a prueba el control de nulos (*Null Safety*).
+    - **¿Por qué la función no debe tener sentencias `println()`?**  
+      Porque imprimir en consola es un detalle de infraestructura. Si mañana conectamos esta lógica a una interfaz táctil de Android o a una aplicación web, la lógica de `procesarIntento` no cambiará ni una sola línea.
 
-    - **¿Por qué alternar consonantes y vocales con `turno % 3 == 0`?**  
-      Aplica el operador módulo visto en el Bloque 1 para modelar una estrategia de juego clásica: probar dos consonantes frecuentes por cada vocal, en lugar de jugadas estáticas o repetitivas.
+    - **¿Cuál es el papel del enum `EventoTurno` frente a `EstadoPartida`?**  
+      `EstadoPartida` es el estado continuo del ciclo de vida (persistente), mientras que `EventoTurno` es una notificación de un solo disparo (*One-off Event*) que informa qué ha sucedido justo en este turno.
 
-    - **¿Por qué prefijar los callbacks con `on...` (`onAcertar`, `onFallar`, etc.) en lugar de `al...`?**  
-      Es el estándar absoluto en Kotlin y en **Jetpack Compose** (`onClick`, `onValueChange`, `onDismissRequest`). En la arquitectura declarativa de Compose, los eventos siempre fluyen hacia arriba a través de lambdas nombradas con `on`.
-
-    - **¿Por qué la cláusula de guarda con Elvis utiliza `?: run { ... return }`?**  
-      Permite invocar el callback de error y forzar la salida inmediata de la función sin anidar bloques `if-else` profundos, manteniendo el código plano y legible.
-
-??? tip "💡 Pistas Progresivas de Ayuda (Abrir solo si te atascas)"
-    === "Pista 1: Enmascarar caracteres sobre String"
-        Un `String` se puede mapear directamente carácter a carácter y unirse con `.joinToString(" ")`:
+??? tip "💡 Pistas Progresivas de Ayuda"
+    === "Pista 1: Extensión String.enmascarar"
         ```kotlin
         fun String.enmascarar(probadas: String): String =
-            this.map { c -> if (c in probadas) c else '_' }.joinToString(" ")
+            this.map { if (it in probadas) it else '_' }.joinToString(" ")
         ```
 
-    === "Pista 2: Validación con Null Safety y Elvis"
-        Usa el operador Elvis para capturar si la entrada es nula antes de procesar:
+    === "Pista 2: Cláusula de guarda con Elvis"
         ```kotlin
         val letra = letraInput?.uppercaseChar() ?: run {
-            onErrorInput()
-            return
+            onNotificacion(EventoTurno.ENTRADA_NULA, null)
+            return estadoActual
         }
         ```
 
-    === "Pista 3: Comprobación de Victoria con `.all`"
-        Para saber si el jugador ha adivinado la palabra completa de forma declarativa:
+    === "Pista 3: Retornar copia con estado de victoria"
         ```kotlin
-        fun String.estaAdivinada(probadas: String): Boolean =
-            this.all { c -> c in probadas }
+        val victoria = estadoActual.palabraSecreta.estaAdivinada(nuevasProbadas)
+        return estadoActual.copy(
+            letrasProbadas = nuevasProbadas,
+            estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO
+        )
         ```
 
-??? example "🖥️ Ver Salida Esperada en Consola (Ejemplo de Partida Dinámica)"
+??? example "🖥️ Ver Salida Esperada en Consola (Capa de Presentación)"
     ```text
-    === EL AHORCADO KOTLIN (LAMBDAS & NULL SAFETY) ===
-    Palabra: _ _ _ _ _ _ | Vidas: 6 | Letras probadas: ''
+    === EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO & LAMBDAS) ===
+    Palabra: _ _ _ _ _ _ _ | Vidas: 6 | Probadas: ''
 
-    --- Turno 1 [CONSONANTE] -> Letra propuesta: R ---
-      ¡Acierto! La letra 'R' está en la palabra secreta.
-      Estado: _ _ _ _ _ _ | Vidas: 6 | Probadas: 'R'
+    --- Turno 1 -> Letra propuesta: R ---
+      [NOTIFICACIÓN] ✅ ¡Acierto! La letra 'R' pertenece a la palabra secreta.
+      Marcador: _ _ R _ _ _ _ | Vidas: 6 | Probadas: 'R'
 
-    --- Turno 2 [CONSONANTE] -> Letra propuesta: S ---
-      ¡Fallo! La letra 'S' NO está en la palabra secreta. Vidas restantes: 5
-      Estado: _ _ _ _ _ _ | Vidas: 5 | Probadas: 'RS'
+    --- Turno 2 -> Letra propuesta: S ---
+      [NOTIFICACIÓN] ❌ ¡Fallo! La letra 'S' NO pertenece a la palabra secreta.
+      Marcador: _ _ R _ _ _ _ | Vidas: 5 | Probadas: 'RS'
 
-    --- Turno 3 [VOCAL] -> Letra propuesta: null (error de entrada) ---
-      [ALERTA NULL SAFETY]: Entrada no válida recibida. Turno omitido sin penalización.
-      Estado: _ _ _ _ _ _ | Vidas: 5 | Probadas: 'RS'
+    --- Turno 3 -> Letra propuesta: null (entrada inválida) ---
+      [NOTIFICACIÓN] 🛑 Entrada no válida (null). Turno omitido sin penalización.
+      Marcador: _ _ R _ _ _ _ | Vidas: 5 | Probadas: 'RS'
 
-    --- Turno 4 [CONSONANTE] -> Letra propuesta: R ---
-      La letra 'R' ya había sido probada previamente. No pierdes vidas.
-      Estado: _ _ _ _ _ _ | Vidas: 5 | Probadas: 'RS'
+    --- Turno 4 -> Letra propuesta: R ---
+      [NOTIFICACIÓN] ⚠️ La letra 'R' ya fue probada anteriormente.
+      Marcador: _ _ R _ _ _ _ | Vidas: 5 | Probadas: 'RS'
 
     ... (turnos sucesivos) ...
 
-    🏆 ¡VICTORIA! Has completado la palabra secreta: KOTLIN
+    🏆 ¡VICTORIA! 🎉 Has completado la palabra secreta: CORRUTINA
     ```
 
 ??? tip "💻 Ver Solución Comentada Paso a Paso"
     ```kotlin
     package b02_funciones_lambdas
 
-    // 1. Función de extensión sobre String para enmascarar caracteres
+    // 1. Enumerados para el ciclo de vida continuo y para eventos efímeros
+    enum class EstadoPartida {
+        JUGANDO,
+        VICTORIA,
+        DERROTA
+    }
+
+    enum class EventoTurno {
+        ACIERTO,
+        FALLO,
+        LETRA_REPETIDA,
+        ENTRADA_NULA
+    }
+
+    // 2. Funciones de extensión sobre String (Dominio de texto del juego)
     fun String.enmascarar(probadas: String): String {
         return this.map { c -> if (c in probadas) c else '_' }.joinToString(" ")
     }
 
-    // 2. Función de extensión sobre String para comprobar condición de victoria
     fun String.estaAdivinada(probadas: String): Boolean {
         return this.all { c -> c in probadas }
     }
 
-    // 3. Función de orden superior con lambdas y Null Safety estricto
-    fun procesarIntento(
-        letraInput: Char?,
-        palabraSecreta: String,
-        letrasProbadas: String,
-        vidasActuales: Int,
-        onAcertar: (letra: Char, nuevasProbadas: String) -> Unit,
-        onFallar: (letra: Char, nuevasProbadas: String, vidasRestantes: Int) -> Unit,
-        onRepetir: (letra: Char) -> Unit,
-        onErrorInput: () -> Unit
+    // 3. Contenedor de Estado Inmutable (Agnóstico a la UI)
+    data class EstadoAhorcado(
+        val palabraSecreta: String,
+        val letrasProbadas: String = "",
+        val vidasRestantes: Int = 6,
+        val estado: EstadoPartida = EstadoPartida.JUGANDO
     ) {
-        // Cláusula de guarda con Null Safety: llamada segura y elvis con return
+        val mascara: String 
+            get() = palabraSecreta.enmascarar(letrasProbadas)
+    }
+
+    // 4. Algoritmo de transición de estados: lógica pura desacoplada
+    fun procesarIntento(
+        estadoActual: EstadoAhorcado,
+        letraInput: Char?,
+        onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit
+    ): EstadoAhorcado {
+        // Cláusula de guarda Null Safety:
         val letra = letraInput?.uppercaseChar() ?: run {
-            onErrorInput()
-            return
+            onNotificacion(EventoTurno.ENTRADA_NULA, null)
+            return estadoActual
         }
 
-        // Si ya fue probada, notificamos y salimos sin penalizar vidas
-        if (letra in letrasProbadas) {
-            onRepetir(letra)
-            return
+        // Comprobación de repetición:
+        if (letra in estadoActual.letrasProbadas) {
+            onNotificacion(EventoTurno.LETRA_REPETIDA, letra)
+            return estadoActual
         }
 
-        val nuevasProbadas = letrasProbadas + letra
+        val nuevasProbadas = estadoActual.letrasProbadas + letra
 
-        // Verificamos pertenencia a la palabra secreta
-        if (letra in palabraSecreta) {
-            onAcertar(letra, nuevasProbadas)
+        // Transición de acierto o fallo:
+        return if (letra in estadoActual.palabraSecreta) {
+            onNotificacion(EventoTurno.ACIERTO, letra)
+            val victoria = estadoActual.palabraSecreta.estaAdivinada(nuevasProbadas)
+            estadoActual.copy(
+                letrasProbadas = nuevasProbadas,
+                estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO
+            )
         } else {
-            val nuevasVidas = vidasActuales - 1
-            onFallar(letra, nuevasProbadas, nuevasVidas)
+            val nuevasVidas = estadoActual.vidasRestantes - 1
+            onNotificacion(EventoTurno.FALLO, letra)
+            val derrota = (nuevasVidas <= 0)
+            estadoActual.copy(
+                letrasProbadas = nuevasProbadas,
+                vidasRestantes = nuevasVidas,
+                estado = if (derrota) EstadoPartida.DERROTA else EstadoPartida.JUGANDO
+            )
         }
     }
 
     fun main() {
-        // Banco de palabras resuelto sin colecciones (usando when y random del Bloque 1):
         val palabraSecreta = when ((1..4).random()) {
             1 -> "KOTLIN"
             2 -> "COMPOSE"
@@ -1942,60 +1990,41 @@ Para completar el reto de forma rigurosa respetando el nivel pedagógico del Blo
             else -> "CORRUTINA"
         }
 
-        // Bolsas de letras en String (el comodín '?' simula una entrada nula):
-        val bancoVocales = "AEIOU?"
-        val bancoConsonantes = "RSTLNPMBCDFGHJKLZ?"
-
-        var letrasProbadas = ""
-        var vidasRestantes = 6
+        // Bolsas de caracteres para la simulación (el '?' simula null)
+        val bolsaLetras = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ??"
+        var estado = EstadoAhorcado(palabraSecreta = palabraSecreta)
         var turno = 1
 
-        println("=== EL AHORCADO KOTLIN (LAMBDAS & NULL SAFETY) ===")
-        println("Palabra: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Letras probadas: ''\n")
+        println("=== EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO & LAMBDAS) ===")
+        println("Palabra: ${estado.mascara} | Vidas: ${estado.vidasRestantes} | Probadas: ''\n")
 
-        // Bucle dinámico de partida: continúa hasta ganar o agotar vidas
-        while (vidasRestantes > 0 && !palabraSecreta.estaAdivinada(letrasProbadas)) {
-            // Regla: múltiplo de 3 toca vocal; en caso contrario, consonante
-            val esTurnoVocal = (turno % 3 == 0)
-            val tipoLetra = if (esTurnoVocal) "VOCAL" else "CONSONANTE"
-            val bolsaLetras = if (esTurnoVocal) bancoVocales else bancoConsonantes
+        // Bucle guiado por el estado continuo
+        while (estado.estado == EstadoPartida.JUGANDO) {
+            val sorteo = bolsaLetras.random()
+            val letraTurno: Char? = if (sorteo == '?') null else sorteo
 
-            val charSorteado = bolsaLetras.random()
-            val letraTurno: Char? = if (charSorteado == '?') null else charSorteado
+            println("--- Turno $turno -> Letra propuesta: ${letraTurno ?: "null (entrada inválida)"} ---")
 
-            println("--- Turno $turno [$tipoLetra] -> Letra propuesta: ${letraTurno ?: "null (error de entrada)"} ---")
-
-            procesarIntento(
-                letraInput = letraTurno,
-                palabraSecreta = palabraSecreta,
-                letrasProbadas = letrasProbadas,
-                vidasActuales = vidasRestantes,
-                onAcertar = { letra, nuevasProbadas ->
-                    letrasProbadas = nuevasProbadas
-                    println("  ¡Acierto! La letra '$letra' está en la palabra secreta.")
-                },
-                onFallar = { letra, nuevasProbadas, nuevasVidas ->
-                    letrasProbadas = nuevasProbadas
-                    vidasRestantes = nuevasVidas
-                    println("  ¡Fallo! La letra '$letra' NO está en la palabra secreta. Vidas restantes: $nuevasVidas")
-                },
-                onRepetir = { letra ->
-                    println("  La letra '$letra' ya había sido probada previamente. No pierdes vidas.")
-                },
-                onErrorInput = {
-                    println("  [ALERTA NULL SAFETY]: Entrada no válida recibida. Turno omitido sin penalización.")
+            // Invocación a la lógica pura: el nuevo estado se genera con .copy()
+            estado = procesarIntento(estado, letraTurno) { evento, letra ->
+                // La capa de presentación decide cómo mostrar los eventos de notificación:
+                when (evento) {
+                    EventoTurno.ACIERTO -> println("  [NOTIFICACIÓN] ✅ ¡Acierto! La letra '$letra' pertenece a la palabra secreta.")
+                    EventoTurno.FALLO -> println("  [NOTIFICACIÓN] ❌ ¡Fallo! La letra '$letra' NO pertenece a la palabra secreta.")
+                    EventoTurno.LETRA_REPETIDA -> println("  [NOTIFICACIÓN] ⚠️ La letra '$letra' ya fue probada anteriormente.")
+                    EventoTurno.ENTRADA_NULA -> println("  [NOTIFICACIÓN] 🛑 Entrada no válida (null). Turno omitido sin penalización.")
                 }
-            )
+            }
 
-            println("  Estado: ${palabraSecreta.enmascarar(letrasProbadas)} | Vidas: $vidasRestantes | Probadas: '$letrasProbadas'\n")
+            println("  Marcador: ${estado.mascara} | Vidas: ${estado.vidasRestantes} | Probadas: '${estado.letrasProbadas}'\n")
             turno++
         }
 
-        // Resolución final
-        if (palabraSecreta.estaAdivinada(letrasProbadas)) {
-            println("🏆 ¡VICTORIA! 🎉 Has completado la palabra secreta: $palabraSecreta")
-        } else {
-            println("💀 ¡DERROTA! 🪢 Te has quedado sin vidas. La palabra era: $palabraSecreta")
+        // Pantalla final según el estado terminal alcanzado
+        when (estado.estado) {
+            EstadoPartida.VICTORIA -> println("🏆 ¡VICTORIA! 🎉 Has completado la palabra secreta: ${estado.palabraSecreta}")
+            EstadoPartida.DERROTA -> println("💀 ¡DERROTA! 🪢 Te has quedado sin vidas. La palabra era: ${estado.palabraSecreta}")
+            EstadoPartida.JUGANDO -> Unit
         }
     }
     ```
