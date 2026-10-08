@@ -44,7 +44,7 @@ Pega el siguiente esqueleto con las firmas de función vacías que lanzan `TODO(
 package b02_funciones_lambdas.tdd
 
 // ============================================================================
-// CONTRATO DEL MOTOR DE AHORCADO (TDD CON ARQUITECTURA DE ESTADO)
+// CONTRATO DEL MOTOR DE AHORCADO (TDD CON ARQUITECTURA DE ESTADO PURA)
 // Tu objetivo es sustituir cada TODO() por la lógica que haga pasar los tests.
 // ============================================================================
 
@@ -79,28 +79,26 @@ fun String.estaAdivinada(probadas: String): Boolean {
 }
 
 /**
- * Contenedor inmutable que almacena todo el estado del juego.
+ * Contenedor inmutable que almacena todo el estado del juego (Fuente Única de la Verdad).
  */
 data class EstadoAhorcado(
     val palabraSecreta: String,
     val letrasProbadas: String = "",
     val vidasRestantes: Int = 6,
-    val estado: EstadoPartida = EstadoPartida.JUGANDO
+    val estado: EstadoPartida = EstadoPartida.JUGANDO,
+    val ultimoEvento: EventoTurno? = null,
+    val ultimaLetraJugada: Char? = null
 ) {
     val mascara: String
         get() = palabraSecreta.enmascarar(letrasProbadas)
 }
 
 /**
- * Función pura de transición: evalúa el intento del jugador, emite el evento de notificación
- * a través de la lambda y retorna un nuevo EstadoAhorcado inmutable con copy().
+ * Función pura de transición: evalúa el intento del jugador y retorna un nuevo
+ * EstadoAhorcado inmutable con .copy() registrando el evento del turno.
  */
-fun procesarIntento(
-    estadoActual: EstadoAhorcado,
-    letraInput: Char?,
-    onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit
-): EstadoAhorcado {
-    TODO("Misión 3: Implementar transición de estados con Null Safety y notificación")
+fun EstadoAhorcado.procesarIntento(letraInput: Char?): EstadoAhorcado {
+    TODO("Misión 3: Implementar transición de estados con Null Safety y registro de evento")
 }
 ```
 
@@ -179,63 +177,54 @@ class MotorAhorcadoTest {
     }
 
     // ========================================================================
-    // ⚡ MISIÓN 3: PRUEBAS DE TRANSICIÓN DE ESTADO Y NOTIFICACIONES
+    // ⚡ MISIÓN 3: PRUEBAS DE TRANSICIÓN DE ESTADO PURA (procesarIntento)
     // ========================================================================
 
     @Test
-    fun `entrada nula notifica ENTRADA_NULA y mantiene estado intacto`() {
-        var eventoRecibido: EventoTurno? = null
+    fun `entrada nula registra ENTRADA_NULA en el estado y mantiene vidas intactas`() {
         val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", vidasRestantes = 6)
 
-        val nuevoEstado = procesarIntento(estadoInicial, null) { evento, _ ->
-            eventoRecibido = evento
-        }
+        val nuevoEstado = estadoInicial.procesarIntento(null)
 
-        assertEquals(EventoTurno.ENTRADA_NULA, eventoRecibido)
-        assertEquals(estadoInicial, nuevoEstado, "El estado debe permanecer idéntico")
+        assertEquals(EventoTurno.ENTRADA_NULA, nuevoEstado.ultimoEvento)
+        assertEquals(null, nuevoEstado.ultimaLetraJugada)
+        assertEquals(estadoInicial.vidasRestantes, nuevoEstado.vidasRestantes)
+        assertEquals(estadoInicial.letrasProbadas, nuevoEstado.letrasProbadas)
     }
 
     @Test
-    fun `proponer letra repetida notifica LETRA_REPETIDA y mantiene estado intacto`() {
-        var eventoRecibido: EventoTurno? = null
-        var letraNotificada: Char? = null
+    fun `proponer letra repetida registra LETRA_REPETIDA y mantiene vidas intactas`() {
         val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "AO", vidasRestantes = 6)
 
-        val nuevoEstado = procesarIntento(estadoInicial, 'o') { evento, letra ->
-            eventoRecibido = evento
-            letraNotificada = letra
-        }
+        val nuevoEstado = estadoInicial.procesarIntento('o')
 
-        assertEquals(EventoTurno.LETRA_REPETIDA, eventoRecibido)
-        assertEquals('O', letraNotificada, "Debió normalizar la letra a mayúsculas")
-        assertEquals(estadoInicial, nuevoEstado, "No debe alterar vidas ni probadas")
+        assertEquals(EventoTurno.LETRA_REPETIDA, nuevoEstado.ultimoEvento)
+        assertEquals('O', nuevoEstado.ultimaLetraJugada, "Debió normalizar la letra a mayúsculas")
+        assertEquals(estadoInicial.vidasRestantes, nuevoEstado.vidasRestantes)
+        assertEquals(estadoInicial.letrasProbadas, nuevoEstado.letrasProbadas)
     }
 
     @Test
-    fun `acertar letra nueva notifica ACIERTO y actualiza letras probadas con vidas intactas`() {
-        var eventoRecibido: EventoTurno? = null
+    fun `acertar letra nueva registra ACIERTO y actualiza letras probadas con vidas intactas`() {
         val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "A", vidasRestantes = 5)
 
-        val nuevoEstado = procesarIntento(estadoInicial, 'k') { evento, _ ->
-            eventoRecibido = evento
-        }
+        val nuevoEstado = estadoInicial.procesarIntento('k')
 
-        assertEquals(EventoTurno.ACIERTO, eventoRecibido)
+        assertEquals(EventoTurno.ACIERTO, nuevoEstado.ultimoEvento)
+        assertEquals('K', nuevoEstado.ultimaLetraJugada)
         assertEquals("AK", nuevoEstado.letrasProbadas)
         assertEquals(5, nuevoEstado.vidasRestantes)
         assertEquals(EstadoPartida.JUGANDO, nuevoEstado.estado)
     }
 
     @Test
-    fun `fallar letra nueva notifica FALLO y resta exactamente una vida`() {
-        var eventoRecibido: EventoTurno? = null
+    fun `fallar letra nueva registra FALLO y resta exactamente una vida`() {
         val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "A", vidasRestantes = 6)
 
-        val nuevoEstado = procesarIntento(estadoInicial, 'Z') { evento, _ ->
-            eventoRecibido = evento
-        }
+        val nuevoEstado = estadoInicial.procesarIntento('Z')
 
-        assertEquals(EventoTurno.FALLO, eventoRecibido)
+        assertEquals(EventoTurno.FALLO, nuevoEstado.ultimoEvento)
+        assertEquals('Z', nuevoEstado.ultimaLetraJugada)
         assertEquals("AZ", nuevoEstado.letrasProbadas)
         assertEquals(5, nuevoEstado.vidasRestantes, "Un fallo debe reducir vidas de 6 a 5")
         assertEquals(EstadoPartida.JUGANDO, nuevoEstado.estado)
@@ -245,19 +234,21 @@ class MotorAhorcadoTest {
     fun `descubrir la ultima letra transiciona el estado a VICTORIA`() {
         val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "KOTLI", vidasRestantes = 3)
 
-        val nuevoEstado = procesarIntento(estadoInicial, 'N') { _, _ -> }
+        val nuevoEstado = estadoInicial.procesarIntento('N')
 
         assertEquals(EstadoPartida.VICTORIA, nuevoEstado.estado)
+        assertEquals(EventoTurno.ACIERTO, nuevoEstado.ultimoEvento)
     }
 
     @Test
     fun `quedarse sin vidas transiciona el estado a DERROTA`() {
         val estadoInicial = EstadoAhorcado(palabraSecreta = "KOTLIN", letrasProbadas = "A", vidasRestantes = 1)
 
-        val nuevoEstado = procesarIntento(estadoInicial, 'X') { _, _ -> }
+        val nuevoEstado = estadoInicial.procesarIntento('X')
 
         assertEquals(EstadoPartida.DERROTA, nuevoEstado.estado)
         assertEquals(0, nuevoEstado.vidasRestantes)
+        assertEquals(EventoTurno.FALLO, nuevoEstado.ultimoEvento)
     }
 }
 ```
@@ -337,48 +328,51 @@ Este es el núcleo de transición de estados del juego:
 1. **Cláusula de guarda con Null Safety:** `letraInput?.uppercaseChar() ?: run { onNotificacion(EventoTurno.ENTRADA_NULA, null); return estadoActual }`.
 2. **Comprobación de repetición:** Si `letra in estadoActual.letrasProbadas`, notificamos `EventoTurno.LETRA_REPETIDA` y retornamos `estadoActual` sin cambios.
 3. **Acierto vs Fallo:**
-    - Si `letra in estadoActual.palabraSecreta` → notificamos `EventoTurno.ACIERTO` y comprobamos si la palabra queda totalmente adivinada para pasar a `EstadoPartida.VICTORIA`.
-    - Si no → notificamos `EventoTurno.FALLO` y comprobamos si las vidas restantes llegan a 0 para pasar a `EstadoPartida.DERROTA`.
-4. En ambos casos, generamos y retornamos un **nuevo estado inmutable con `.copy()`**.
+    - Si `letra in this.palabraSecreta` → configuramos `ultimoEvento = EventoTurno.ACIERTO` y comprobamos si la palabra queda totalmente adivinada para pasar a `EstadoPartida.VICTORIA`.
+    - Si no → configuramos `ultimoEvento = EventoTurno.FALLO`, restamos 1 vida y comprobamos si las vidas restantes llegan a 0 para pasar a `EstadoPartida.DERROTA`.
+4. En todos los casos, generamos y retornamos un **nuevo estado inmutable con `.copy()`** registrando el evento y la letra jugada.
 
 ```kotlin
-fun procesarIntento(
-    estadoActual: EstadoAhorcado,
-    letraInput: Char?,
-    onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit
-): EstadoAhorcado {
+fun EstadoAhorcado.procesarIntento(letraInput: Char?): EstadoAhorcado {
+    if (this.estado != EstadoPartida.JUGANDO) return this
+
     // 1. Cláusula de guarda ante nulos
-    val letra = letraInput?.uppercaseChar() ?: run {
-        onNotificacion(EventoTurno.ENTRADA_NULA, null)
-        return estadoActual
-    }
+    val letra = letraInput?.uppercaseChar() ?: return this.copy(
+        ultimoEvento = EventoTurno.ENTRADA_NULA,
+        ultimaLetraJugada = null
+    )
 
     // 2. Comprobación de repetición
-    if (letra in estadoActual.letrasProbadas) {
-        onNotificacion(EventoTurno.LETRA_REPETIDA, letra)
-        return estadoActual
-    }
-
-    val nuevasProbadas = estadoActual.letrasProbadas + letra
-
-    // 3. Evaluar acierto o fallo
-    return if (letra in estadoActual.palabraSecreta) {
-        onNotificacion(EventoTurno.ACIERTO, letra)
-        val victoria = estadoActual.palabraSecreta.estaAdivinada(nuevasProbadas)
-        estadoActual.copy(
-            letrasProbadas = nuevasProbadas,
-            estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO
-        )
-    } else {
-        val nuevasVidas = estadoActual.vidasRestantes - 1
-        onNotificacion(EventoTurno.FALLO, letra)
-        val derrota = (nuevasVidas <= 0)
-        estadoActual.copy(
-            letrasProbadas = nuevasProbadas,
-            vidasRestantes = nuevasVidas,
-            estado = if (derrota) EstadoPartida.DERROTA else EstadoPartida.JUGANDO
+    if (letra in this.letrasProbadas) {
+        return this.copy(
+            ultimoEvento = EventoTurno.LETRA_REPETIDA,
+            ultimaLetraJugada = letra
         )
     }
+
+    val nuevasProbadas = this.letrasProbadas + letra
+
+    // 3. Evaluar acierto
+    if (letra in this.palabraSecreta) {
+        val victoria = this.palabraSecreta.estaAdivinada(nuevasProbadas)
+        return this.copy(
+            letrasProbadas = nuevasProbadas,
+            estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO,
+            ultimoEvento = EventoTurno.ACIERTO,
+            ultimaLetraJugada = letra
+        )
+    }
+
+    // 4. Evaluar fallo
+    val nuevasVidas = this.vidasRestantes - 1
+    val derrota = (nuevasVidas <= 0)
+    return this.copy(
+        letrasProbadas = nuevasProbadas,
+        vidasRestantes = nuevasVidas,
+        estado = if (derrota) EstadoPartida.DERROTA else EstadoPartida.JUGANDO,
+        ultimoEvento = EventoTurno.FALLO,
+        ultimaLetraJugada = letra
+    )
 }
 ```
 
@@ -407,13 +401,13 @@ BUILD SUCCESSFUL in 320ms
 Abre el informe HTML en tu navegador:  
 📁 `pmdm-kotlin-lab/build/reports/tests/test/index.html`
 
-Verás la suite `b02_funciones_lambdas.tdd.MotorAhorcadoTest` con sus **9 pruebas en verde**. Has completado con éxito el ciclo TDD.
+Verás la suite `b02_funciones_lambdas.tdd.MotorAhorcadoTest` con sus **11 pruebas en verde**. Has completado con éxito el ciclo TDD.
 
 ---
 
 ## 5. El Ensamblado Final: Jugar desde `main()` con un Motor Blindado
 
-Ahora que tienes la certeza matemática de que tu motor de juego está libre de fallos, montar un bucle interactivo de consola para jugar se convierte en una tarea trivial.
+Ahora que tienes la certeza matemática de que tu motor de juego está libre de fallos, montar un bucle interactivo de consola para jugar se convierte en una tarea trivial y 100% reactiva.
 
 Al final de `MotorAhorcado.kt`, añade la función de ejecución:
 
@@ -429,13 +423,16 @@ fun main() {
     for (intento in turnosSimulados) {
         println("-> Jugador propone: '$intento'")
 
-        estado = procesarIntento(estado, intento) { evento, letra ->
-            when (evento) {
-                EventoTurno.ACIERTO -> println("  ✅ [NOTIFICACIÓN]: ¡Acierto con '$letra'!")
-                EventoTurno.FALLO -> println("  ❌ [NOTIFICACIÓN]: ¡Fallo con '$letra'!")
-                EventoTurno.LETRA_REPETIDA -> println("  ⚠️ [NOTIFICACIÓN]: Letra '$letra' ya probada.")
-                EventoTurno.ENTRADA_NULA -> println("  🛑 [NOTIFICACIÓN]: Entrada nula recibida. Sin penalización.")
-            }
+        // Evolución inmutable del estado:
+        estado = estado.procesarIntento(intento)
+
+        // La UI se actualiza únicamente consultando las propiedades del estado:
+        when (estado.ultimoEvento) {
+            EventoTurno.ACIERTO -> println("  [EVENTO ESTADO] ✅ ¡Acierto con '${estado.ultimaLetraJugada}'!")
+            EventoTurno.FALLO -> println("  [EVENTO ESTADO] ❌ ¡Fallo con '${estado.ultimaLetraJugada}'!")
+            EventoTurno.LETRA_REPETIDA -> println("  [EVENTO ESTADO] ⚠️ Letra '${estado.ultimaLetraJugada}' ya probada.")
+            EventoTurno.ENTRADA_NULA -> println("  [EVENTO ESTADO] 🛑 Entrada nula recibida. Sin penalización.")
+            null -> Unit
         }
 
         println("  Marcador: ${estado.mascara} | Vidas: ${estado.vidasRestantes}\n")
@@ -451,4 +448,4 @@ fun main() {
 }
 ```
 
-Pulsa el icono verde ▶ junto a `fun main()` y disfruta de tu juego respaldado al 100% por pruebas unitarias automatizadas.
+Pulsa el icono verde ▶ junto a `fun main()` y disfruta de tu juego respaldado al 100% por pruebas unitarias automatizadas y con arquitectura pura de Jetpack Compose.

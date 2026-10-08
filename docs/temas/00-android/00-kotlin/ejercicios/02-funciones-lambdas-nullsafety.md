@@ -861,24 +861,50 @@ Precio con divisa formateado: 90.0 EUR
 
 #### 1. Enunciado y Requisitos
 
-Las funciones `takeIf` y `takeUnless` devuelven el objeto receptor si se cumple el predicado lambda, o `null` si no se cumple. Son ideales para validar entradas de texto en formularios de usuario.
+En Kotlin, `takeIf` y `takeUnless` son funciones de filtrado funcional que actúan como "aduanas" o "puertas de validación" para cualquier objeto:
 
-1. Declara un texto de entrada de usuario `val nombreInput = "  Link  "`.
+- **`takeIf { condicion }` (Filtro positivo):** Devuelve el objeto receptor **si cumple** la condición dada; si no la cumple, devuelve `null`. *(Piensa: "Tómalo SI...")*.
+- **`takeUnless { condicion }` (Filtro de exclusión):** Devuelve el objeto receptor **a menos que cumpla** la condición; si la cumple, devuelve `null`. *(Piensa: "Tómalo A MENOS QUE...")*.
 
-2. Utiliza `.trim().takeIf { it.isNotBlank() }` para obtener el texto limpio o `null` si estuviera en blanco.
+Al devolver `null` cuando no superan el filtro, se combinan a la perfección con el **operador Elvis (`?:`)** para proporcionar valores por defecto o mensajes descriptivos sin necesidad de anidar bloques `if-else`.
 
-3. Declara una edad `val edadUsuario = 15`.
+Diseña un validador para un formulario de registro de usuario con los siguientes requisitos:
 
-4. Utiliza `edadUsuario.takeUnless { it < 18 }` para comprobar si el usuario no es menor de edad.
+1. **Función `sanitizarNombreUsuario(input: String?): String`:**
+    - Recibe un nombre que puede ser nulo o contener espacios sobrantes.
+    - Utiliza llamadas seguras `?.`, elimina los espacios laterales con `.trim()` y aplica `.takeIf { it.isNotBlank() }`.
+    - Si el texto resultante es nulo o estaba en blanco, utiliza el operador Elvis `?:` para asignar por defecto el valor `"Invitado_Anonimo"`.
 
-5. Combina con el operador Elvis `?:` para emitir mensajes por defecto en caso de fallo de validación.
+2. **Función `validarPasswordSegura(password: String): String`:**
+    - Declara un conjunto inmutable de contraseñas prohibidas por ser demasiado comunes:
+      ```kotlin
+      val PASSWORD_COMUNES = setOf("123456", "password", "admin", "qwerty")
+      ```
+    - Aplica `password.takeUnless { it.lowercase() in PASSWORD_COMUNES }`.
+    - Si la contraseña pertenece a la lista negra (el filtro devuelve `null`), usa el operador Elvis `?:` para retornar el mensaje: `"[RECHAZADA: Contraseña demasiado vulnerable]"`. En caso contrario, retorna la propia contraseña aceptada.
+
+3. **En `main()`:**
+    - Prueba `sanitizarNombreUsuario` con los casos:
+        - `"  Link  "` (debe resultar `"Link"`).
+        - `"     "` (espacios en blanco, debe resultar `"Invitado_Anonimo"`).
+        - `null` (entrada nula, debe resultar `"Invitado_Anonimo"`).
+    - Prueba `validarPasswordSegura` con los casos:
+        - `"K0tlin_Compose#2026"` (contraseña segura, debe ser aceptada).
+        - `"123456"` (contraseña prohibida, debe ser rechazada).
+        - `"admin"` (contraseña prohibida, debe ser rechazada).
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Nombre validado: Link
-Nombre vacío validado: [Entrada inválida]
-Edad para juego pegi 18: No cumple el requisito de edad
+=== VALIDACIÓN DE NOMBRES CON takeIf ===
+Entrada '  Link  ' -> Nombre final: Link
+Entrada '     ' -> Nombre final: Invitado_Anonimo
+Entrada null -> Nombre final: Invitado_Anonimo
+
+=== VALIDACIÓN DE CONTRASEÑAS CON takeUnless ===
+Password 'K0tlin_Compose#2026' -> K0tlin_Compose#2026
+Password '123456' -> [RECHAZADA: Contraseña demasiado vulnerable]
+Password 'admin' -> [RECHAZADA: Contraseña demasiado vulnerable]
 ```
 
 #### 3. Solución Comentada
@@ -886,18 +912,39 @@ Edad para juego pegi 18: No cumple el requisito de edad
     ```kotlin
     package b02_funciones_lambdas
 
+    // Lista negra de contraseñas inseguras
+    val PASSWORD_COMUNES = setOf("123456", "password", "admin", "qwerty")
+
+    /**
+     * Sanitiza el nombre de usuario usando takeIf:
+     * Toma el texto limpio SI no está en blanco.
+     * Si no cumple la condición o era nulo, Elvis proporciona un alias por defecto.
+     */
+    fun sanitizarNombreUsuario(input: String?): String {
+        return input?.trim()
+            ?.takeIf { it.isNotBlank() }
+            ?: "Invitado_Anonimo"
+    }
+
+    /**
+     * Valida una contraseña usando takeUnless:
+     * Toma la contraseña A MENOS QUE coincida con una contraseña común vulnerable.
+     */
+    fun validarPasswordSegura(password: String): String {
+        return password.takeUnless { it.lowercase() in PASSWORD_COMUNES }
+            ?: "[RECHAZADA: Contraseña demasiado vulnerable]"
+    }
+
     fun main() {
-        val nombreInput = "  Link  "
-        val nombreValidado = nombreInput.trim().takeIf { it.isNotBlank() }
-        println("Nombre validado: $nombreValidado")
+        println("=== VALIDACIÓN DE NOMBRES CON takeIf ===")
+        println("Entrada '  Link  ' -> Nombre final: ${sanitizarNombreUsuario("  Link  ")}")
+        println("Entrada '     ' -> Nombre final: ${sanitizarNombreUsuario("     ")}")
+        println("Entrada null -> Nombre final: ${sanitizarNombreUsuario(null)}")
 
-        val entradaVacia = "   "
-        val vaciaValidada = entradaVacia.trim().takeIf { it.isNotBlank() } ?: "[Entrada inválida]"
-        println("Nombre vacío validado: $vaciaValidada")
-
-        val edadUsuario = 15
-        val edadAprobada = edadUsuario.takeUnless { it < 18 }
-        println("Edad para juego pegi 18: ${edadAprobada?.let { "Apto" } ?: "No cumple el requisito de edad"}")
+        println("\n=== VALIDACIÓN DE CONTRASEÑAS CON takeUnless ===")
+        println("Password 'K0tlin_Compose#2026' -> ${validarPasswordSegura("K0tlin_Compose#2026")}")
+        println("Password '123456' -> ${validarPasswordSegura("123456")}")
+        println("Password 'admin' -> ${validarPasswordSegura("admin")}")
     }
     ```
 
@@ -1025,44 +1072,59 @@ Transformación con marco: '[[ gamevault ]]'
 
 ---
 
-### Ejercicio 2.8: Invocación Progresiva de Lambdas (Convencional, *Trailing Lambda* y `::`)
+### Ejercicio 2.8: Invocación Progresiva de Lambdas (El Origen de la Sintaxis de Compose)
 📄 **Archivo:** `E08_InvocacionLambdasTrailing.kt`  
 📚 **Teoría de referencia:** [Cómo Invocar una Función de Orden Superior: La Evolución Gradual](../13-funciones-lambdas.md#32-como-invocarla-de-la-llamada-convencional-a-la-trailing-lambda)
 
 #### 1. Enunciado y Requisitos
 
-En Kotlin, la llamada a funciones de orden superior cuenta con reglas sintácticas diseñadas para que el código sea limpio y fluido. Practica las cuatro formas posibles de invocar funciones que reciben lambdas:
+¿Te has preguntado alguna vez por qué en **Jetpack Compose** los botones y contenedores se escriben con llaves `{}` fuera de los paréntesis, como `Button(onClick = { ... }) { Text("Pulsar") }` o simplemente `Card { ... }`?
 
-1. **Diseño de funciones de soporte:**
+No es magia ni una sintaxis especial del framework: es pura **sintaxis idiomática de Kotlin** para funciones de orden superior.
 
-    - Define una función `procesarPerfil(nombre: String, transformador: (String) -> String): String` que aplique `transformador` sobre `nombre`.
+En este ejercicio aprenderás a dominar las **cuatro formas progresivas** de invocar funciones que reciben lambdas, simulando el funcionamiento de un sistema de componentes de interfaz:
 
-    - Define una función `ejecutarAuditoria(accion: () -> Unit)` que reciba **únicamente una lambda**, imprima un encabezado `"[AUDITORÍA]: Iniciando chequeo..."`, invoque la lambda y finalice con `"[AUDITORÍA]: Finalizado."`.
-
-    - Define una función nombrada tradicional `fun limpiarEspaciosYMayusculas(texto: String): String = texto.trim().uppercase()`.
+1. **Diseño de componentes de soporte:**
+    - Define una función `renderizarBoton(texto: String, alPulsar: () -> Unit)`: imprime `"[BOTÓN: '$texto']"` y a continuación ejecuta la acción `alPulsar()`.
+    - Define una función `tarjetaContenedor(contenido: () -> Unit)` que reciba **únicamente una lambda**: imprime un borde superior `"┌── TARJETA ──────────────┐"`, ejecuta `contenido()`, y cierra con `"└─────────────────────────┘"`.
+    - Define una función nombrada tradicional:
+      ```kotlin
+      fun guardarEnNube() {
+          println("  💾 [CLOUD]: Progreso del jugador sincronizado con éxito.")
+      }
+      ```
 
 2. **Invocación en 4 variantes desde `main()`:**
-
-    - **Paso A (Llamada convencional):** Invoca a `procesarPerfil` pasando la lambda dentro de los paréntesis ordinarios `procesarPerfil("  neo_matrix  ", { it.trim() })`.
-
-    - **Paso B (*Trailing Lambda*):** Invoca a `procesarPerfil` extrayendo la última lambda fuera de los paréntesis `procesarPerfil("  neo_matrix  ") { "[TAG]: ${it.trim()}" }`.
-
-    - **Paso C (Parámetro único sin paréntesis):** Invoca a `ejecutarAuditoria` omitiendo completamente los paréntesis `()`.
-
-    - **Paso D (Referencia a función existente `::`):** Invoca a `procesarPerfil` reutilizando la función `limpiarEspaciosYMayusculas` mediante el operador `::` sin declarar una nueva lambda.
+    - **Paso A (Llamada convencional con paréntesis):** Invoca a `renderizarBoton` pasando la lambda como un argumento tradicional dentro de los paréntesis ordinarios:
+      `renderizarBoton("Guardar Local", { println("  💿 Guardado en memoria flash.") })`.
+    - **Paso B (*Trailing Lambda* — El estándar de Compose):** En Kotlin, si el último parámetro de una función es una lambda, dicha lambda puede (y debe) **extraerse FUERA de los paréntesis**:
+      `renderizarBoton("Comprar Ítem") { println("  💰 Compra tramitada en la tienda.") }`.
+    - **Paso C (Lambda como único parámetro — Sin paréntesis):** Si la función recibe **solo una lambda**, los paréntesis `()` son completamente opcionales y se omiten:
+      `tarjetaContenedor { println("  🎮 GameVault: Biblioteca lista.") }`.
+    - **Paso D (Referencia a función existente `::`):** Si la acción a ejecutar ya existe como función nombrada, pásala directamente con el operador de referencia `::` sin declarar llaves redundantes `{ guardarEnNube() }`:
+      `renderizarBoton("Sincronizar Nube", ::guardarEnNube)`.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-=== EVOLUCIÓN DE LLAMADAS CON LAMBDAS ===
-Paso A (Convencional con paréntesis): 'neo_matrix'
-Paso B (Trailing Lambda fuera de paréntesis): '[TAG]: neo_matrix'
+=== EVOLUCIÓN SINTÁCTICA: DE LAMBDAS A JETPACK COMPOSE ===
 
-[AUDITORÍA]: Iniciando chequeo...
-Paso C: Base de datos verificada sin errores.
-[AUDITORÍA]: Finalizado.
+[Paso A: Convencional con ()]
+[BOTÓN: 'Guardar Local']
+  💿 Guardado en memoria flash.
 
-Paso D (Referencia directa ::): 'NEO_MATRIX'
+[Paso B: Trailing Lambda fuera de ()]
+[BOTÓN: 'Comprar Ítem']
+  💰 Compra tramitada en la tienda.
+
+[Paso C: Parámetro único sin ()]
+┌── TARJETA ──────────────┐
+  🎮 GameVault: Biblioteca lista.
+└─────────────────────────┘
+
+[Paso D: Referencia directa a función ::]
+[BOTÓN: 'Sincronizar Nube']
+  💾 [CLOUD]: Progreso del jugador sincronizado con éxito.
 ```
 
 #### 3. Solución Comentada
@@ -1070,69 +1132,110 @@ Paso D (Referencia directa ::): 'NEO_MATRIX'
     ```kotlin
     package b02_funciones_lambdas
 
-    // Función de orden superior con parámetro ordinario + lambda al final:
-    fun procesarPerfil(nombre: String, transformador: (String) -> String): String {
-        return transformador(nombre)
+    // Componente con parámetro ordinario + lambda al final:
+    fun renderizarBoton(texto: String, alPulsar: () -> Unit) {
+        println("[BOTÓN: '$texto']")
+        alPulsar()
     }
 
-    // Función de orden superior donde la lambda es el ÚNICO parámetro:
-    fun ejecutarAuditoria(accion: () -> Unit) {
-        println("[AUDITORÍA]: Iniciando chequeo...")
-        accion()
-        println("[AUDITORÍA]: Finalizado.")
+    // Componente donde la lambda es el ÚNICO parámetro:
+    fun tarjetaContenedor(contenido: () -> Unit) {
+        println("┌── TARJETA ──────────────┐")
+        contenido()
+        println("└─────────────────────────┘")
     }
 
     // Función nombrada reutilizable:
-    fun limpiarEspaciosYMayusculas(texto: String): String = texto.trim().uppercase()
+    fun guardarEnNube() {
+        println("  💾 [CLOUD]: Progreso del jugador sincronizado con éxito.")
+    }
 
     fun main() {
-        println("=== EVOLUCIÓN DE LLAMADAS CON LAMBDAS ===")
+        println("=== EVOLUCIÓN SINTÁCTICA: DE LAMBDAS A JETPACK COMPOSE ===\n")
 
         // Paso A: Lambda como argumento ordinario dentro de los paréntesis ()
-        val r1 = procesarPerfil("  neo_matrix  ", { it.trim() })
-        println("Paso A (Convencional con paréntesis): '$r1'")
+        println("[Paso A: Convencional con ()]")
+        renderizarBoton("Guardar Local", { println("  💿 Guardado en memoria flash.") })
 
-        // Paso B: Trailing Lambda -> la última lambda se extrae FUERA de ()
-        val r2 = procesarPerfil("  neo_matrix  ") { "[TAG]: ${it.trim()}" }
-        println("Paso B (Trailing Lambda fuera de paréntesis): '$r2'")
-
-        println()
-
-        // Paso C: Si la lambda es el único parámetro, se OMITEN los paréntesis ()
-        ejecutarAuditoria {
-            println("Paso C: Base de datos verificada sin errores.")
+        // Paso B: Trailing Lambda -> la última lambda se extrae FUERA de los paréntesis ()
+        // Esta es exactamente la forma en la que se configuran botones y eventos en Jetpack Compose
+        println("\n[Paso B: Trailing Lambda fuera de ()]")
+        renderizarBoton("Comprar Ítem") {
+            println("  💰 Compra tramitada en la tienda.")
         }
 
-        println()
+        // Paso C: Si la función recibe únicamente una lambda, los paréntesis () se OMITEN
+        // Es la forma en la que se definen contenedores como Column { ... }, Row { ... } o Card { ... }
+        println("\n[Paso C: Parámetro único sin ()]")
+        tarjetaContenedor {
+            println("  🎮 GameVault: Biblioteca lista.")
+        }
 
-        // Paso D: Referencia a función existente con :: (sin abrir llaves {})
-        val r3 = procesarPerfil("  neo_matrix  ", ::limpiarEspaciosYMayusculas)
-        println("Paso D (Referencia directa ::): '$r3'")
+        // Paso D: Referencia a función existente mediante :: (sin abrir llaves {})
+        // Muy utilizado para enlazar eventos directamente a funciones del ViewModel
+        println("\n[Paso D: Referencia directa a función ::]")
+        renderizarBoton("Sincronizar Nube", ::guardarEnNube)
     }
     ```
 
 ---
 
-### Ejercicio 2.9: Safe Call (`?.`), Elvis (`?:`) y Cláusulas de Guarda
+### Ejercicio 2.9: Safe Call Chaining (`?.`), Elvis (`?:`) y Cláusulas de Guarda
 📄 **Archivo:** `E09_NullSafetyBasico.kt`  
 📚 **Teoría de referencia:** [Llamada Segura (?. ) y Operador Elvis (?:)](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
 
 #### 1. Enunciado y Requisitos
 
-1. Modela una variable `val nickname: String? = null`.
+En Kotlin, el sistema de tipos anulables (*Null Safety*) elimina por completo el temido `NullPointerException` sin obligar al programador a escribir complejas pirámides de comprobaciones `if (x != null)`.
 
-2. Muestra la longitud del apodo de forma segura usando el operador de llamada segura **`?.`**.
+Este ejercicio aborda los **tres patrones esenciales** de manejo de nulos en el desarrollo móvil:
 
-3. Proporciona un valor por defecto usando el operador Elvis **`?:`** para que muestre `"Anónimo"` si es nulo.
+1. **Encadenamiento de Llamadas Seguras (*Safe Call Chaining* `?.`):** Si cualquier eslabón de la cadena de propiedades es `null`, la evaluación se detiene de inmediato y retorna `null` de forma segura.
+2. **Valor por Defecto con Elvis (`?:`):** Sustituye cualquier resultado nulo por un valor de respaldo (*fallback*) garantizado.
+3. **Cláusula de Guarda con Elvis (`?: return`):** Una técnica estándar en arquitecturas limpias y Android para validar precondiciones: si un dato crítico falta, la función aborta su ejecución anticipadamente, permitiendo que el resto del código trabaje con variables no nulas sin indentaciones innecesarias.
 
-4. Utiliza el operador Elvis como **cláusula de guarda** para terminar la ejecución de una función si un parámetro obligatorio es nulo (`val id = idRecibido ?: return`).
+---
+
+Diseña un módulo de gestión de perfiles y pedidos con los siguientes requisitos:
+
+1. **Modelos de datos:**
+    ```kotlin
+    data class Direccion(val ciudad: String, val codigoPostal: String?)
+    data class PerfilUsuario(val nombre: String, val apodo: String?, val direccion: Direccion?)
+    ```
+
+2. **Función `obtenerDetallesEnvio(perfil: PerfilUsuario?): String`:**
+    - Determina el nombre para mostrar: utiliza el `apodo` si existe; si es nulo, utiliza el `nombre`; y si todo el perfil fuera nulo, usa `"Invitado"`. *(Pista: `perfil?.apodo ?: perfil?.nombre ?: "Invitado"`)*.
+    - Obtiene la ciudad de entrega en mayúsculas encadenando llamadas seguras: `perfil?.direccion?.ciudad?.uppercase() ?: "CIUDAD NO ESPECIFICADA"`.
+    - Obtiene el código postal o `"00000"` si es nulo.
+    - Devuelve una cadena formateada con estos tres campos.
+
+3. **Función `procesarPedido(perfil: PerfilUsuario?, carritoId: String?)`:**
+    - Aplica una **primera cláusula de guarda**: si `perfil` es nulo, imprime un mensaje de advertencia y ejecuta un `return` anticipado.
+    - Aplica una **segunda cláusula de guarda**: si `carritoId` es nulo, imprime un mensaje de error y ejecuta `return`.
+    - Si ambas condiciones se cumplen, imprime un mensaje de confirmación del pedido indicando el nombre del usuario y el identificador del carrito.
+
+4. **En `main()`:**
+    - Prueba `obtenerDetallesEnvio` con un usuario con todos los datos y otro con datos parciales nulos.
+    - Prueba `procesarPedido` en 3 situaciones: sin perfil (`null`), con perfil pero sin carrito (`null`), y con todos los datos completos.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-Longitud de nickname nulo: null
-Nombre visible en perfil: Anónimo
-[ERROR]: ID de usuario no proporcionado. Cancelando sincronización.
+=== CONSULTA DE DETALLES DE ENVÍO ===
+Usuario 1 -> Cliente: Link | Ciudad: HYRULE | CP: 28001
+Usuario 2 -> Cliente: Zelda | Ciudad: CIUDAD NO ESPECIFICADA | CP: 00000
+Usuario nulo -> Cliente: Invitado | Ciudad: CIUDAD NO ESPECIFICADA | CP: 00000
+
+=== PROCESAMIENTO DE PEDIDOS (CLÁUSULAS DE GUARDA) ===
+[PEDIDO 1]:
+⛔ [ERROR]: No se puede tramitar el pedido sin una sesión de usuario activa.
+
+[PEDIDO 2]:
+⚠️ [ERROR]: El usuario 'Link' no tiene un carrito activo asociado.
+
+[PEDIDO 3]:
+📦 [ÉXITO]: Pedido tramitado correctamente para 'Link' con carrito #CART-9942.
 ```
 
 #### 3. Solución Comentada
@@ -1140,22 +1243,60 @@ Nombre visible en perfil: Anónimo
     ```kotlin
     package b02_funciones_lambdas
 
-    fun sincronizarUsuario(id: String?) {
-        // Cláusula de guarda con Elvis y return anticipado
-        val idValido = id ?: run {
-            println("[ERROR]: ID de usuario no proporcionado. Cancelando sincronización.")
+    data class Direccion(val ciudad: String, val codigoPostal: String?)
+    data class PerfilUsuario(val nombre: String, val apodo: String?, val direccion: Direccion?)
+
+    /**
+     * Consulta segura encadenando ?. y usando Elvis ?: para valores por defecto.
+     */
+    fun obtenerDetallesEnvio(perfil: PerfilUsuario?): String {
+        val nombreVisible = perfil?.apodo ?: perfil?.nombre ?: "Invitado"
+        val ciudadEnvio = perfil?.direccion?.ciudad?.uppercase() ?: "CIUDAD NO ESPECIFICADA"
+        val cp = perfil?.direccion?.codigoPostal ?: "00000"
+
+        return "Cliente: $nombreVisible | Ciudad: $ciudadEnvio | CP: $cp"
+    }
+
+    /**
+     * Procesa un pedido validando precondiciones mediante cláusulas de guarda con Elvis.
+     */
+    fun procesarPedido(perfil: PerfilUsuario?, carritoId: String?) {
+        // Cláusula de guarda 1: Comprobar existencia del usuario
+        val usuarioActivo = perfil ?: run {
+            println("⛔ [ERROR]: No se puede tramitar el pedido sin una sesión de usuario activa.")
             return
         }
-        println("Sincronizando datos del usuario $idValido...")
+
+        // Cláusula de guarda 2: Comprobar existencia del carrito
+        val idCarrito = carritoId ?: run {
+            val nombre = usuarioActivo.apodo ?: usuarioActivo.nombre
+            println("⚠️ [ERROR]: El usuario '$nombre' no tiene un carrito activo asociado.")
+            return
+        }
+
+        // A partir de aquí, usuarioActivo e idCarrito están garantizados como NO nulos:
+        val nombreCliente = usuarioActivo.apodo ?: usuarioActivo.nombre
+        println("📦 [ÉXITO]: Pedido tramitado correctamente para '$nombreCliente' con carrito #$idCarrito.")
     }
 
     fun main() {
-        val nickname: String? = null
+        println("=== CONSULTA DE DETALLES DE ENVÍO ===")
+        val u1 = PerfilUsuario("Link", "HeroeDelTiempo", Direccion("Hyrule", "28001"))
+        val u2 = PerfilUsuario("Zelda", apodo = null, direccion = null)
 
-        println("Longitud de nickname nulo: ${nickname?.length}")
-        println("Nombre visible en perfil: ${nickname ?: "Anónimo"}")
+        println("Usuario 1 -> ${obtenerDetallesEnvio(u1)}")
+        println("Usuario 2 -> ${obtenerDetallesEnvio(u2)}")
+        println("Usuario nulo -> ${obtenerDetallesEnvio(null)}")
 
-        sincronizarUsuario(null)
+        println("\n=== PROCESAMIENTO DE PEDIDOS (CLÁUSULAS DE GUARDA) ===")
+        println("[PEDIDO 1]:")
+        procesarPedido(perfil = null, carritoId = "CART-1234")
+
+        println("\n[PEDIDO 2]:")
+        procesarPedido(perfil = u1, carritoId = null)
+
+        println("\n[PEDIDO 3]:")
+        procesarPedido(perfil = u1, carritoId = "CART-9942")
     }
     ```
 
@@ -1695,25 +1836,26 @@ Capturada excepción semántica: El texto no puede ser nulo en esta operación
 
 ## 🔴 Nivel Avanzado (Reto Lúdico)
 
-### Reto 2.17: El Juego del Ahorcado con Arquitectura de Estado (*State & Callbacks*)
+### Reto 2.17: El Juego del Ahorcado con Arquitectura de Estado Pura (*UiState*)
 📄 **Archivo:** `Reto02_AhorcadoJuego.kt`  
 📚 **Teoría de referencia:** [Funciones de Orden Superior](../13-funciones-lambdas.md#3-funciones-de-orden-superior-higher-order-functions), [Funciones de Extensión](../13-funciones-lambdas.md#5-funciones-de-extension-extension-functions) y [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos)
 
-#### 1. Contexto Pedagógico: El Concepto de "Estado" (*State*) y el Desacoplamiento
+#### 1. Contexto Pedagógico: El Concepto de "Estado" (*State*) y Fuente Única de la Verdad
 
-En el desarrollo de software moderno —y de manera capital en **Jetpack Compose**— las aplicaciones se diseñan separando estrictamente la **lógica del negocio** de la **capa de presentación** (interfaz de usuario).
+En el desarrollo de software moderno —y de manera capital en **Jetpack Compose**— las interfaces de usuario no guardan información por su cuenta ni escuchan múltiples canales dispersos. Se rigen por un principio fundamental:
 
-Para conseguir este desacoplamiento, aplicamos el concepto de **Estado (*State*)**:
+> **La interfaz de usuario es una representación directa del Estado (UI = f(Estado)).**  
+> Todo lo que la pantalla necesita para pintarse (el marcador de letras, las vidas, si el jugador ha ganado y el último mensaje o feedback ocurrido) debe residir en un único contenedor inmutable.
 
-1. **Toda la información del juego reside junta en un contenedor inmutable:** En lugar de tener variables sueltas y dispersas (`palabraSecreta`, `vidasRestantes`, `letrasProbadas`), agrupamos toda la fotografía del juego en una única estructura: `data class EstadoAhorcado`.
+Para conseguir este desacoplamiento total:
 
-2. **El algoritmo es agnóstico a la representación:** La función central `procesarIntento(...)` recibe el estado actual y una letra de entrada, y **lo único que hace es calcular y retornar un NUEVO estado**. La función no contiene ningún `println()` ni sabe si el resultado se mostrará en una consola de texto, en una pantalla táctil de un móvil o en una animación 3D.
-
-3. **Notificación desacoplada mediante lambdas:** Para comunicar lo que ocurre en cada jugada (un acierto, un fallo, una letra repetida o un error nulo), la función emite un **evento tipado** (`enum class EventoTurno`) a través de un callback lambda, permitiendo que la capa visual reaccione como considere oportuno.
+1. **Toda la fotografía del juego reside en `data class EstadoAhorcado`:** En lugar de tener variables sueltas y dispersas o callbacks colaterales, el contenedor de estado almacena tanto la situación persistente (`palabraSecreta`, `vidasRestantes`, `letrasProbadas`, `estado`) como la información del último turno jugado (`ultimoEvento: EventoTurno?`, `ultimaLetraJugada: Char?`).
+2. **El algoritmo es una función pura de transición:** La función `procesarIntento(letraInput: Char?)` es una función de extensión sobre `EstadoAhorcado`. Recibe el estado actual y la letra propuesta, y **lo único que hace es calcular y retornar un NUEVO estado con `.copy()`**. No imprime nada por consola ni requiere callbacks auxiliares.
+3. **La capa de presentación es reactiva y desacoplada:** La función `main()` (o una pantalla de Compose) simplemente observa el estado: lee `estado.ultimoEvento` para mostrar el mensaje de feedback y lee `estado.mascara` y `estado.vidasRestantes` para dibujar el marcador.
 
 ##### 🔄 El Juego como una Máquina de Estados
 
-El juego puede modelarse formalmente como una **máquina de estados finita**. A partir de un estado inicial `JUGANDO`, cada intento actúa como una entrada que produce una transición hacia un nuevo estado:
+El juego se modela como una **máquina de estados finita**. A partir de una fotografía inicial en fase `JUGANDO`, cada intento actúa como una entrada que produce una transición hacia una nueva fotografía:
 
 ```mermaid
 stateDiagram-v2
@@ -1723,39 +1865,40 @@ stateDiagram-v2
         [*] --> EvaluandoIntento
         
         EvaluandoIntento --> LetraNula: letraInput == null
-        LetraNula --> EsperandoJugada: Notifica ENTRADA_NULA (0 penalización)
+        LetraNula --> EsperandoJugada: Retorna estado con ultimoEvento = ENTRADA_NULA<br/>(0 penalización)
         
         EvaluandoIntento --> LetraRepetida: letra in probadas
-        LetraRepetida --> EsperandoJugada: Notifica LETRA_REPETIDA (0 penalización)
+        LetraRepetida --> EsperandoJugada: Retorna estado con ultimoEvento = LETRA_REPETIDA<br/>(0 penalización)
         
         EvaluandoIntento --> Acierto: letra in palabraSecreta
-        Acierto --> EsperandoJugada: Notifica ACIERTO (vidas intactas)
+        Acierto --> EsperandoJugada: Retorna estado con ultimoEvento = ACIERTO<br/>(vidas intactas)
         
         EvaluandoIntento --> Fallo: letra not in palabraSecreta
-        Fallo --> EsperandoJugada: Notifica FALLO (vidas - 1)
+        Fallo --> EsperandoJugada: Retorna estado con ultimoEvento = FALLO<br/>(vidas - 1)
     }
 
     JUGANDO --> VICTORIA: todas las letras descubiertas
+    VICTORIA --> [*]: Estado terminal (Éxito)
+
     JUGANDO --> DERROTA: vidasRestantes == 0
-    
-    VICTORIA --> [*]: Fin de partida (Éxito)
-    DERROTA --> [*]: Fin de partida (Ahorcado)
+    DERROTA --> [*]: Estado terminal (Ahorcado)
 ```
 
 ---
 
 #### 2. Código Base Inicial
 
-Para que puedas centrarte al 100% en la **arquitectura de estado**, las **funciones de extensión** y la **lógica pura con lambdas** sin perder tiempo en la mecánica de simulación de turnos o en formatear la consola, se te proporciona el archivo base con la función `main()` ya implementada.
+Para que puedas centrarte al 100% en la **arquitectura de estado**, las **funciones de extensión** y el **diseño inmutable**, se te proporciona el archivo base con la inicialización de la partida en `main()`.
 
 Copia esta plantilla en tu archivo `Reto02_AhorcadoJuego.kt` y completa las piezas marcadas con `TODO()`:
 
 ```kotlin
 package b02_funciones_lambdas
 
-// 1. TODO: Define los enumerados para el ciclo de vida continuo y los eventos del turno
-
-TODO("Define los enums")
+// 1. TODO: Define los enumerados para el ciclo de vida continuo y para la información del turno
+// - EstadoPartida: JUGANDO, VICTORIA, DERROTA
+// - EventoTurno: ACIERTO, FALLO, LETRA_REPETIDA, ENTRADA_NULA
+TODO("Define enum class EstadoPartida y enum class EventoTurno")
 
 // 2. TODO: Implementa las funciones de extensión sobre String
 fun String.enmascarar(probadas: String): String {
@@ -1767,21 +1910,19 @@ fun String.estaAdivinada(probadas: String): Boolean {
 }
 
 // 3. TODO: Define la data class inmutable del estado del juego
-TODO(Define la data class inmutable del estado del juego)
+// Debe incluir: palabraSecreta, letrasProbadas, vidasRestantes, estado, ultimoEvento y ultimaLetraJugada
+// Además de la propiedad calculada: mascara
+TODO("Define data class EstadoAhorcado")
 
-// 4. TODO: Implementa el algoritmo de transición de estados desacoplado
-fun procesarIntento(
-    estadoActual: EstadoAhorcado,
-    letraInput: Char?,
-    onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit
-): EstadoAhorcado {
-    TODO("Implementar transición de estado con Null Safety y notificación")
+// 4. TODO: Implementa la función pura de transición de estados sin efectos secundarios
+fun EstadoAhorcado.procesarIntento(letraInput: Char?): EstadoAhorcado {
+    TODO("Implementar transición de estado retornando una copia con .copy()")
 }
 
 // ============================================================================
 // 🎮 PUNTO DE ENTRADA: INICIALIZACIÓN PROPORCIONADA
 // Se te facilita la configuración inicial de la partida para que construyas
-// el bucle interactivo que consume el estado y gestiona las notificaciones.
+// el bucle interactivo que consume el estado y renderiza la consola.
 // ============================================================================
 fun main() {
     val palabraSecreta = when ((1..4).random()) {
@@ -1796,14 +1937,15 @@ fun main() {
     var estado = EstadoAhorcado(palabraSecreta = palabraSecreta)
     var turno = 1
 
-    println("=== EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO & LAMBDAS) ===")
+    println("=== EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO PURA) ===")
     println("Palabra: ${estado.mascara} | Vidas: ${estado.vidasRestantes} | Probadas: ''\n")
 
-    // TODO: 5. Implementa el bucle de juego y la capa de presentación:
+    // TODO: 5. Implementa el bucle de juego interactivo:
     // - Itera mientras estado.estado sea EstadoPartida.JUGANDO
     // - Extrae un carácter aleatorio de bolsaLetras (si es '?' pasa null a procesarIntento)
-    // - Invoca procesarIntento pasando la lambda onNotificacion para mostrar los mensajes con when(evento)
-    // - Imprime el marcador tras cada turno e incrementa el contador de turnos
+    // - Actualiza el estado reasignando: estado = estado.procesarIntento(letraTurno)
+    // - Lee estado.ultimoEvento para mostrar el mensaje adecuado mediante when (estado.ultimoEvento)
+    // - Muestra el marcador tras cada turno e incrementa el contador de turnos
     // - Al terminar el bucle, muestra el mensaje de VICTORIA o DERROTA según estado.estado
 }
 ```
@@ -1815,41 +1957,55 @@ fun main() {
 Tu objetivo es sustituir los bloques `TODO()` de la plantilla anterior cumpliendo las siguientes especificaciones:
 
 1. **RF-01 (Dominio con Enumerados):**
-    - `EstadoPartida`: Con los estados `JUGANDO`, `VICTORIA` y `DERROTA`.
-    - `EventoTurno`: Con las notificaciones `ACIERTO`, `FALLO`, `LETRA_REPETIDA` y `ENTRADA_NULA`.
+    - `EstadoPartida`: Con las fases de la partida `JUGANDO`, `VICTORIA` y `DERROTA`.
+    - `EventoTurno`: Con los tipos de suceso `ACIERTO`, `FALLO`, `LETRA_REPETIDA` y `ENTRADA_NULA`.
 
 2. **RF-02 (Funciones de Extensión sobre `String`):**
     - `fun String.enmascarar(probadas: String): String`: Recorre `this` con `.map` mostrando el carácter si está en `probadas` o `'_'` en caso contrario, y únelo con espacios mediante `.joinToString(" ")`.
     - `fun String.estaAdivinada(probadas: String): Boolean`: Comprueba de forma declarativa con `this.all { ... }` si todos los caracteres de la palabra están presentes en `probadas`.
 
 3. **RF-03 (Contenedor de Estado Inmutable `EstadoAhorcado`):**
-    - Propiedades: `val palabraSecreta: String`, `val letrasProbadas: String = ""`, `val vidasRestantes: Int = 6`, `val estado: EstadoPartida = EstadoPartida.JUGANDO`.
+    - Parámetros del constructor primario:
+        - `val palabraSecreta: String`
+        - `val letrasProbadas: String = ""`
+        - `val vidasRestantes: Int = 6`
+        - `val estado: EstadoPartida = EstadoPartida.JUGANDO`
+        - `val ultimoEvento: EventoTurno? = null` (evento producido en el último intento)
+        - `val ultimaLetraJugada: Char? = null` (carácter propuesto en el último intento)
     - Propiedad computada: `val mascara: String get() = palabraSecreta.enmascarar(letrasProbadas)`.
 
-4. **RF-04 (Motor de Transición Pura `procesarIntento`):**
-    - Firma: `fun procesarIntento(estadoActual: EstadoAhorcado, letraInput: Char?, onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit): EstadoAhorcado`.
-    - **Fase 1 (Null Safety):** Si `letraInput` es nulo, invoca `onNotificacion(EventoTurno.ENTRADA_NULA, null)` y retorna `estadoActual` sin cambios.
-    - **Fase 2 (Repetición):** Normaliza a mayúsculas (`letraInput.uppercaseChar()`). Si la letra ya existe en `estadoActual.letrasProbadas`, invoca `onNotificacion(EventoTurno.LETRA_REPETIDA, letra)` y retorna `estadoActual` sin penalizar vidas.
-    - **Fase 3 (Acierto):** Si la letra está en `palabraSecreta`, añade la letra a probadas, dispara `onNotificacion(EventoTurno.ACIERTO, letra)` y comprueba victoria con `.estaAdivinada(...)`. Retorna el nuevo estado con `.copy()`.
-    - **Fase 4 (Fallo):** Si la letra no está en la palabra, resta 1 vida, dispara `onNotificacion(EventoTurno.FALLO, letra)` y comprueba si las vidas llegan a 0 para pasar a `DERROTA`. Retorna el nuevo estado con `.copy()`.
+4. **RF-04 (Función Pura de Transición `procesarIntento`):**
+    - Firma: `fun EstadoAhorcado.procesarIntento(letraInput: Char?): EstadoAhorcado`.
+    - Si el estado actual no es `JUGANDO`, retorna `this` sin alteraciones.
+    - **Fase 1 (Null Safety):** Si `letraInput` es nulo, retorna `this.copy(ultimoEvento = EventoTurno.ENTRADA_NULA, ultimaLetraJugada = null)` sin penalizar vidas ni modificar probadas.
+    - **Fase 2 (Repetición):** Normaliza a mayúsculas con `letraInput.uppercaseChar()`. Si la letra ya está en `this.letrasProbadas`, retorna `this.copy(ultimoEvento = EventoTurno.LETRA_REPETIDA, ultimaLetraJugada = letra)` sin penalizar vidas.
+    - **Fase 3 (Acierto):** Si la letra está en `this.palabraSecreta`:
+        - Añade la letra a las probadas (`nuevasProbadas = this.letrasProbadas + letra`).
+        - Comprueba victoria con `this.palabraSecreta.estaAdivinada(nuevasProbadas)`.
+        - Retorna `this.copy(...)` con el nuevo estado (`VICTORIA` o `JUGANDO`), `ultimoEvento = EventoTurno.ACIERTO` y `ultimaLetraJugada = letra`.
+    - **Fase 4 (Fallo):** Si la letra no pertenece a la palabra:
+        - Resta 1 vida (`nuevasVidas = this.vidasRestantes - 1`).
+        - Comprueba derrota (`nuevasVidas <= 0`).
+        - Retorna `this.copy(...)` con `vidasRestantes = nuevasVidas`, el nuevo estado (`DERROTA` o `JUGANDO`), `ultimoEvento = EventoTurno.FALLO` y `ultimaLetraJugada = letra`.
 
 5. **RF-05 (Bucle de Simulación en `main()`):**
     - A partir de la inicialización proporcionada, implementa el bucle `while (estado.estado == EstadoPartida.JUGANDO)`.
-    - En cada ronda, extrae un carácter aleatorio de `bolsaLetras` y pásalo a `procesarIntento(...)` (convirtiendo `'?'` en `null` para simular entradas inválidas).
-    - Implementa la lambda `onNotificacion` gestionando un `when (evento)` para imprimir el feedback correspondiente.
-    - Imprime el estado visual del marcador tras cada turno e informa del desenlace final al concluir la partida (`when (estado.estado)`).
+    - En cada ronda, extrae un carácter de `bolsaLetras` y actualiza la variable de estado: `estado = estado.procesarIntento(letraTurno)`.
+    - Evalúa `when (estado.ultimoEvento)` para mostrar el feedback adecuado en la consola.
+    - Imprime el marcador tras cada turno e incrementa el contador de turnos.
+    - Al concluir el bucle, muestra el desenlace final consultando `estado.estado`.
 
 ---
 
 ??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
-    - **¿Por qué `procesarIntento` retorna un nuevo objeto en lugar de modificar el existente?**  
-      En Kotlin y Jetpack Compose, los estados son inmutables. Modificar directamente las propiedades de un objeto no genera eventos de recomposición fiables; crear una copia nueva con `.copy()` permite a los sistemas reactivos detectar el cambio instantáneamente (*Unidirectional Data Flow*).
+    - **¿Por qué integrar `ultimoEvento` dentro de `EstadoAhorcado` en lugar de pasarlo en una lambda externa?**  
+      En la arquitectura recomendada para Android y Compose, la interfaz es una función pura del estado. Tener toda la información en un único objeto garantiza una **única fuente de la verdad**. Si la pantalla se gira o se recompone, el estado conserva tanto los datos del marcador como el último mensaje que se debe mostrar al usuario.
+
+    - **¿Por qué `procesarIntento` es una función de extensión sobre `EstadoAhorcado`?**  
+      Permite una sintaxis fluida y natural: `estado = estado.procesarIntento(letra)`. La función opera sobre `this` y devuelve una nueva instancia inmutable mediante `.copy()`, garantizando cero efectos secundarios.
 
     - **¿Por qué la función no debe tener sentencias `println()`?**  
-      Porque imprimir en consola es un detalle de infraestructura. Si mañana conectamos esta lógica a una interfaz táctil de Android o a una aplicación web, la lógica de `procesarIntento` no cambiará ni una sola línea.
-
-    - **¿Cuál es el papel del enum `EventoTurno` frente a `EstadoPartida`?**  
-      `EstadoPartida` es el estado continuo del ciclo de vida (persistente), mientras que `EventoTurno` es una notificación de un solo disparo (*One-off Event*) que informa qué ha sucedido justo en este turno.
+      Porque la lógica de negocio debe ser completamente agnóstica a la capa de presentación. Si mañana conectamos este mismo motor a una aplicación móvil en Compose o a un servicio web, no cambiará ni una sola línea de código.
 
 ??? tip "💡 Pistas Progresivas de Ayuda"
     === "Pista 1: Extensión String.enmascarar"
@@ -1858,42 +2014,45 @@ Tu objetivo es sustituir los bloques `TODO()` de la plantilla anterior cumpliend
             this.map { if (it in probadas) it else '_' }.joinToString(" ")
         ```
 
-    === "Pista 2: Cláusula de guarda con Elvis"
+    === "Pista 2: Manejo de nulos en procesarIntento"
         ```kotlin
-        val letra = letraInput?.uppercaseChar() ?: run {
-            onNotificacion(EventoTurno.ENTRADA_NULA, null)
-            return estadoActual
-        }
+        val letra = letraInput?.uppercaseChar() ?: return this.copy(
+            ultimoEvento = EventoTurno.ENTRADA_NULA,
+            ultimaLetraJugada = null
+        )
         ```
 
-    === "Pista 3: Retornar copia con estado de victoria"
+    === "Pista 3: Retornar copia con acierto y comprobación de victoria"
         ```kotlin
-        val victoria = estadoActual.palabraSecreta.estaAdivinada(nuevasProbadas)
-        return estadoActual.copy(
+        val nuevasProbadas = this.letrasProbadas + letra
+        val victoria = this.palabraSecreta.estaAdivinada(nuevasProbadas)
+        return this.copy(
             letrasProbadas = nuevasProbadas,
-            estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO
+            estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO,
+            ultimoEvento = EventoTurno.ACIERTO,
+            ultimaLetraJugada = letra
         )
         ```
 
 ??? example "🖥️ Ver Salida Esperada en Consola (Capa de Presentación)"
     ```text
-    === EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO & LAMBDAS) ===
+    === EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO PURA) ===
     Palabra: _ _ _ _ _ _ _ | Vidas: 6 | Probadas: ''
 
     --- Turno 1 -> Letra propuesta: R ---
-      [NOTIFICACIÓN] ✅ ¡Acierto! La letra 'R' pertenece a la palabra secreta.
+      [EVENTO ESTADO] ✅ ¡Acierto! La letra 'R' pertenece a la palabra secreta.
       Marcador: _ _ R _ _ _ _ | Vidas: 6 | Probadas: 'R'
 
     --- Turno 2 -> Letra propuesta: S ---
-      [NOTIFICACIÓN] ❌ ¡Fallo! La letra 'S' NO pertenece a la palabra secreta.
+      [EVENTO ESTADO] ❌ ¡Fallo! La letra 'S' NO pertenece a la palabra secreta.
       Marcador: _ _ R _ _ _ _ | Vidas: 5 | Probadas: 'RS'
 
     --- Turno 3 -> Letra propuesta: null (entrada inválida) ---
-      [NOTIFICACIÓN] 🛑 Entrada no válida (null). Turno omitido sin penalización.
+      [EVENTO ESTADO] 🛑 Entrada no válida (null). Turno omitido sin penalización.
       Marcador: _ _ R _ _ _ _ | Vidas: 5 | Probadas: 'RS'
 
     --- Turno 4 -> Letra propuesta: R ---
-      [NOTIFICACIÓN] ⚠️ La letra 'R' ya fue probada anteriormente.
+      [EVENTO ESTADO] ⚠️ La letra 'R' ya fue probada anteriormente.
       Marcador: _ _ R _ _ _ _ | Vidas: 5 | Probadas: 'RS'
 
     ... (turnos sucesivos) ...
@@ -1905,7 +2064,7 @@ Tu objetivo es sustituir los bloques `TODO()` de la plantilla anterior cumpliend
     ```kotlin
     package b02_funciones_lambdas
 
-    // 1. Enumerados para el ciclo de vida continuo y para eventos efímeros
+    // 1. Enumerados para el ciclo de vida continuo y para el último evento del turno
     enum class EstadoPartida {
         JUGANDO,
         VICTORIA,
@@ -1928,55 +2087,60 @@ Tu objetivo es sustituir los bloques `TODO()` de la plantilla anterior cumpliend
         return this.all { c -> c in probadas }
     }
 
-    // 3. Contenedor de Estado Inmutable (Agnóstico a la UI)
+    // 3. Contenedor de Estado Inmutable (Fuente Única de la Verdad)
     data class EstadoAhorcado(
         val palabraSecreta: String,
         val letrasProbadas: String = "",
         val vidasRestantes: Int = 6,
-        val estado: EstadoPartida = EstadoPartida.JUGANDO
+        val estado: EstadoPartida = EstadoPartida.JUGANDO,
+        val ultimoEvento: EventoTurno? = null,
+        val ultimaLetraJugada: Char? = null
     ) {
         val mascara: String 
             get() = palabraSecreta.enmascarar(letrasProbadas)
     }
 
-    // 4. Algoritmo de transición de estados: lógica pura desacoplada
-    fun procesarIntento(
-        estadoActual: EstadoAhorcado,
-        letraInput: Char?,
-        onNotificacion: (evento: EventoTurno, letra: Char?) -> Unit
-    ): EstadoAhorcado {
-        // Cláusula de guarda Null Safety:
-        val letra = letraInput?.uppercaseChar() ?: run {
-            onNotificacion(EventoTurno.ENTRADA_NULA, null)
-            return estadoActual
-        }
+    // 4. Algoritmo puro de transición de estados sin efectos secundarios
+    fun EstadoAhorcado.procesarIntento(letraInput: Char?): EstadoAhorcado {
+        if (this.estado != EstadoPartida.JUGANDO) return this
 
-        // Comprobación de repetición:
-        if (letra in estadoActual.letrasProbadas) {
-            onNotificacion(EventoTurno.LETRA_REPETIDA, letra)
-            return estadoActual
-        }
+        // Fase 1: Cláusula de guarda Null Safety
+        val letra = letraInput?.uppercaseChar() ?: return this.copy(
+            ultimoEvento = EventoTurno.ENTRADA_NULA,
+            ultimaLetraJugada = null
+        )
 
-        val nuevasProbadas = estadoActual.letrasProbadas + letra
-
-        // Transición de acierto o fallo:
-        return if (letra in estadoActual.palabraSecreta) {
-            onNotificacion(EventoTurno.ACIERTO, letra)
-            val victoria = estadoActual.palabraSecreta.estaAdivinada(nuevasProbadas)
-            estadoActual.copy(
-                letrasProbadas = nuevasProbadas,
-                estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO
-            )
-        } else {
-            val nuevasVidas = estadoActual.vidasRestantes - 1
-            onNotificacion(EventoTurno.FALLO, letra)
-            val derrota = (nuevasVidas <= 0)
-            estadoActual.copy(
-                letrasProbadas = nuevasProbadas,
-                vidasRestantes = nuevasVidas,
-                estado = if (derrota) EstadoPartida.DERROTA else EstadoPartida.JUGANDO
+        // Fase 2: Comprobación de repetición
+        if (letra in this.letrasProbadas) {
+            return this.copy(
+                ultimoEvento = EventoTurno.LETRA_REPETIDA,
+                ultimaLetraJugada = letra
             )
         }
+
+        val nuevasProbadas = this.letrasProbadas + letra
+
+        // Fase 3: Acierto
+        if (letra in this.palabraSecreta) {
+            val victoria = this.palabraSecreta.estaAdivinada(nuevasProbadas)
+            return this.copy(
+                letrasProbadas = nuevasProbadas,
+                estado = if (victoria) EstadoPartida.VICTORIA else EstadoPartida.JUGANDO,
+                ultimoEvento = EventoTurno.ACIERTO,
+                ultimaLetraJugada = letra
+            )
+        }
+
+        // Fase 4: Fallo
+        val nuevasVidas = this.vidasRestantes - 1
+        val derrota = (nuevasVidas <= 0)
+        return this.copy(
+            letrasProbadas = nuevasProbadas,
+            vidasRestantes = nuevasVidas,
+            estado = if (derrota) EstadoPartida.DERROTA else EstadoPartida.JUGANDO,
+            ultimoEvento = EventoTurno.FALLO,
+            ultimaLetraJugada = letra
+        )
     }
 
     fun main() {
@@ -1992,7 +2156,7 @@ Tu objetivo es sustituir los bloques `TODO()` de la plantilla anterior cumpliend
         var estado = EstadoAhorcado(palabraSecreta = palabraSecreta)
         var turno = 1
 
-        println("=== EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO & LAMBDAS) ===")
+        println("=== EL AHORCADO KOTLIN (ARQUITECTURA DE ESTADO PURA) ===")
         println("Palabra: ${estado.mascara} | Vidas: ${estado.vidasRestantes} | Probadas: ''\n")
 
         // Bucle guiado por el estado continuo
@@ -2002,15 +2166,16 @@ Tu objetivo es sustituir los bloques `TODO()` de la plantilla anterior cumpliend
 
             println("--- Turno $turno -> Letra propuesta: ${letraTurno ?: "null (entrada inválida)"} ---")
 
-            // Invocación a la lógica pura: el nuevo estado se genera con .copy()
-            estado = procesarIntento(estado, letraTurno) { evento, letra ->
-                // La capa de presentación decide cómo mostrar los eventos de notificación:
-                when (evento) {
-                    EventoTurno.ACIERTO -> println("  [NOTIFICACIÓN] ✅ ¡Acierto! La letra '$letra' pertenece a la palabra secreta.")
-                    EventoTurno.FALLO -> println("  [NOTIFICACIÓN] ❌ ¡Fallo! La letra '$letra' NO pertenece a la palabra secreta.")
-                    EventoTurno.LETRA_REPETIDA -> println("  [NOTIFICACIÓN] ⚠️ La letra '$letra' ya fue probada anteriormente.")
-                    EventoTurno.ENTRADA_NULA -> println("  [NOTIFICACIÓN] 🛑 Entrada no válida (null). Turno omitido sin penalización.")
-                }
+            // Evolución inmutable del estado:
+            estado = estado.procesarIntento(letraTurno)
+
+            // La presentación se renderiza EXCLUSIVAMENTE a partir del estado:
+            when (estado.ultimoEvento) {
+                EventoTurno.ACIERTO -> println("  [EVENTO ESTADO] ✅ ¡Acierto! La letra '${estado.ultimaLetraJugada}' pertenece a la palabra secreta.")
+                EventoTurno.FALLO -> println("  [EVENTO ESTADO] ❌ ¡Fallo! La letra '${estado.ultimaLetraJugada}' NO pertenece a la palabra secreta.")
+                EventoTurno.LETRA_REPETIDA -> println("  [EVENTO ESTADO] ⚠️ La letra '${estado.ultimaLetraJugada}' ya fue probada anteriormente.")
+                EventoTurno.ENTRADA_NULA -> println("  [EVENTO ESTADO] 🛑 Entrada no válida (null). Turno omitido sin penalización.")
+                null -> Unit
             }
 
             println("  Marcador: ${estado.mascara} | Vidas: ${estado.vidasRestantes} | Probadas: '${estado.letrasProbadas}'\n")
