@@ -1206,44 +1206,46 @@ Llamada 2:
 
 ---
 
-### Ejercicio 2.11: Fábricas de Lambdas y Clausuras (*Closures*) Mutables
+### Ejercicio 2.11: Fábricas de Lambdas y Clausuras (*Closures*)
 📄 **Archivo:** `E11_FabricaDeFunciones.kt`  
-📚 **Teoría de referencia:** [Clausuras (Closures): Captura y Modificación de Variables](../13-funciones-lambdas.md#33-clausuras-closures-captura-y-modificacion-de-variables-del-entorno)
+📚 **Teoría de referencia:** [Clausuras (Closures): Funciones que Devuelven Funciones](../13-funciones-lambdas.md#33-clausuras-closures-captura-y-modificacion-de-variables-del-entorno)
 
 #### 1. Enunciado y Requisitos
 
-En Kotlin, una lambda forma un **Closure (clausura)** con su entorno léxico: recuerda y puede utilizar las variables declaradas fuera de su cuerpo. A diferencia de Java (donde las variables capturadas deben ser forzosamente `final`), **Kotlin permite mutar variables locales `var` externas directamente**.
+En Kotlin, las funciones son ciudadanos de primera clase (*first-class citizens*), lo que significa que una función puede recibir otras funciones como argumento y también **retornar una nueva función o lambda**.
 
-1. **Parte A — Fábrica de Funciones (Captura Inmutable):**
+Cuando una función creadora (fábrica) genera y retorna una lambda, dicha lambda forma una **clausura (*closure*)** con su entorno: **retiene y "recuerda" los parámetros recibidos por la fábrica**, aunque la función fábrica ya haya terminado su ejecución.
 
-    - Diseña una función `crearMultiplicadorDificultad(multiplicador: Double): (Int) -> Int`.
+Este patrón de diseño es fundamental en arquitecturas móviles (por ejemplo, para crear **reglas de validación reutilizables en formularios de Jetpack Compose** sin duplicar lógica de comprobación).
 
-    - Debe devolver una lambda que reciba el daño base de un enemigo y devuelva el daño escalado al multiplicador.
+1. **Fábrica de Validación de Longitud Mínima (`crearValidadorLongitudMinima`):**
 
-    - En `main()`, genera tres instancias: `modoFacil` (`0.75`), `modoNormal` (`1.0`) y `modoPesadilla` (`2.5`).
+    - Implementa una función fábrica `fun crearValidadorLongitudMinima(longitudMin: Int): (String) -> Boolean`.
+    - Debe retornar una lambda que reciba un `String` y devuelva `true` si la longitud del texto es mayor o igual que `longitudMin`. La lambda retiene `longitudMin` en su clausura.
 
-2. **Parte B — Clausura Mutable y Acumulador de Estado:**
+2. **Fábrica de Validación de Prefijo (`crearValidadorPrefijo`):**
 
-    - En `main()`, declara dos variables locales mutables: `var totalDanoRecibido = 0` y `var contadorAtaques = 0`.
+    - Implementa una función fábrica `fun crearValidadorPrefijo(prefijo: String): (String) -> Boolean`.
+    - Debe retornar una lambda que reciba un `String` y devuelva `true` si el texto comienza con `prefijo` (utilizando `.startsWith(prefijo, ignoreCase = true)`).
 
-    - Diseña una lambda `val registrarImpacto: (Int) -> Unit = { ... }` que capture y **mute directamente** ambas variables externas, incrementando el contador y sumando el daño al total acumulado.
+3. **Uso y Comprobación en `main()`:**
 
-    - Simula 3 ataques consecutivos de `50`, `120` y `80` puntos llamando a `registrarImpacto` y verifica cómo el estado exterior se actualiza de forma reactiva.
+    - Genera dos validadores especializados: `val validadorPin = crearValidadorLongitudMinima(4)` y `val validadorPassword = crearValidadorLongitudMinima(8)`.
+    - Genera un validador de dominio escolar: `val esEmailEscolar = crearValidadorPrefijo("alu.")`.
+    - Comprueba desde `main()` varios casos válidos e inválidos para demostrar que cada función generada retiene de forma independiente su propia configuración.
 
 #### 2. Salida Esperada en Consola
 
 ```text
-=== PARTE A: FÁBRICA DE FUNCIONES Y ESCALADO ===
-Daño base del jefe: 100
-- Modo Fácil (0.75x): 75 pts
-- Modo Normal (1.0x): 100 pts
-- Modo Pesadilla (2.5x): 250 pts
+=== 1. VALIDACIÓN DE LONGITUD (CLOSURE CON PARÁMETRO NUMÉRICO) ===
+PIN '123' válido (mín. 4): false
+PIN '9876' válido (mín. 4): true
+Password 'abc' válida (mín. 8): false
+Password 'pmdm2026' válida (mín. 8): true
 
-=== PARTE B: CLOSURE MUTABLE (ACUMULADOR) ===
-[Impacto #1]: +50 pts | Daño acumulado: 50
-[Impacto #2]: +120 pts | Daño acumulado: 170
-[Impacto #3]: +80 pts | Daño acumulado: 250
-Total final en ámbito exterior: 250 pts recibidos en 3 impactos.
+=== 2. VALIDACIÓN DE PREFIJO (CLOSURE CON PARÁMETRO DE TEXTO) ===
+Email 'alu.garcia@pmdm.es' (prefijo 'alu.'): true
+Email 'profe.garcia@pmdm.es' (prefijo 'alu.'): false
 ```
 
 #### 3. Solución Comentada
@@ -1251,41 +1253,36 @@ Total final en ámbito exterior: 250 pts recibidos en 3 impactos.
     ```kotlin
     package b02_funciones_lambdas
 
-    // Parte A: Fábrica de funciones -> Devuelve una lambda que encapsula 'multiplicador'
-    fun crearMultiplicadorDificultad(multiplicador: Double): (Int) -> Int {
-        return { danoBase -> (danoBase * multiplicador).toInt() }
+    // 1. Fábrica de lambdas para longitud mínima:
+    // Devuelve una función (String) -> Boolean que encapsula 'longitudMin' en su clausura
+    fun crearValidadorLongitudMinima(longitudMin: Int): (String) -> Boolean {
+        return { texto -> texto.length >= longitudMin }
+    }
+
+    // 2. Fábrica de lambdas para prefijos de texto:
+    // Devuelve una función (String) -> Boolean que encapsula 'prefijo' en su clausura
+    fun crearValidadorPrefijo(prefijo: String): (String) -> Boolean {
+        return { texto -> texto.startsWith(prefijo, ignoreCase = true) }
     }
 
     fun main() {
-        println("=== PARTE A: FÁBRICA DE FUNCIONES Y ESCALADO ===")
-        val modoFacil = crearMultiplicadorDificultad(0.75)
-        val modoNormal = crearMultiplicadorDificultad(1.0)
-        val modoPesadilla = crearMultiplicadorDificultad(2.5)
+        println("=== 1. VALIDACIÓN DE LONGITUD (CLOSURE CON PARÁMETRO NUMÉRICO) ===")
+        // Cada validador es una instancia de función independiente con su propia configuración:
+        val validadorPin = crearValidadorLongitudMinima(4)
+        val validadorPassword = crearValidadorLongitudMinima(8)
 
-        val danoJefe = 100
-        println("Daño base del jefe: $danoJefe")
-        println("- Modo Fácil (0.75x): ${modoFacil(danoJefe)} pts")
-        println("- Modo Normal (1.0x): ${modoNormal(danoJefe)} pts")
-        println("- Modo Pesadilla (2.5x): ${modoPesadilla(danoJefe)} pts")
+        println("PIN '123' válido (mín. 4): ${validadorPin("123")}")
+        println("PIN '9876' válido (mín. 4): ${validadorPin("9876")}")
+        println("Password 'abc' válida (mín. 8): ${validadorPassword("abc")}")
+        println("Password 'pmdm2026' válida (mín. 8): ${validadorPassword("pmdm2026")}")
 
-        println("\n=== PARTE B: CLOSURE MUTABLE (ACUMULADOR) ===")
-        // Variables locales del ámbito exterior:
-        var totalDanoRecibido = 0
-        var contadorAtaques = 0
+        println("\n=== 2. VALIDACIÓN DE PREFIJO (CLOSURE CON PARÁMETRO DE TEXTO) ===")
+        val esEmailEscolar = crearValidadorPrefijo("alu.")
 
-        // La lambda captura y MODIFICA directamente las variables externas:
-        val registrarImpacto: (Int) -> Unit = { dano ->
-            contadorAtaques++
-            totalDanoRecibido += dano
-            println("[Impacto #$contadorAtaques]: +$dano pts | Daño acumulado: $totalDanoRecibido")
-        }
-
-        registrarImpacto(50)
-        registrarImpacto(120)
-        registrarImpacto(80)
-
-        // Verificamos que las variables de main() reflejan las mutaciones de la lambda:
-        println("Total final en ámbito exterior: $totalDanoRecibido pts recibidos en $contadorAtaques impactos.")
+        val email1 = "alu.garcia@pmdm.es"
+        val email2 = "profe.garcia@pmdm.es"
+        println("Email '$email1' (prefijo 'alu.'): ${esEmailEscolar(email1)}")
+        println("Email '$email2' (prefijo 'alu.'): ${esEmailEscolar(email2)}")
     }
     ```
 
