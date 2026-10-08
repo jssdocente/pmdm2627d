@@ -1,12 +1,13 @@
-# Taller de Testing 3: Wordle Engine con TDD (Dominio, Data Classes y Excepciones)
+# Taller de Testing 3: Wordle Engine con TDD (Arquitectura de Estado, Tipos Sellados y Companion Object)
 
-En el [Reto 3.19 de POO y Tipos Sellados](../ejercicios/03-poo-sealed-types.md#reto-319-el-motor-de-wordle-en-consola-poo-data-classes-y-dominio) modelaste el núcleo de validación para el juego de palabras **Wordle**, apoyándote en `enum class`, `data class` y el patrón de estado inmutable `PartidaWordle`.
+En el [Reto 3.19 de POO y Tipos Sellados](../ejercicios/03-poo-sealed-types.md#reto-319-el-motor-de-wordle-con-arquitectura-de-estado-state-companion-object-sealed-types) modelaste el motor desacoplado de validación y gestión de estado para el juego de palabras **Wordle**, apoyándote en `enum class`, `sealed interface`, `companion object` y el patrón de estado inmutable `EstadoWordle` (*UiState*).
 
-En este tercer taller continuaremos aplicando la metodología **TDD (*Test-Driven Development*)** para abordar tres competencias fundamentales del testing profesional en Kotlin y Android:
+En este tercer taller continuaremos aplicando la metodología **TDD (*Test-Driven Development*)** para abordar cuatro competencias fundamentales del desarrollo y testing profesional en Kotlin y Android:
 
-1. **Testing de Excepciones y Precondiciones:** Cómo verificar con **`assertFailsWith<T>`** que el sistema rechaza entradas inválidas y lanza excepciones controladas ante incumplimiento de contratos (`require`).
-2. **Igualdad Estructural en Data Classes:** Cómo `assertEquals` aprovecha el método `equals()` generado automáticamente por Kotlin para comparar estructuras complejas celda a celda sin escribir comparadores manuales.
-3. **Testing de Modelos de Estado (`UiState`):** Cómo comprobar que la evolución de un estado inmutable mediante **`.copy()`** actualiza de forma matemáticamente exacta las propiedades calculadas (`intentosRestantes`, `esVictoria`, `esFinDePartida`).
+1. **Testing de la Factoría Semántica (`companion object`):** Cómo verificar que el método factoría inicializa estados limpios tanto con palabras personalizadas como con el diccionario aleatorio por defecto.
+2. **Igualdad Estructural en Data Classes y Enums:** Cómo `assertEquals` y `assertTrue` comprueban la clasificación posicional de letras (`VERDE`, `AMARILLO`, `GRIS`) celda a celda sin comparadores manuales.
+3. **Manejo Robusto de Entradas con `sealed interface`:** Cómo verificar que las palabras de longitud inválida no crashean la aplicación, sino que emiten de forma reactiva el evento `EventoWordle.LongitudInvalida` conservando intacto el estado de la partida.
+4. **Testing de Transiciones de Estado Inmutables (`procesarIntento`):** Cómo comprobar que la evolución de `EstadoWordle` mediante `.copy()` actualiza de forma matemáticamente exacta los turnos restantes, la lista de intentos y la fase del juego (`EstadoPartida.VICTORIA` o `DERROTA`).
 
 ---
 
@@ -53,28 +54,54 @@ enum class EstadoLetra(val icono: String) {
     GRIS("⬛")
 }
 
+enum class EstadoPartida {
+    JUGANDO,
+    VICTORIA,
+    DERROTA
+}
+
+sealed interface EventoWordle {
+    data class IntentoRegistrado(val turnoActual: Int, val intentosRestantes: Int) : EventoWordle
+    data class LongitudInvalida(val longitudRecibida: Int, val longitudEsperada: Int) : EventoWordle
+    data class Victoria(val intentosUsados: Int) : EventoWordle
+    data class Derrota(val palabraCorrecta: String) : EventoWordle
+}
+
 data class EvaluacionLetra(
     val caracter: Char,
     val estado: EstadoLetra
 )
 
-data class PartidaWordle(
+data class EstadoWordle(
     val palabraSecreta: String,
-    val intentosMaximos: Int = 6,
-    val intentosRealizados: List<List<EvaluacionLetra>> = emptyList()
+    val intentosMaximos: Int = INTENTOS_POR_DEFECTO,
+    val intentos: List<List<EvaluacionLetra>> = emptyList(),
+    val estado: EstadoPartida = EstadoPartida.JUGANDO
 ) {
-    val intentosRestantes: Int
-        get() = TODO("Misión 3: Calcular intentos restantes")
+    val turnosRestantes: Int
+        get() = TODO("Misión 3: Calcular intentos restantes: intentosMaximos - intentos.size")
 
-    val esVictoria: Boolean
-        get() = TODO("Misión 3: Calcular si la última fila está 100% verde")
+    companion object {
+        const val INTENTOS_POR_DEFECTO = 6
+        const val LONGITUD_PALABRA = 7
 
-    val esFinDePartida: Boolean
-        get() = TODO("Misión 3: Calcular si ha ganado o se han agotado los intentos")
+        val DICCIONARIO = listOf("COMPOSE", "ANDROID", "KOTLINS", "MODULES", "ROOMBDD")
+
+        fun iniciarPartida(palabra: String? = null): EstadoWordle {
+            TODO("Misión 1: Factoría semántica con palabra normalizada o aleatoria de DICCIONARIO")
+        }
+    }
 }
 
-fun evaluarIntento(palabraSecreta: String, intentoRaw: String): List<EvaluacionLetra> {
-    TODO("Misión 1 y 2: Validar longitud con require y mapear a List<EvaluacionLetra>")
+fun evaluarLetras(palabraSecreta: String, intento: String): List<EvaluacionLetra> {
+    TODO("Misión 2: Clasificar posicionalmente cada letra con mapIndexed a EstadoLetra")
+}
+
+fun EstadoWordle.procesarIntento(
+    intentoRaw: String,
+    onEvento: (EventoWordle) -> Unit = {}
+): EstadoWordle {
+    TODO("Misión 4: Validar longitud con evento, evaluar letras, emitir evento y evolucionar estado con .copy()")
 }
 ```
 
@@ -92,39 +119,36 @@ package b03_poo_sealed.tdd
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class MotorWordleTest {
 
     // ========================================================================
-    // 💥 BLOQUE 1: PRUEBAS DE PRECONDICIONES Y EXCEPCIONES (require)
+    // 🏭 BLOQUE 1: PRUEBAS DEL COMPANION OBJECT Y FACTORÍA
     // ========================================================================
 
     @Test
-    fun `un intento con longitud diferente a la palabra secreta lanza IllegalArgumentException`() {
-        val secreta = "COMPOSE" // 7 letras
-        val intentoCorto = "HOLA" // 4 letras
+    fun `iniciarPartida con palabra explicita normaliza a mayusculas e inicializa estado JUGANDO`() {
+        val partida = EstadoWordle.iniciarPartida("compose")
 
-        // assertFailsWith verifica que el bloque arroje exactamente la excepción esperada
-        assertFailsWith<IllegalArgumentException> {
-            evaluarIntento(secreta, intentoCorto)
-        }
+        assertEquals("COMPOSE", partida.palabraSecreta)
+        assertEquals(EstadoPartida.JUGANDO, partida.estado)
+        assertEquals(6, partida.turnosRestantes)
+        assertTrue(partida.intentos.isEmpty())
     }
 
     @Test
-    fun `un intento con longitud excesiva tambien lanza IllegalArgumentException`() {
-        val secreta = "KOTLIN" // 6 letras
-        val intentoLargo = "KOTLINAZO" // 9 letras
+    fun `iniciarPartida sin argumento selecciona una palabra valida del diccionario`() {
+        val partida = EstadoWordle.iniciarPartida()
 
-        assertFailsWith<IllegalArgumentException> {
-            evaluarIntento(secreta, intentoLargo)
-        }
+        assertTrue(partida.palabraSecreta in EstadoWordle.DICCIONARIO)
+        assertEquals(EstadoWordle.LONGITUD_PALABRA, partida.palabraSecreta.length)
     }
 
     // ========================================================================
-    // 🎯 BLOQUE 2: PRUEBAS DEL ALGORITMO DE COINCIDENCIA POSICIONAL
+    // 🎯 BLOQUE 2: PRUEBAS DEL ALGORITMO PURO DE EVALUACIÓN POSICIONAL
     // ========================================================================
 
     @Test
@@ -132,9 +156,8 @@ class MotorWordleTest {
         val secreta = "KOTLIN"
         val intento = "KOTLIN"
 
-        val evaluacion = evaluarIntento(secreta, intento)
+        val evaluacion = evaluarLetras(secreta, intento)
 
-        // Verificamos que todas las celdas sean verdes
         assertTrue(evaluacion.all { it.estado == EstadoLetra.VERDE })
         assertEquals(6, evaluacion.size)
     }
@@ -144,20 +167,18 @@ class MotorWordleTest {
         val secreta = "CASA"
         val intento = "ZZZZ"
 
-        val evaluacion = evaluarIntento(secreta, intento)
+        val evaluacion = evaluarLetras(secreta, intento)
 
         assertTrue(evaluacion.all { it.estado == EstadoLetra.GRIS })
     }
 
     @Test
-    fun `intento con letras presentes en posicion distinta califica con AMARILLO`() {
-        // En "ROMA" y "AMOR": todas las letras existen pero ninguna en la misma posición
+    fun `letras presentes en distinta posicion se califican con EstadoLetra AMARILLO`() {
         val secreta = "ROMA"
         val intento = "AMOR"
 
-        val evaluacion = evaluarIntento(secreta, intento)
+        val evaluacion = evaluarLetras(secreta, intento)
 
-        // Todas deben ser amarillas
         assertTrue(evaluacion.all { it.estado == EstadoLetra.AMARILLO })
     }
 
@@ -165,17 +186,10 @@ class MotorWordleTest {
     fun `evaluacion combinada reconoce simultaneamente verdes, amarillos y grises`() {
         // Secreta: C O M P O S E
         // Intento: C O M P A S S
-        // C: Verde (pos 0)
-        // O: Verde (pos 1)
-        // M: Verde (pos 2)
-        // P: Verde (pos 3)
-        // A: Gris (no existe en COMPOSE)
-        // S: Amarillo (existe en posición 5)
-        // S: Amarillo (existe en posición 5)
         val secreta = "COMPOSE"
         val intento = "COMPASS"
 
-        val evaluacion = evaluarIntento(secreta, intento)
+        val evaluacion = evaluarLetras(secreta, intento)
 
         val estadosEsperados = listOf(
             EstadoLetra.VERDE,
@@ -191,83 +205,88 @@ class MotorWordleTest {
         assertEquals(estadosEsperados, estadosObtenidos)
     }
 
-    @Test
-    fun `la evaluacion normaliza minusculas a mayusculas de forma transparente`() {
-        val secreta = "kotlin"
-        val intento = "KOTLIN"
-
-        val evaluacion = evaluarIntento(secreta, intento)
-
-        assertTrue(evaluacion.all { it.estado == EstadoLetra.VERDE })
-        assertEquals('K', evaluacion.first().caracter)
-    }
-
     // ========================================================================
-    // 📦 BLOQUE 3: PRUEBAS DEL MODELO DE ESTADO INMUTABLE (PartidaWordle)
+    // 🛡️ BLOQUE 3: MANEJO SEGURO DE EVENTOS SELLADOS (SEALED INTERFACE)
     // ========================================================================
 
     @Test
-    fun `partida nueva inicia con 6 intentos restantes y sin estado de fin`() {
-        val partida = PartidaWordle(palabraSecreta = "COMPOSE")
+    fun `un intento con longitud erronea emite LongitudInvalida y no consume turnos`() {
+        val partidaInicial = EstadoWordle.iniciarPartida("COMPOSE")
+        var eventoCapturado: EventoWordle? = null
 
-        assertEquals(6, partida.intentosRestantes)
-        assertFalse(partida.esVictoria)
-        assertFalse(partida.esFinDePartida)
+        val partidaNueva = partidaInicial.procesarIntento("HOLA") { evento ->
+            eventoCapturado = evento
+        }
+
+        // 1. Verificamos que el evento emitido sea de tipo LongitudInvalida con payload correcto
+        assertIs<EventoWordle.LongitudInvalida>(eventoCapturado)
+        val error = eventoCapturado as EventoWordle.LongitudInvalida
+        assertEquals(4, error.longitudRecibida)
+        assertEquals(7, error.longitudEsperada)
+
+        // 2. Verificamos que el estado permanece intacto
+        assertEquals(partidaInicial.turnosRestantes, partidaNueva.turnosRestantes)
+        assertTrue(partidaNueva.intentos.isEmpty())
+    }
+
+    // ========================================================================
+    // 📦 BLOQUE 4: PRUEBAS DE TRANSICIÓN DE ESTADO (procesarIntento)
+    // ========================================================================
+
+    @Test
+    fun `intento ordinario reduce turnos y emite IntentoRegistrado`() {
+        val partidaInicial = EstadoWordle.iniciarPartida("COMPOSE")
+        var eventoCapturado: EventoWordle? = null
+
+        val partidaNueva = partidaInicial.procesarIntento("KOTLINS") { evento ->
+            eventoCapturado = evento
+        }
+
+        assertIs<EventoWordle.IntentoRegistrado>(eventoCapturado)
+        val info = eventoCapturado as EventoWordle.IntentoRegistrado
+        assertEquals(1, info.turnoActual)
+        assertEquals(5, info.intentosRestantes)
+
+        assertEquals(5, partidaNueva.turnosRestantes)
+        assertEquals(1, partidaNueva.intentos.size)
+        assertEquals(EstadoPartida.JUGANDO, partidaNueva.estado)
     }
 
     @Test
-    fun `anexar un intento con copy reduce los intentos restantes`() {
-        val partidaInicial = PartidaWordle(palabraSecreta = "COMPOSE")
-        val intentoFicticio = listOf(
-            EvaluacionLetra('K', EstadoLetra.GRIS),
-            EvaluacionLetra('O', EstadoLetra.VERDE)
-        )
+    fun `adivinar la palabra secreta transiciona a VICTORIA y emite evento Victoria`() {
+        val partidaInicial = EstadoWordle.iniciarPartida("COMPOSE")
+        var eventoCapturado: EventoWordle? = null
 
-        // Mutación inmutable con copy
-        val partidaSiguiente = partidaInicial.copy(
-            intentosRealizados = partidaInicial.intentosRealizados + intentoFicticio
-        )
+        val partidaGanada = partidaInicial.procesarIntento("COMPOSE") { evento ->
+            eventoCapturado = evento
+        }
 
-        assertEquals(5, partidaSiguiente.intentosRestantes)
-        assertEquals(1, partidaSiguiente.intentosRealizados.size)
-        assertFalse(partidaSiguiente.esVictoria)
+        assertIs<EventoWordle.Victoria>(eventoCapturado)
+        assertEquals(1, (eventoCapturado as EventoWordle.Victoria).intentosUsados)
+        assertEquals(EstadoPartida.VICTORIA, partidaGanada.estado)
     }
 
     @Test
-    fun `partida detecta victoria cuando la ultima fila es 100 por ciento verde`() {
-        val partida = PartidaWordle(
-            palabraSecreta = "JAVA",
-            intentosRealizados = listOf(
-                listOf(
-                    EvaluacionLetra('J', EstadoLetra.VERDE),
-                    EvaluacionLetra('A', EstadoLetra.VERDE),
-                    EvaluacionLetra('V', EstadoLetra.VERDE),
-                    EvaluacionLetra('A', EstadoLetra.VERDE)
-                )
-            )
-        )
+    fun `agotar los 6 intentos sin adivinar transiciona a DERROTA y emite evento Derrota`() {
+        var partida = EstadoWordle(palabraSecreta = "ANDROID", intentosMaximos = 6)
+        var eventoCapturado: EventoWordle? = null
 
-        assertTrue(partida.esVictoria)
-        assertTrue(partida.esFinDePartida)
-        assertEquals(5, partida.intentosRestantes)
-    }
+        // Consumir 5 intentos fallidos
+        repeat(5) {
+            partida = partida.procesarIntento("ZZZZZZZ")
+        }
+        assertEquals(1, partida.turnosRestantes)
+        assertEquals(EstadoPartida.JUGANDO, partida.estado)
 
-    @Test
-    fun `partida detecta fin de juego por derrota al consumir los 6 intentos sin victoria`() {
-        val filaGris = listOf(
-            EvaluacionLetra('Z', EstadoLetra.GRIS),
-            EvaluacionLetra('Z', EstadoLetra.GRIS)
-        )
+        // Intento 6: provoca la derrota
+        partida = partida.procesarIntento("XXXXXXX") { evento ->
+            eventoCapturado = evento
+        }
 
-        val partidaAgotada = PartidaWordle(
-            palabraSecreta = "OK",
-            intentosMaximos = 6,
-            intentosRealizados = List(6) { filaGris } // 6 intentos fallidos
-        )
-
-        assertEquals(0, partidaAgotada.intentosRestantes)
-        assertFalse(partidaAgotada.esVictoria)
-        assertTrue(partidaAgotada.esFinDePartida)
+        assertIs<EventoWordle.Derrota>(eventoCapturado)
+        assertEquals("ANDROID", (eventoCapturado as EventoWordle.Derrota).palabraCorrecta)
+        assertEquals(0, partida.turnosRestantes)
+        assertEquals(EstadoPartida.DERROTA, partida.estado)
     }
 }
 ```
@@ -285,8 +304,8 @@ Abre tu terminal y ejecuta la suite de pruebas del subpaquete:
 Comprobarás que el proyecto compila limpiamente, pero la ejecución se detiene con un **fallo controlado en ROJO**:
 
 ```text
-MotorWordleTest > un intento con longitud diferente a la palabra secreta lanza IllegalArgumentException() FAILED
-    kotlin.NotImplementedError: An operation is not implemented: Misión 1 y 2
+MotorWordleTest > iniciarPartida con palabra explicita normaliza a mayusculas FAILED
+    kotlin.NotImplementedError: An operation is not implemented: Misión 1
 ```
 
 ---
@@ -295,47 +314,36 @@ MotorWordleTest > un intento con longitud diferente a la palabra secreta lanza I
 
 ---
 
-### Misión 1: Precondiciones y Excepciones con `require`
+### Misión 1: Companion Object y Factoría `iniciarPartida`
 
-Abre `src/main/kotlin/b03_poo_sealed/tdd/MotorWordle.kt` y añade la normalización a mayúsculas y la cláusula `require` al inicio de `evaluarIntento`:
+Abre `src/main/kotlin/b03_poo_sealed/tdd/MotorWordle.kt` e implementa la factoría en el `companion object`:
 
 ```kotlin
-fun evaluarIntento(palabraSecreta: String, intentoRaw: String): List<EvaluacionLetra> {
-    val secreta = palabraSecreta.uppercase()
-    val intento = intentoRaw.uppercase()
+companion object {
+    const val INTENTOS_POR_DEFECTO = 6
+    const val LONGITUD_PALABRA = 7
 
-    require(secreta.length == intento.length) {
-        "La longitud del intento (${intento.length}) debe coincidir con la palabra secreta (${secreta.length})."
+    val DICCIONARIO = listOf("COMPOSE", "ANDROID", "KOTLINS", "MODULES", "ROOMBDD")
+
+    fun iniciarPartida(palabra: String? = null): EstadoWordle {
+        val elegida = palabra?.uppercase() ?: DICCIONARIO.random()
+        return EstadoWordle(palabraSecreta = elegida)
     }
-
-    TODO("Misión 2: Mapear letras a List<EvaluacionLetra>")
 }
 ```
 
-Ejecuta los tests del Bloque 1 en la terminal:
-
-```bash
-./gradlew test --tests "*IllegalArgumentException*"
-```
-
-**Resultado:** ¡Los 2 tests de excepciones pasan a **VERDE**! `assertFailsWith` captura la excepción lanzada por `require` y comprueba que coincide con el tipo esperado.
-
 ---
 
-### Misión 2: Algoritmo de Coincidencias con `mapIndexed` y `when`
+### Misión 2: Algoritmo Puro de Coincidencias con `mapIndexed` y `when`
 
-Completa la función `evaluarIntento` recorriendo el intento posicionalmente y asignando el `EstadoLetra` adecuado:
+Implementa la función pura `evaluarLetras` para clasificar las posiciones:
 
 ```kotlin
-fun evaluarIntento(palabraSecreta: String, intentoRaw: String): List<EvaluacionLetra> {
+fun evaluarLetras(palabraSecreta: String, intento: String): List<EvaluacionLetra> {
     val secreta = palabraSecreta.uppercase()
-    val intento = intentoRaw.uppercase()
+    val propuesto = intento.uppercase()
 
-    require(secreta.length == intento.length) {
-        "La longitud del intento (${intento.length}) debe coincidir con la palabra secreta (${secreta.length})."
-    }
-
-    return intento.mapIndexed { i, c ->
+    return propuesto.mapIndexed { i, c ->
         val estado = when {
             c == secreta[i] -> EstadoLetra.VERDE
             c in secreta -> EstadoLetra.AMARILLO
@@ -346,34 +354,74 @@ fun evaluarIntento(palabraSecreta: String, intentoRaw: String): List<EvaluacionL
 }
 ```
 
-Lanza los tests de evaluación:
+---
 
-```bash
-./gradlew test --tests "*evaluacion*"
+### Misión 3: Propiedad Calculada `turnosRestantes`
+
+Implementa la propiedad calculada dentro de `data class EstadoWordle`:
+
+```kotlin
+data class EstadoWordle(
+    val palabraSecreta: String,
+    val intentosMaximos: Int = INTENTOS_POR_DEFECTO,
+    val intentos: List<List<EvaluacionLetra>> = emptyList(),
+    val estado: EstadoPartida = EstadoPartida.JUGANDO
+) {
+    val turnosRestantes: Int
+        get() = intentosMaximos - intentos.size
+...
 ```
-
-**Resultado:** ¡Todos los tests de clasificación posicional del Bloque 2 pasan a **VERDE**!
 
 ---
 
-### Misión 3: Propiedades Calculadas de `PartidaWordle`
+### Misión 4: Transición Inmutable de Estado y Notificación de Eventos
 
-Ahora implementamos las propiedades calculadas dentro del cuerpo de la `data class PartidaWordle`:
+Implementa `procesarIntento` garantizando que los intentos inválidos no rompen la aplicación ni consumen turnos:
 
 ```kotlin
-data class PartidaWordle(
-    val palabraSecreta: String,
-    val intentosMaximos: Int = 6,
-    val intentosRealizados: List<List<EvaluacionLetra>> = emptyList()
-) {
-    val intentosRestantes: Int
-        get() = intentosMaximos - intentosRealizados.size
+fun EstadoWordle.procesarIntento(
+    intentoRaw: String,
+    onEvento: (EventoWordle) -> Unit = {}
+): EstadoWordle {
+    if (this.estado != EstadoPartida.JUGANDO) return this
 
-    val esVictoria: Boolean
-        get() = intentosRealizados.lastOrNull()?.all { it.estado == EstadoLetra.VERDE } ?: false
+    val intento = intentoRaw.trim().uppercase()
 
-    val esFinDePartida: Boolean
-        get() = esVictoria || intentosRestantes <= 0
+    // 1. Manejo seguro de longitud con evento sellado
+    if (intento.length != palabraSecreta.length) {
+        onEvento(EventoWordle.LongitudInvalida(intento.length, palabraSecreta.length))
+        return this
+    }
+
+    // 2. Calificación de letras
+    val evaluacion = evaluarLetras(palabraSecreta, intento)
+    val nuevosIntentos = this.intentos + listOf(evaluacion)
+    val esAciertoPleno = evaluacion.all { it.estado == EstadoLetra.VERDE }
+
+    // 3. Resolución de nueva fase de juego
+    val nuevoEstado = when {
+        esAciertoPleno -> EstadoPartida.VICTORIA
+        nuevosIntentos.size >= intentosMaximos -> EstadoPartida.DERROTA
+        else -> EstadoPartida.JUGANDO
+    }
+
+    // 4. Emisión de eventos tipados
+    when (nuevoEstado) {
+        EstadoPartida.VICTORIA -> onEvento(EventoWordle.Victoria(nuevosIntentos.size))
+        EstadoPartida.DERROTA -> onEvento(EventoWordle.Derrota(palabraSecreta))
+        EstadoPartida.JUGANDO -> onEvento(
+            EventoWordle.IntentoRegistrado(
+                turnoActual = nuevosIntentos.size,
+                intentosRestantes = intentosMaximos - nuevosIntentos.size
+            )
+        )
+    }
+
+    // 5. Retorno inmutable con .copy()
+    return this.copy(
+        intentos = nuevosIntentos,
+        estado = nuevoEstado
+    )
 }
 ```
 
@@ -402,47 +450,50 @@ BUILD SUCCESSFUL in 390ms
 Abre el informe visual HTML en tu navegador web:  
 📁 `pmdm-kotlin-lab/build/reports/tests/test/index.html`
 
-Comprobarás que los **10 tests de la suite están en verde (100% de éxito)**. El motor de dominio y las entidades de datos están matemáticamente blindados.
+Comprobarás que los **8 tests de la suite están en verde (100% de éxito)**. El motor de dominio, el companion object y los tipos sellados están completamente blindados.
 
 ---
 
 ## 5. Fase 4: Ensamblado del Juego en `main()`
 
-Ahora que las entidades y el motor han demostrado su solidez ante cualquier caso límite, montar el juego en consola es seguro y directo. Añade al final de `MotorWordle.kt`:
+Ahora que el motor y la máquina de estados han demostrado su solidez ante cualquier caso límite, montar el juego en consola con la `sealed interface` es seguro y directo. Añade al final de `MotorWordle.kt`:
 
 ```kotlin
 fun main() {
-    var partida = PartidaWordle(palabraSecreta = "COMPOSE")
-    println("=== WORDLE CLI (TDD VERIFICADO) ===")
+    var partida = EstadoWordle.iniciarPartida("COMPOSE")
+    println("=== WORDLE CLI (TDD & ARQUITECTURA DE ESTADO) ===")
     println("Palabra secreta fijada: ${partida.palabraSecreta} (${partida.palabraSecreta.length} letras)\n")
 
-    val intentosSimulados = listOf("KOTLINS", "COMPASS", "COMPOSE")
+    val intentosSimulados = listOf("HOLA", "KOTLINS", "COMPASS", "COMPOSE")
 
     for (palabra in intentosSimulados) {
-        if (partida.esFinDePartida) break
+        if (partida.estado != EstadoPartida.JUGANDO) break
 
-        val evaluacion = evaluarIntento(partida.palabraSecreta, palabra)
-
-        // Mutación inmutable con copy() delegando la fila directamente:
-        partida = partida.copy(
-            intentosRealizados = partida.intentosRealizados + evaluacion
-        )
-
-        val turnoActual = partida.intentosRealizados.size
-        println("Intento $turnoActual: ${palabra.map { "$it" }.joinToString(" ")}")
-        println(evaluacion.joinToString(" ") { it.estado.icono })
-        println("Intentos restantes: ${partida.intentosRestantes}\n")
-
-        if (partida.esVictoria) {
-            println("🏆 ¡ENHORABUENA! Has resuelto el Wordle en $turnoActual intentos.")
-            return
+        partida = partida.procesarIntento(palabra) { evento ->
+            when (evento) {
+                is EventoWordle.LongitudInvalida -> {
+                    println("⚠️ Longitud incorrecta: '${palabra}' mide ${evento.longitudRecibida} letras (se esperaban ${evento.longitudEsperada}). Turno no consumido.\n")
+                }
+                is EventoWordle.IntentoRegistrado -> {
+                    val iconos = evaluarLetras(partida.palabraSecreta, palabra).joinToString(" ") { it.estado.icono }
+                    println("Intento ${evento.turnoActual}: ${palabra.map { "$it" }.joinToString(" ")}")
+                    println(iconos)
+                    println("Intentos restantes: ${evento.intentosRestantes}\n")
+                }
+                is EventoWordle.Victoria -> {
+                    val iconos = evaluarLetras(partida.palabraSecreta, palabra).joinToString(" ") { it.estado.icono }
+                    println("Intento: ${palabra.map { "$it" }.joinToString(" ")}")
+                    println(iconos)
+                    println("🏆 ¡ENHORABUENA! Has resuelto el Wordle en ${evento.intentosUsados} intentos.\n")
+                }
+                is EventoWordle.Derrota -> {
+                    println("💀 ¡Has agotado tus intentos! La palabra secreta era: ${evento.palabraCorrecta}\n")
+                }
+            }
         }
-    }
-
-    if (!partida.esVictoria) {
-        println("💀 Has agotado tus intentos. La palabra era: ${partida.palabraSecreta}")
     }
 }
 ```
 
-Ejecuta `fun main()` y observa cómo el juego fluye con total elegancia respaldado por una suite de pruebas unitarias profesional.
+Ejecuta `fun main()` y observa cómo el juego fluye con total elegancia respaldado por una suite de pruebas unitarias profesional y con un diseño 100% reutilizable en **Jetpack Compose**.
+
