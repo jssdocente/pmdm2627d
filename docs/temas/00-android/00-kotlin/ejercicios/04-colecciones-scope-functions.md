@@ -80,12 +80,28 @@ Total catálogo: 3 consolas
 📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
 📚 **Teoría de referencia:** [Inmutabilidad y Adición Funcional (+)](../42-listas.md#3-inmutabilidad-y-adicion-funcional-de-elementos)
 
-##### 1. Enunciado y Requisitos
-En Kotlin se puede crear una lista mutable con `mutableListOf()`, pero también se puede mantener una lista inmutable y generar una **nueva lista** con un elemento añadido usando el operador matemático `+`.
+##### 1. Enunciado y Código de Partida
 
-1. Declara `val inventarioBase = listOf("Poción", "Antídoto")`.
-2. Genera `val inventarioAmpliado = inventarioBase + "Elixir Mágico"`.
-3. Muestra ambas listas y comprueba que `inventarioBase` sigue teniendo solo 2 elementos.
+En Kotlin se puede crear una lista mutable con `mutableListOf()`, pero el enfoque preferido en programación funcional es mantener listas inmutables y derivar una **nueva lista** con un elemento añadido utilizando el operador matemático **`+`**.
+
+1. Partiendo de `inventarioBase`, genera una nueva lista inmutable `inventarioAmpliado` sumando `"Elixir Mágico"` mediante el operador `+`.
+2. Muestra ambas listas por consola y comprueba que la lista base original no ha sufrido mutación.
+
+Copia esta plantilla de partida en tu archivo y completa el bloque marcado con `TODO(...)`:
+
+```kotlin
+package b04_colecciones
+
+fun main() {
+    val inventarioBase = listOf("Poción", "Antídoto")
+
+    // TODO: Genera una nueva lista sumando "Elixir Mágico" con el operador funcional '+'
+    val inventarioAmpliado: List<String> = TODO("Derivar nueva lista con operador '+'")
+
+    println("Inventario base (intacto): $inventarioBase")
+    println("Inventario ampliado (+): $inventarioAmpliado")
+}
+```
 
 ##### 2. Salida Esperada
 ```text
@@ -138,6 +154,7 @@ En Java tradicional, transformar una lista requiere crear una lista vacía, iter
     import java.util.ArrayList;
     import java.util.Arrays;
     import java.util.List;
+    import java.util.stream.Collectors;
 
     public class MapJava {
         public static void main(String[] args) {
@@ -167,11 +184,25 @@ Precios convertidos a EUR: [9.2, 18.4, 46.0]
 📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
 📚 **Teoría de referencia:** [Filtrado con filter](../42-listas.md#5-filtrado-con-filter-y-variantes)
 
-##### 1. Enunciado y Requisitos
+##### 1. Enunciado y Código de Partida
 
-1. Declara `val notas = listOf(4.5, 7.0, 3.2, 9.5, 6.0, 2.0, 8.8)`.
-2. Filtra únicamente los aprobados (≥ 5.0) en una lista inmutable `val aprobados`.
-3. Muestra los aprobados y calcula la cantidad total con `.size`.
+1. Dada la lista de calificaciones `notas`, filtra únicamente las notas aprobadas (calificación ≥ 5.0) en la lista inmutable `aprobados`.
+2. Muestra los aprobados y calcula la cantidad total de alumnos que han aprobado con `.size`.
+
+Copia esta plantilla de partida en tu archivo y completa el bloque marcado con `TODO(...)`:
+
+```kotlin
+package b04_colecciones
+
+fun main() {
+    val notas = listOf(4.5, 7.0, 3.2, 9.5, 6.0, 2.0, 8.8)
+
+    // TODO: Filtra solo las notas aprobadas (>= 5.0) usando .filter { ... }
+    val aprobados: List<Double> = TODO("Filtrar con notas.filter { ... }")
+
+    println("Notas aprobadas: $aprobados (Total: ${aprobados.size} alumnos)")
+}
+```
 
 ##### 2. Salida Esperada
 ```text
@@ -199,11 +230,29 @@ Notas aprobadas: [7.0, 9.5, 6.0, 8.8] (Total: 4 alumnos)
 📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
 📚 **Teoría de referencia:** [Scope Functions](../31-scope-functions.md)
 
-##### 1. Enunciado y Requisitos
+##### 1. Enunciado y Código de Partida
 
-1. Crea una clase mutable de configuración `class ConfiguradorAlerta { var titulo: String = ""; var prioridad: Int = 0 }`.
-2. Instancia y configura el objeto en un solo paso utilizando `.apply { ... }`.
-3. Encadena un bloque `.also { ... }` para imprimir un mensaje de traza informando de que la alerta ha sido preparada.
+1. Modela una clase mutable de configuración `ConfiguradorAlerta`.
+2. Instancia y configura el objeto en un solo paso utilizando `.apply { ... }` asignando `titulo = "Descarga de Recursos"` y `prioridad = 250`.
+3. Encadena inmediatamente un bloque `.also { ... }` para imprimir un mensaje de traza informando de que la alerta ha sido preparada.
+
+Copia esta plantilla de partida en tu archivo y completa el bloque marcado con `TODO(...)`:
+
+```kotlin
+package b04_colecciones
+
+class ConfiguradorAlerta {
+    var titulo: String = ""
+    var prioridad: Int = 0
+}
+
+fun main() {
+    // TODO: Instancia ConfiguradorAlerta(), configúralo con .apply y añade logging con .also
+    val alerta: ConfiguradorAlerta = TODO("Encadenar .apply { ... }.also { ... }")
+
+    println("Alerta configurada: ${alerta.titulo} (Prioridad: ${alerta.prioridad})")
+}
+```
 
 ##### 2. Salida Esperada
 ```text
@@ -243,15 +292,31 @@ Alerta configurada: Descarga de Recursos (Prioridad: 250)
 📄 **Archivo:** `E01_ListasInmutables.kt`  
 📚 **Teoría de referencia:** [Creación de Listas: listOf() vs mutableListOf()](../42-listas.md#1-creacion-de-listas-listof-vs-mutablelistof) y [Inmutabilidad y Adición (+)](../42-listas.md#3-inmutabilidad-y-adicion-funcional-de-elementos)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
-1. Declara una lista inmutable `listaJuegos: List<String>` con 3 títulos.
+1. Partiendo de la lista inmutable `original` con 3 títulos de juegos, utiliza el operador funcional **`+`** para derivar una nueva lista inmutable `conAnadidos` que sume `"Pokemon"` y `"Kirby"` (sin usar `MutableList` ni `add()`).
+2. Utiliza **`filterNot`** para derivar una tercera lista inmutable `sinMetroid` que excluya el título `"Metroid"`.
+3. Muestra por consola las tres listas comprobando que la lista original no ha sufrido modificaciones.
 
-2. En lugar de convertirla a `MutableList` y hacer `add()`, utiliza el operador funcional **`+`** para derivar una nueva lista inmutable que incluya dos juegos adicionales.
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E01_ListasInmutables.kt` y completa los bloques marcados con `TODO(...)`:
 
-3. Utiliza `filterNot` para eliminar un juego específico generando una tercera lista inmutable.
+```kotlin
+package b04_colecciones
 
-4. Muestra por consola las tres listas comprobando que la lista original no ha cambiado en ningún momento.
+fun main() {
+    val original: List<String> = listOf("Zelda", "Metroid", "Mario")
+
+    // 1. TODO: Deriva una nueva lista inmutable sumando "Pokemon" y "Kirby" con el operador '+'
+    val conAnadidos: List<String> = TODO("Sumar elementos con operador '+'")
+
+    // 2. TODO: Deriva una tercera lista inmutable excluyendo "Metroid" con filterNot
+    val sinMetroid: List<String> = TODO("Excluir elemento con filterNot")
+
+    println("Original: $original")
+    println("Con añadidos: $conAnadidos")
+    println("Sin Metroid: $sinMetroid")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -285,17 +350,29 @@ Sin Metroid: [Zelda, Mario, Pokemon, Kirby]
 📄 **Archivo:** `E02_MapFilterBasico.kt`  
 📚 **Teoría de referencia:** [map: Transformación elemento a elemento](../42-listas.md#41-map-transformacion-elemento-a-elemento) y [filter: Filtrado por condición](../42-listas.md#42-filter-filtrado-por-condicion)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
-Dada una lista de precios brutos en dólares: `val preciosDolares = listOf(15.0, 4.5, 60.0, 8.0, 35.0, 120.0)`
+Dada una lista de precios brutos en dólares:
 
 1. Filtra los precios para conservar únicamente los superiores a `10.0` $.
+2. Transforma cada precio a euros multiplicándolo por la tasa de cambio `0.92`.
+3. Convierte cada valor a cadena formateada con dos decimales y el sufijo `"€"` (`"%.2f €".format(...)`).
+4. Estructura todo el procesamiento en un único **pipeline funcional encadenado**.
 
-2. Transforma cada precio a euros multiplicándolo por el factor de conversión `0.92`.
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E02_MapFilterBasico.kt` y completa el bloque marcado con `TODO(...)`:
 
-3. Convierte cada valor a una cadena formateada con dos decimales y el sufijo `"€"`.
+```kotlin
+package b04_colecciones
 
-4. Realiza todo el proceso en un único pipeline funcional encadenado.
+fun main() {
+    val preciosDolares = listOf(15.0, 4.5, 60.0, 8.0, 35.0, 120.0)
+
+    // TODO: Encadena .filter (> 10.0), .map (* 0.92) y .map ("%.2f €".format(...))
+    val preciosEuros: List<String> = TODO("Construir pipeline funcional encadenado")
+
+    println("Precios en euros (>10$): $preciosEuros")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -326,21 +403,43 @@ Precios en euros (>10$): [13.80 €, 55.20 €, 32.20 €, 110.40 €]
 📄 **Archivo:** `E03_ConjuntosYOperaciones.kt`  
 📚 **Teoría de referencia:** [Operaciones con Sets](../44-sets.md#operaciones-con-sets)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
-1. Crea una lista con etiquetas (*tags*) duplicadas de una tienda de videojuegos: `listOf("RPG", "Acción", "Indie", "RPG", "Aventura", "Indie")`.
+1. Partiendo de `listaConDuplicados`, genera un `Set<String>` inmutable mediante **`.toSet()`** para purgar duplicados automáticamente.
+2. Compara las etiquetas únicas de la tienda con los géneros favoritos del usuario realizando las tres operaciones de conjuntos en formato infijo:
+    - **`intersect` (Intersección):** Etiquetas presentes en ambas colecciones.
+    - **`union` (Unión):** Colección combinada total sin duplicados.
+    - **`subtract` (Diferencia):** Géneros favoritos del usuario que aún no están disponibles en la tienda.
 
-2. Convierte la lista en un `Set<String>` inmutable mediante `.toSet()` para eliminar automáticamente duplicados.
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E03_ConjuntosYOperaciones.kt` y completa los bloques marcados con `TODO(...)`:
 
-3. Declara otro conjunto con los géneros favoritos de un usuario: `setOf("Acción", "Estrategia", "RPG", "Terror")`.
+```kotlin
+package b04_colecciones
 
-4. Realiza y muestra las tres operaciones de teoría de conjuntos:
+fun main() {
+    val listaConDuplicados = listOf("RPG", "Acción", "Indie", "RPG", "Aventura", "Indie")
+    val favoritosUsuario: Set<String> = setOf("Acción", "Estrategia", "RPG", "Terror")
 
-    - **Intersección (`intersect`):** Etiquetas que coinciden en la tienda y en los gustos del usuario.
+    // 1. TODO: Convierte la lista con duplicados en un Set inmutable
+    val tagsTienda: Set<String> = TODO("Convertir con toSet()")
 
-    - **Unión (`union`):** Todas las etiquetas sin duplicados.
+    println("Etiquetas únicas tienda: $tagsTienda")
+    println("Géneros favoritos usuario: $favoritosUsuario")
 
-    - **Diferencia (`subtract`):** Etiquetas que le gustan al usuario pero no están en la tienda.
+    // 2. TODO: Calcula la intersección entre tagsTienda y favoritosUsuario
+    val coincidencias: Set<String> = TODO("Operación intersect")
+
+    // 3. TODO: Calcula la unión de ambos catálogos
+    val todas: Set<String> = TODO("Operación union")
+
+    // 4. TODO: Calcula los favoritos que faltan en la tienda (favoritosUsuario subtract tagsTienda)
+    val faltantes: Set<String> = TODO("Operación subtract")
+
+    println("Coincidencias (intersect): $coincidencias")
+    println("Catálogo combinado (union): $todas")
+    println("Pendientes por encontrar (subtract): $faltantes")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -382,17 +481,44 @@ Pendientes por encontrar (subtract): [Estrategia, Terror]
 📄 **Archivo:** `E04_MapasYValoresPorDefecto.kt`  
 📚 **Teoría de referencia:** [Acceso a elementos de un Map](../43-maps.md#acceso-a-elementos-de-un-map) y [Operaciones con Maps](../43-maps.md#operaciones-con-maps)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
-1. Modela un inventario de munición mediante un mapa inmutable `Map<String, Int>` usando `mapOf("Pistola" to 45, "Escopeta" to 12, "Rifle" to 30)`.
+1. Modela un inventario inmutable de munición `inventario` con 3 tipos de armas.
+2. Demuestra el acceso seguro frente a valores ausentes:
+    - Consulta directa mediante operador de indexación (`[]`).
+    - Consulta con valor de sustitución estático mediante **`getOrDefault`**.
+    - Consulta con bloque de cálculo dinámico mediante **`getOrElse`**.
 
-2. Consulta la munición de `"Pistola"` y muestra el resultado.
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E04_MapasYValoresPorDefecto.kt` y completa los bloques marcados con `TODO(...)`:
 
-3. Demuestra el problema de usar el operador de indexación directo `map["Lanzacohetes"]` (devuelve `null`).
+```kotlin
+package b04_colecciones
 
-4. Utiliza **`getOrDefault`** para consultar el `"Lanzacohetes"` indicando `0` como valor por defecto.
+fun main() {
+    val inventario: Map<String, Int> = mapOf(
+        "Pistola" to 45,
+        "Escopeta" to 12,
+        "Rifle" to 30
+    )
 
-5. Utiliza **`getOrElse`** para calcular una munición de emergencia mediante una lambda si el arma no existe.
+    // 1. TODO: Consulta directa de "Pistola"
+    val municionPistola: Int? = TODO("Consultar inventario[\"Pistola\"]")
+
+    // 2. TODO: Acceso directo a una clave inexistente "Lanzacohetes" (retorna null)
+    val municionLanzacohetesDirecto: Int? = TODO("Consultar inventario[\"Lanzacohetes\"]")
+
+    // 3. TODO: Consulta con getOrDefault para "Lanzacohetes" con valor por defecto 0
+    val municionLanzacohetesSeguro: Int = TODO("Consultar con inventario.getOrDefault(...)")
+
+    // 4. TODO: Consulta con getOrElse para "Arco" suministrando una reserva calculada de 5
+    val municionArco: Int = TODO("Consultar con inventario.getOrElse(...) { ... }")
+
+    println("Munición Pistola: $municionPistola")
+    println("Munición Lanzacohetes (directo): $municionLanzacohetesDirecto")
+    println("Munición Lanzacohetes (getOrDefault): $municionLanzacohetesSeguro")
+    println("Munición Arco (getOrElse con lógica): $municionArco (suministro base)")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -434,19 +560,42 @@ Munición Arco (getOrElse con lógica): 5 (suministro base)
 📄 **Archivo:** `E05_BusquedaYPredicados.kt`  
 📚 **Teoría de referencia:** [Búsqueda y Verificación: find, any, all](../42-listas.md#43-busqueda-y-verificacion-find-any-all)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
-Dada una lista de puntuaciones de jugadores: `val puntuaciones = listOf(120, 85, 450, 990, 310, 60)`
+Dada la lista de puntuaciones de jugadores:
 
-1. Encuentra con **`find`** o **`firstOrNull`** el primer jugador que haya superado los 400 puntos.
+1. Encuentra con **`firstOrNull`** (o **`find`**) el primer valor estrictamente superior a `400`.
+2. Utiliza **`any`** para comprobar si algún jugador alcanzó la categoría legendaria (`>= 900`).
+3. Utiliza **`all`** para verificar si todos los participantes superaron el nivel inicial (`>= 50`).
+4. Utiliza **`none`** para comprobar que ningún jugador posee puntuación negativa (`< 0`).
 
-2. Utiliza **`any`** para comprobar si algún jugador ha alcanzado una puntuación legendaria (>= 900).
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E05_BusquedaYPredicados.kt` y completa los bloques marcados con `TODO(...)`:
 
-3. Utiliza **`all`** para comprobar si todos los jugadores tienen al menos 50 puntos (superaron el tutorial).
+```kotlin
+package b04_colecciones
 
-4. Utiliza **`none`** para comprobar que nadie tiene una puntuación negativa (< 0).
+fun main() {
+    val puntuaciones = listOf(120, 85, 450, 990, 310, 60)
 
-5. Imprime un informe claro con los resultados de cada comprobación.
+    // 1. TODO: Encuentra el primer elemento superior a 400
+    val primerDestacado: Int? = TODO("Usar firstOrNull { ... }")
+
+    // 2. TODO: Comprueba si al menos uno supera o iguala 900
+    val hayRangoLegendario: Boolean = TODO("Usar any { ... }")
+
+    // 3. TODO: Comprueba si todos superan o igualan 50
+    val todosPasaronTutorial: Boolean = TODO("Usar all { ... }")
+
+    // 4. TODO: Comprueba si ninguno tiene puntuación negativa (< 0)
+    val sinNegativos: Boolean = TODO("Usar none { ... }")
+
+    println("Puntuaciones: $puntuaciones")
+    println("Primer jugador > 400 pts: $primerDestacado")
+    println("¿Alguien superó los 900 pts? $hayRangoLegendario")
+    println("¿Todos superaron el tutorial (>= 50 pts)? $todosPasaronTutorial")
+    println("¿Nadie tiene puntuación negativa? $sinNegativos")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -487,15 +636,37 @@ Primer jugador > 400 pts: 450
 📄 **Archivo:** `E06_GroupByEstadisticas.kt`  
 📚 **Teoría de referencia:** [Agrupación y Ordenación: groupBy y sortedBy](../42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
 1. Modela una `data class ItemInventario(val nombre: String, val categoria: String, val valorMonedas: Int)`.
+2. Partiendo del catálogo de ítems, utiliza **`groupBy`** para organizar los elementos por su `categoria` en un `Map<String, List<ItemInventario>>`.
+3. Recorre el mapa resultante calculando la suma total del valor en monedas de los ítems de cada categoría mediante **`.sumOf { it.valorMonedas }`**.
 
-2. Crea una lista con al menos 6 items de diferentes categorías (`"Arma"`, `"Armadura"`, `"Consumible"`).
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E06_GroupByEstadisticas.kt` y completa los bloques marcados con `TODO(...)`:
 
-3. Utiliza **`groupBy`** para organizar los elementos por su categoría en un `Map<String, List<ItemInventario>>`.
+```kotlin
+package b04_colecciones
 
-4. Recorre el mapa calculando la suma total del valor en monedas de los items de cada categoría mediante `.sumOf { it.valorMonedas }`.
+data class ItemInventario(val nombre: String, val categoria: String, val valorMonedas: Int)
+
+fun main() {
+    val inventario = listOf(
+        ItemInventario("Espada Maestra", "Arma", 350),
+        ItemInventario("Arco de Madera", "Arma", 100),
+        ItemInventario("Escudo Hyliano", "Armadura", 400),
+        ItemInventario("Casco de Hierro", "Armadura", 200),
+        ItemInventario("Poción de Vida", "Consumible", 50),
+        ItemInventario("Elixir de Maná", "Consumible", 30)
+    )
+
+    // 1. TODO: Agrupa los items por categoría en un Map<String, List<ItemInventario>> con groupBy
+    val porCategoria: Map<String, List<ItemInventario>> = TODO("Agrupar con inventario.groupBy { ... }")
+
+    println("=== RESUMEN POR CATEGORÍA ===")
+    // 2. TODO: Itera sobre porCategoria mostrando la categoría, cantidad de items y total acumulado con sumOf
+    TODO("Iterar con porCategoria.forEach y calcular total con items.sumOf { ... }")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -539,18 +710,45 @@ Categoría: Consumible (2 items) -> Valor total: 80 monedas
 📄 **Archivo:** `E07_PartitionYSorted.kt`  
 📚 **Teoría de referencia:** [Agrupación y Ordenación en Listas](../42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
 Dada una lista de usuarios registrados:
-`data class Usuario(val username: String, val horasJugadas: Int, val esPremium: Boolean)`
 
-1. Crea una lista de al menos 5 usuarios mezclando cuentas normales y premium.
+1. Utiliza **`partition`** con desestructuración de variables `val (premiums, estandar) = ...` para segregar en una sola pasada a los usuarios que tienen `esPremium == true` de los gratuitos.
+2. Ordena la lista de usuarios premium de mayor a menor horas jugadas utilizando **`sortedByDescending { it.horasJugadas }`**.
+3. Muestra el ranking de usuarios premium indexado y el recuento total de cuentas estándar.
 
-2. Utiliza **`partition`** con desestructuración `val (premiums, estandar) = ...` para dividir la lista en una sola pasada.
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E07_PartitionYSorted.kt` y completa los bloques marcados con `TODO(...)`:
 
-3. Ordena a los usuarios premium de mayor a menor horas jugadas utilizando `sortedByDescending { it.horasJugadas }`.
+```kotlin
+package b04_colecciones
 
-4. Imprime el resultado de ambos grupos.
+data class Usuario(val username: String, val horasJugadas: Int, val esPremium: Boolean)
+
+fun main() {
+    val usuarios = listOf(
+        Usuario("ZeldaFan", 150, true),
+        Usuario("Novato2026", 12, false),
+        Usuario("ShadowLink", 240, true),
+        Usuario("CasualPlayer", 5, false),
+        Usuario("PixelMaster", 45, true)
+    )
+
+    // 1. TODO: Divide en dos listas (premiums y estandar) en una sola pasada usando partition
+    val (premiums, estandar) = TODO("Particionar con usuarios.partition { ... }")
+
+    // 2. TODO: Ordena a los usuarios premium de mayor a menor horas con sortedByDescending
+    val premiumsOrdenados: List<Usuario> = TODO("Ordenar con premiums.sortedByDescending { ... }")
+
+    println("--- USUARIOS PREMIUM (Ordenados por horas) ---")
+    premiumsOrdenados.forEachIndexed { i, u ->
+        println("${i + 1}. ${u.username}: ${u.horasJugadas} horas")
+    }
+
+    println("\n--- USUARIOS ESTÁNDAR ---")
+    println("Total cuentas gratuitas: ${estandar.size}")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -601,19 +799,47 @@ Total cuentas gratuitas: 2
 📄 **Archivo:** `E08_AssociateByYWith.kt`  
 📚 **Teoría de referencia:** [Operaciones con Maps: Creación e Indexación](../43-maps.md#operaciones-con-maps)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
 En aplicaciones Android frecuentemente recibimos listas de la API y necesitamos convertirlas a mapas indexados por clave primaria (ID) para búsquedas de complejidad O(1) en repositorios o caché.
 
-1. Modela una `data class Personaje(val id: String, val nombre: String, val nivel: Int)`.
+1. Utiliza **`associateBy { it.id }`** para indexar la lista de personajes en un `Map<String, Personaje>`.
+2. Realiza búsquedas seguras en el mapa para los IDs `"P-02"` y `"P-99"`, gestionando la ausencia con el operador Elvis (`?:`).
+3. Utiliza **`associateWith`** sobre un conjunto de identificadores para asociar cada clave con el estado textual `"CARGADO"`.
 
-2. Crea una lista de personajes: `[Personaje("P-01", "Geralt", 50), Personaje("P-02", "Ciri", 45), Personaje("P-03", "Yennefer", 60)]`.
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E08_AssociateByYWith.kt` y completa los bloques marcados con `TODO(...)`:
 
-3. Utiliza **`associateBy { it.id }`** para indexar la lista en un `Map<String, Personaje>`.
+```kotlin
+package b04_colecciones
 
-4. Dado un conjunto de IDs buscados `setOf("P-02", "P-99")`, busca cada uno en el mapa y comprueba su existencia instantánea.
+data class Personaje(val id: String, val nombre: String, val nivel: Int)
 
-5. Utiliza **`associateWith`** para crear un mapa que asocie cada ID con su estado de carga inicial (`"CARGADO"`).
+fun main() {
+    val lista = listOf(
+        Personaje("P-01", "Geralt", 50),
+        Personaje("P-02", "Ciri", 45),
+        Personaje("P-03", "Yennefer", 60)
+    )
+
+    // 1. TODO: Indexa la lista en un Map<String, Personaje> usando associateBy con la propiedad 'id'
+    val mapaPorId: Map<String, Personaje> = TODO("Indexar con lista.associateBy { ... }")
+
+    println("Mapa indexado por ID:")
+    mapaPorId.forEach { (id, p) -> println("$id -> ${p.nombre} (Nvl ${p.nivel})") }
+
+    // 2. TODO: Realiza búsquedas directas por clave en mapaPorId
+    val personajeP02 = TODO("Buscar P-02 en mapaPorId")
+    val personajeP99 = TODO("Buscar P-99 en mapaPorId con Elvis para valor no encontrado")
+
+    println("\nBúsqueda instantánea de P-02: $personajeP02")
+    println("Búsqueda instantánea de P-99: $personajeP99")
+
+    // 3. TODO: Asocia cada ID del conjunto con el estado fijo \"CARGADO\" mediante associateWith
+    val idsConsultados = setOf("P-02", "P-99")
+    val estados: Map<String, String> = TODO("Asociar con idsConsultados.associateWith { ... }")
+    println("Estados iniciales: $estados")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -663,17 +889,33 @@ Estados iniciales: {P-02=CARGADO, P-99=CARGADO}
 📄 **Archivo:** `E09_FlattenYFlatMap.kt`  
 📚 **Teoría de referencia:** [Operaciones Funcionales Imprescindibles en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
 1. Modela una `data class Desarrolladora(val nombre: String, val juegosLanzados: List<String>)`.
+2. Partiendo de la lista de estudios de desarrollo, utiliza **`flatMap`** para extraer todos los títulos de sus listas internas en una única lista plana `List<String>`.
+3. Encadena **`.distinct()`** para eliminar posibles títulos duplicados y **`.sorted()`** para ordenar el catálogo alfabéticamente.
 
-2. Crea una lista con 3 estudios de videojuegos (ej. Nintendo, FromSoftware, IndieStudio), cada uno con 2 o 3 juegos en su lista interna.
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E09_FlattenYFlatMap.kt` y completa el bloque marcado con `TODO(...)`:
 
-3. Utiliza **`flatMap`** para extraer todos los títulos de todos los estudios en una única lista plana de cadenas `List<String>`.
+```kotlin
+package b04_colecciones
 
-4. Aplica `.distinct()` sobre la lista resultante para asegurarte de que no haya títulos repetidos.
+data class Desarrolladora(val nombre: String, val juegosLanzados: List<String>)
 
-5. Ordena alfabéticamente la lista y muéstrala.
+fun main() {
+    val estudios = listOf(
+        Desarrolladora("Nintendo", listOf("Zelda Tears of the Kingdom", "Mario Odyssey", "Animal Crossing")),
+        Desarrolladora("FromSoftware", listOf("Elden Ring", "Dark Souls")),
+        Desarrolladora("Team Cherry", listOf("Hollow Knight"))
+    )
+
+    // TODO: Extrae los títulos con flatMap, elimina duplicados con distinct() y ordena con sorted()
+    val catalogoUnificado: List<String> = TODO("Pipeline: flatMap + distinct + sorted")
+
+    println("=== CATÁLOGO GLOBAL UNIFICADO (FLATMAP) ===")
+    catalogoUnificado.forEach { println("- $it") }
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -718,15 +960,33 @@ Estados iniciales: {P-02=CARGADO, P-99=CARGADO}
 📄 **Archivo:** `E10_ScopeFunctionsApplyAlso.kt`  
 📚 **Teoría de referencia:** [apply: Configuración de Objetos](../31-scope-functions.md#21-apply-configuracion-e-inicializacion-de-objetos) y [also: Efectos Secundarios y Logging](../31-scope-functions.md#23-also-efectos-secundarios-side-effects-y-logging)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
 1. Modela una clase mutable `ConfiguracionJuego` con propiedades `volumenMusica: Int = 100`, `brillo: Int = 50`, `subtitulos: Boolean = false`.
+2. Utiliza la función de ámbito **`apply`** para instanciar y configurar el objeto (`volumenMusica = 75`, `brillo = 80`, `subtitulos = true`) en un bloque expresivo sin repetir el nombre de la variable (`this` implícito).
+3. Encadena inmediatamente una llamada a **`also`** para imprimir un log de confirmación (*side-effect*) sin modificar el objeto recibido (`it`).
 
-2. Utiliza la función de ámbito **`apply`** para instanciar y configurar el objeto en un bloque expresivo sin repetir el nombre de la variable (`this` implícito).
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E10_ScopeFunctionsApplyAlso.kt` y completa el bloque marcado con `TODO(...)`:
 
-3. Encadena inmediatamente una llamada a **`also`** para imprimir un log de auditoría (*side-effect*) que confirme la creación del objeto sin modificarlo.
+```kotlin
+package b04_colecciones
 
-4. Imprime el estado final del objeto configurado.
+class ConfiguracionJuego {
+    var volumenMusica: Int = 100
+    var brillo: Int = 50
+    var subtitulos: Boolean = false
+
+    override fun toString(): String =
+        "Volumen: $volumenMusica, Brillo: $brillo, Subtítulos: $subtitulos"
+}
+
+fun main() {
+    // TODO: Instancia ConfiguracionJuego(), configúralo con .apply { ... } y añade log con .also { ... }
+    val config: ConfiguracionJuego = TODO("Encadenar apply { ... }.also { ... }")
+
+    println("Estado final -> $config")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -772,19 +1032,46 @@ Estado final -> Volumen: 75, Brillo: 80, Subtítulos: true
 📄 **Archivo:** `E11_MapperDtoADominio.kt`  
 📚 **Teoría de referencia:** [let: Operaciones Null-Safe](../31-scope-functions.md#22-let-operaciones-null-safe-y-transformaciones-locales) y [run: Cómputo de Resultado](../31-scope-functions.md#24-run-configuracion-y-computo-de-resultado)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
 En Android Clean Architecture, los datos crudos que llegan de la red (Retrofit DTO) contienen campos nulos o formatos no aptos para la UI. Deben transformarse a modelos de Dominio limpios.
 
-1. Declara el modelo de red `data class VideojuegoDto(val id_api: Long?, val raw_title: String?, val score_percent: Int?)`.
+1. Implementa la función de extensión `fun VideojuegoDto.toDomain(): Videojuego?`.
+2. Valida mediante cláusulas con operador Elvis que si `id_api` o `raw_title` son nulos, la función aborte devolviendo `null`.
+3. Utiliza la función de ámbito **`run`** sobre el DTO para construir el objeto limpio `Videojuego`, calculando la nota sobre 10 dividiendo `score_percent` entre `10.0` y saneando el título con `.trim()`.
 
-2. Declara el modelo limpio de dominio `data class Videojuego(val id: Long, val titulo: String, val puntuacionSobreDiez: Double)`.
+Copia esta plantilla con los modelos y casos de prueba preparados en tu archivo `E11_MapperDtoADominio.kt` y completa la función de extensión marcada con `TODO(...)`:
 
-3. Crea una función de extensión `fun VideojuegoDto.toDomain(): Videojuego?`.
+```kotlin
+package b04_colecciones
 
-4. Dentro de la función, utiliza **`let`** y el operador Elvis para validar que si `id_api` o `raw_title` son nulos, la función devuelva `null`.
+// Modelo de datos de la API (Retrofit DTO con campos anulables)
+data class VideojuegoDto(
+    val id_api: Long?,
+    val raw_title: String?,
+    val score_percent: Int?
+)
 
-5. Utiliza **`run`** para construir el objeto final calculando la nota sobre 10 dividiendo `score_percent` entre `10.0`.
+// Modelo puro de Dominio para la app Android (campos obligatorios y limpios)
+data class Videojuego(
+    val id: Long,
+    val titulo: String,
+    val puntuacionSobreDiez: Double
+)
+
+// TODO: Implementa la función de extensión utilizando let / run / elvis
+fun VideojuegoDto.toDomain(): Videojuego? {
+    TODO("Validar nulos obligatorios y usar run para retornar Videojuego transformado")
+}
+
+fun main() {
+    val dtoValido = VideojuegoDto(101L, "  Silksong  ", 98)
+    val dtoInvalido = VideojuegoDto(null, "Juego Fantasma", 50)
+
+    println("DTO Válido transformado: ${dtoValido.toDomain()}")
+    println("DTO Inválido transformado: ${dtoInvalido.toDomain()}")
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -842,24 +1129,55 @@ DTO Inválido transformado: null
 📄 **Archivo:** `E12_PipelineAnaliticaCompleta.kt`  
 📚 **Teoría de referencia:** [Tabla Maestra de Scope Functions](../31-scope-functions.md#1-tabla-maestra-de-seleccion-rapida) y [Operaciones Funcionales](../42-listas.md#4-operaciones-funcionales-imprescindibles)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
 
-Modela una sesión de juego:
-`data class SesionJuego(val usuarioId: String, val juego: String, val minutos: Int, val completado: Boolean)`
+Partiendo del histórico de sesiones de juego:
 
-Dada una lista con al menos 8 registros de sesiones de diferentes usuarios y juegos:
+1. Filtra las sesiones que alcancen al menos `15` minutos (descartar abandonos accidentales).
+2. Agrupa por el nombre del `juego` mediante **`groupBy`**.
+3. Transforma cada grupo en un `ResumenJuego` calculando:
+    - Minutos totales acumulados mediante `.sumOf { it.minutos }`.
+    - Porcentaje de partidas completadas con éxito (`(exitos.toDouble() / total) * 100.0`).
+4. Ordena el ranking final de mayor a menor tiempo jugado con **`sortedByDescending { it.minutosTotales }`**.
 
-1. Filtra las sesiones que duren al menos 15 minutos (descartar sesiones erróneas o abandonos inmediatos).
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E12_PipelineAnaliticaCompleta.kt` y completa el pipeline marcado con `TODO(...)`:
 
-2. Agrupa por nombre del `juego`.
+```kotlin
+package b04_colecciones
 
-3. Para cada juego, calcula:
+data class SesionJuego(
+    val usuarioId: String,
+    val juego: String,
+    val minutos: Int,
+    val completado: Boolean
+)
 
-    - Total de minutos acumulados por todos los usuarios.
+data class ResumenJuego(
+    val juego: String,
+    val minutosTotales: Int,
+    val porcentajeExito: Double
+)
 
-    - Porcentaje de partidas completadas con éxito.
+fun main() {
+    val sesiones = listOf(
+        SesionJuego("U1", "Elden Ring", 120, false),
+        SesionJuego("U2", "Elden Ring", 150, true),
+        SesionJuego("U3", "Elden Ring", 50, false),
+        SesionJuego("U1", "Hollow Knight", 90, true),
+        SesionJuego("U4", "Hollow Knight", 90, false),
+        SesionJuego("U2", "Celeste", 45, true),
+        SesionJuego("U3", "Celeste", 8, true) // Descartada (<15 min)
+    )
 
-4. Transforma los resultados a una lista de resúmenes y ordénalos de mayor a menor tiempo jugado total.
+    // TODO: Encadena .filter, .groupBy, .map y .sortedByDescending
+    val ranking: List<ResumenJuego> = TODO("Construir pipeline funcional de analítica")
+
+    println("=== RANKING DE JUEGOS MÁS POPULARES ===")
+    ranking.forEachIndexed { i, r ->
+        println("${i + 1}. ${r.juego} -> ${r.minutosTotales} min totales | Éxito: ${"%.1f".format(r.porcentajeExito)}%")
+    }
+}
+```
 
 #### 2. Salida Esperada en Consola
 
@@ -923,14 +1241,41 @@ Dada una lista con al menos 8 registros de sesiones de diferentes usuarios y jue
 📄 **Archivo:** `E13_ChunkedWindowed.kt`  
 📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-transformaciones-con-map-y-mapindexed)
 
-#### 1. Enunciado y Requisitos
-En aplicaciones móviles con Jetpack Compose, a menudo necesitamos alimentar cuadrículas de N columnas o simular páginas de resultados sin realizar cálculos manuales de sublistas:
+#### 1. Enunciado y Código de Partida
 
-1. Declara una lista de 9 títulos de juegos: `val catalogo = listOf("Zelda", "Mario", "Metroid", "Pokemon", "Kirby", "Donkey Kong", "Fire Emblem", "Star Fox", "F-Zero")`.
-2. Utiliza **`.chunked(3)`** para dividir el catálogo en páginas o filas de exactamente 3 juegos por bloque.
-3. Dada una serie temporal de latencias de red en milisegundos `val latencias = listOf(45, 52, 60, 48, 55, 70, 65)`, utiliza **`.windowed(size = 3, step = 1)`** para calcular el promedio móvil de latencia en cada ventana de 3 mediciones consecutivas.
+En interfaces Android con Jetpack Compose, a menudo necesitamos alimentar cuadrículas de N columnas o simular páginas de resultados:
+
+1. Utiliza **`.chunked(3)`** sobre el catálogo de títulos para dividir la colección en páginas o filas de exactamente 3 juegos por bloque.
+2. Dada una serie temporal de mediciones de red `latencias`, utiliza **`.windowed(size = 3, step = 1)`** para calcular el promedio móvil de latencia con `.average()` en cada ventana de 3 mediciones consecutivas.
+
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E13_ChunkedWindowed.kt` y completa los bloques marcados con `TODO(...)`:
+
+```kotlin
+package b04_colecciones
+
+fun main() {
+    val catalogo = listOf(
+        "Zelda", "Mario", "Metroid",
+        "Pokemon", "Kirby", "Donkey Kong",
+        "Fire Emblem", "Star Fox", "F-Zero"
+    )
+
+    println("--- CATÁLOGO PAGINADO EN BLOQUES DE 3 (chunked) ---")
+    // 1. TODO: Divide el catálogo en listas de tamaño 3 usando chunked
+    val paginas: List<List<String>> = TODO("Usar catalogo.chunked(3)")
+    paginas.forEachIndexed { index, pagina ->
+        println("Página ${index + 1}: $pagina")
+    }
+
+    println("\n--- PROMEDIOS MÓVILES DE LATENCIA (windowed) ---")
+    val latencias = listOf(45, 52, 60, 48, 55, 70, 65)
+    // 2. TODO: Itera sobre las ventanas deslizantes (size = 3, step = 1) e imprime la media calculada
+    TODO("Usar latencias.windowed(size = 3, step = 1) y calcular ventana.average()")
+}
+```
 
 #### 2. Salida Esperada en Consola
+
 ```text
 --- CATÁLOGO PAGINADO EN BLOQUES DE 3 (chunked) ---
 Página 1: [Zelda, Mario, Metroid]
@@ -978,17 +1323,43 @@ Ventana [55, 70, 65] -> Media: 63.3 ms
 📄 **Archivo:** `E14_ZipUnzip.kt`  
 📚 **Teoría de referencia:** [Listas y Operaciones Funcionales](../42-listas.md)
 
-#### 1. Enunciado y Requisitos
-Al sincronizar datos recibidos de dos endpoints independientes (ej. una lista de identificadores y otra de marcadores):
+#### 1. Enunciado y Código de Partida
 
-1. Dadas dos listas paralelas:
-    - `val jugadores = listOf("Cloud", "Tifa", "Barret", "Aerith")`
-    - `val niveles = listOf(50, 48, 45, 47)`
+Al sincronizar datos recibidos de dos endpoints independientes (ej. nombres y niveles):
 
-2. Utiliza **`.zip()`** para fusionarlas en una lista de pares `List<Pair<String, Int>>` y luego conviértela a un mapa `Map<String, Int>` con `.toMap()`.
-3. Toma una lista de pares de coordenadas `val coordenadas = listOf("X1" to 100, "X2" to 200, "X3" to 300)` y utiliza **`.unzip()`** para desacoplarlas nuevamente en dos listas separadas (una de etiquetas y otra de enteros).
+1. Utiliza **`.zip()`** sobre las listas `jugadores` y `niveles` para fusionarlas en una lista de pares `List<Pair<String, Int>>`.
+2. Convierte la lista de pares resultante en un mapa asociativo `Map<String, Int>` mediante **`.toMap()`**.
+3. Dada una lista de coordenadas `coordenadas`, utiliza **`.unzip()`** para desacoplarlas nuevamente en dos listas separadas independientes (`etiquetas` y `posiciones`).
+
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E14_ZipUnzip.kt` y completa los bloques marcados con `TODO(...)`:
+
+```kotlin
+package b04_colecciones
+
+fun main() {
+    val jugadores = listOf("Cloud", "Tifa", "Barret", "Aerith")
+    val niveles = listOf(50, 48, 45, 47)
+
+    // 1. TODO: Fusiona ambas listas en una lista de pares con .zip()
+    val pares: List<Pair<String, Int>> = TODO("Fusionar con jugadores.zip(niveles)")
+    println("Pares fusionados con zip: $pares")
+
+    // 2. TODO: Transforma la lista de pares en un mapa con .toMap()
+    val mapaJugadores: Map<String, Int> = TODO("Convertir con pares.toMap()")
+    println("Mapa generado desde pares: $mapaJugadores")
+
+    // 3. TODO: Desacopla la lista de pares de coordenadas en dos listas con .unzip()
+    val coordenadas = listOf("X1" to 100, "X2" to 200, "X3" to 300)
+    val (etiquetas, posiciones) = TODO("Desacoplar con coordenadas.unzip()")
+
+    println("Desacoplado con unzip:")
+    println("- Etiquetas: $etiquetas")
+    println("- Posiciones: $posiciones")
+}
+```
 
 #### 2. Salida Esperada en Consola
+
 ```text
 Pares fusionados con zip: [(Cloud, 50), (Tifa, 48), (Barret, 45), (Aerith, 47)]
 Mapa generado desde pares: {Cloud=50, Tifa=48, Barret=45, Aerith=47}
@@ -1029,17 +1400,43 @@ Desacoplado con unzip:
 📄 **Archivo:** `E15_FoldVsReduce.kt`  
 📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
 
-#### 1. Enunciado y Requisitos
+#### 1. Enunciado y Código de Partida
+
 Las operaciones de reducción permiten condensar una colección en un único valor acumulado:
 
-- **`reduce`:** No recibe valor inicial; toma el primer elemento de la lista como semilla. **Falla con excepción si la lista está vacía**.
-- **`fold`:** Recibe un valor inicial explícito (semilla) y es **seguro ante listas vacías**. Permite acumular hacia un tipo de dato completamente distinto al de los elementos de la lista.
+- **`reduce`:** No recibe valor inicial; toma el primer elemento de la lista como semilla.
+- **`fold`:** Recibe un valor inicial explícito (semilla) y permite acumular hacia un tipo de dato completamente distinto.
 
-1. Calcula la suma de `val monedas = listOf(10, 25, 50, 100)` con `.reduce { acumulado, num -> acumulado + num }`.
-2. Calcula el total partiendo de un saldo previo de `500` monedas utilizando `.fold(500) { acumulado, num -> acumulado + num }`.
-3. Utiliza `.fold` sobre una lista de nombres `listOf("Mario", "Luigi", "Yoshi")` con semilla `StringBuilder("Resumen: ")` para concatenarlos en una sola cadena con separadores, demostrando cómo el tipo del acumulador puede ser diferente al de los elementos.
+1. Calcula la suma total de `monedas` utilizando **`reduce`**.
+2. Calcula la suma total de `monedas` partiendo de un saldo previo de `500` usando **`fold(500)`**.
+3. Utiliza **`fold`** sobre la lista `personajes` con semilla `StringBuilder("Resumen: ")` para componer una cadena concatenada, demostrando la acumulación hacia un tipo heterogéneo.
+
+Copia esta plantilla con los datos de prueba preparados en tu archivo `E15_FoldVsReduce.kt` y completa los bloques marcados con `TODO(...)`:
+
+```kotlin
+package b04_colecciones
+
+fun main() {
+    val monedas = listOf(10, 25, 50, 100)
+
+    // 1. TODO: Calcula la suma pura con reduce (sin valor inicial)
+    val sumaReduce: Int = TODO("Acumular con monedas.reduce { acc, valor -> ... }")
+    println("Suma pura con reduce: $sumaReduce")
+
+    // 2. TODO: Calcula la suma con fold partiendo del saldo inicial de 500
+    val totalFold: Int = TODO("Acumular con monedas.fold(500) { acc, valor -> ... }")
+    println("Suma con saldo inicial (500) con fold: $totalFold")
+
+    // 3. TODO: Concatena los nombres en un StringBuilder acumulador usando fold
+    val personajes = listOf("Mario", "Luigi", "Yoshi")
+    val textoCompuesto: String = TODO("Acumular en StringBuilder con fold y convertir con toString().trim()")
+
+    println("Texto acumulado con fold: $textoCompuesto")
+}
+```
 
 #### 2. Salida Esperada en Consola
+
 ```text
 Suma pura con reduce: 185
 Suma con saldo inicial (500) con fold: 685
