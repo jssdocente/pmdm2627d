@@ -1,6 +1,6 @@
 # Taller de Testing 1: Testeando el Combate RPG (Fundamentos e Inmutabilidad)
 
-En el [Reto 1.14 del Bloque de Fundamentos](../ejercicios/01-fundamentos-inmutabilidad.md#reto-114-combate-rpg-por-turnos-heroe-vs-dragon-carmesi) programaste una batalla por turnos en consola entre el Héroe de Kotlinia y el Dragón Carmesí.
+En el [Reto 1.12 del Bloque de Fundamentos](../ejercicios/01-fundamentos-inmutabilidad.md#reto-112-combate-rpg-por-turnos-heroe-vs-dragon-carmesi) programaste una batalla por turnos en consola entre el Héroe de Kotlinia y el Dragón Carmesí.
 
 El juego funciona en pantalla, pero **¿cómo garantizamos que las reglas críticas del combate nunca fallen ante futuras modificaciones?** 
 
@@ -17,7 +17,7 @@ En este taller aprenderás a **refactorizar el código original para hacerlo tes
 Revisa cómo estaba planteada la solución dentro de `fun main()`:
 
 ```kotlin
-// Fragmento del Reto 1.14 original:
+// Fragmento del Reto 1.12 original:
 while (heroeHp > 0 && dragonHp > 0) {
     // ...
     when (accion) {
@@ -56,16 +56,24 @@ package b01_fundamentos
  * Aplica un impacto de daño a los puntos de vida actuales.
  * Garantiza que la vida resultante nunca baje de 0 (evita números negativos por overkill).
  */
-fun calcularDano(hpActual: Int, dano: Int): Int {
-    return (hpActual - dano).coerceAtLeast(0)
+fun calcularNuevaVidaAplicarAtaque(vidaActual: Int, danoAplicado: Int): Int {
+    return (vidaActual - danoAplicado).coerceAtLeast(0)
+}
+
+/**
+ * Deduce el coste de maná/energía al conjurar un hechizo.
+ * Garantiza que la energía resultante nunca descienda por debajo de 0.
+ */
+fun calcularNuevaEnergiaAplicarHechizo(energiaActual: Int, costeEnergiaHechizo: Int): Int {
+    return (energiaActual - costeEnergiaHechizo).coerceAtLeast(0)
 }
 
 /**
  * Aplica la recuperación de puntos de vida de una poción curativa.
  * Garantiza que la salud nunca sobrepase el límite máximo permitido (evita sobrecuración).
  */
-fun calcularCuracion(hpActual: Int, curacion: Int, maxHp: Int): Int {
-    return (hpActual + curacion).coerceAtMost(maxHp)
+fun beberPocion(vidaActual: Int, pocionSaludHP: Int, maxHp: Int): Int {
+    return (vidaActual + pocionSaludHP).coerceAtMost(maxHp)
 }
 
 /**
@@ -102,12 +110,19 @@ fun main() {
     val maxDragonHp = 150
     val maxHeroeEnergia = 30
     val costeEnergiaHechizo = 15
+    val pocionSaludHp = 35
 
     var heroeHp = maxHeroeHp
     var heroeEnergia = maxHeroeEnergia
     var pociones = 2
     var dragonHp = maxDragonHp
     var turno = 1
+
+    println("""
+        ==================================================
+                ⚔️ BATALLA: HÉROE VS DRAGÓN CARMESÍ ⚔️     
+        ==================================================
+    """.trimIndent())
 
     while (heroeHp > 0 && dragonHp > 0) {
         println("\n=== TURNO #$turno ===")
@@ -128,32 +143,40 @@ fun main() {
         when (accion) {
             1 -> {
                 val danoEspada = (18..25).random()
-                dragonHp = calcularDano(dragonHp, danoEspada) // <-- Delegación limpia
+                dragonHp = calcularNuevaVidaAplicarAtaque(dragonHp, danoEspada) // <-- Delegación limpia
                 println("-> Héroe asesta Golpe de Espada -> ¡$danoEspada de daño al Dragón!")
             }
             2 -> {
-                heroeEnergia -= costeEnergiaHechizo
+                heroeEnergia = calcularNuevaEnergiaAplicarHechizo(heroeEnergia, costeEnergiaHechizo) // <-- Delegación limpia
                 val danoMagico = (35..45).random()
-                dragonHp = calcularDano(dragonHp, danoMagico) // <-- Delegación limpia
+                dragonHp = calcularNuevaVidaAplicarAtaque(dragonHp, danoMagico) // <-- Delegación limpia
                 println("-> Héroe lanza Lanza de Hielo -> ¡$danoMagico de daño crítico al Dragón!")
             }
             3 -> {
                 pociones--
-                heroeHp = calcularCuracion(heroeHp, 35, maxHeroeHp) // <-- Delegación limpia
-                println("-> Héroe bebe una Poción Curativa (+35 HP). Pociones restantes: $pociones")
+                heroeHp = beberPocion(heroeHp, pocionSaludHp, maxHeroeHp) // <-- Delegación limpia
+                println("-> Héroe bebe una Poción Curativa (+$pocionSaludHp HP). Pociones restantes: $pociones")
             }
         }
 
         if (dragonHp > 0) {
             val danoDragon = (15..22).random()
-            heroeHp = calcularDano(heroeHp, danoDragon) // <-- Delegación limpia
+            heroeHp = calcularNuevaVidaAplicarAtaque(heroeHp, danoDragon) // <-- Delegación limpia
             println("-> Dragón contraataca con Aliento Ígneo -> ¡Héroe recibe $danoDragon de daño!")
         }
 
         turno++
     }
 
-    // Veredicto final...
+    println("\n==================================================")
+    if (heroeHp > 0) {
+        println("              🏆 ¡VICTORIA HEROICA! 🏆            ")
+        println("El temible Dragón Carmesí ha sido derrotado en $turno turnos.")
+    } else {
+        println("              💀 ¡HAS SIDO DERROTADO! 💀          ")
+        println("El Héroe ha caído en batalla frente al Dragón Carmesí.")
+    }
+    println("==================================================")
 }
 ```
 
@@ -165,12 +188,14 @@ Antes de tocar una sola línea de código de pruebas, confeccionamos la matriz d
 
 | Función a Probar | Escenario / Caso | Entradas (Arrange) | Resultado Esperado (Assert) | Tipo de Caso |
 | :--- | :--- | :--- | :--- | :--- |
-| `calcularDano` | Daño ordinario | HP: 100, Daño: 25 | **75 HP** | Nominal (*Happy Path*) |
-| `calcularDano` | *Overkill* (daño letal masivo) | HP: 15, Daño: 40 | **0 HP** (jamás negativo) | Límite (*Edge Case*) |
-| `calcularCuracion` | Curación estándar | HP: 40, Curación: 35, Máx: 100 | **75 HP** | Nominal (*Happy Path*) |
-| `calcularCuracion` | Sobrecuración desbordada | HP: 90, Curación: 35, Máx: 100 | **100 HP** (tope alcanzado) | Límite (*Edge Case*) |
+| `calcularNuevaVidaAplicarAtaque` | Daño ordinario | HP: 100, Daño: 25 | **75 HP** | Nominal (*Happy Path*) |
+| `calcularNuevaVidaAplicarAtaque` | *Overkill* (daño letal masivo) | HP: 15, Daño: 40 | **0 HP** (jamás negativo) | Límite (*Edge Case*) |
+| `calcularNuevaEnergiaAplicarHechizo` | Consumo de energía ordinario | Energía: 30, Coste: 15 | **15 Energía** | Nominal (*Happy Path*) |
+| `calcularNuevaEnergiaAplicarHechizo` | Gasto superior a la reserva | Energía: 10, Coste: 15 | **0 Energía** (no negativo) | Límite (*Edge Case*) |
+| `beberPocion` | Curación estándar | HP: 40, Poción: 35, Máx: 100 | **75 HP** | Nominal (*Happy Path*) |
+| `beberPocion` | Sobrecuración desbordada | HP: 90, Poción: 35, Máx: 100 | **100 HP** (tope alcanzado) | Límite (*Edge Case*) |
 | `decidirAccionHeroe` | Salud crítica con pociones | HP: 35, Energía: 30, Pociones: 2 | **Opción 3** (Poción prioritaria) | Prioridad 1 |
-| `decidirAccionHeroe` | Salud crítica sin pociones | HP: 30, Energía: 15, Pociones: 0 | **Opción 2** (Magia defensiva) | Prioridad 2 |
+| `decidirAccionHeroe` | Salud crítica sin pociones | HP: 30, Energía: 15, Pociones: 0 | **Opción 2** (Magia ofensiva) | Prioridad 2 |
 | `decidirAccionHeroe` | Recursos agotados en peligro | HP: 20, Energía: 10, Pociones: 0 | **Opción 1** (Espada básica) | Fallback seguro |
 | `calcularBloquesBarra` | Mitad exacta de salud | HP: 50, Máx: 100, Longitud: 10 | **5 bloques** | Visual proporcional |
 | `calcularBloquesBarra` | Salud a cero | HP: 0, Máx: 100, Longitud: 10 | **0 bloques** | Límite inferior |
@@ -203,7 +228,7 @@ class Reto01_CombateRpgTest {
         val impacto = 25
 
         // Act
-        val vidaFinal = calcularDano(vidaInicial, impacto)
+        val vidaFinal = calcularNuevaVidaAplicarAtaque(vidaInicial, impacto)
 
         // Assert
         assertEquals(75, vidaFinal, "100 HP menos 25 de impacto debe resultar en 75 HP")
@@ -216,14 +241,44 @@ class Reto01_CombateRpgTest {
         val impactoDemoledor = 45
 
         // Act
-        val vidaFinal = calcularDano(vidaRestante, impactoDemoledor)
+        val vidaFinal = calcularNuevaVidaAplicarAtaque(vidaRestante, impactoDemoledor)
 
         // Assert: Overkill blindado con .coerceAtLeast(0)
         assertEquals(0, vidaFinal, "La salud tras un ataque letal debe ser 0 y nunca negativa")
     }
 
     // ========================================================================
-    // 🧪 BLOQUE 2: PRUEBAS DE CURACIÓN Y LÍMITES SUPERIORES
+    // ⚡ BLOQUE 2: PRUEBAS DE GESTIÓN DE ENERGÍA Y HECHIZOS
+    // ========================================================================
+
+    @Test
+    fun `lanzar hechizo reduce la energia en el coste exacto especificado`() {
+        // Arrange
+        val energiaInicial = 30
+        val costeHechizo = 15
+
+        // Act
+        val energiaFinal = calcularNuevaEnergiaAplicarHechizo(energiaInicial, costeHechizo)
+
+        // Assert
+        assertEquals(15, energiaFinal, "30 de energía menos 15 de coste debe resultar en 15")
+    }
+
+    @Test
+    fun `lanzar hechizo con coste superior a la reserva no deja energia negativa`() {
+        // Arrange: Héroe con 10 de energía intenta un gasto de 15
+        val energiaInsuficiente = 10
+        val costeHechizo = 15
+
+        // Act
+        val energiaFinal = calcularNuevaEnergiaAplicarHechizo(energiaInsuficiente, costeHechizo)
+
+        // Assert
+        assertEquals(0, energiaFinal, "La energía nunca debe ser negativa ante costes superiores")
+    }
+
+    // ========================================================================
+    // 🧪 BLOQUE 3: PRUEBAS DE CURACIÓN Y LÍMITES SUPERIORES
     // ========================================================================
 
     @Test
@@ -234,7 +289,7 @@ class Reto01_CombateRpgTest {
         val vidaMaxima = 100
 
         // Act
-        val vidaRecuperada = calcularCuracion(vidaHerido, curacionPocion, vidaMaxima)
+        val vidaRecuperada = beberPocion(vidaHerido, curacionPocion, vidaMaxima)
 
         // Assert
         assertEquals(75, vidaRecuperada)
@@ -248,14 +303,14 @@ class Reto01_CombateRpgTest {
         val vidaMaxima = 100
 
         // Act
-        val vidaTopada = calcularCuracion(vidaCasiLlena, curacionPocion, vidaMaxima)
+        val vidaTopada = beberPocion(vidaCasiLlena, curacionPocion, vidaMaxima)
 
         // Assert: Sobrecuración evitada con .coerceAtMost(maxHp)
         assertEquals(100, vidaTopada, "La curación jamás debe sobrepasar el tope de 100 HP")
     }
 
     // ========================================================================
-    // 🤖 BLOQUE 3: PRUEBAS DE LA TOMA DE DECISIONES DE LA IA
+    // 🤖 BLOQUE 4: PRUEBAS DE LA TOMA DE DECISIONES DE LA IA
     // ========================================================================
 
     @Test
@@ -301,7 +356,7 @@ class Reto01_CombateRpgTest {
     }
 
     // ========================================================================
-    // 📊 BLOQUE 4: PRUEBAS DEL HUD Y BARRAS VISUALES
+    // 📊 BLOQUE 5: PRUEBAS DEL HUD Y BARRAS VISUALES
     // ========================================================================
 
     @Test
@@ -365,7 +420,7 @@ Si estás en Windows (CMD o PowerShell), utiliza el script por lotes:
 > Task :testClasses
 > Task :test
 
-BUILD SUCCESSFUL in 412ms
+BUILD SUCCESSFUL in 430ms
 3 actionable tasks: 2 executed, 1 up-to-date
 ```
 
@@ -374,7 +429,7 @@ BUILD SUCCESSFUL in 412ms
 Abre en tu navegador web el archivo generado:  
 📁 `pmdm-kotlin-lab/build/reports/tests/test/index.html`
 
-Verás la tabla completa con los **8 tests ejecutados en pocos milisegundos**, con un **100% de éxito**.
+Verás la tabla completa con los **10 tests ejecutados en pocos milisegundos**, con un **100% de éxito**.
 
 ---
 
@@ -383,11 +438,11 @@ Verás la tabla completa con los **8 tests ejecutados en pocos milisegundos**, c
 Para experimentar el verdadero poder de los tests automatizados frente a las regresiones:
 
 1. Abre `Reto01_CombateRpg.kt`.
-2. Modifica intencionadamente la función `calcularCuracion` eliminando la acotación de seguridad `.coerceAtMost(maxHp)`:
+2. Modifica intencionadamente la función `beberPocion` eliminando la acotación de seguridad `.coerceAtMost(maxHp)`:
    ```kotlin
    // ❌ ERROR INTENCIONADO: Hemos olvidado acotar la vida máxima
-   fun calcularCuracion(hpActual: Int, curacion: Int, maxHp: Int): Int {
-       return hpActual + curacion
+   fun beberPocion(vidaActual: Int, pocionSaludHP: Int, maxHp: Int): Int {
+       return vidaActual + pocionSaludHP
    }
    ```
 3. Vuelve a ejecutar en la terminal:
@@ -403,3 +458,4 @@ Para experimentar el verdadero poder de los tests automatizados frente a las reg
 El test acaba de salvarte la vida: **ha detectado un error crítico de lógica antes de que el juego llegue a producción o a manos del usuario**.
 
 Restaura el código original con `.coerceAtMost(maxHp)` y comprueba cómo el semáforo vuelve al verde. ¡Bienvenido al desarrollo profesional!
+
