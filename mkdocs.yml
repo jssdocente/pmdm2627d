@@ -45,7 +45,7 @@ nav:
               - "1. Test Combate RPG": temas/00-android/00-kotlin/testing/01-test-combate-rpg.md
               - "2. Test Ahorcado con TDD": temas/00-android/00-kotlin/testing/02-test-ahorcado-tdd.md
               - "3. Test Wordle con TDD": temas/00-android/00-kotlin/testing/03-test-wordle-dominio.md
-              - "4. Test Deck Builder con TDD": temas/00-android/00-kotlin/testing/04-test-deck-builder-colecciones.md
+              - "4. Test Memory Match con TDD": temas/00-android/00-kotlin/testing/04-test-memory-match.md
               - "5. Test Concurrencia con TDD": temas/00-android/00-kotlin/testing/05-test-carrera-corrutinas.md
       - "Herramientas Proyecto Android":
           - "Introducción": "temas/00-android/00-tools/index.md"

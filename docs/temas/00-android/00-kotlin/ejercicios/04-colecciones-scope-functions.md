@@ -1471,265 +1471,506 @@ Texto acumulado con fold: Resumen: [Mario] [Luigi] [Yoshi]
 
 ---
 
-### Reto 4.16: Deck Builder RPG (*Saqueo y Forja de Cartas*)
-📄 **Archivo:** `Reto04_DeckBuilder.kt`  
-📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles) y [Estudio Detallado de Scope Functions](../31-scope-functions.md#2-estudio-detallado-y-casos-de-uso-en-android)
+### Reto 4.16: Memory Match Engine (*Juego de Parejas de Cartas en Cuadrícula*)
+📄 **Archivo:** `Reto04_MemoryMatch.kt`  
+📚 **Teoría de referencia:** [Listas y Operaciones Funcionales](../42-listas.md), [Sets y Unicidad](../44-sets.md), [Maps y Asociaciones](../43-maps.md) y [Scope Functions](../31-scope-functions.md).
 
 #### 1. Contexto y Misión
 
-En este reto programarás el motor de gestión de cartas e inventario para un juego de rol táctico de construcción de mazos (**Deck Builder RPG**), aplicando las operaciones avanzadas de **Colecciones Funcionales** y **Scope Functions** aprendidas en el Bloque 4.
+En este reto culminante del Bloque 4 programarás el motor lógico para el clásico juego de memoria **Memory Match** (encontrar parejas volteando cartas en una cuadrícula de 4x4).
 
-El reto te desafía a procesar el botín acumulado tras una incursión a una mazmorra mediante **pipelines puramente funcionales**: queda terminantemente prohibido el uso de bucles clásicos (`for`, `while`) o variables de acumulación mutables.
+Este reto está diseñado siguiendo la filosofía de **Clean Architecture y Jetpack Compose**:
 
-##### 🎮 La Dinámica del Juego Explicada
+- **Lógica desacoplada de la UI:** No hay variables mutables globales ni dependencias de consola soldadas en la lógica; todo el juego se modela mediante un estado inmutable (`MemoryUiState`) y funciones puras que calculan el siguiente estado.
+- **Transición directa a Compose:** Cuando los alumnos implementen la pantalla visual en Android, el componente `LazyVerticalGrid(columns = GridCells.Fixed(4))` consumirá exactamente este mismo estado y llamará a estas mismas funciones sin tener que reprogramar la lógica.
+- **Preparado para Testing Unitario:** Al no depender de la consola ni de aleatoriedad incontrolada, las reglas pueden verificarse de forma 100% determinista mediante pruebas unitarias automatizadas.
 
-Al derrotar a los jefes de las tres criptas, los héroes han abierto **3 cofres de botín**. Sin embargo, los cofres contienen cartas repetidas, talismanes rotos y reliquias malditas con poder nulo o negativo.
+##### 🎮 La Dinámica del Juego
 
-Tu misión es canalizar ese aluvión de cartas a través de un embudo funcional que purifique los datos, calcule las sinergias mágicas elementales y seleccione la mejor alineación de **5 cartas definitivas** para el mazo activo.
+El juego consta de una baraja de **16 cartas** dispuestas en una cuadrícula de **4 filas × 4 columnas**. La baraja contiene exactamente **8 parejas de símbolos** (iconos como `🤖`, `💎`, `⚡`, `⭐`, `🔥`, `🍀`, `🍎`, `🔔`).
 
-###### A. Componentes y Recursos de la Partida
-
-| Elemento | Tipo de Dato | Función en el Juego |
-| :--- | :--- | :--- |
-| **`Carta`** | `data class` | Ficha inmutable que contiene identificador (`id`), nombre, afinidad elemental (`elemento`), puntuación de `poder` y rol (`esAtaque: Boolean`). |
-| **`Cofres de Botín`** | `List<List<Carta>>` | Colección anidada que representa los 3 cofres abiertos tras la batalla. |
-| **`Sinergias Elementales`** | `Map<String, List<Carta>>` | Agrupación de cartas de ataque según su elemento (Fuego, Hielo, Rayo) para calcular el daño acumulado por escuela mágica. |
-| **`MazoCombate`** | Clase de Dominio | Mazo sellado de 5 cartas con una propiedad calculada `poderTotal` que suma el impacto total del equipo. |
-
-###### B. Reglas de Filtrado y Forja (Aplanado, Limpieza y Sinergias)
-
-El tratamiento de las cartas se rige por las siguientes reglas estrictas:
-
-1. **Unicidad Obligatoria:** Si dos cartas comparten el mismo identificador `id` (por haber caído en cofres distintos), solo se conserva una de ellas (`distinctBy { it.id }`).
-
-2. **Purificación de Maldiciones:** Cualquier carta con `poder <= 0` se considera rota o maldita y debe ser excluida de inmediato (`filter { it.poder > 0 }`).
-
-3. **Separación de Roles Tácticos:** Las cartas purificadas deben dividirse en dos contingentes independientes (**Cartas de Ataque** frente a **Cartas de Defensa / Curación**) en una única pasada con `partition { it.esAtaque }`.
-
-4. **Análisis de Sinergias de Ataque:** Las cartas ofensivas se agrupan por su elemento mágico (`groupBy { it.elemento }`) y se totaliza el daño que aporta cada elemento con `.sumOf { it.poder }`.
-
-###### C. Fases del Pipeline Funcional (Paso a Paso)
-
-El procesamiento del botín se ejecuta cronológicamente a través de las siguientes etapas:
-
-1. **Fase 1 — Aplanado de Cofres (`flatMap`):**  
-   Se combinan los 3 cofres independientes en una única secuencia plana `List<Carta>`.
-
-2. **Fase 2 — Deduplicación y Filtro de Poder (`distinctBy` y `filter`):**  
-   Se eliminan duplicados posicionales por identificador y se descartan las cartas inútiles o dañinas.
-
-3. **Fase 3 — Partición Ofensiva / Defensiva (`partition`):**  
-   Se desestructura la lista resultante en dos colecciones inmutables: `val (ofensivas, defensivas) = cartasValidas.partition { it.esAtaque }`.
-
-4. **Fase 4 — Agrupación Elemental (`groupBy` y `sumOf`):**  
-   Se imprimen las estadísticas de sinergia elemental, reportando el número de cartas y la potencia total acumulada de cada elemento.
-
-5. **Fase 5 — Ensamblado con Scope Functions (`apply` y `also`):**  
-   Se extraen las 3 cartas más poderosas de ataque y las 2 más poderosas de defensa, se fusionan con el operador `+` y se configuran en una instancia de `MazoCombate` emitiendo una traza de auditoría.
-
-###### D. Desenlace Final (Composición del Mazo de 5 Cartas)
-
-- El mazo queda ensamblado exactamente con **5 cartas de élite** (Top 3 ataque + Top 2 defensa).
-
-- Se imprime el desglose individual de las cartas equipadas con su rol, elemento, nombre y poder.
-
-- Se muestra la suma global de poder del mazo mediante la propiedad calculada `poderTotal`.
+1. **Estado inicial:** Todas las cartas comienzan tapadas (`[ #00: ❓ ]`).
+2. **Primer volteo del turno:** El jugador elige una primera carta; esta se destapa visualmente (`[ 👀 🤖 ]`).
+3. **Segundo volteo del turno:** El jugador elige una segunda carta:
+    - **Si los símbolos coinciden:** ¡Pareja encontrada! Ambas cartas quedan resueltas permanentemente (`[ ✅ 🤖 ]`), se vacía la selección activa y se suma 1 al contador de movimientos. Si se completan las 8 parejas, se alcanza la **Victoria**.
+    - **Si los símbolos NO coinciden:** Ambas cartas quedan levantadas temporalmente para mostrar el fallo al jugador, se suma 1 al contador de movimientos y se emite feedback de no coincidencia.
+4. **Siguiente turno tras fallo:** Cuando el jugador pulsa la siguiente carta, las dos cartas falladas del turno anterior se vuelven a tapar automáticamente y la nueva carta pulsada se convierte en la primera levantada del nuevo asalto.
+5. **Cierre de partida:** Al descubrir las 8 parejas, el motor emite el estado final con analítica de precisión calculada mediante operaciones funcionales.
 
 ---
 
-#### 2. Requisitos Funcionales
+#### 2. Requisitos Funcionales y Estructuras de Colecciones
 
-Para completar el reto de forma rigurosa:
+Para que el motor sea idiomático, robusto y testeable, tu solución debe ceñirse con precisión a los siguientes requisitos funcionales, utilizando **específicamente las estructuras y operaciones de colecciones del Bloque 4 indicadas**:
 
-1. **RF-01 (Data Class de Carta):** Declara `data class Carta(val id: String, val nombre: String, val elemento: String, val poder: Int, val esAtaque: Boolean)` para representar cada carta de forma inmutable.
+1. **RF-01 (Modelado Inmutable del Dominio):**  
 
-2. **RF-02 (Clase Mazo con Getter Calculado):** Modela `class MazoCombate` con una propiedad mutable de configuración `var cartas: List<Carta> = emptyList()` y una propiedad calculada `val poderTotal: Int get() = cartas.sumOf { it.poder }`.
+   - Declara `data class Carta(val id: Int, val simbolo: String)`.
+   - Modela el resultado de cada jugada con `enum class EstadoJugada { PRIMERA_CARTA, PAREJA_ACERTADA, PAREJA_FALLADA, VICTORIA }`.
+   - Modela el estado global inmutable mediante `data class MemoryUiState(val tablero: List<Carta>, val seleccionadasIds: List<Int>, val emparejadasIds: Set<Int>, val movimientos: Int, val ultimoEstado: EstadoJugada)`.
 
-3. **RF-03 (Preparación del Botín):** Simula 3 cofres (`cofre1`, `cofre2`, `cofre3`) que sumen al menos 9 cartas, asegurando la presencia de al menos un identificador duplicado y dos cartas con poder ≤ 0 (malditas o rotas).
+2. **RF-02 (Generación y Duplicación de Baraja con `+` y `mapIndexed`):** 
 
-4. **RF-04 (Pipeline de Purificación y Partición):** Concatena en una sola cadena funcional `flatMap`, `distinctBy { it.id }` y `filter { it.poder > 0 }`, dividiendo el resultado con `.partition { it.esAtaque }`.
+   Implementa la función `crearBaraja(simbolosBase: List<String>, barajar: Boolean = true): List<Carta>`
 
-5. **RF-05 (Análisis de Sinergias Elementales):** Aplica `groupBy { it.elemento }` sobre las cartas ofensivas e imprime el poder acumulado de cada elemento mediante `.sumOf { it.poder }`.
+   - Duplica la lista base de 8 símbolos usando el operador de adición funcional **`+`** (o `flatMap`).
+   - Si `barajar == true`, aplica **`.shuffled()`** (o baraja con una semilla fija `Random(seed)` para tests deterministas).
+   - Transforma la lista plana resultante asignando el índice posicional como ID único (`0..15`) mediante **`.mapIndexed { index, simbolo -> Carta(index, simbolo) }`**.
 
-6. **RF-06 (Forja del Mazo con Scope Functions):** Ordena descendentemente con `.sortedByDescending { it.poder }`, selecciona con `.take(3)` y `.take(2)`, ensambla el mazo dentro de un bloque `.apply { ... }` y emite el mensaje de auditoría con `.also { ... }`.
+3. **RF-03 (Indexación en Mapa $O(1)$ con `associateBy`):**  
+
+   Implementa la función `indexarTablero(tablero: List<Carta>): Map<Int, Carta>` utilizando **`tablero.associateBy { it.id }`**. Esta indexación permite acceder a cualquier carta por su ID en tiempo constante $O(1)$ durante las comprobaciones de parejas sin iterar la lista.
+
+4. **RF-04 (Estructuración de Cuadrícula con `chunked(4)`):**  
+
+   Implementa la función `estructurarCuadricula(tablero: List<Carta>, columnas: Int = 4): List<List<Carta>>` utilizando **`tablero.chunked(columnas)`**. Esta función parte la lista plana de 16 cartas en 4 filas de 4 cartas para renderizar el HUD en consola y alimentar en el futuro cuadrículas en Jetpack Compose.
+
+5. **RF-05 (Gestión de Aciertos con `Set<Int>` Inmutable):**  
+
+   El campo `emparejadasIds` debe ser estrictamente un **`Set<Int>` inmutable**. Cuando una pareja coincide, se deriva el nuevo conjunto sumando los dos IDs mediante `estado.emparejadasIds + setOf(id1, id2)`, garantizando ausencia de duplicados y consultas ultra-rápidas (`id in emparejadasIds`).
+
+6. **RF-06 (Cálculo de Cartas Pendientes con Diferencia de Conjuntos `subtract`):**  
+
+   Implementa la función `obtenerCartasPendientes(tablero: List<Carta>, emparejadasIds: Set<Int>): Set<Int>` calculando la diferencia teórica de conjuntos mediante el operador infijo **`subtract`**:  
+   `val totalIds = tablero.map { it.id }.toSet()`  
+   `val pendientes = totalIds subtract emparejadasIds`.
+
+7. **RF-07 (Motor de Decisión Puro `voltearCarta`):**
+
+   Implementa la función pura `voltearCarta(estado: MemoryUiState, idCarta: Int): MemoryUiState`
+   
+   - **Cláusulas de guarda:** Si `idCarta` ya está en `emparejadasIds` o ya está en `seleccionadasIds`, devuelve el `estado` intacto.
+   - **Si `seleccionadasIds.isEmpty()`:** Retorna `estado.copy(seleccionadasIds = listOf(idCarta), ultimoEstado = PRIMERA_CARTA)`.
+   - **Si `seleccionadasIds.size == 1`:** Consulta ambas cartas en el mapa (`associateBy`). Si sus símbolos coinciden, suma 1 a `movimientos`, añade ambos IDs a `emparejadasIds`, vacía `seleccionadasIds` y marca `VICTORIA` o `PAREJA_ACERTADA`. Si no coinciden, suma 1 a `movimientos`, deja ambas en `seleccionadasIds` (para mostrarlas visibles en el HUD) y marca `PAREJA_FALLADA`.
+   - **Si `seleccionadasIds.size == 2` (turno previo fallado):** Limpia la pareja fallada anterior e inicia el nuevo turno con `idCarta` como única seleccionada (`listOf(idCarta)`).
+
+8. **RF-08 (Analítica de Cierre con `groupBy`, `count` y Scope Functions):**  
+
+   Al concluir la partida, calcula el porcentaje de aciertos por movimiento y agrupa los símbolos utilizando **`groupBy { it.simbolo }`** y **`count`**. Utiliza **`.also { ... }`** para emitir un log de auditoría final confirmando la victoria.
 
 ---
 
-??? info "📊 Ver Modelo Mental del Reto (Pipeline Funcional de Transformación)"
-    Visualiza el flujo continuo de datos por el que viajan las cartas desde los cofres hasta el mazo definitivo:
+#### 3. Código de Partida (Plantilla para el Alumno)
 
-    ```mermaid
-    flowchart TD
-        Cofres["3 Cofres de Botín<br/><i>(List&lt;List&lt;Carta&gt;&gt;)</i>"] --> FlatMap["<b>flatMap</b><br/>Aplanar a lista única"]
-        FlatMap --> Distinct["<b>distinctBy { it.id }</b><br/>Eliminar duplicados"]
-        Distinct --> Filter["<b>filter { it.poder &gt; 0 }</b><br/>Descartar cartas malditas o rotas"]
-        Filter --> Partition["<b>partition { it.esAtaque }</b><br/>Dividir en Ofensivas y Defensivas"]
-        
-        Partition --> Ofensivas["Cartas de Ataque"]
-        Partition --> Defensivas["Cartas de Escudo/Curación"]
-        
-        Ofensivas --> GroupBy["<b>groupBy { it.elemento }</b><br/>Calcular sinergias elementales"]
-        GroupBy --> MazoFinal["<b>take(3) Ofensivas + take(2) Defensivas</b><br/>Mazo Activo (5 Cartas)"]
-        MazoFinal --> ApplyAlso["<b>apply + also</b><br/>Configurar Mazo e imprimir Log"]
-    ```
+Copia esta plantilla en tu archivo `Reto04_MemoryMatch.kt` dentro de `src/main/kotlin/b04_colecciones/` y completa los bloques marcados con `TODO(...)`:
 
-??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
-    Antes de examinar la solución o las pistas, reflexiona sobre estos conceptos funcionales:
+```kotlin
+package b04_colecciones
 
-    - **¿Por qué `flatMap` en lugar de `map`?**  
-      Si aplicas `map`, obtendrás una lista anidada `List<List<Carta>>`. La función `flatMap` extrae los elementos de cada sublista y los fusiona en una única secuencia plana `List<Carta>`.
+// ============================================================================
+// 1. MODELO DE DATOS Y ESTADO DE UI (100% INMUTABLE)
+// ============================================================================
 
-    - **¿Por qué `distinctBy` en lugar de transformar a un `Set`?**  
-      Dos cartas pueden tener el mismo identificador pero variar en algún otro parámetro secundario. `distinctBy { it.id }` asegura que la unicidad se evalúe estrictamente sobre el identificador único sin necesidad de redefinir `equals()` y `hashCode()`.
+data class Carta(
+    val id: Int,
+    val simbolo: String
+)
 
-    - **¿Cómo sustituye `.sumOf { ... }` a un bucle acumulador?**  
-      En la programación orientada a objetos tradicional en Java se creaba una variable `var suma = 0` y se acumulaba en un bucle `for`. Con `.sumOf { it.poder }` de Kotlin la operación es atómica, inmutable y libre de efectos colaterales.
+enum class EstadoJugada {
+    PRIMERA_CARTA,
+    PAREJA_ACERTADA,
+    PAREJA_FALLADA,
+    VICTORIA
+}
 
-??? tip "💡 Pistas Progresivas de Ayuda (Abrir solo si te atascas)"
-    ??? tip "💡 Pista 1: Aplanar colecciones anidadas con `flatMap`"
-        Si agrupas los cofres en una lista de listas `val todosLosCofres = listOf(cofre1, cofre2, cofre3)`, puedes aplanarlos directamente:
-        ```kotlin
-        val todasLasCartas = todosLosCofres.flatMap { it }
-        ```
+data class MemoryUiState(
+    val tablero: List<Carta>,
+    val seleccionadasIds: List<Int>,
+    val emparejadasIds: Set<Int>,
+    val movimientos: Int,
+    val ultimoEstado: EstadoJugada
+) {
+    val juegoTerminado: Boolean
+        get() = emparejadasIds.size == tablero.size && tablero.isNotEmpty()
+}
 
-    ??? tip "💡 Pista 2: Agrupación y Sumas con `sumOf`"
-        Para calcular el poder total por cada elemento a partir de las cartas agrupadas:
-        ```kotlin
-        val porElemento = ofensivas.groupBy { it.elemento }
-        porElemento.forEach { (elem, lista) ->
-            val totalPoder = lista.sumOf { it.poder }
-            println("Elemento $elem: $totalPoder pts de daño total (${lista.size} cartas)")
+// ============================================================================
+// 2. FUNCIONES PURAS DEL MOTOR DE JUEGO (REQUISITOS FUNCIONALES)
+// ============================================================================
+
+/**
+ * RF-02: Genera la baraja duplicando los símbolos (+), barajando si aplica,
+ * y mapeando con mapIndexed para asignar IDs 0..N.
+ */
+fun crearBaraja(simbolosBase: List<String>, barajar: Boolean = true): List<Carta> {
+    TODO("Implementar RF-02 con operador '+', shuffled() y mapIndexed")
+}
+
+/**
+ * RF-03: Indexa la lista en un Map<Int, Carta> con associateBy para acceso instantáneo O(1).
+ */
+fun indexarTablero(tablero: List<Carta>): Map<Int, Carta> {
+    TODO("Implementar RF-03 con associateBy { it.id }")
+}
+
+/**
+ * RF-04: Divide el tablero plano de cartas en filas de N columnas usando chunked.
+ */
+fun estructurarCuadricula(tablero: List<Carta>, columnas: Int = 4): List<List<Carta>> {
+    TODO("Implementar RF-04 con chunked(columnas)")
+}
+
+/**
+ * RF-06: Calcula las cartas que quedan por resolver mediante diferencia de conjuntos (subtract).
+ */
+fun obtenerCartasPendientes(tablero: List<Carta>, emparejadasIds: Set<Int>): Set<Int> {
+    TODO("Implementar RF-06 con toSet() y subtract")
+}
+
+/**
+ * RF-07: Motor de jugada puro. Recibe el estado actual y el ID pulsado,
+ * y retorna un nuevo MemoryUiState con las reglas de volteo y comprobación.
+ */
+fun voltearCarta(estado: MemoryUiState, idCarta: Int): MemoryUiState {
+    TODO("Implementar RF-07 gestionando 0, 1 y 2 cartas seleccionadas con associateBy y copy()")
+}
+
+// ============================================================================
+// 3. RENDERIZADO VISUAL PARA CONSOLA (COMPATIBLE CON WINDOWS / LINUX / MAC)
+// ============================================================================
+
+fun renderizarTableroConsola(estado: MemoryUiState) {
+    val filas = estructurarCuadricula(estado.tablero, 4)
+    val pendientes = obtenerCartasPendientes(estado.tablero, estado.emparejadasIds)
+
+    println("\n==================================================")
+    println("           🧠 MEMORY MATCH - TURNO #${estado.movimientos + 1}")
+    println(" Movimientos: ${estado.movimientos} | Parejas: ${estado.emparejadasIds.size / 2}/8 | Pendientes: ${pendientes.size}")
+    println("==================================================")
+
+    for (fila in filas) {
+        val filaStr = fila.joinToString("  ") { carta ->
+            when {
+                carta.id in estado.emparejadasIds -> "[ ✅ ${carta.simbolo} ]"
+                carta.id in estado.seleccionadasIds -> "[ 👀 ${carta.simbolo} ]"
+                else -> "[ #%02d ❓ ]".format(carta.id)
+            }
         }
-        ```
+        println("  $filaStr")
+    }
 
-    ??? tip "💡 Pista 3: Construcción y Auditoría con `apply` y `also`"
-        Configura la instancia de `MazoCombate` concatenando las dos listas y aprovecha el contexto `this` e `it`:
-        ```kotlin
-        val mazo = MazoCombate().apply {
-            cartas = topAtaque + topDefensa
-        }.also {
-            println("\n[LOG AUDITORÍA]: Mazo de ${it.cartas.size} cartas sellado y validado con éxito.")
+    val feedback = when (estado.ultimoEstado) {
+        EstadoJugada.PRIMERA_CARTA -> "Primera carta levantada. ¡Busca su pareja!"
+        EstadoJugada.PAREJA_ACERTADA -> "✨ ¡PAREJA ENCONTRADA! Sigue así."
+        EstadoJugada.PAREJA_FALLADA -> "❌ No coinciden. Se taparán en el siguiente turno."
+        EstadoJugada.VICTORIA -> "🏆 ¡VICTORIA TOTAL! Has completado todas las parejas."
+    }
+    println("📢 Estado: $feedback")
+}
+
+// ============================================================================
+// 4. SIMULACIÓN CON JUGADAS PREDEFINIDAS EN MAIN
+// ============================================================================
+
+fun main() {
+    // 8 símbolos base:
+    val simbolos = listOf("🤖", "💎", "⚡", "⭐", "🔥", "🍀", "🍎", "🔔")
+
+    // Baraja determinista para que la salida en Windows/Mac/Linux sea idéntica:
+    // Parejas fijas: (0,5=🤖), (1,9=💎), (2,8=⚡), (3,11=⭐), (4,12=🔥), (6,14=🍎), (7,15=🔔), (10,13=🍀)
+    val barajaFija = listOf(
+        "🤖", "💎", "⚡", "⭐", "🔥", "🤖", "🍎", "🔔",
+        "⚡", "💎", "🍀", "⭐", "🔥", "🍀", "🍎", "🔔"
+    ).mapIndexed { i, s -> Carta(i, s) }
+
+    var estado = MemoryUiState(
+        tablero = barajaFija,
+        seleccionadasIds = emptyList(),
+        emparejadasIds = emptySet(),
+        movimientos = 0,
+        ultimoEstado = EstadoJugada.PRIMERA_CARTA
+    )
+
+    println("=== SIMULADOR DETERMINISTA: MEMORY MATCH ===")
+    println("Iniciando tablero 4x4 con 8 parejas listas para descubrir...")
+
+    // Secuencia de jugadas predefinidas para validar el motor turno a turno:
+    // Incluye fallos intencionados (0 con 1, 2 con 3) y aciertos sucesivos hasta la victoria.
+    val jugadasPredefinidas = listOf(
+        0, 1,   // Intento 1: 0 (🤖) vs 1 (💎) -> FALLO
+        0, 5,   // Intento 2: 0 (🤖) vs 5 (🤖) -> ¡PAREJA!
+        1, 9,   // Intento 3: 1 (💎) vs 9 (💎) -> ¡PAREJA!
+        2, 3,   // Intento 4: 2 (⚡) vs 3 (⭐) -> FALLO
+        2, 8,   // Intento 5: 2 (⚡) vs 8 (⚡) -> ¡PAREJA!
+        3, 11,  // Intento 6: 3 (⭐) vs 11 (⭐) -> ¡PAREJA!
+        4, 12,  // Intento 7: 4 (🔥) vs 12 (🔥) -> ¡PAREJA!
+        6, 14,  // Intento 8: 6 (🍎) vs 14 (🍎) -> ¡PAREJA!
+        7, 15,  // Intento 9: 7 (🔔) vs 15 (🔔) -> ¡PAREJA!
+        10, 13  // Intento 10: 10 (🍀) vs 13 (🍀) -> ¡PAREJA FINAL Y VICTORIA!
+    )
+
+    for (jugada in jugadasPredefinidas) {
+        estado = voltearCarta(estado, jugada)
+        // Renderizamos tras cada jugada completa (cuando hay 2 seleccionadas o tras acertar/ganar)
+        if (estado.seleccionadasIds.size == 2 || estado.seleccionadasIds.isEmpty()) {
+            renderizarTableroConsola(estado)
         }
-        ```
+    }
 
-??? info "🖥️ Ver Salida Esperada en Consola"
-    ```text
-    === SIMULADOR DE SAQUEO: DECK BUILDER RPG ===
-    Botín inicial recogido en 3 cofres: 9 cartas.
-    Tras eliminar duplicados y cartas malditas: 7 cartas válidas.
+    // RF-08: Resumen y auditoría final con groupBy y count:
+    val parejasPorSimbolo = estado.tablero.groupBy { it.simbolo }
+    val precision = (8.0 / estado.movimientos) * 100.0
 
-    --- ANÁLISIS DE SINERGIAS ELEMENTALES (ATAQUE) ---
-    Elemento Fuego: 155 pts de daño total (2 cartas)
-    Elemento Hielo: 65 pts de daño total (1 cartas)
-    Elemento Rayo: 80 pts de daño total (1 cartas)
+    println("\n==================================================")
+    println("             📊 INFORME FINAL DE PARTIDA          ")
+    println("==================================================")
+    println("Total movimientos realizados: ${estado.movimientos}")
+    println("Precisión de memoria: ${"%.1f".format(precision)}%")
+    println("Total parejas verificadas en tablero: ${parejasPorSimbolo.size} símbolos")
+    println("Juego completado: ${estado.juegoTerminado}")
+}
+```
 
-    [LOG AUDITORÍA]: Mazo de 5 cartas sellado y validado con éxito.
+---
 
-    --- MAZO FINAL DE COMBATE (TOP 5) ---
-    1. [ATAQUE - Fuego] Meteoro Ígneo (Poder: 90)
-    2. [ATAQUE - Rayo] Rayo Fulminante (Poder: 80)
-    3. [ATAQUE - Fuego] Bola de Fuego (Poder: 65)
-    4. [DEFENSA - Hielo] Muro de Hielo (Poder: 70)
-    5. [DEFENSA - Luz] Escudo Divino (Poder: 50)
-    Poder total del mazo: 355 pts
-    ```
+#### 4. Salida Esperada en Consola
 
-??? tip "Ver solución comentada paso a paso"
+Al ejecutar el programa con la secuencia de jugadas predefinidas, la consola mostrará la evolución turno a turno:
+
+```text
+=== SIMULADOR DETERMINISTA: MEMORY MATCH ===
+Iniciando tablero 4x4 con 8 parejas listas para descubrir...
+
+==================================================
+           🧠 MEMORY MATCH - TURNO #2
+ Movimientos: 1 | Parejas: 0/8 | Pendientes: 16
+==================================================
+  [ 👀 🤖 ]  [ 👀 💎 ]  [ #02 ❓ ]  [ #03 ❓ ]
+  [ #04 ❓ ]  [ #05 ❓ ]  [ #06 ❓ ]  [ #07 ❓ ]
+  [ #08 ❓ ]  [ #09 ❓ ]  [ #10 ❓ ]  [ #11 ❓ ]
+  [ #12 ❓ ]  [ #13 ❓ ]  [ #14 ❓ ]  [ #15 ❓ ]
+📢 Estado: ❌ No coinciden. Se taparán en el siguiente turno.
+
+==================================================
+           🧠 MEMORY MATCH - TURNO #3
+ Movimientos: 2 | Parejas: 1/8 | Pendientes: 14
+==================================================
+  [ ✅ 🤖 ]  [ #01 ❓ ]  [ #02 ❓ ]  [ #03 ❓ ]
+  [ #04 ❓ ]  [ ✅ 🤖 ]  [ #06 ❓ ]  [ #07 ❓ ]
+  [ #08 ❓ ]  [ #09 ❓ ]  [ #10 ❓ ]  [ #11 ❓ ]
+  [ #12 ❓ ]  [ #13 ❓ ]  [ #14 ❓ ]  [ #15 ❓ ]
+📢 Estado: ✨ ¡PAREJA ENCONTRADA! Sigue así.
+
+... (turnos intermedios) ...
+
+==================================================
+           🧠 MEMORY MATCH - TURNO #11
+ Movimientos: 10 | Parejas: 8/8 | Pendientes: 0
+==================================================
+  [ ✅ 🤖 ]  [ ✅ 💎 ]  [ ✅ ⚡ ]  [ ✅ ⭐ ]
+  [ ✅ 🔥 ]  [ ✅ 🤖 ]  [ ✅ 🍎 ]  [ ✅ 🔔 ]
+  [ ✅ ⚡ ]  [ ✅ 💎 ]  [ ✅ 🍀 ]  [ ✅ ⭐ ]
+  [ ✅ 🔥 ]  [ ✅ 🍀 ]  [ ✅ 🍎 ]  [ ✅ 🔔 ]
+📢 Estado: 🏆 ¡VICTORIA TOTAL! Has completado todas las parejas.
+
+==================================================
+             📊 INFORME FINAL DE PARTIDA          
+==================================================
+Total movimientos realizados: 10
+Precisión de memoria: 80.0%
+Total parejas verificadas en tablero: 8 símbolos
+Juego completado: true
+```
+
+---
+
+#### 5. Solución Comentada Paso a Paso
+
+??? tip "Ver solución comentada completa"
     ```kotlin
     package b04_colecciones
 
     data class Carta(
-        val id: String,
-        val nombre: String,
-        val elemento: String,
-        val poder: Int,
-        val esAtaque: Boolean
+        val id: Int,
+        val simbolo: String
     )
 
-    class MazoCombate {
-        var cartas: List<Carta> = emptyList()
-        val poderTotal: Int
-            get() = cartas.sumOf { it.poder }
+    enum class EstadoJugada {
+        PRIMERA_CARTA,
+        PAREJA_ACERTADA,
+        PAREJA_FALLADA,
+        VICTORIA
+    }
+
+    data class MemoryUiState(
+        val tablero: List<Carta>,
+        val seleccionadasIds: List<Int>,
+        val emparejadasIds: Set<Int>,
+        val movimientos: Int,
+        val ultimoEstado: EstadoJugada
+    ) {
+        val juegoTerminado: Boolean
+            get() = emparejadasIds.size == tablero.size && tablero.isNotEmpty()
+    }
+
+    // RF-02: Duplicación, barajado y mapeo indexado
+    fun crearBaraja(simbolosBase: List<String>, barajar: Boolean = true): List<Carta> {
+        val barajaDuplicada = simbolosBase + simbolosBase
+        val barajaProcesada = if (barajar) barajaDuplicada.shuffled() else barajaDuplicada
+        return barajaProcesada.mapIndexed { index, simbolo -> Carta(index, simbolo) }
+    }
+
+    // RF-03: Indexación instantánea O(1) con associateBy
+    fun indexarTablero(tablero: List<Carta>): Map<Int, Carta> {
+        return tablero.associateBy { it.id }
+    }
+
+    // RF-04: Cuadrícula en bloques de 4 columnas
+    fun estructurarCuadricula(tablero: List<Carta>, columnas: Int = 4): List<List<Carta>> {
+        return tablero.chunked(columnas)
+    }
+
+    // RF-06: Diferencia de conjuntos para cartas pendientes
+    fun obtenerCartasPendientes(tablero: List<Carta>, emparejadasIds: Set<Int>): Set<Int> {
+        val todosLosIds = tablero.map { it.id }.toSet()
+        return todosLosIds subtract emparejadasIds
+    }
+
+    // RF-07: Motor de jugada puro con árbol de decisión exhaustivo
+    fun voltearCarta(estado: MemoryUiState, idCarta: Int): MemoryUiState {
+        // Cláusula de guarda: si la carta ya está emparejada o ya está seleccionada en el turno, no hacer nada
+        if (idCarta in estado.emparejadasIds || idCarta in estado.seleccionadasIds) {
+            return estado
+        }
+
+        val mapaPorId = indexarTablero(estado.tablero)
+
+        return when (estado.seleccionadasIds.size) {
+            0 -> {
+                // Caso 1: Primera carta volteada
+                estado.copy(
+                    seleccionadasIds = listOf(idCarta),
+                    ultimoEstado = EstadoJugada.PRIMERA_CARTA
+                )
+            }
+            1 -> {
+                // Caso 2: Segunda carta volteada -> Comprobar pareja
+                val idPrimera = estado.seleccionadasIds.first()
+                val carta1 = mapaPorId[idPrimera]
+                val carta2 = mapaPorId[idCarta]
+
+                if (carta1 != null && carta2 != null && carta1.simbolo == carta2.simbolo) {
+                    val nuevoEmparejadas = estado.emparejadasIds + setOf(idPrimera, idCarta)
+                    val victoria = nuevoEmparejadas.size == estado.tablero.size
+                    estado.copy(
+                        seleccionadasIds = emptyList(),
+                        emparejadasIds = nuevoEmparejadas,
+                        movimientos = estado.movimientos + 1,
+                        ultimoEstado = if (victoria) EstadoJugada.VICTORIA else EstadoJugada.PAREJA_ACERTADA
+                    )
+                } else {
+                    // Fallo: ambas cartas quedan visibles temporalmente para informar al jugador
+                    estado.copy(
+                        seleccionadasIds = listOf(idPrimera, idCarta),
+                        movimientos = estado.movimientos + 1,
+                        ultimoEstado = EstadoJugada.PAREJA_FALLADA
+                    )
+                }
+            }
+            else -> {
+                // Caso 3: Había 2 cartas falladas previas -> Se limpian e inicia un nuevo turno con la nueva carta
+                estado.copy(
+                    seleccionadasIds = listOf(idCarta),
+                    ultimoEstado = EstadoJugada.PRIMERA_CARTA
+                )
+            }
+        }
+    }
+
+    fun renderizarTableroConsola(estado: MemoryUiState) {
+        val filas = estructurarCuadricula(estado.tablero, 4)
+        val pendientes = obtenerCartasPendientes(estado.tablero, estado.emparejadasIds)
+
+        println("\n==================================================")
+        println("           🧠 MEMORY MATCH - TURNO #${estado.movimientos + 1}")
+        println(" Movimientos: ${estado.movimientos} | Parejas: ${estado.emparejadasIds.size / 2}/8 | Pendientes: ${pendientes.size}")
+        println("==================================================")
+
+        for (fila in filas) {
+            val filaStr = fila.joinToString("  ") { carta ->
+                when {
+                    carta.id in estado.emparejadasIds -> "[ ✅ ${carta.simbolo} ]"
+                    carta.id in estado.seleccionadasIds -> "[ 👀 ${carta.simbolo} ]"
+                    else -> "[ #%02d ❓ ]".format(carta.id)
+                }
+            }
+            println("  $filaStr")
+        }
+
+        val feedback = when (estado.ultimoEstado) {
+            EstadoJugada.PRIMERA_CARTA -> "Primera carta levantada. ¡Busca su pareja!"
+            EstadoJugada.PAREJA_ACERTADA -> "✨ ¡PAREJA ENCONTRADA! Sigue así."
+            EstadoJugada.PAREJA_FALLADA -> "❌ No coinciden. Se taparán en el siguiente turno."
+            EstadoJugada.VICTORIA -> "🏆 ¡VICTORIA TOTAL! Has completado todas las parejas."
+        }
+        println("📢 Estado: $feedback")
     }
 
     fun main() {
-        println("=== SIMULADOR DE SAQUEO: DECK BUILDER RPG ===")
+        val barajaFija = listOf(
+            "🤖", "💎", "⚡", "⭐", "🔥", "🤖", "🍎", "🔔",
+            "⚡", "💎", "🍀", "⭐", "🔥", "🍀", "🍎", "🔔"
+        ).mapIndexed { i, s -> Carta(i, s) }
 
-        // 3 cofres de botín
-        val cofre1 = listOf(
-            Carta("C-01", "Bola de Fuego", "Fuego", 65, true),
-            Carta("C-02", "Muro de Hielo", "Hielo", 70, false),
-            Carta("C-03", "Maldición Oscura", "Sombra", -20, true) // Maldita
+        var estado = MemoryUiState(
+            tablero = barajaFija,
+            seleccionadasIds = emptyList(),
+            emparejadasIds = emptySet(),
+            movimientos = 0,
+            ultimoEstado = EstadoJugada.PRIMERA_CARTA
         )
 
-        val cofre2 = listOf(
-            Carta("C-01", "Bola de Fuego", "Fuego", 65, true), // Duplicada
-            Carta("C-04", "Rayo Fulminante", "Rayo", 80, true),
-            Carta("C-05", "Meteoro Ígneo", "Fuego", 90, true)
+        println("=== SIMULADOR DETERMINISTA: MEMORY MATCH ===")
+        println("Iniciando tablero 4x4 con 8 parejas listas para descubrir...")
+
+        val jugadasPredefinidas = listOf(
+            0, 1,   // Intento 1: 0 (🤖) vs 1 (💎) -> FALLO
+            0, 5,   // Intento 2: 0 (🤖) vs 5 (🤖) -> ¡PAREJA!
+            1, 9,   // Intento 3: 1 (💎) vs 9 (💎) -> ¡PAREJA!
+            2, 3,   // Intento 4: 2 (⚡) vs 3 (⭐) -> FALLO
+            2, 8,   // Intento 5: 2 (⚡) vs 8 (⚡) -> ¡PAREJA!
+            3, 11,  // Intento 6: 3 (⭐) vs 11 (⭐) -> ¡PAREJA!
+            4, 12,  // Intento 7: 4 (🔥) vs 12 (🔥) -> ¡PAREJA!
+            6, 14,  // Intento 8: 6 (🍎) vs 14 (🍎) -> ¡PAREJA!
+            7, 15,  // Intento 9: 7 (🔔) vs 15 (🔔) -> ¡PAREJA!
+            10, 13  // Intento 10: 10 (🍀) vs 13 (🍀) -> ¡PAREJA FINAL Y VICTORIA!
         )
 
-        val cofre3 = listOf(
-            Carta("C-06", "Escudo Divino", "Luz", 50, false),
-            Carta("C-07", "Ventisca Glacial", "Hielo", 65, true),
-            Carta("C-08", "Poción Rota", "Neutro", 0, false) // Rota
-        )
-
-        val todosLosCofres = listOf(cofre1, cofre2, cofre3)
-        println("Botín inicial recogido en 3 cofres: ${todosLosCofres.sumOf { it.size }} cartas.")
-
-        // PIPELINE FUNCIONAL:
-        val cartasValidas = todosLosCofres
-            .flatMap { it }
-            .distinctBy { it.id }
-            .filter { it.poder > 0 }
-
-        println("Tras eliminar duplicados y cartas malditas: ${cartasValidas.size} cartas válidas.\n")
-
-        // Dividimos en ataque y defensa en una pasada
-        val (ofensivas, defensivas) = cartasValidas.partition { it.esAtaque }
-
-        // Sinergias por elemento
-        println("--- ANÁLISIS DE SINERGIAS ELEMENTALES (ATAQUE) ---")
-        val porElemento = ofensivas.groupBy { it.elemento }
-        porElemento.forEach { (elem, lista) ->
-            val totalPoder = lista.sumOf { it.poder }
-            println("Elemento $elem: $totalPoder pts de daño total (${lista.size} cartas)")
+        for (jugada in jugadasPredefinidas) {
+            estado = voltearCarta(estado, jugada)
+            if (estado.seleccionadasIds.size == 2 || estado.seleccionadasIds.isEmpty()) {
+                renderizarTableroConsola(estado)
+            }
         }
 
-        // Selección del Top 3 de ataque y Top 2 de defensa
-        val topAtaque = ofensivas.sortedByDescending { it.poder }.take(3)
-        val topDefensa = defensivas.sortedByDescending { it.poder }.take(2)
+        val parejasPorSimbolo = estado.tablero.groupBy { it.simbolo }
+        val precision = (8.0 / estado.movimientos) * 100.0
 
-        // Ensamblado del mazo con Scope Functions: apply y also
-        val mazo = MazoCombate().apply {
-            cartas = topAtaque + topDefensa
-        }.also {
-            println("\n[LOG AUDITORÍA]: Mazo de ${it.cartas.size} cartas sellado y validado con éxito.")
-        }
-
-        println("\n--- MAZO FINAL DE COMBATE (TOP 5) ---")
-        mazo.cartas.forEachIndexed { i, c ->
-            val rol = if (c.esAtaque) "ATAQUE" else "DEFENSA"
-            println("${i + 1}. [$rol - ${c.elemento}] ${c.nombre} (Poder: ${c.poder})")
-        }
-        println("Poder total del mazo: ${mazo.poderTotal} pts")
+        println("\n==================================================")
+        println("             📊 INFORME FINAL DE PARTIDA          ")
+        println("==================================================")
+        println("Total movimientos realizados: ${estado.movimientos}")
+        println("Precisión de memoria: ${"%.1f".format(precision)}%")
+        println("Total parejas verificadas en tablero: ${parejasPorSimbolo.size} símbolos")
+        println("Juego completado: ${estado.juegoTerminado}")
     }
     ```
 
 ---
 
-### 🧪 ¿Cómo diseñar y blindar este forjador mediante TDD?
+### 🧪 ¿Cómo diseñar y blindar este motor mediante TDD?
 
-!!! tip "Siguiente Nivel de Calidad: TDD, Pipelines Funcionales y Scope Functions"
-    ¿Quieres construir y blindar el pipeline funcional de este juego aplicando **Test-Driven Development (TDD)** desde cero? En la sección de testing dispones del taller práctico guiado paso a paso:
+!!! tip "Siguiente Nivel de Calidad: TDD y Reglas de Colecciones Funcionales"
+    ¿Quieres construir y blindar las reglas de este motor aplicando **Test-Driven Development (TDD)** desde cero antes de ejecutar la partida? En la sección de testing dispones del taller práctico guiado paso a paso:
 
     - Define el contrato inicial en un subpaquete limpio (`b04_colecciones.tdd`) y arranca en **Rojo**.
-    - Aprende a testear operaciones de aplanado (`flatMap`), deduplicación (`distinctBy`) y purificación (`filter`).
-    - Verifica particiones (`partition`), agrupaciones y sumas funcionales (`groupBy`, `sumOf`) sin bucles imperativos.
-    - Asegura la inicialización y auditoría reactiva mediante scope functions (`apply`, `also`).
-    - Pasa a **Verde (100% de éxito)** antes de ensamblar la forja final en consola.
+    - Testea la baraja duplicada (`+`, `mapIndexed`) y la indexación rápida en mapa con `associateBy`.
+    - Verifica la partición en cuadrícula con `chunked(4)` y la diferencia de conjuntos con `subtract`.
+    - Blinda el árbol de decisiones de volteo de cartas ante aciertos, fallos y clics repetidos.
+    - Pasa a **Verde (100% de éxito)** con Gradle en Windows y Linux/Mac antes de jugar en consola.
 
-    👉 **[Ir al Taller de Testing 4: Deck Builder RPG con TDD](../testing/04-test-deck-builder-colecciones.md)**
+    👉 **[Ir al Taller de Testing 4: Memory Match con TDD](../testing/04-test-memory-match.md)**
+
 
 
 
