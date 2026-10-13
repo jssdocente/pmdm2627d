@@ -2,3 +2,5 @@ todo.md
 site/
 docs_bck/
 _bck/
+.others_courses/
+.DS_Store

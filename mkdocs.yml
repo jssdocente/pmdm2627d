@@ -84,17 +84,14 @@ nav:
       - "2.3. Primera App y Previews en Compose": temas/02/2.3-primera-app.md
       - "2.4. Laboratorio de Retos (pmdm-lab-ut02)": temas/02/2.4-laboratorio-retos.md
 
-  # - "UT3 - Interfaz de Usuario":
-  #   - "Inicio": temas/03/index.md
-  #   - "3.1. Introducción": temas/03/3.1-intro.md
-  #   - "3.2. Temas": temas/03/3.2-temas.md
-  #   - "3.3. Arquitectura":
-  #     - "3.3.1. Introducción": temas/03/3.3-arquitectura.md
-  #     - "3.3.2. Capa de UI": temas/03/3.3.2-arquitectura.capa-ui
-  #     - "3.3.3. Capas Datos/Dominio": temas/03/3.3.3-arquitectura.capa-datos.md
-  #     - "3.3.4. Clean Architecture":
-  #       - "Capa de Dominio": temas/03/3.3.3.2-CapaDominio-es.md
-  #       - "Capa de Datos": temas/03/3.3.3.3-CapaDatos-es.md
+  - "UT3 - Interfaz de Usuario con Jetpack Compose":
+      - "Inicio": temas/03/index.md
+      - "3.1. Material Design 3, Providers y Scaffold": temas/03/3.1-material-design-3-scaffold.md
+      - "3.2. Componentes Interactivos y Diálogos": temas/03/3.2-componentes-interactivos.md
+      - "3.3. Listas y Cuadrículas Eficientes (Lazy)": temas/03/3.3-listas-cuadriculas-lazy.md
+      - "3.4. Capa de UI: ViewModel y StateFlow": temas/03/3.4-capa-ui-viewmodel.md
+      - "3.5. Testing de Interfaz en Compose": temas/03/3.5-testing-ui-compose.md
+      - "3.6. Laboratorio de Retos (pmdm-lab-ut03)": temas/03/3.6-laboratorio-retos.md
 
   # - "UT4 - Persistencia":
   #   - "Introducción": temas/04/4.0-persistencia.md
