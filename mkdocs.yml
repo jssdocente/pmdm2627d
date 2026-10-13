@@ -77,14 +77,12 @@ nav:
   - "UT1 - Visión General y Entorno de desarrollo": temas/01/index.md
   # - "Proyecto Intermodular":
   #    - "Requisitos": temas/proyectos/proyecto-intermodular/requisitos-pmdm.md
-  # - "UT2 - Programación de aplicaciones de móviles con Android":
-  #   - "Inicio": temas/02/index.md
-  #   - "2.1. Primeros pasos": temas/02/2.1-primeros-pasos.md
-  #   - "2.2. Ciclo de Vida": temas/02/2.2-ciclo-vida-app.md
-  #   - "2.3. Primera aplicación": temas/02/2.3-primera-app.md
-  #   - "2.4. Gestión del estado": temas/02/2.4-gestion-estado.md
-  #   - "2.5. Mejorando el código": temas/02/2.5-mejorando-codigo.md
-  #   - "2.6. Manejo de listas": temas/02/2.6-mostrar-listas.md
+  - "UT2 - Lenguaje Kotlin e Introducción a Android":
+      - "Inicio": temas/02/index.md
+      - "2.1. Primeros pasos y Proyecto Lab": temas/02/2.1-primeros-pasos.md
+      - "2.2. Ciclo de Vida en Android": temas/02/2.2-ciclo-vida-app.md
+      - "2.3. Primera App y Previews en Compose": temas/02/2.3-primera-app.md
+      - "2.4. Laboratorio de Retos (pmdm-lab-ut02)": temas/02/2.4-laboratorio-retos.md
 
   # - "UT3 - Interfaz de Usuario":
   #   - "Inicio": temas/03/index.md
