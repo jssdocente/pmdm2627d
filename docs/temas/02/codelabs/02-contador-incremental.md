@@ -116,7 +116,7 @@ cuenta++ // Modifica internamente el State y dispara la recomposición
 
 ## 4. Paso 1: Componente de Presentación (`ContadorIncrementalContent`)
 
-Creamos el archivo `app/src/main/java/com/dam/pmdmlab/ui/retos/reto02_contador/ContadorIncrementalScreen.kt`.
+Creamos el archivo `app/src/main/java/com/dam/pmdmlab/codelabs/codelab02_contador/ContadorIncrementalScreen.kt`.
 
 Siguiendo las buenas prácticas arquitectónicas que mantendremos en todo el curso, creamos en primer lugar el componente puramente visual (*Stateless Content*):
 
@@ -279,7 +279,7 @@ Para garantizar que el número no se pierda si el usuario gira el teléfono, uti
 ??? example "Ver código completo: ContadorIncrementalScreen.kt"
 
     ```kotlin
-    package com.dam.pmdmlab.ui.retos.reto02_contador
+    package com.dam.pmdmlab.codelabs.codelab02_contador
 
     import androidx.compose.foundation.layout.Arrangement
     import androidx.compose.foundation.layout.Column

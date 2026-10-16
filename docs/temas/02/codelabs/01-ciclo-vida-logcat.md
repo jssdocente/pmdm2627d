@@ -166,7 +166,7 @@ Para visualizar estos mensajes en tiempo real mientras ejecutas la aplicación:
 
 ## 5. Paso 3: Componente de Presentación (`CicloVidaContent`)
 
-Creamos el archivo `app/src/main/java/com/dam/pmdmlab/ui/retos/reto01_ciclovida/CicloVidaScreen.kt`.
+Creamos el archivo `app/src/main/java/com/dam/pmdmlab/codelabs/codelab01_ciclovida/CicloVidaScreen.kt`.
 
 En primer lugar, implementamos el componente puramente visual (*Stateless Content*). Este componente:
 
@@ -296,7 +296,7 @@ A continuación, implementamos el contenedor con estado (*Stateful Screen*) en e
 ??? example "Ver código completo: CicloVidaScreen.kt con Stateless, Stateful y @Preview"
 
     ```kotlin
-    package com.dam.pmdmlab.ui.retos.reto01_ciclovida
+    package com.dam.pmdmlab.codelabs.codelab01_ciclovida
 
     import androidx.compose.foundation.layout.Arrangement
     import androidx.compose.foundation.layout.Column

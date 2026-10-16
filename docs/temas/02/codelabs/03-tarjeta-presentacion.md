@@ -70,7 +70,7 @@ Los modificadores indican a un composable cómo debe dibujarse, comportarse o po
 
 ## 3. Paso 1: Componente de Presentación (`TarjetaPresentacionContent`)
 
-Creamos el archivo `app/src/main/java/com/dam/pmdmlab/ui/retos/reto03_tarjeta/TarjetaPresentacionScreen.kt`.
+Creamos el archivo `app/src/main/java/com/dam/pmdmlab/codelabs/codelab03_tarjeta/TarjetaPresentacionScreen.kt`.
 
 El componente de presentación (*Stateless Content*) debe cumplir las siguientes reglas de oro:
 
@@ -245,7 +245,7 @@ El contenedor con estado (*Stateful Screen*) se encarga de alojar la variable de
 ??? example "Ver código completo: TarjetaPresentacionScreen.kt"
 
     ```kotlin
-    package com.dam.pmdmlab.ui.retos.reto03_tarjeta
+    package com.dam.pmdmlab.codelabs.codelab03_tarjeta
 
     import androidx.compose.foundation.layout.Arrangement
     import androidx.compose.foundation.layout.Column

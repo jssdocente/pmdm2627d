@@ -86,7 +86,7 @@ enum class FaseSemaforo(
 
 ## 3. Paso 1: Creación de la Óptica Circular (`LuzCircular`)
 
-Creamos el archivo `app/src/main/java/com/dam/pmdmlab/ui/retos/reto05_semaforo/SemaforoScreen.kt`.
+Creamos el archivo `app/src/main/java/com/dam/pmdmlab/codelabs/codelab05_semaforo/SemaforoScreen.kt`.
 
 Cada luz del semáforo es un composable `LuzCircular` que recibe:
 
@@ -317,7 +317,7 @@ Implementamos la pantalla contenedora que almacena la fase activa y conecta los 
 ??? example "Ver código completo: SemaforoScreen.kt"
 
     ```kotlin
-    package com.dam.pmdmlab.ui.retos.reto05_semaforo
+    package com.dam.pmdmlab.codelabs.codelab05_semaforo
 
     import androidx.compose.foundation.background
     import androidx.compose.foundation.border

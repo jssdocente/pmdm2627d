@@ -63,7 +63,7 @@ Para representar la cara del dado sin necesidad de incorporar aún recursos grá
 
 ## 3. Paso 1: Componente de Presentación (`DadoRollerContent`)
 
-Creamos el archivo `app/src/main/java/com/dam/pmdmlab/ui/retos/reto04_dados/DadoRollerScreen.kt`.
+Creamos el archivo `app/src/main/java/com/dam/pmdmlab/codelabs/codelab04_dados/DadoRollerScreen.kt`.
 
 Implementamos en primer lugar el componente visual puro (*Stateless*):
 
@@ -226,7 +226,7 @@ El contenedor con estado gestiona:
 ??? example "Ver código completo: DadoRollerScreen.kt"
 
     ```kotlin
-    package com.dam.pmdmlab.ui.retos.reto04_dados
+    package com.dam.pmdmlab.codelabs.codelab04_dados
 
     import androidx.compose.foundation.layout.Arrangement
     import androidx.compose.foundation.layout.Box
