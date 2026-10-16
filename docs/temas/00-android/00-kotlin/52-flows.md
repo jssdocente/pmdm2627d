@@ -199,6 +199,7 @@ Conectando recolector con .collect()...
 
 ---
 
+
 ## 3. Flujos Fríos (*Cold Streams*) vs Flujos Calientes (*Hot Streams*)
 
 Uno de los conceptos más importantes de la programación reactiva en Android es distinguir si un flujo es **frío** o **caliente**:
@@ -345,6 +346,356 @@ fun main() = runBlocking {
 ```
 
 ---
+
+### 4.1. Gran Ejemplo Integrador: La Carrera de Corredores (Evolución en 3 Niveles)
+
+Ahora que ya conoces tanto la creación básica de flujos fríos (`flow { }`) como el funcionamiento de **`StateFlow`** y los ámbitos de corrutinas (`CoroutineScope`), estamos listos para resolver un problema de concurrencia completo: **una carrera deportiva de 100 metros**.
+
+Para apreciar el valor real de **`StateFlow`** y la arquitectura reactiva, analizaremos cómo evoluciona la solución a través de **3 niveles de madurez**:
+
+```mermaid
+flowchart TD
+    N1["Nivel 1: Control Manual con Jobs<br/>(Cada corredor gestiona su corrutina y cancela a los rivales a mano)"] --> N2["Nivel 2: Concurrencia Estructurada con CoroutineScope<br/>(Lista de corredores; el Scope padre cancela a todos en cascada)"]
+    N2 --> N3["Nivel 3: Arquitectura Reactiva con StateFlow (Estilo Compose)<br/>(data class Corredor + EstadoCarrera como Fuente Única de Verdad)"]
+```
+
+---
+
+=== "Nivel 1: Control Manual con Jobs individuales"
+
+    #### Concepto Clave
+    Es la aproximación más directa y básica: creamos una variable `Job` para cada corredor y, en cuanto uno de ellos cruza la meta, invoca una función que cancela manualmente los trabajos de sus rivales (`job.cancel()`).
+
+    ```kotlin
+    import kotlinx.coroutines.*
+    import kotlinx.coroutines.flow.Flow
+    import kotlinx.coroutines.flow.flow
+    import kotlin.random.Random
+
+    // Fuente reactiva: emite zancadas continuas (5 a 15 metros)
+    fun correr(): Flow<Int> = flow {
+        while (true) {
+            delay(Random.nextLong(200, 500))
+            emit(Random.nextInt(5, 15))
+        }
+    }
+
+    fun main() = runBlocking {
+        println("🏁 ¡Pistoletazo de salida (Nivel 1)! Meta: 100 metros\n")
+
+        val meta = 100
+        var carreraFinalizada = false
+
+        lateinit var jobMario: Job
+        lateinit var jobSonic: Job
+        lateinit var jobFlash: Job
+
+        // El ganador para a los otros dos corredores:
+        fun pararCarrera(ganador: String, jobGanador: Job) {
+            if (!carreraFinalizada) {
+                carreraFinalizada = true
+                println("\n🏆 ¡GANADOR: $ganador cruza la meta! 🏆")
+                println("⛔ Deteniendo manualmente al resto de corredores...\n")
+
+                if (jobGanador != jobMario) jobMario.cancel()
+                if (jobGanador != jobSonic) jobSonic.cancel()
+                if (jobGanador != jobFlash) jobFlash.cancel()
+            }
+        }
+
+        jobMario = launch {
+            var distancia = 0
+            try {
+                correr().collect { metros ->
+                    distancia += metros
+                    println("🍄 Mario: +$metros m (Total: $distancia m)")
+                    if (distancia >= meta) {
+                        pararCarrera("Mario 🍄", jobMario)
+                        return@collect // Sale del bucle de recolección
+                    }
+                }
+            } catch (e: CancellationException) {
+                println("⏹️ Mario se detiene en $distancia m (Cancelado por el ganador).")
+            }
+        }
+
+        jobSonic = launch {
+            var distancia = 0
+            try {
+                correr().collect { metros ->
+                    distancia += metros
+                    println("🦔 Sonic: +$metros m (Total: $distancia m)")
+                    if (distancia >= meta) {
+                        pararCarrera("Sonic 🦔", jobSonic)
+                        return@collect
+                    }
+                }
+            } catch (e: CancellationException) {
+                println("⏹️ Sonic se detiene en $distancia m (Cancelado por el ganador).")
+            }
+        }
+
+        jobFlash = launch {
+            var distancia = 0
+            try {
+                correr().collect { metros ->
+                    distancia += metros
+                    println("⚡ Flash: +$metros m (Total: $distancia m)")
+                    if (distancia >= meta) {
+                        pararCarrera("Flash ⚡", jobFlash)
+                        return@collect
+                    }
+                }
+            } catch (e: CancellationException) {
+                println("⏹️ Flash se detiene en $distancia m (Cancelado por el ganador).")
+            }
+        }
+
+        joinAll(jobMario, jobSonic, jobFlash)
+        println("\n🏁 Fin de la carrera en Nivel 1.")
+    }
+    ```
+
+    > ⚠️ **Limitación pedagógica:**  
+    > Funciona bien para 3 corredores, pero si la carrera tuviera 20 competidores tendríamos que declarar 20 variables `lateinit var jobX` y escribir 20 comprobaciones manuales. Además, los corredores tienen demasiada responsabilidad: ¡un corredor no debería tener la potestad de cancelar a sus compañeros!
+
+---
+
+=== "Nivel 2: Concurrencia Estructurada con CoroutineScope"
+
+    #### Concepto Clave
+    Evolucionamos el código utilizando una **lista de corredores** y un **`CoroutineScope` dedicado**. Todos los corredores nacen como hijos de ese mismo ámbito. Cuando alguien llega a la meta, simplemente cancelamos el ámbito padre (`carreraScope.cancel()`), logrando una detención automática en cascada.
+
+    ```kotlin
+    import kotlinx.coroutines.*
+    import kotlinx.coroutines.flow.Flow
+    import kotlinx.coroutines.flow.flow
+    import kotlin.random.Random
+
+    data class CorredorSimple(val id: Int, val nombre: String, val emoji: String)
+
+    fun generarZancadas(): Flow<Int> = flow {
+        while (true) {
+            delay(Random.nextLong(200, 500))
+            emit(Random.nextInt(5, 15))
+        }
+    }
+
+    fun main() = runBlocking {
+        println("🏁 ¡Pistoletazo de salida (Nivel 2)! Concurrencia Estructurada\n")
+
+        val meta = 100
+        val participantes = listOf(
+            CorredorSimple(1, "Mario", "🍄"),
+            CorredorSimple(2, "Sonic", "🦔"),
+            CorredorSimple(3, "Flash", "⚡"),
+            CorredorSimple(4, "Yoshi", "🦖") // ¡Podemos añadir los que queramos!
+        )
+
+        // Creamos un Scope dedicado a la carrera con su propio Job padre:
+        val carreraScope = CoroutineScope(Dispatchers.Default + Job())
+
+        // Lanzamos a todos los corredores dentro del mismo Scope:
+        participantes.forEach { corredor ->
+            carreraScope.launch {
+                var metrosTotales = 0
+                try {
+                    generarZancadas().collect { avance ->
+                        metrosTotales += avance
+                        println("${corredor.emoji} ${corredor.nombre}: +$avance m (Total: $metrosTotales m)")
+
+                        if (metrosTotales >= meta) {
+                            println("\n🏆 ¡GANADOR: ${corredor.emoji} ${corredor.nombre} llegó a la meta con $metrosTotales m! 🏆")
+                            println("⛔ Cancelando el CoroutineScope padre de la carrera...\n")
+                            carreraScope.cancel() // Cancela a TODOS los hijos en cascada
+                        }
+                    }
+                } catch (e: CancellationException) {
+                    println("⏹️ ${corredor.emoji} ${corredor.nombre} frenó en $metrosTotales m.")
+                }
+            }
+        }
+
+        // Esperamos a que el Scope de la carrera culmine su cancelación
+        carreraScope.coroutineContext[Job]?.join()
+        println("\n🏁 Fin de la carrera en Nivel 2.")
+    }
+    ```
+
+    > 💡 **Conexión con Android:**  
+    > Este es exactamente el principio que utiliza Android: cuando sales de una pantalla o un `ViewModel` se destruye, el sistema invoca `viewModelScope.cancel()`. Esto detiene automáticamente todas las descargas, lecturas y cálculos en vuelo sin dejar corrutinas huérfanas.
+
+---
+
+=== "Nivel 3: Arquitectura Reactiva con StateFlow (Estilo Compose)"
+
+    #### Concepto Clave
+    En el desarrollo móvil moderno (MVVM / MVI con Jetpack Compose), las corrutinas **no imprimen directamente en pantalla ni se cancelan entre sí**. 
+    
+    En su lugar:
+    1. Modelamos los datos con un **`data class Corredor`**.
+    2. Creamos un estado tipado **`EstadoCarrera`** gestionado en un **`StateFlow`** (*Single Source of Truth*).
+    3. Cada corredor avanza y **actualiza el estado global**.
+    4. Existe un **único observador** (el "marcador del estadio" o pantalla Compose) que reacciona a cada emisión del `StateFlow`, imprimiendo el estado actualizado de toda la carrera.
+
+    ```kotlin
+    import kotlinx.coroutines.*
+    import kotlinx.coroutines.flow.*
+    import kotlin.random.Random
+
+    // 1. Modelo de datos del corredor
+    data class Corredor(
+        val id: Int,
+        val nombre: String,
+        val emoji: String,
+        val metros: Int = 0
+    )
+
+    // 2. Modelo de estados posibles de la carrera
+    sealed interface EstadoCarrera {
+        data class Preparada(val corredores: List<Corredor>) : EstadoCarrera
+        data class EnCurso(val corredores: List<Corredor>, val ultimoEnAvanzar: Corredor) : EstadoCarrera
+        data class Finalizada(val ganador: Corredor, val clasificacionFinal: List<Corredor>) : EstadoCarrera
+    }
+
+    // 3. Gestor de la carrera (equivalente a un ViewModel en Android)
+    class ArbitroCarrera(val meta: Int = 100) {
+        private val _estado = MutableStateFlow<EstadoCarrera>(
+            EstadoCarrera.Preparada(
+                listOf(
+                    Corredor(1, "Mario", "🍄"),
+                    Corredor(2, "Sonic", "🦔"),
+                    Corredor(3, "Flash", "⚡")
+                )
+            )
+        )
+        // Estado público observable (inmutable):
+        val estado: StateFlow<EstadoCarrera> = _estado.asStateFlow()
+
+        // Cada corredor notifica sus zancadas de forma segura y atómica:
+        fun registrarAvance(corredorId: Int, metrosZancada: Int) {
+            _estado.update { estadoActual ->
+                when (estadoActual) {
+                    is EstadoCarrera.Preparada, is EstadoCarrera.EnCurso -> {
+                        val listaActual = when (estadoActual) {
+                            is EstadoCarrera.Preparada -> estadoActual.corredores
+                            is EstadoCarrera.EnCurso -> estadoActual.corredores
+                            else -> emptyList()
+                        }
+
+                        // Actualizamos los metros del corredor que acaba de avanzar:
+                        val listaActualizada = listaActual.map { c ->
+                            if (c.id == corredorId) c.copy(metros = c.metros + metrosZancada) else c
+                        }
+
+                        val corredorMovido = listaActualizada.first { it.id == corredorId }
+
+                        // ¿Ha superado la meta?
+                        if (corredorMovido.metros >= meta) {
+                            val clasificacion = listaActualizada.sortedByDescending { it.metros }
+                            EstadoCarrera.Finalizada(
+                                ganador = corredorMovido,
+                                clasificacionFinal = clasificacion
+                            )
+                        } else {
+                            EstadoCarrera.EnCurso(
+                                corredores = listaActualizada,
+                                ultimoEnAvanzar = corredorMovido
+                            )
+                        }
+                    }
+                    is EstadoCarrera.Finalizada -> estadoActual // Si ya acabó, ignoramos zancadas posteriores
+                }
+            }
+        }
+
+        fun carreraSigueActiva(): Boolean = _estado.value !is EstadoCarrera.Finalizada
+    }
+
+    fun main() = runBlocking {
+        println("🏁 ¡Pistoletazo de salida (Nivel 3: Reactivo con StateFlow)!\n")
+
+        val arbitro = ArbitroCarrera(meta = 100)
+        val carreraScope = CoroutineScope(Dispatchers.Default + Job())
+
+        // --- PANTALLA OBSERVADORA (Equivalente al Composable en Android) ---
+        // Se suscribe al StateFlow y reacciona a cada cambio de estado:
+        val jobMarcador = launch {
+            arbitro.estado.collect { estado ->
+                when (estado) {
+                    is EstadoCarrera.Preparada -> {
+                        println("📋 Participantes listos: " + estado.corredores.joinToString { "${it.emoji} ${it.nombre}" })
+                        println("-------------------------------------------------------")
+                    }
+                    is EstadoCarrera.EnCurso -> {
+                        val u = estado.ultimoEnAvanzar
+                        // Dibujamos el marcador general con los metros de todos:
+                        val resumen = estado.corredores.joinToString(" | ") { "${it.emoji} ${it.metros}m" }
+                        println("🏃 ${u.emoji} ${u.nombre} avanza -> Marcador: [ $resumen ]")
+                    }
+                    is EstadoCarrera.Finalizada -> {
+                        println("\n🏆🏆 ¡VICTORIA DE ${estado.ganador.emoji} ${estado.ganador.nombre}! 🏆🏆")
+                        println("\n📊 CLASIFICACIÓN FINAL:")
+                        estado.clasificacionFinal.forEachIndexed { i, c ->
+                            println("   ${i + 1}º Puesto: ${c.emoji} ${c.nombre.padEnd(8)} con ${c.metros} metros")
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- CORREDORES ASÍNCRONOS ---
+        // Cada corredor avanza en su propia corrutina mientras la carrera siga activa:
+        val listaInicial = (arbitro.estado.value as EstadoCarrera.Preparada).corredores
+
+        listaInicial.forEach { corredor ->
+            carreraScope.launch {
+                while (arbitro.carreraSigueActiva()) {
+                    delay(Random.nextLong(200, 450))
+                    val zancada = Random.nextInt(6, 16)
+                    arbitro.registrarAvance(corredor.id, zancada)
+                }
+            }
+        }
+
+        // Esperamos a que el StateFlow transicione a 'Finalizada':
+        arbitro.estado.first { it is EstadoCarrera.Finalizada }
+
+        // Paramos las corrutinas secundarias limpiamente:
+        carreraScope.cancel()
+        jobMarcador.cancel()
+
+        println("\n🏁 Fin del evento deportivo reactivo.")
+    }
+    ```
+
+    #### Salida de Ejecución en Consola (Nivel 3)
+
+    ```text
+    🏁 ¡Pistoletazo de salida (Nivel 3: Reactivo con StateFlow)!
+
+    📋 Participantes listos: 🍄 Mario, 🦔 Sonic, ⚡ Flash
+    -------------------------------------------------------
+    🏃 🦔 Sonic avanza -> Marcador: [ 🍄 0m | 🦔 12m | ⚡ 0m ]
+    🏃 ⚡ Flash avanza -> Marcador: [ 🍄 0m | 🦔 12m | ⚡ 14m ]
+    🏃 🍄 Mario avanza -> Marcador: [ 🍄 11m | 🦔 12m | ⚡ 14m ]
+    🏃 🦔 Sonic avanza -> Marcador: [ 🍄 11m | 🦔 25m | ⚡ 14m ]
+    ...
+    🏃 ⚡ Flash avanza -> Marcador: [ 🍄 84m | 🦔 91m | ⚡ 95m ]
+    🏃 🦔 Sonic avanza -> Marcador: [ 🍄 84m | 🦔 103m | ⚡ 95m ]
+
+    🏆🏆 ¡VICTORIA DE 🦔 Sonic! 🏆🏆
+
+    📊 CLASIFICACIÓN FINAL:
+       1º Puesto: 🦔 Sonic    con 103 metros
+       2º Puesto: ⚡ Flash    con 95 metros
+       3º Puesto: 🍄 Mario    con 84 metros
+
+    🏁 Fin del evento deportivo reactivo.
+    ```
+
+---
+
 
 ## 5. `SharedFlow`: Emisión de Eventos Únicos (*One-Shot Events*)
 
