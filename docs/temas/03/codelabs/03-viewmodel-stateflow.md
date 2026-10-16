@@ -103,98 +103,100 @@ El `ViewModel` debe custodiar dos variables de estado:
 
 Crea el archivo `app/src/main/java/com/dam/pmdmlab03/codelabs/codelab02_formulario/QuizViewModel.kt`:
 
-```kotlin
-package com.dam.pmdmlab03.codelabs.codelab02_formulario
+??? example "Ver código completo: QuizViewModel.kt"
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+    ```kotlin
+    package com.dam.pmdmlab03.codelabs.codelab02_formulario
 
-data class Pregunta(
-    val enunciado: String,
-    val opciones: List<String>,
-    val respuestaCorrecta: String
-)
+    import androidx.lifecycle.ViewModel
+    import kotlinx.coroutines.flow.MutableStateFlow
+    import kotlinx.coroutines.flow.StateFlow
+    import kotlinx.coroutines.flow.asStateFlow
+    import kotlinx.coroutines.flow.update
 
-class QuizViewModel : ViewModel() {
-
-    private val bancoPreguntas = listOf(
-        Pregunta(
-            enunciado = "¿Qué función preserva el estado ante recomposiciones en Compose?",
-            opciones = listOf("remember", "saveState", "retainState", "keep"),
-            respuestaCorrecta = "remember"
-        ),
-        Pregunta(
-            enunciado = "¿Qué componente se utiliza para listas largas y eficientes?",
-            opciones = listOf("ScrollView", "LazyColumn", "RecyclerView", "ColumnList"),
-            respuestaCorrecta = "LazyColumn"
-        ),
-        Pregunta(
-            enunciado = "¿Dónde sobrevive el estado ante la rotación de pantalla?",
-            opciones = listOf("remember", "MutableList", "ViewModel", "Composable"),
-            respuestaCorrecta = "ViewModel"
-        )
+    data class Pregunta(
+        val enunciado: String,
+        val opciones: List<String>,
+        val respuestaCorrecta: String
     )
 
-    private val _uiState = MutableStateFlow(QuizUiState())
-    val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
+    class QuizViewModel : ViewModel() {
 
-    init {
-        iniciarPartida()
-    }
-
-    fun iniciarPartida() {
-        val primera = bancoPreguntas.first()
-        _uiState.value = QuizUiState(
-            preguntaActual = primera.enunciado,
-            opciones = primera.opciones,
-            indicePregunta = 0,
-            totalPreguntas = bancoPreguntas.size,
-            puntuacion = 0,
-            esRespuestaCorrecta = null,
-            opcionSeleccionada = null,
-            partidaFinalizada = false
+        private val bancoPreguntas = listOf(
+            Pregunta(
+                enunciado = "¿Qué función preserva el estado ante recomposiciones en Compose?",
+                opciones = listOf("remember", "saveState", "retainState", "keep"),
+                respuestaCorrecta = "remember"
+            ),
+            Pregunta(
+                enunciado = "¿Qué componente se utiliza para listas largas y eficientes?",
+                opciones = listOf("ScrollView", "LazyColumn", "RecyclerView", "ColumnList"),
+                respuestaCorrecta = "LazyColumn"
+            ),
+            Pregunta(
+                enunciado = "¿Dónde sobrevive el estado ante la rotación de pantalla?",
+                opciones = listOf("remember", "MutableList", "ViewModel", "Composable"),
+                respuestaCorrecta = "ViewModel"
+            )
         )
-    }
 
-    fun seleccionarOpcion(opcion: String) {
-        val estadoActual = _uiState.value
-        if (estadoActual.opcionSeleccionada != null || estadoActual.partidaFinalizada) return
+        private val _uiState = MutableStateFlow(QuizUiState())
+        val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
-        val pregunta = bancoPreguntas[estadoActual.indicePregunta]
-        val acierto = opcion == pregunta.respuestaCorrecta
+        init {
+            iniciarPartida()
+        }
 
-        _uiState.update { anterior ->
-            anterior.copy(
-                opcionSeleccionada = opcion,
-                esRespuestaCorrecta = acierto,
-                puntuacion = if (acierto) anterior.puntuacion + 10 else anterior.puntuacion
+        fun iniciarPartida() {
+            val primera = bancoPreguntas.first()
+            _uiState.value = QuizUiState(
+                preguntaActual = primera.enunciado,
+                opciones = primera.opciones,
+                indicePregunta = 0,
+                totalPreguntas = bancoPreguntas.size,
+                puntuacion = 0,
+                esRespuestaCorrecta = null,
+                opcionSeleccionada = null,
+                partidaFinalizada = false
             )
         }
-    }
 
-    fun siguientePregunta() {
-        val siguienteIndice = _uiState.value.indicePregunta + 1
+        fun seleccionarOpcion(opcion: String) {
+            val estadoActual = _uiState.value
+            if (estadoActual.opcionSeleccionada != null || estadoActual.partidaFinalizada) return
 
-        if (siguienteIndice < bancoPreguntas.size) {
-            val siguiente = bancoPreguntas[siguienteIndice]
+            val pregunta = bancoPreguntas[estadoActual.indicePregunta]
+            val acierto = opcion == pregunta.respuestaCorrecta
+
             _uiState.update { anterior ->
                 anterior.copy(
-                    preguntaActual = siguiente.enunciado,
-                    opciones = siguiente.opciones,
-                    indicePregunta = siguienteIndice,
-                    esRespuestaCorrecta = null,
-                    opcionSeleccionada = null
+                    opcionSeleccionada = opcion,
+                    esRespuestaCorrecta = acierto,
+                    puntuacion = if (acierto) anterior.puntuacion + 10 else anterior.puntuacion
                 )
             }
-        } else {
-            _uiState.update { it.copy(partidaFinalizada = true) }
+        }
+
+        fun siguientePregunta() {
+            val siguienteIndice = _uiState.value.indicePregunta + 1
+
+            if (siguienteIndice < bancoPreguntas.size) {
+                val siguiente = bancoPreguntas[siguienteIndice]
+                _uiState.update { anterior ->
+                    anterior.copy(
+                        preguntaActual = siguiente.enunciado,
+                        opciones = siguiente.opciones,
+                        indicePregunta = siguienteIndice,
+                        esRespuestaCorrecta = null,
+                        opcionSeleccionada = null
+                    )
+                }
+            } else {
+                _uiState.update { it.copy(partidaFinalizada = true) }
+            }
         }
     }
-}
-```
+    ```
 
 ---
 
@@ -216,203 +218,205 @@ val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 Abre o crea `app/src/main/java/com/dam/pmdmlab03/codelabs/codelab02_formulario/QuizScreen.kt`:
 
-```kotlin
-package com.dam.pmdmlab03.codelabs.codelab02_formulario
+??? example "Ver código completo: QuizScreen.kt"
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.dam.pmdmlab03.ui.theme.PMDMLab03Theme
+    ```kotlin
+    package com.dam.pmdmlab03.codelabs.codelab02_formulario
 
-// ==========================================
-// COMPONIBLE STATEFUL: Inyecta el ViewModel
-// ==========================================
-@Composable
-fun QuizScreen(
-    modifier: Modifier = Modifier,
-    viewModel: QuizViewModel = viewModel()
-) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    import androidx.compose.foundation.layout.Arrangement
+    import androidx.compose.foundation.layout.Column
+    import androidx.compose.foundation.layout.Row
+    import androidx.compose.foundation.layout.Spacer
+    import androidx.compose.foundation.layout.fillMaxSize
+    import androidx.compose.foundation.layout.fillMaxWidth
+    import androidx.compose.foundation.layout.height
+    import androidx.compose.foundation.layout.padding
+    import androidx.compose.material3.AlertDialog
+    import androidx.compose.material3.Button
+    import androidx.compose.material3.ButtonDefaults
+    import androidx.compose.material3.CardDefaults
+    import androidx.compose.material3.ElevatedCard
+    import androidx.compose.material3.FilledTonalButton
+    import androidx.compose.material3.HorizontalDivider
+    import androidx.compose.material3.LinearProgressIndicator
+    import androidx.compose.material3.MaterialTheme
+    import androidx.compose.material3.OutlinedButton
+    import androidx.compose.material3.Surface
+    import androidx.compose.material3.Text
+    import androidx.compose.runtime.Composable
+    import androidx.compose.runtime.getValue
+    import androidx.compose.ui.Alignment
+    import androidx.compose.ui.Modifier
+    import androidx.compose.ui.text.font.FontWeight
+    import androidx.compose.ui.text.style.TextAlign
+    import androidx.compose.ui.tooling.preview.Preview
+    import androidx.compose.ui.unit.dp
+    import androidx.lifecycle.compose.collectAsStateWithLifecycle
+    import androidx.lifecycle.viewmodel.compose.viewModel
+    import com.dam.pmdmlab03.ui.theme.PMDMLab03Theme
 
-    QuizContent(
-        uiState = uiState,
-        onOpcionClick = viewModel::seleccionarOpcion,
-        onSiguienteClick = viewModel::siguientePregunta,
-        onReiniciarClick = viewModel::iniciarPartida,
-        modifier = modifier
-    )
-}
-
-// ==========================================
-// COMPONIBLE STATELESS: Puro y Testeable
-// ==========================================
-@Composable
-fun QuizContent(
-    uiState: QuizUiState,
-    onOpcionClick: (String) -> Unit,
-    onSiguienteClick: () -> Unit,
-    onReiniciarClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+    // ==========================================
+    // COMPONIBLE STATEFUL: Inyecta el ViewModel
+    // ==========================================
+    @Composable
+    fun QuizScreen(
+        modifier: Modifier = Modifier,
+        viewModel: QuizViewModel = viewModel()
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        QuizContent(
+            uiState = uiState,
+            onOpcionClick = viewModel::seleccionarOpcion,
+            onSiguienteClick = viewModel::siguientePregunta,
+            onReiniciarClick = viewModel::iniciarPartida,
+            modifier = modifier
+        )
+    }
+
+    // ==========================================
+    // COMPONIBLE STATELESS: Puro y Testeable
+    // ==========================================
+    @Composable
+    fun QuizContent(
+        uiState: QuizUiState,
+        onOpcionClick: (String) -> Unit,
+        onSiguienteClick: () -> Unit,
+        onReiniciarClick: () -> Unit,
+        modifier: Modifier = Modifier
+    ) {
+        Surface(
+            modifier = modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
         ) {
-            // Cabecera de Progreso
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "Codelab 3: ViewModel y StateFlow",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text("Pregunta ${uiState.indicePregunta + 1} de ${uiState.totalPreguntas}")
-                    Text("Puntos: ${uiState.puntuacion}", fontWeight = FontWeight.Bold)
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                LinearProgressIndicator(
-                    progress = { uiState.progreso },
-                    modifier = Modifier.fillMaxWidth().height(8.dp)
-                )
-            }
-
-            // Tarjeta con el enunciado
-            ElevatedCard(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.elevatedCardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            ) {
-                Text(
-                    text = uiState.preguntaActual,
-                    style = MaterialTheme.typography.headlineSmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(24.dp).fillMaxWidth()
-                )
-            }
-
-            // Opciones de respuesta
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                uiState.opciones.forEach { opcion ->
-                    val yaRespondido = uiState.opcionSeleccionada != null
-                    val esEsta = uiState.opcionSeleccionada == opcion
+                // Cabecera de Progreso
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Codelab 3: ViewModel y StateFlow",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
 
-                    val colorBoton = when {
-                        esEsta && uiState.esRespuestaCorrecta == true -> ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                        esEsta && uiState.esRespuestaCorrecta == false -> ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        )
-                        else -> ButtonDefaults.filledTonalButtonColors()
-                    }
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                    FilledTonalButton(
-                        onClick = { onOpcionClick(opcion) },
-                        enabled = !yaRespondido,
-                        colors = colorBoton,
-                        modifier = Modifier.fillMaxWidth().height(52.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = opcion, style = MaterialTheme.typography.bodyLarge)
+                        Text("Pregunta ${uiState.indicePregunta + 1} de ${uiState.totalPreguntas}")
+                        Text("Puntos: ${uiState.puntuacion}", fontWeight = FontWeight.Bold)
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    LinearProgressIndicator(
+                        progress = { uiState.progreso },
+                        modifier = Modifier.fillMaxWidth().height(8.dp)
+                    )
+                }
+
+                // Tarjeta con el enunciado
+                ElevatedCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.elevatedCardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text(
+                        text = uiState.preguntaActual,
+                        style = MaterialTheme.typography.headlineSmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(24.dp).fillMaxWidth()
+                    )
+                }
+
+                // Opciones de respuesta
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    uiState.opciones.forEach { opcion ->
+                        val yaRespondido = uiState.opcionSeleccionada != null
+                        val esEsta = uiState.opcionSeleccionada == opcion
+
+                        val colorBoton = when {
+                            esEsta && uiState.esRespuestaCorrecta == true -> ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                            esEsta && uiState.esRespuestaCorrecta == false -> ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error
+                            )
+                            else -> ButtonDefaults.filledTonalButtonColors()
+                        }
+
+                        FilledTonalButton(
+                            onClick = { onOpcionClick(opcion) },
+                            enabled = !yaRespondido,
+                            colors = colorBoton,
+                            modifier = Modifier.fillMaxWidth().height(52.dp)
+                        ) {
+                            Text(text = opcion, style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
+                }
+
+                // Botón de avance
+                Button(
+                    onClick = onSiguienteClick,
+                    enabled = uiState.opcionSeleccionada != null,
+                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                ) {
+                    Text("Siguiente Pregunta")
                 }
             }
 
-            // Botón de avance
-            Button(
-                onClick = onSiguienteClick,
-                enabled = uiState.opcionSeleccionada != null,
-                modifier = Modifier.fillMaxWidth().height(50.dp)
-            ) {
-                Text("Siguiente Pregunta")
+            // Diálogo de fin de concurso
+            if (uiState.partidaFinalizada) {
+                AlertDialog(
+                    onDismissRequest = {},
+                    title = { Text("¡Concurso Completado! 🏆") },
+                    text = { Text("Has obtenido un total de ${uiState.puntuacion} puntos.") },
+                    confirmButton = {
+                        Button(onClick = onReiniciarClick) {
+                            Text("Jugar otra vez")
+                        }
+                    }
+                )
             }
         }
+    }
 
-        // Diálogo de fin de concurso
-        if (uiState.partidaFinalizada) {
-            AlertDialog(
-                onDismissRequest = {},
-                title = { Text("¡Concurso Completado! 🏆") },
-                text = { Text("Has obtenido un total de ${uiState.puntuacion} puntos.") },
-                confirmButton = {
-                    Button(onClick = onReiniciarClick) {
-                        Text("Jugar otra vez")
-                    }
-                }
+    // ==========================================
+    // PREVIEWS EN INTELIJ IDEA
+    // ==========================================
+
+    @Preview(name = "Quiz en Marcha", showBackground = true)
+    @Composable
+    private fun QuizPreviewEnMarcha() {
+        PMDMLab03Theme {
+            QuizContent(
+                uiState = QuizUiState(
+                    preguntaActual = "¿Qué función preserva el estado en Compose?",
+                    opciones = listOf("remember", "saveState", "retainState", "keep"),
+                    indicePregunta = 0,
+                    totalPreguntas = 3,
+                    puntuacion = 10,
+                    esRespuestaCorrecta = null,
+                    opcionSeleccionada = null
+                ),
+                onOpcionClick = {},
+                onSiguienteClick = {},
+                onReiniciarClick = {}
             )
         }
     }
-}
-
-// ==========================================
-// PREVIEWS EN INTELIJ IDEA
-// ==========================================
-
-@Preview(name = "Quiz en Marcha", showBackground = true)
-@Composable
-private fun QuizPreviewEnMarcha() {
-    PMDMLab03Theme {
-        QuizContent(
-            uiState = QuizUiState(
-                preguntaActual = "¿Qué función preserva el estado en Compose?",
-                opciones = listOf("remember", "saveState", "retainState", "keep"),
-                indicePregunta = 0,
-                totalPreguntas = 3,
-                puntuacion = 10,
-                esRespuestaCorrecta = null,
-                opcionSeleccionada = null
-            ),
-            onOpcionClick = {},
-            onSiguienteClick = {},
-            onReiniciarClick = {}
-        )
-    }
-}
-```
+    ```
 
 ---
 
