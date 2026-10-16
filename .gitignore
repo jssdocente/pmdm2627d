@@ -4,3 +4,8 @@ docs_bck/
 _bck/
 .others_courses/
 .DS_Store
+**/.idea/
+**/local.properties
+**/.gradle/
+**/build/
+**/.kotlin/
