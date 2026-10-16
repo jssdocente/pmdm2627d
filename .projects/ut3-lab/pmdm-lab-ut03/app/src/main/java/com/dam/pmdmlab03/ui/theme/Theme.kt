@@ -11,15 +11,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Indigo80,
+    onPrimary = Indigo40,
+    primaryContainer = SurfaceVariantDark,
+    onPrimaryContainer = Indigo80,
+    secondary = Teal80,
+    onSecondary = Teal40,
+    surface = NeutralDark,
+    onSurface = NeutralLight,
+    surfaceVariant = SurfaceVariantDark,
+    onSurfaceVariant = NeutralLight
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Indigo40,
+    onPrimary = NeutralLight,
+    primaryContainer = SurfaceVariantLight,
+    onPrimaryContainer = Indigo40,
+    secondary = Teal40,
+    onSecondary = NeutralLight,
+    surface = NeutralLight,
+    onSurface = NeutralDark,
+    surfaceVariant = SurfaceVariantLight,
+    onSurfaceVariant = NeutralDark
 )
 
 @Composable
@@ -40,6 +54,7 @@ fun PMDMLab03Theme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
+        shapes = Shapes,
         content = content
     )
 }

@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.ViewAgenda
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -45,6 +46,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.dam.pmdmlab03.codelabs.codelab01_scaffold.ScaffoldDemoScreen
+import com.dam.pmdmlab03.codelabs.codelab01_theming.ThemingScreen
+import com.dam.pmdmlab03.codelabs.codelab02_formulario.CalculadoraPropinasScreen
+import com.dam.pmdmlab03.codelabs.codelab02_formulario.QuizScreen
+import com.dam.pmdmlab03.codelabs.codelab03_catalogo.CatalogoLazyScreen
 import com.dam.pmdmlab03.codelabs.codelab04_recursos.ProfileCardScreen
 import com.dam.pmdmlab03.codelabs.codelab05_heroe.HeroCardScreen
 import com.dam.pmdmlab03.juegos.ahorcado.ui.AhorcadoScreen
@@ -85,9 +91,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppLaboratorio03() {
+fun AppLaboratorio03(
+    drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+) {
     var seccionActual by rememberSaveable { mutableStateOf(SeccionLaboratorio.JUEGO_AHORCADO) }
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
@@ -143,19 +150,19 @@ fun AppLaboratorio03() {
             ) {
                 when (seccionActual) {
                     SeccionLaboratorio.CODELAB_THEMING -> {
-                        Text("Codelab 1: ThemingScreen (Ver guía en documentación)", Modifier.padding(16.dp))
+                        ThemingScreen()
                     }
                     SeccionLaboratorio.CODELAB_ESTADO -> {
-                        Text("Codelab 2: CalculadoraPropinasScreen (Ver guía en documentación)", Modifier.padding(16.dp))
+                        CalculadoraPropinasScreen()
                     }
                     SeccionLaboratorio.CODELAB_VIEWMODEL -> {
-                        Text("Codelab 3: QuizScreen con ViewModel (Ver guía en documentación)", Modifier.padding(16.dp))
+                        QuizScreen()
                     }
                     SeccionLaboratorio.CODELAB_SCAFFOLD -> {
-                        Text("Codelab 4: ScaffoldDemoScreen (Ver guía en documentación)", Modifier.padding(16.dp))
+                        ScaffoldDemoScreen()
                     }
                     SeccionLaboratorio.CODELAB_CATALOGO -> {
-                        Text("Codelab 5: CatalogoLazyScreen (Ver guía en documentación)", Modifier.padding(16.dp))
+                        CatalogoLazyScreen()
                     }
                     SeccionLaboratorio.CODELAB_RECURSOS -> {
                         ProfileCardScreen()
@@ -178,10 +185,24 @@ fun AppLaboratorio03() {
     }
 }
 
-@Preview(name = "Contenedor Principal Drawer", showBackground = true)
+@Preview(name = "Contenedor Principal - Drawer Cerrado",
+    device = "spec:width=411dp,height=891dp",
+    showSystemUi = true,
+    showBackground = true)
 @Composable
 private fun AppLaboratorio03Preview() {
     PMDMLab03Theme {
         AppLaboratorio03()
     }
 }
+
+@Preview(name = "Contenedor Principal - Drawer Abierto", showBackground = true)
+@Composable
+private fun AppLaboratorio03DrawerAbiertoPreview() {
+    PMDMLab03Theme {
+        AppLaboratorio03(
+            drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
+        )
+    }
+}
+
