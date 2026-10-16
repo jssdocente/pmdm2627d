@@ -98,6 +98,8 @@ nav:
           - "Codelab 3: ViewModel y StateFlow": temas/03/codelabs/03-viewmodel-stateflow.md
           - "Codelab 4: Scaffold y Feedback": temas/03/codelabs/04-scaffold-feedback.md
           - "Codelab 5: Listas con LazyColumn": temas/03/codelabs/05-catalogo-lazycolumn.md
+          - "Codelab 6: Recursos, Imágenes e i18n": temas/03/codelabs/06-recursos-imagenes-textos.md
+          - "Codelab 7: Ficha de Héroe RPG": temas/03/codelabs/07-game-cards-assets.md
 
   # - "UT4 - Persistencia":
   #   - "Introducción": temas/04/4.0-persistencia.md

@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">PMDM Lab UT03</string>
+
+    <!-- Codelab 6: Ficha de Perfil Profesional (English) -->
+    <string name="perfil_titulo">Professional Profile</string>
+    <string name="perfil_subtitulo">Resources, Images and Localization in Compose</string>
+    <string name="perfil_nombre">Alejandro Morales</string>
+    <string name="perfil_cargo">Android &amp; Cross-Platform Engineer</string>
+    <string name="perfil_biografia">Specialist in declarative UIs with Jetpack Compose and reactive clean architectures in Kotlin.</string>
+    <string name="perfil_experiencia">Experience: %1$d years in %2$s</string>
+    <string name="perfil_proyectos">Completed projects: %1$d</string>
+    <string name="perfil_estado_disponible">Available for new opportunities</string>
+    <string name="perfil_boton_contacto">Get in touch</string>
+    <string name="perfil_boton_compartir">Share</string>
+    <string name="cd_banner_cabecera">Abstract tech and code header banner</string>
+    <string name="cd_avatar_usuario">%1$s\'s profile avatar</string>
+    <string name="cd_insignia_verificado">Verified engineer badge</string>
+
+    <!-- Codelab 7: Ficha de Héroe RPG (English) -->
+    <string name="heroe_titulo">RPG Character Sheet</string>
+    <string name="heroe_subtitulo">Dynamic assets, tints and XML collections</string>
+    <string name="heroe_clase_guerrero">Warrior</string>
+    <string name="heroe_clase_mago">Mage</string>
+    <string name="heroe_clase_picaro">Rogue</string>
+    <string name="heroe_stats_vida">HP: %1$d / %2$d</string>
+    <string name="heroe_stats_mana">MP: %1$d / %2$d</string>
+    <string name="heroe_stats_fuerza">Attack: %1$d</string>
+    <string name="heroe_seccion_habilidades">Special Abilities:</string>
+    <string name="cd_ilustracion_heroe">Illustration of the %1$s class</string>
+    <string name="cd_escudo_defensa">Class defensive shield</string>
+
+    <string-array name="skills_guerrero">
+        <item>Earthquake Ground Slam</item>
+        <item>Taunting Battle Cry</item>
+        <item>Impenetrable Fortress Wall</item>
+    </string-array>
+
+    <string-array name="skills_mago">
+        <item>Crystalline Frost Spear</item>
+        <item>Arcane Blink Teleport</item>
+        <item>Astral Fire Tempest</item>
+    </string-array>
+
+    <string-array name="skills_picaro">
+        <item>Silent Shadowstep</item>
+        <item>Quick Paralysis Poison</item>
+        <item>Critical Dagger Barrage</item>
+    </string-array>
+</resources>

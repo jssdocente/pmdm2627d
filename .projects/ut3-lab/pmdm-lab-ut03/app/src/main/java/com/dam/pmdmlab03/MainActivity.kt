@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.DataObject
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.GridOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +45,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.dam.pmdmlab03.codelabs.codelab04_recursos.ProfileCardScreen
+import com.dam.pmdmlab03.codelabs.codelab05_heroe.HeroCardScreen
 import com.dam.pmdmlab03.juegos.ahorcado.ui.AhorcadoScreen
 import com.dam.pmdmlab03.ui.theme.PMDMLab03Theme
 import kotlinx.coroutines.launch
@@ -54,6 +58,8 @@ enum class SeccionLaboratorio(val titulo: String, val icono: ImageVector) {
     CODELAB_VIEWMODEL("3. ViewModel y StateFlow", Icons.Filled.DataObject),
     CODELAB_SCAFFOLD("4. Scaffold y Feedback", Icons.Filled.ViewAgenda),
     CODELAB_CATALOGO("5. Catálogo LazyColumn", Icons.Filled.Category),
+    CODELAB_RECURSOS("6. Recursos y Localización", Icons.Filled.AccountBox),
+    CODELAB_HEROE("7. Ficha de Héroe RPG", Icons.Filled.Shield),
 
     // Bloque Retos de Juegos con ViewModel
     JUEGO_AHORCADO("Reto A: El Ahorcado", Icons.Filled.Password),
@@ -150,6 +156,12 @@ fun AppLaboratorio03() {
                     }
                     SeccionLaboratorio.CODELAB_CATALOGO -> {
                         Text("Codelab 5: CatalogoLazyScreen (Ver guía en documentación)", Modifier.padding(16.dp))
+                    }
+                    SeccionLaboratorio.CODELAB_RECURSOS -> {
+                        ProfileCardScreen()
+                    }
+                    SeccionLaboratorio.CODELAB_HEROE -> {
+                        HeroCardScreen()
                     }
                     SeccionLaboratorio.JUEGO_AHORCADO -> {
                         AhorcadoScreen()

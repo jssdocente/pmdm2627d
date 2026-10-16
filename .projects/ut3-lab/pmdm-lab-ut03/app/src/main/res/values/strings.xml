@@ -1,3 +1,49 @@
 <resources>
     <string name="app_name">PMDM Lab UT03</string>
+
+    <!-- Codelab 6: Ficha de Perfil Profesional -->
+    <string name="perfil_titulo">Ficha Profesional</string>
+    <string name="perfil_subtitulo">Recursos, Imágenes y Localización en Compose</string>
+    <string name="perfil_nombre">Alejandro Morales</string>
+    <string name="perfil_cargo">Desarrollador Android &amp; Multiplataforma</string>
+    <string name="perfil_biografia">Especialista en interfaces declarativas con Jetpack Compose y arquitecturas limpias reactivas en Kotlin.</string>
+    <string name="perfil_experiencia">Experiencia: %1$d años en %2$s</string>
+    <string name="perfil_proyectos">Proyectos completados: %1$d</string>
+    <string name="perfil_estado_disponible">Disponible para nuevos proyectos</string>
+    <string name="perfil_boton_contacto">Contactar</string>
+    <string name="perfil_boton_compartir">Compartir</string>
+    <string name="cd_banner_cabecera">Banner abstracto de código y tecnología</string>
+    <string name="cd_avatar_usuario">Foto de perfil de %1$s</string>
+    <string name="cd_insignia_verificado">Insignia de desarrollador verificado</string>
+
+    <!-- Codelab 7: Ficha de Héroe RPG -->
+    <string name="heroe_titulo">Ficha de Personaje RPG</string>
+    <string name="heroe_subtitulo">Assets dinámicos, tintes y colecciones XML</string>
+    <string name="heroe_clase_guerrero">Guerrero</string>
+    <string name="heroe_clase_mago">Mago</string>
+    <string name="heroe_clase_picaro">Pícaro</string>
+    <string name="heroe_stats_vida">Vida: %1$d / %2$d</string>
+    <string name="heroe_stats_mana">Maná: %1$d / %2$d</string>
+    <string name="heroe_stats_fuerza">Ataque: %1$d</string>
+    <string name="heroe_seccion_habilidades">Habilidades Especiales:</string>
+    <string name="cd_ilustracion_heroe">Ilustración de la clase %1$s</string>
+    <string name="cd_escudo_defensa">Escudo defensivo de clase</string>
+
+    <string-array name="skills_guerrero">
+        <item>Golpe Sísmico Terrestre</item>
+        <item>Grito de Guerra Provocador</item>
+        <item>Muro Defensivo Impenetrable</item>
+    </string-array>
+
+    <string-array name="skills_mago">
+        <item>Lanza de Escarcha Cristalina</item>
+        <item>Teletransportación Arcana</item>
+        <item>Tormenta de Fuego Astral</item>
+    </string-array>
+
+    <string-array name="skills_picaro">
+        <item>Paso Sombrío Silencioso</item>
+        <item>Veneno Paralizante Rápido</item>
+        <item>Lluvia de Dagas Críticas</item>
+    </string-array>
 </resources>

@@ -98,6 +98,7 @@ data class QuizUiState(
 ## 4. Paso 2: Crear el `ViewModel` y el Patrón UDF
 
 El `ViewModel` debe custodiar dos variables de estado:
+
 1. `_uiState`: Una variable privada `MutableStateFlow` que sólo el ViewModel puede alterar.
 2. `uiState`: Una propiedad pública de solo lectura `StateFlow` expuesta mediante `.asStateFlow()`.
 
@@ -431,5 +432,6 @@ Abre o crea `app/src/main/java/com/dam/pmdmlab03/codelabs/codelab02_formulario/Q
 ## 8. Reto de Consolidación
 
 Añade un temporizador de 15 segundos por pregunta:
+
 1. En el `QuizViewModel`, utiliza una corrutina con `viewModelScope.launch` y `delay(1000)` para decrementar un contador `segundosRestantes` en el `UiState`.
 2. Si el contador llega a 0 sin responder, pasa automáticamente la pregunta como errónea y desactiva las opciones.
