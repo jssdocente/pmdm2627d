@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.DataObject
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.GridOn
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material3.DrawerValue
@@ -46,15 +48,17 @@ import com.dam.pmdmlab03.ui.theme.PMDMLab03Theme
 import kotlinx.coroutines.launch
 
 enum class SeccionLaboratorio(val titulo: String, val icono: ImageVector) {
-    // Bloque Codelabs M3
-    CODELAB_SCAFFOLD("Codelab: Scaffold & AppBars", Icons.Filled.ViewAgenda),
-    CODELAB_FORMULARIO("Codelab: Formulario & Modales", Icons.Filled.EditNote),
-    CODELAB_CATALOGO("Codelab: Catálogo LazyColumn", Icons.Filled.Category),
+    // Bloque Codelabs Formativos M3
+    CODELAB_THEMING("1. Theming y Modo Oscuro", Icons.Filled.Palette),
+    CODELAB_ESTADO("2. Estado y TextField", Icons.Filled.EditNote),
+    CODELAB_VIEWMODEL("3. ViewModel y StateFlow", Icons.Filled.DataObject),
+    CODELAB_SCAFFOLD("4. Scaffold y Feedback", Icons.Filled.ViewAgenda),
+    CODELAB_CATALOGO("5. Catálogo LazyColumn", Icons.Filled.Category),
 
     // Bloque Retos de Juegos con ViewModel
-    JUEGO_AHORCADO("El Ahorcado", Icons.Filled.Password),
-    JUEGO_WORDLE("Wordle Compose", Icons.Filled.GridOn),
-    JUEGO_MEMORY("Memory Match", Icons.Filled.Casino)
+    JUEGO_AHORCADO("Reto A: El Ahorcado", Icons.Filled.Password),
+    JUEGO_WORDLE("Reto B: Wordle Compose", Icons.Filled.GridOn),
+    JUEGO_MEMORY("Reto C: Memory Match", Icons.Filled.Casino)
 }
 
 class MainActivity : ComponentActivity() {
@@ -132,14 +136,20 @@ fun AppLaboratorio03() {
                     .padding(innerPadding)
             ) {
                 when (seccionActual) {
-                    SeccionLaboratorio.CODELAB_SCAFFOLD -> {
-                        Text("Pantalla de Codelab 1: Scaffold, FAB y Snackbar", Modifier.padding(16.dp))
+                    SeccionLaboratorio.CODELAB_THEMING -> {
+                        Text("Codelab 1: ThemingScreen (Ver guía en documentación)", Modifier.padding(16.dp))
                     }
-                    SeccionLaboratorio.CODELAB_FORMULARIO -> {
-                        Text("Pantalla de Codelab 2: Formulario M3 con validaciones", Modifier.padding(16.dp))
+                    SeccionLaboratorio.CODELAB_ESTADO -> {
+                        Text("Codelab 2: CalculadoraPropinasScreen (Ver guía en documentación)", Modifier.padding(16.dp))
+                    }
+                    SeccionLaboratorio.CODELAB_VIEWMODEL -> {
+                        Text("Codelab 3: QuizScreen con ViewModel (Ver guía en documentación)", Modifier.padding(16.dp))
+                    }
+                    SeccionLaboratorio.CODELAB_SCAFFOLD -> {
+                        Text("Codelab 4: ScaffoldDemoScreen (Ver guía en documentación)", Modifier.padding(16.dp))
                     }
                     SeccionLaboratorio.CODELAB_CATALOGO -> {
-                        Text("Pantalla de Codelab 3: LazyColumn dinámico con tarjetas", Modifier.padding(16.dp))
+                        Text("Codelab 5: CatalogoLazyScreen (Ver guía en documentación)", Modifier.padding(16.dp))
                     }
                     SeccionLaboratorio.JUEGO_AHORCADO -> {
                         AhorcadoScreen()

@@ -91,7 +91,13 @@ nav:
       - "3.3. Listas y Cuadrículas Eficientes (Lazy)": temas/03/3.3-listas-cuadriculas-lazy.md
       - "3.4. Capa de UI: ViewModel y StateFlow": temas/03/3.4-capa-ui-viewmodel.md
       - "3.5. Testing de Interfaz en Compose": temas/03/3.5-testing-ui-compose.md
-      - "3.6. Laboratorio de Retos (pmdm-lab-ut03)": temas/03/3.6-laboratorio-retos.md
+      - "3.6. Laboratorio de Prácticas y Codelabs":
+          - "Puesta en Marcha y Retos": temas/03/3.6-laboratorio-retos.md
+          - "Codelab 1: Theming M3": temas/03/codelabs/01-theming-material3.md
+          - "Codelab 2: Estado y TextField": temas/03/codelabs/02-estado-textfield.md
+          - "Codelab 3: ViewModel y StateFlow": temas/03/codelabs/03-viewmodel-stateflow.md
+          - "Codelab 4: Scaffold y Feedback": temas/03/codelabs/04-scaffold-feedback.md
+          - "Codelab 5: Listas con LazyColumn": temas/03/codelabs/05-catalogo-lazycolumn.md
 
   # - "UT4 - Persistencia":
   #   - "Introducción": temas/04/4.0-persistencia.md
