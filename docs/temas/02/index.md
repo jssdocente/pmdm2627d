@@ -78,8 +78,8 @@ En este bloque dejamos atrás las tecnologías imperativas antiguas (archivos XM
 3. **[2.3 Primera aplicación y Metodología @Preview en Compose](./2.3-primera-app.md):**  
    Punto de entrada `setContent { ... }`, funciones `@Composable`, separación arquitectónica entre componente contenedor (*Stateful*) y componente de contenido (*Stateless*), y uso profesional de `@Preview` con datos mock.
 
-4. **[2.4 Laboratorio de retos de la UT02](./2.4-laboratorio-retos.md):**  
-   Banco de micro-prácticas a integrar en el menú del proyecto `pmdm-lab-ut02` para aplicar los conocimientos adquiridos de forma incremental.
+4. **[2.4 Laboratorio de Prácticas y Codelabs](./2.4-laboratorio-retos.md):**  
+   Proyecto unificado de laboratorio (`pmdm-lab-ut02`) con 5 Codelabs guiados paso a paso (Ciclo de Vida/Logcat, Contador Incremental, Tarjeta y Previews, Lanzador de Dados, Semáforo Inteligente) y banco de Retos Autónomos para evaluación (*Lemonade App* y *Marcador de Baloncesto*).
 
 ---
 

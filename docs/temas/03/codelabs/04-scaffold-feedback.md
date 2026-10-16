@@ -402,5 +402,6 @@ Abre o crea `app/src/main/java/com/dam/pmdmlab03/codelabs/codelab01_scaffold/Sca
 ## 9. Reto de Consolidación
 
 Añade un contador en la `TopAppBar`:
+
 1. Muestra en el subtítulo de la barra: *"Tareas pendientes: X"*.
 2. Añade un botón de acción en la barra superior con el icono `DeleteSweep` que abra un `AlertDialog` preguntando si desea vaciar todas las tareas de la lista.

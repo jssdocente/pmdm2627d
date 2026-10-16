@@ -82,7 +82,13 @@ nav:
       - "2.1. Primeros pasos y Proyecto Lab": temas/02/2.1-primeros-pasos.md
       - "2.2. Ciclo de Vida en Android": temas/02/2.2-ciclo-vida-app.md
       - "2.3. Primera App y Previews en Compose": temas/02/2.3-primera-app.md
-      - "2.4. Laboratorio de Retos (pmdm-lab-ut02)": temas/02/2.4-laboratorio-retos.md
+      - "2.4. Laboratorio de Prácticas y Codelabs":
+          - "Puesta en Marcha y Retos": temas/02/2.4-laboratorio-retos.md
+          - "Codelab 1: Ciclo de Vida y Logcat": temas/02/codelabs/01-ciclo-vida-logcat.md
+          - "Codelab 2: Contador y Recomposición": temas/02/codelabs/02-contador-incremental.md
+          - "Codelab 3: Tarjeta y Previews": temas/02/codelabs/03-tarjeta-presentacion.md
+          - "Codelab 4: Dado Interactivo": temas/02/codelabs/04-dado-interactivo.md
+          - "Codelab 5: Semáforo y Estados": temas/02/codelabs/05-semaforo-estados.md
 
   - "UT3 - Interfaz de Usuario con Jetpack Compose":
       - "Inicio": temas/03/index.md
