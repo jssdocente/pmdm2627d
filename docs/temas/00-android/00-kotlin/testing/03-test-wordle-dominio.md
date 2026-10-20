@@ -7,7 +7,7 @@ En este tercer taller continuaremos aplicando la metodología **TDD (*Test-Drive
 1. **Testing de la Factoría Semántica (`companion object`):** Cómo verificar que el método factoría inicializa estados limpios tanto con palabras personalizadas como con el diccionario aleatorio por defecto.
 2. **Igualdad Estructural en Data Classes y Enums:** Cómo `assertEquals` y `assertTrue` comprueban la clasificación posicional de letras (`VERDE`, `AMARILLO`, `GRIS`) celda a celda sin comparadores manuales.
 3. **Manejo Robusto de Entradas con `sealed interface`:** Cómo verificar que las palabras de longitud inválida no crashean la aplicación, sino que emiten de forma reactiva el evento `EventoWordle.LongitudInvalida` conservando intacto el estado de la partida.
-4. **Testing de Transiciones de Estado Inmutables (`procesarIntento`):** Cómo comprobar que la evolución de `EstadoWordle` mediante `.copy()` actualiza de forma matemáticamente exacta los turnos restantes, la lista de intentos y la fase del juego (`EstadoPartida.VICTORIA` o `DERROTA`).
+4. **Testing de Transiciones de Estado Inmutables (`procesarIntento`):** Cómo comprobar que la evolución de `EstadoWordle` mediante `.copy()` actualiza de forma matemáticamente exacta los turnos restantes, el contador de intentos y la fase del juego (`EstadoPartida.VICTORIA` o `DERROTA`).
 
 ---
 
@@ -75,11 +75,11 @@ data class EvaluacionLetra(
 data class EstadoWordle(
     val palabraSecreta: String,
     val intentosMaximos: Int = INTENTOS_POR_DEFECTO,
-    val intentos: List<List<EvaluacionLetra>> = emptyList(),
+    val intentos: Int = 0,
     val estado: EstadoPartida = EstadoPartida.JUGANDO
 ) {
     val turnosRestantes: Int
-        get() = TODO("Misión 3: Calcular intentos restantes: intentosMaximos - intentos.size")
+        get() = TODO("Misión 3: Calcular intentos restantes: intentosMaximos - intentos")
 
     companion object {
         const val INTENTOS_POR_DEFECTO = 6
@@ -226,7 +226,7 @@ class MotorWordleTest {
 
         // 2. Verificamos que el estado permanece intacto
         assertEquals(partidaInicial.turnosRestantes, partidaNueva.turnosRestantes)
-        assertTrue(partidaNueva.intentos.isEmpty())
+        assertEquals(0, partidaNueva.intentos)
     }
 
     // ========================================================================
@@ -248,7 +248,7 @@ class MotorWordleTest {
         assertEquals(5, info.intentosRestantes)
 
         assertEquals(5, partidaNueva.turnosRestantes)
-        assertEquals(1, partidaNueva.intentos.size)
+        assertEquals(1, partidaNueva.intentos)
         assertEquals(EstadoPartida.JUGANDO, partidaNueva.estado)
     }
 
@@ -364,11 +364,11 @@ Implementa la propiedad calculada dentro de `data class EstadoWordle`:
 data class EstadoWordle(
     val palabraSecreta: String,
     val intentosMaximos: Int = INTENTOS_POR_DEFECTO,
-    val intentos: List<List<EvaluacionLetra>> = emptyList(),
+    val intentos: Int = 0,
     val estado: EstadoPartida = EstadoPartida.JUGANDO
 ) {
     val turnosRestantes: Int
-        get() = intentosMaximos - intentos.size
+        get() = intentosMaximos - intentos
 ...
 ```
 
@@ -395,24 +395,24 @@ fun EstadoWordle.procesarIntento(
 
     // 2. Calificación de letras
     val evaluacion = evaluarLetras(palabraSecreta, intento)
-    val nuevosIntentos = this.intentos + listOf(evaluacion)
+    val nuevosIntentos = this.intentos + 1
     val esAciertoPleno = evaluacion.all { it.estado == EstadoLetra.VERDE }
 
     // 3. Resolución de nueva fase de juego
     val nuevoEstado = when {
         esAciertoPleno -> EstadoPartida.VICTORIA
-        nuevosIntentos.size >= intentosMaximos -> EstadoPartida.DERROTA
+        nuevosIntentos >= intentosMaximos -> EstadoPartida.DERROTA
         else -> EstadoPartida.JUGANDO
     }
 
     // 4. Emisión de eventos tipados
     when (nuevoEstado) {
-        EstadoPartida.VICTORIA -> onEvento(EventoWordle.Victoria(nuevosIntentos.size))
+        EstadoPartida.VICTORIA -> onEvento(EventoWordle.Victoria(nuevosIntentos))
         EstadoPartida.DERROTA -> onEvento(EventoWordle.Derrota(palabraSecreta))
         EstadoPartida.JUGANDO -> onEvento(
             EventoWordle.IntentoRegistrado(
-                turnoActual = nuevosIntentos.size,
-                intentosRestantes = intentosMaximos - nuevosIntentos.size
+                turnoActual = nuevosIntentos,
+                intentosRestantes = intentosMaximos - nuevosIntentos
             )
         )
     }

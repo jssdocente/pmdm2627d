@@ -1866,11 +1866,11 @@ data class EvaluacionLetra(
 data class EstadoWordle(
     val palabraSecreta: String,
     val intentosMaximos: Int = INTENTOS_POR_DEFECTO,
-    val intentos: List<List<EvaluacionLetra>> = emptyList(),
+    val intentos: Int = 0,
     val estado: EstadoPartida = EstadoPartida.JUGANDO
 ) {
     val turnosRestantes: Int
-        get() = TODO("Calcular intentos restantes: intentosMaximos - intentos.size")
+        get() = TODO("Calcular intentos restantes: intentosMaximos - intentos")
 
     companion object {
         // TODO: Constantes de negocio
@@ -1886,11 +1886,11 @@ data class EstadoWordle(
 
 // 6. TODO: Funciones de extensión sobre List<EvaluacionLetra> para renderizado visual
 fun List<EvaluacionLetra>.renderizarTexto(): String {
-    TODO("Mapear caracteres y unirlos con espacios. Ej: 'C O M P O S E'")
+    TODO("Mapear caracteres con .map { it.caracter } y unirlos con .joinToString(\" \"). Ej: 'C O M P O S E'")
 }
 
 fun List<EvaluacionLetra>.renderizarIconos(): String {
-    TODO("Mapear iconos y unirlos con espacios. Ej: '🟩 🟩 🟩 🟩 🟩 🟩 🟩'")
+    TODO("Mapear iconos con .map { it.estado.icono } y unirlos con .joinToString(\" \"). Ej: '🟩 🟩 🟩 🟩 🟩 🟩 🟩'")
 }
 
 // 7. TODO: Función pura de evaluación posicional de caracteres
@@ -1955,16 +1955,16 @@ Para completar el reto con la máxima fidelidad técnica:
         - `Derrota(val palabraCorrecta: String) : EventoWordle`
 
 3. **RF-03 (Data Class del Estado y su `companion object`):**
-    - Modela `data class EstadoWordle(...)` con los atributos `palabraSecreta`, `intentosMaximos`, `intentos` y `estado`.
-    - Expón la propiedad calculada `val turnosRestantes: Int get() = intentosMaximos - intentos.size`.
+    - Modela `data class EstadoWordle(...)` con los atributos `palabraSecreta`, `intentosMaximos`, `intentos` (contador numérico entero inicializado a 0) y `estado`.
+    - Expón la propiedad calculada `val turnosRestantes: Int get() = intentosMaximos - intentos`.
     - En el `companion object`:
         - Define las constantes `INTENTOS_POR_DEFECTO = 6` y `LONGITUD_PALABRA = 7`.
         - Define una lista inmutable `DICCIONARIO` con palabras de 7 letras (ej. `"COMPOSE"`, `"ANDROID"`, `"KOTLINS"`).
         - Implementa la función factoría `fun iniciarPartida(palabra: String? = null): EstadoWordle` que convierta a mayúsculas la palabra suministrada o elija una al azar de `DICCIONARIO` si se omite o es nula.
 
 4. **RF-04 (Funciones de Extensión para Renderizado Visual):**
-    - `fun List<EvaluacionLetra>.renderizarTexto(): String`: Concatena los caracteres en mayúsculas separados por espacios (ej. `"C O M P O S E"`).
-    - `fun List<EvaluacionLetra>.renderizarIconos(): String`: Concatena los iconos de cada celda separados por espacios (ej. `"🟩 🟩 🟩 🟩 🟩 🟩 🟩"`).
+    - `fun List<EvaluacionLetra>.renderizarTexto(): String`: Transforma con `.map { it.caracter }` y une con `.joinToString(" ")` los caracteres en mayúsculas (ej. `"C O M P O S E"`).
+    - `fun List<EvaluacionLetra>.renderizarIconos(): String`: Transforma con `.map { it.estado.icono }` y une con `.joinToString(" ")` los iconos de cada celda (ej. `"🟩 🟩 🟩 🟩 🟩 🟩 🟩"`).
 
 5. **RF-05 (Función Pura de Calificación Posicional):**
     - Implementa `fun evaluarLetras(palabraSecreta: String, intento: String): List<EvaluacionLetra>`.
@@ -1983,7 +1983,7 @@ Para completar el reto con la máxima fidelidad técnica:
     - Comprueba si todas las celdas resultaron verdes (`evaluacion.all { it.estado == EstadoLetra.VERDE }`).
     - Calcula el nuevo `EstadoPartida`: `VICTORIA` si acertó, `DERROTA` si los turnos consumidos alcanzan el máximo, o `JUGANDO` en caso contrario.
     - Emite el evento oportuno mediante `onEvento`: `Victoria`, `Derrota` o `IntentoRegistrado`.
-    - Retorna una **nueva instancia inmutable** mediante `.copy()` con la nueva lista de intentos y el nuevo estado de la partida.
+    - Retorna una **nueva instancia inmutable** mediante `.copy()` con el contador de `intentos` incrementado en 1 y el nuevo estado de la partida.
 
 7. **RF-07 (Bucle de Consola con `when` Exhaustivo en `main()`):**
     - En el `main()`, itera sobre la lista de intentos simulados y evoluciona `partida` llamando a `procesarIntento`.
@@ -2050,13 +2050,12 @@ Para completar el reto con la máxima fidelidad técnica:
             <<data class>>
             +String palabraSecreta
             +Int intentosMaximos
-            +List~List~EvaluacionLetra~~ intentos
+            +Int intentos
             +EstadoPartida estado
             +Int turnosRestantes
             +iniciarPartida(palabra)* EstadoWordle
         }
 
-        EstadoWordle *-- EvaluacionLetra : contiene matriz de intentos
         EstadoWordle --> EstadoPartida : fase actual
         EvaluacionLetra --> EstadoLetra : calificada con
     ```
@@ -2104,12 +2103,12 @@ Para completar el reto con la máxima fidelidad técnica:
         Asegúrate de comprobar primero si el estado actual es `JUGANDO`, luego validar la longitud emitiendo `LongitudInvalida`, y finalmente generar el nuevo estado inmutable con `.copy()`:
         ```kotlin
         val evaluacion = evaluarLetras(palabraSecreta, intento)
-        val nuevosIntentos = this.intentos + listOf(evaluacion)
+        val nuevosIntentos = this.intentos + 1
         val esVictoria = evaluacion.all { it.estado == EstadoLetra.VERDE }
 
         val nuevoEstado = when {
             esVictoria -> EstadoPartida.VICTORIA
-            nuevosIntentos.size >= intentosMaximos -> EstadoPartida.DERROTA
+            nuevosIntentos >= intentosMaximos -> EstadoPartida.DERROTA
             else -> EstadoPartida.JUGANDO
         }
         ```
@@ -2182,11 +2181,11 @@ Para completar el reto con la máxima fidelidad técnica:
     data class EstadoWordle(
         val palabraSecreta: String,
         val intentosMaximos: Int = INTENTOS_POR_DEFECTO,
-        val intentos: List<List<EvaluacionLetra>> = emptyList(),
+        val intentos: Int = 0,
         val estado: EstadoPartida = EstadoPartida.JUGANDO
     ) {
         val turnosRestantes: Int
-            get() = intentosMaximos - intentos.size
+            get() = intentosMaximos - intentos
 
         companion object {
             const val INTENTOS_POR_DEFECTO = 6
@@ -2210,10 +2209,10 @@ Para completar el reto con la máxima fidelidad técnica:
     // ============================================================================
 
     fun List<EvaluacionLetra>.renderizarTexto(): String =
-        this.joinToString(" ") { it.caracter.toString() }
+        this.map { it.caracter }.joinToString(" ")
 
     fun List<EvaluacionLetra>.renderizarIconos(): String =
-        this.joinToString(" ") { it.estado.icono }
+        this.map { it.estado.icono }.joinToString(" ")
 
     // ============================================================================
     // 5. EVALUACIÓN POSICIONAL Y TRANSICIÓN DE ESTADOS
@@ -2250,24 +2249,24 @@ Para completar el reto con la máxima fidelidad técnica:
 
         // 2. Calificación de letras
         val evaluacion = evaluarLetras(palabraSecreta, intento)
-        val nuevosIntentos = this.intentos + listOf(evaluacion)
+        val nuevosIntentos = this.intentos + 1
         val esAciertoPleno = evaluacion.all { it.estado == EstadoLetra.VERDE }
 
         // 3. Resolución de la fase de juego
         val nuevoEstado = when {
             esAciertoPleno -> EstadoPartida.VICTORIA
-            nuevosIntentos.size >= intentosMaximos -> EstadoPartida.DERROTA
+            nuevosIntentos >= intentosMaximos -> EstadoPartida.DERROTA
             else -> EstadoPartida.JUGANDO
         }
 
         // 4. Emisión de eventos específicos de UI
         when (nuevoEstado) {
-            EstadoPartida.VICTORIA -> onEvento(EventoWordle.Victoria(nuevosIntentos.size))
+            EstadoPartida.VICTORIA -> onEvento(EventoWordle.Victoria(nuevosIntentos))
             EstadoPartida.DERROTA -> onEvento(EventoWordle.Derrota(palabraSecreta))
             EstadoPartida.JUGANDO -> onEvento(
                 EventoWordle.IntentoRegistrado(
-                    turnoActual = nuevosIntentos.size,
-                    intentosRestantes = intentosMaximos - nuevosIntentos.size
+                    turnoActual = nuevosIntentos,
+                    intentosRestantes = intentosMaximos - nuevosIntentos
                 )
             )
         }
@@ -2304,18 +2303,16 @@ Para completar el reto con la máxima fidelidad técnica:
                         println("⚠️ Longitud incorrecta: has introducido ${evento.longitudRecibida} letras (se esperaban ${evento.longitudEsperada}). Turno no consumido.\n")
                     }
                     is EventoWordle.IntentoRegistrado -> {
-                        val ultimaEvaluacion = partida.intentos.lastOrNull()
-                        // Nota: el nuevo intento está en la nueva instancia generada
-                        // Mostramos el intento recién evaluado
-                        println(palabra.map { "$it" }.joinToString(" "))
-                        val iconos = evaluarLetras(partida.palabraSecreta, palabra).renderizarIconos()
-                        println(iconos)
+                        // Mostramos el intento recién evaluado utilizando las funciones de extensión
+                        val evaluacion = evaluarLetras(partida.palabraSecreta, palabra)
+                        println(evaluacion.renderizarTexto())
+                        println(evaluacion.renderizarIconos())
                         println("Te quedan ${evento.intentosRestantes} intentos.\n")
                     }
                     is EventoWordle.Victoria -> {
-                        println(palabra.map { "$it" }.joinToString(" "))
-                        val iconos = evaluarLetras(partida.palabraSecreta, palabra).renderizarIconos()
-                        println(iconos)
+                        val evaluacion = evaluarLetras(partida.palabraSecreta, palabra)
+                        println(evaluacion.renderizarTexto())
+                        println(evaluacion.renderizarIconos())
                         println("¡ENHORABUENA! 🎉 Has resuelto el Wordle en ${evento.intentosUsados} intentos válidos.\n")
                     }
                     is EventoWordle.Derrota -> {
