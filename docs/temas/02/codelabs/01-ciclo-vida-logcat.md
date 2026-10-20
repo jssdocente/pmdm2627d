@@ -17,13 +17,33 @@ Paralelamente, instrumentarás los métodos del ciclo de vida de tu `MainActivit
 
 ```mermaid
 graph TD
-    A[Usuario pulsa Incrementar en ambos contadores] --> B[Contador Volátil: 5 | Contador Guardado: 5]
-    B --> C[Usuario gira el dispositivo a Horizontal]
-    C --> D[El Sistema destruye y recrea la Activity]
-    D --> E[Logcat: onPause -> onStop -> onDestroy -> onCreate -> onStart -> onResume]
-    E --> F[UI Recompuesta]
-    F --> G[Contador Volátil vuelve a 0]
-    F --> H[Contador Guardado mantiene el valor 5]
+    subgraph Fase1 ["1. Estado Previo al Giro"]
+        A["Usuario pulsa Incrementar"] --> B1["Contador Volátil (remember): 5"]
+        A --> B2["Contador Persistente (rememberSaveable): 5"]
+    end
+
+    subgraph Fase2 ["2. Cambio de Configuración"]
+        ROT["Rotación de Pantalla: Vertical ➔ Horizontal"]
+    end
+
+    subgraph Fase3 ["3. Ciclo de Vida de la Activity (Trazas en Logcat)"]
+        D1["onPause()"] --> D2["onStop()"]
+        D2 --> D3["onDestroy() : Destrucción"]
+        D3 --> R1["onCreate() : Recreación"]
+        R1 --> R2["onStart()"]
+        R2 --> R3["onResume() : Interactiva"]
+    end
+
+    subgraph Fase4 ["4. Estado tras la Recomposición de la UI"]
+        RES1["Contador Volátil: Vuelve a 0<br/>(Pérdida de estado en RAM)"]
+        RES2["Contador Persistente: Conserva el 5<br/>(Restaurado desde savedInstanceState)"]
+    end
+
+    B1 --> ROT
+    B2 --> ROT
+    ROT --> D1
+    R3 --> RES1
+    R3 --> RES2
 ```
 
 Al finalizar este codelab, serás capaz de:

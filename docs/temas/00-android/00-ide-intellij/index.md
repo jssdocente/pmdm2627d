@@ -358,6 +358,10 @@ Si tu ordenador tiene recursos de memoria limitados, utilizar tu propio móvil e
 
 6. En IntelliJ IDEA, verás cómo tu modelo de teléfono aparece automáticamente en el selector de dispositivos de la barra superior.
 
+!!! tip "Puesta en Práctica: Creación de tu Primer Proyecto Android en IntelliJ IDEA"
+    Una vez configurado el IDE, el SDK y el dispositivo de pruebas, consulta la guía paso a paso para crear tu primer proyecto nativo con Jetpack Compose (sin KMP) en el apartado:  
+    👉 **[UT2: 2.1 Primeros pasos y Creación del Proyecto en IntelliJ IDEA](../../02/2.1-primeros-pasos.md#2-creacion-del-primer-proyecto-android-con-jetpack-compose-en-intellij-idea)**.
+
 ---
 
 ## 9. Resolución de Problemas Frecuentes ("Gotchas")

@@ -69,8 +69,8 @@ En este bloque dejamos atrás las tecnologías imperativas antiguas (archivos XM
 
 ### Contenidos del Bloque
 
-1. **[2.1 Primeros pasos y Proyecto de Laboratorio (`pmdm-lab-ut02`)](./2.1-primeros-pasos.md):**  
-   Configuración de **IntelliJ IDEA** (ver [guía de configuración para desarrollo móvil](../00-android/00-ide-intellij/index.md)), anatomía de un proyecto moderno con Kotlin DSL (`build.gradle.kts` y `libs.versions.toml`), el archivo `AndroidManifest.xml` y la puesta en marcha de nuestro proyecto unificado de aula.
+1. **[2.1 Primeros pasos y Creación del Proyecto en IntelliJ IDEA (`pmdm-lab-ut02`)](./2.1-primeros-pasos.md):**  
+   Creación guiada paso a paso de un proyecto Android nativo con **Jetpack Compose en IntelliJ IDEA** (justificación pedagógica de por qué Android nativo puro sin KMP todavía), selección de plantillas modernas (`Empty Activity` con Compose frente al XML obsoleto), configuración de Gradle con Kotlin DSL y catálogo de versiones (`libs.versions.toml`), verificación de componibles, ejecución inicial y arquitectura de paquetes de aula.
 
 2. **[2.2 Ciclo de vida de una aplicación Android](./2.2-ciclo-vida-app.md):**  
    Análisis de `ComponentActivity`, estados del ciclo de vida (`onCreate`, `onStart`, `onResume`, etc.), inspección con `Logcat` y cómo interactúa el ciclo de vida con Compose ante rotaciones de pantalla (`remember` vs `rememberSaveable`).

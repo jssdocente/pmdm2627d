@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "pmdm-lab-ut02"
+rootProject.name = "pmdm-lab-ut02 (course-doc)"
 include(":app")
