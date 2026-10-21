@@ -42,6 +42,7 @@ nav:
               - "6. Proyecto Final": temas/00-android/00-kotlin/ejercicios/06-proyecto-integrador.md
           - "Testing de Retos (src/test)":
               - "Fundamentos de Testing y Gradle": temas/00-android/00-kotlin/testing/index.md
+              - "Guía Modelo: Examen Resuelto": temas/00-android/00-kotlin/testing/00-guia-simulacro-modelo.md
               - "1. Test Combate RPG": temas/00-android/00-kotlin/testing/01-test-combate-rpg.md
               - "2. Test Ahorcado con TDD": temas/00-android/00-kotlin/testing/02-test-ahorcado-tdd.md
               - "3. Test Wordle con TDD": temas/00-android/00-kotlin/testing/03-test-wordle-dominio.md
