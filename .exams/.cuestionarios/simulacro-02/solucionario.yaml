@@ -1,0 +1,55 @@
+# ==============================================================================
+# SOLUCIONARIO OFICIAL Y CONFIGURACIÓN DE CORRECCIÓN
+# Cuestionario: simulacro-02 (Kotlin)
+# Módulo: Programación Multimedia y Dispositivos Móviles (PMDM) - 2º DAM
+# ==============================================================================
+
+cuestionario:
+  titulo: "Evaluación Tipo Test: Kotlin"
+  total_preguntas: 40
+  nota_maxima: 10.0
+  acierto: 1.0           # Puntos por acierto
+  fallo: 0.33           # Penalización por error (3 errores restan 1 acierto)
+  blanco: 0.0          # Pregunta sin responder no penaliza
+
+soluciones:
+  01: "B"
+  02: "C"
+  03: "A"
+  04: "B"
+  05: "D"
+  06: "B"
+  07: "A"
+  08: "C"
+  09: "B"
+  10: "B"
+  11: "A"
+  12: "C"
+  13: "B"
+  14: "C"
+  15: "B"
+  16: "A"
+  17: "B"
+  18: "A"
+  19: "C"
+  20: "B"
+  21: "D"
+  22: "B"
+  23: "A"
+  24: "C"
+  25: "B"
+  26: "A"
+  27: "C"
+  28: "B"
+  29: "A"
+  30: "C"
+  31: "B"
+  32: "D"
+  33: "A"
+  34: "B"
+  35: "C"
+  36: "A"
+  37: "B"
+  38: "C"
+  39: "B"
+  40: "A"
