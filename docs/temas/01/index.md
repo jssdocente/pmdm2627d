@@ -49,7 +49,7 @@ La diversidad de dispositivos en el mercado Android es inmensa:
 
 - **Pantallas y Densidades:** Dispositivos que van desde 4 pulgadas hasta pantallas plegables de 8 pulgadas, tablets y pantallas de vehículos, con diferentes densidades de píxeles (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`) y relaciones de aspecto variadas (16:9, 19.5:9, 21:9).
 - **Variedad de Fabricantes (Capas de Personalización):** Samsung (One UI), Xiaomi (HyperOS), Google (Pixel UI), etc., cada uno con configuraciones de ahorro de batería agresivas y modificaciones sobre el comportamiento estándar de Android AOSP.
-- **Versiones de Android en el Mercado:** Conviven dispositivos con versiones que van desde Android 10 hasta Android 16. La aplicación debe fijar una versión mínima (`minSdk`) y verificar capacidades en tiempo de ejecución.
+- **Versiones de Android en el Mercado:** Conviven dispositivos con versiones que van desde Android 10 hasta Android 17. La aplicación debe fijar una versión mínima (`minSdk`) y verificar capacidades en tiempo de ejecución.
 
 ---
 
@@ -847,17 +847,39 @@ adb start-server
 
 ### 8.3. Evolución de Versiones y Niveles de API de Android
 
-| Versión de Android | Nombre Clave (Postre) | Nivel de API | Año de Lanzamiento | Hito Tecnológico Destacado |
-| :---: | :---: | :---: | :---: | :--- |
-| **Android 8.0 / 8.1** | Oreo | 26 / 27 | 2017 | Project Treble (modularización del SO) y límites a servicios en background. |
-| **Android 9.0** | Pie | 28 | 2018 | Soporte para navegación por gestos y restricciones a la cámara en segundo plano. |
-| **Android 10** | Quince Tart *(Fin de nombres públicos de postres)* | 29 | 2019 | Almacenamiento aislado (*Scoped Storage*) y soporte oficial para dispositivos plegables. |
-| **Android 11** | Red Velvet Cake | 30 | 2020 | Permisos de un solo uso y burbujas de conversación nativas. |
-| **Android 12 / 12L** | Snow Cone | 31 / 32 | 2021 | Rediseño radical **Material You (Material 3)** y Privacy Dashboard. |
-| **Android 13** | Tiramisu | 33 | 2022 | Permiso obligatorio de notificaciones (`POST_NOTIFICATIONS`) y selector de fotos seguro. |
-| **Android 14** | Upside Down Cake | 34 | 2023 | Mayor restricción a alarmas exactas y soporte avanzado para pantallas ultra HDR. |
-| **Android 15** | Vanilla Ice Cream | 35 | 2024 | Espacio privado (*Private Space*), mejoras en rendimiento de renderizado y edge-to-edge forzado. |
-| **Android 16** | Baklava | 36 | 2025 | Integración avanzada de modelos de IA locales (Gemini Nano) en el runtime del sistema. |
+En el desarrollo profesional de Android conviven simultáneamente tres formas de identificar el sistema operativo: la **versión comercial** orientada al usuario final (ej. Android 15), el **nombre en clave interno** derivado de la histórica tradición de postres de Google (ej. *Vanilla Ice Cream* o *Baklava*), y el **Nivel de API (*API Level*)**, un número entero correlativo que identifica de forma unívoca la versión del framework contra la que compilamos.
+
+Para el desarrollador móvil, el dato verdaderamente vinculante es el **Nivel de API**, ya que es el valor numérico con el que configuramos `minSdk`, `compileSdk` y `targetSdk` en los archivos de Gradle (`build.gradle.kts`) y el que seleccionamos en el **SDK Manager** de nuestro entorno de desarrollo.
+
+!!! note "Cambio de Ciclo Histórico a partir de Android 16"
+
+    A partir de **Android 16**, Google introdujo dos cambios de ingeniería trascendentales:
+    
+    1. **Ruptura de la convención alfabética tradicional:** Tras la "V" de Android 15 (*Vanilla Ice Cream*), la siguiente letra debía ser la "W". Sin embargo, Google adoptó el nombre en clave **Baklava** ("B") debido a la transición interna hacia el modelo unificado de desarrollo troncal (*Trunk-based development*).
+    
+    2. **Nuevo calendario de lanzamientos anuales:** Para sincronizar mejor las actualizaciones de software con el lanzamiento comercial de nuevos terminales por parte de los fabricantes asociados, la versión principal del SDK se publica en el **segundo trimestre (Q2)** de cada año (en lugar del tercer o cuarto trimestre habitual), complementándose con una actualización menor del SDK (minor SDK update) en el **cuarto trimestre (Q4)** orientada a nuevas APIs sin cambios de comportamiento disruptivos.
+
+| Versión Comercial | Nombre Clave (Postre) | Nivel de API | Año | Relevancia en Desarrollo (2026/2027) | Hitos Tecnológicos y de Privacidad |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **Android 7.0 / 7.1** | Nougat | 24 / 25 | 2016 | Referencia histórica legacy | Modo multi-ventana nativo, compilador híbrido inicial de ART y soporte inicial de Java 8 desugaring. |
+| **Android 8.0 / 8.1** | Oreo | 26 / 27 | 2017 | **Suelo habitual (`minSdk`)** recomendado | **Project Treble** (modularización del SO), canales de notificación obligatorios y soporte nativo de `java.time` sin desugaring. Cubre >95% del parque activo. |
+| **Android 9.0** | Pie | 28 | 2018 | Legacy activo | Navegación por gestos en pantalla y bloqueo de acceso a cámara/micrófono en segundo plano. |
+| **Android 10** | Quince Tart *(Fin nombres públicos)* | 29 | 2019 | Transición | Fin de nombres de postres comerciales. **Scoped Storage** (almacenamiento aislado obligatorio), modo oscuro nativo y soporte para dispositivos plegables. |
+| **Android 11** | Red Velvet Cake | 30 | 2020 | Dispositivos en uso | Permisos de un solo uso, burbujas flotantes de conversación y depuración inalámbrica nativa con ADB. |
+| **Android 12 / 12L** | Snow Cone | 31 / 32 | 2021 | Dispositivos en uso | Rediseño visual radical **Material You (Material 3)** con paletas dinámicas, Privacy Dashboard y APIs para tablets/plegables (12L). |
+| **Android 13** | Tiramisu | 33 | 2022 | Soporte generalizado | Permiso explícito en runtime para notificaciones (`POST_NOTIFICATIONS`), selector de fotos seguro (Photo Picker) e idiomas por app. |
+| **Android 14** | Upside Down Cake | 34 | 2023 | **Soporte extendido de Google Play** | Soporte para gráficos Ultra HDR, mayor rigor en alarmas exactas, acceso parcial a fotos/vídeos y bloqueo de instalación de apps legacy con targetSdk < 23. |
+| **Android 15** | Vanilla Ice Cream | 35 | 2024 | **Plataforma base madura** | **Edge-to-Edge forzado por defecto** (el contenido fluye bajo las barras del sistema), **Private Space** (espacio privado cifrado con biometría), optimizaciones de renderizado gráfico y soporte mandatario de páginas de memoria de 16 KB. |
+| **Android 16** | Baklava | 36 | 2025 | **Estándar actual exigido en Google Play (`targetSdk 36`)** | Adelanto del lanzamiento a Q2. Integración nativa de **Gemini Nano** a nivel de sistema para IA local multimodal, selector de fotos embebido en la propia app y APIs de Health Connect con registros médicos FHIR. |
+| **Android 17** | Cinnamon Bun | 37 | 2026 | **Última versión disponible (Lanzamiento Q2 2026)** | **Redimensionamiento adaptativo obligatorio** en pantallas grandes (≥ 600 dp, adiós al opt-out), **protección contra robo de códigos OTP** vía SMS (retención de broadcast `SMS_RECEIVED_ACTION`), Contact Picker granular con privacidad y cola `MessageQueue` *lock-free* en ART para eliminar tirones visuales (*jank*). |
+
+!!! tip "Conexión Práctica: ¿Cómo se refleja esta tabla en IntelliJ IDEA?"
+
+    Cuando abras el entorno de trabajo configurado para el módulo, observarás que esta clasificación teórica se traslada directamente a las herramientas de desarrollo:
+
+    - **Instalación de plataformas en el SDK Manager:** Al acceder a `Settings` → `Languages & Frameworks` → **Android SDK**, la lista de componentes te mostrará estas versiones por su nivel de API (recomendado instalar **API 35** como plataforma base de trabajo). Consulta el tutorial paso a paso en [**Configuración del SDK en IntelliJ IDEA**](../00-android/00-ide-intellij/index.md#61-descargar-el-sdk-desde-intellij-idea).
+    - **Creación de Emuladores de Pruebas (AVD):** Al configurar un nuevo dispositivo virtual en el **Device Manager**, deberás elegir la imagen del sistema operativo según el nivel de API deseado (por ejemplo, una imagen de Android 15 / API 35 con servicios de Google Play). Puedes seguir los pasos en [**Creación de Emuladores AVD en IntelliJ IDEA**](../00-android/00-ide-intellij/index.md#81-creacion-de-un-emulador-virtual-avd-android-virtual-device).
+    - **Configuración de Gradle y Compatibilidad de Herramientas:** Para saber qué versión de Java (JDK), qué versión del plugin AGP y qué compilador de Kotlin debes combinar con tu `compileSdk`, consulta la [**Matriz de Compatibilidad en Android**](../00-android/00-tools/04-matriz-compatibilidad.md).
 
 ---
 

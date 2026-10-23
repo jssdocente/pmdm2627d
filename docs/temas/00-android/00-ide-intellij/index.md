@@ -171,7 +171,6 @@ graph TD
     subgraph Plugins Imprescindibles
         P1[Android Plugin] -->|Habilita| F1[SDK Manager + Device Manager + Emulador AVD]
         P2[Kotlin Multiplatform Mobile - KMP] -->|Habilita| F2[Plantillas de proyecto KMP + Ejecución en iOS/Android]
-        P3[Compose Multiplatform IDE Support] -->|Habilita| F3[Vistas previas interactivas @Preview en tiempo real]
     end
 ```
 
@@ -181,9 +180,7 @@ graph TD
 2. **Kotlin Multiplatform (KMP):**
 
    - Añade los asistentes para crear proyectos KMP compartidos entre Android e iOS, y permite lanzar y depurar la aplicación en simuladores de iPhone directamente desde IntelliJ (en macOS).
-3. **Compose Multiplatform IDE Support:**
 
-   - Permite visualizar las funciones `@Composable` mediante anotaciones `@Preview` directamente en un panel lateral dividido (*Split View*) sin necesidad de compilar y desplegar toda la app en el emulador.
 4. **Plugins de Productividad Docente Recomendados:**
 
    - **Rainbow Brackets:** Colorea cada par de llaves y paréntesis con un color diferente, facilitando la lectura de árboles anidados de Compose.
@@ -208,7 +205,10 @@ Para que IntelliJ IDEA pueda compilar proyectos de Android y ejecutar comandos d
     - **macOS:** `/Users/<TuUsuario>/Library/Android/sdk`
     - **Linux:** `/home/<TuUsuario>/Android/Sdk`
 
-4. En la pestaña **SDK Platforms**, selecciona la última versión estable (por ejemplo, **Android 15 - API 35**).
+4. En la pestaña **SDK Platforms**, selecciona la versión estable de compilación recomendada (por ejemplo, **Android 15 - API 35** o **Android 16 - API 36**).
+
+    !!! info "¿Dudas sobre Versiones Comerciales y Niveles de API?"
+        Si quieres comprender la correlación entre las versiones comerciales (Android 15, 16, 17), sus nombres clave de postres (*Vanilla Ice Cream*, *Baklava*, *Cinnamon Bun*) y los niveles numéricos de API requeridos para `compileSdk` y `targetSdk`, consulta la [**Tabla de Evolución de Versiones y Niveles de API de Android en UT1](../../01/index.md#83-evolucion-de-versiones-y-niveles-de-api-de-android).
 
 5. En la pestaña **SDK Tools**, asegúrate de marcar:
 
@@ -338,6 +338,7 @@ graph LR
 4. Selecciona la imagen del sistema operativo:
 
     - Descarga una imagen con **Google Play** para disponer de servicios de autenticación y mapas.
+    - Se recomienda elegir **Android 15 (API 35)** o **Android 14 (API 34)** como base de pruebas estándar (consulta las características de cada versión en la [**Tabla de Versiones y Niveles de API de la UT1**](../../01/index.md#83-evolucion-de-versiones-y-niveles-de-api-de-android)).
     - En equipos Intel/AMD, selecciona la pestaña **x86_64**.
     - En equipos Apple Silicon (Mac M1-M4), selecciona la pestaña **arm64-v8a**.
 

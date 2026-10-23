@@ -29,7 +29,7 @@ graph LR
     end
 
     subgraph CapaHerramientas[4. Herramientas de Desarrollo]
-        Tools["Gradle (./gradlew) + JDK 17 + ADB"]
+        Tools["Gradle (./gradlew) + SDKMAN / JDKs + ADB"]
     end
 
     Warp --> Shell
@@ -64,16 +64,74 @@ Sigue las instrucciones correspondientes al sistema operativo de tu equipo:
     ```
 
     ### Paso 2: Instalar herramientas base con Scoop
-    Añadimos el repositorio de Java e instalamos la versión moderna de PowerShell (`pwsh`), Git, el JDK 17 oficial y el motor de Starship:
+    Instalamos la versión moderna de PowerShell (`pwsh`), Git y el motor de Starship:
     ```powershell
-    # 1. Repositorio oficial de Java
-    scoop bucket add java
-
-    # 2. Instalación de herramientas
-    scoop install pwsh git temurin17-jdk starship
+    scoop install pwsh git starship
     ```
 
-    ### Paso 3: Instalar Warp Terminal y la tipografía Nerd Font
+    ### Paso 3: Instalar y Gestionar el JDK con SDKMAN! en PowerShell
+    Para no quedar atados a una única versión estática de Java y poder alternar con agilidad entre Java 17 y Java 21 según las necesidades de cada proyecto, gestionaremos los JDKs mediante **SDKMAN!**.
+
+    #### 1. Instalar SDKMAN! mediante el bucket de Scoop
+    En Windows PowerShell, agregamos el bucket comunitario de SDKMAN e instalamos el cliente:
+    ```powershell
+    # 1. Añadir el bucket de SDKMAN para Scoop
+    scoop bucket add palindrom615 https://github.com/palindrom615/scoop-bucket
+
+    # 2. Instalar el cliente SDKMAN
+    scoop install sdkman
+    ```
+
+    #### 2. Comandos esenciales para gestionar versiones de Java:
+
+    - **Listar versiones disponibles:**
+      ```powershell
+      sdk list java
+      ```
+      Muestra todos los proveedores certificados (Eclipse Temurin, Amazon Corretto, Azul Zulu, etc.) y sus identificadores exactos.
+
+    - **Instalar una versión concreta:**
+      Descargamos e instalamos la versión recomendada para el curso (Java 17 LTS de Eclipse Temurin):
+      ```powershell
+      sdk install java 17.0.12-tem
+      ```
+      *(Opcionalmente, puedes instalar también Java 21 LTS en paralelo: `sdk install java 21.0.4-tem`).*
+
+    - **Usar una versión específica SOLO en la terminal actual (`sdk use`):**
+      ```powershell
+      sdk use java 17.0.12-tem
+      ```
+      !!! info "Ámbito temporal de sesión (`sdk use`)"
+          Este comando altera las variables de entorno `JAVA_HOME` y `PATH` **únicamente dentro de la pestaña o ventana de terminal en la que lo ejecutas**. No altera el resto del ordenador ni otras pestañas abiertas. Es ideal cuando necesitas compilar puntualmente un proyecto que requiere una versión de Java distinta sin tocar la configuración global de tu equipo.
+
+    - **Fijar una versión por defecto para TODO el sistema (`sdk default`):**
+      ```powershell
+      sdk default java 17.0.12-tem
+      ```
+      !!! tip "Ámbito global permanente (`sdk default`)"
+          Este comando establece Java 17 como la versión predeterminada persistente. Cualquier nueva terminal que abras, cualquier script en segundo plano y los entornos que lean el `PATH` del usuario utilizarán esta versión automáticamente.
+
+    - **Comprobar la versión activa en uso:**
+      ```powershell
+      sdk current java
+      java -version
+      ```
+
+    ??? tip "Alternativa nativa con el bucket oficial de Java en Scoop"
+        Si por directivas de red de tu centro no puedes añadir buckets externos, puedes utilizar la gestión nativa de Scoop:
+        ```powershell
+        # Añadir bucket oficial de Java
+        scoop bucket add java
+
+        # Instalar versiones deseadas
+        scoop install temurin17-jdk
+        scoop install temurin21-jdk
+
+        # Fijar la versión activa a nivel de sistema:
+        scoop reset temurin17-jdk
+        ```
+
+    ### Paso 4: Instalar Warp Terminal y la tipografía Nerd Font
     Para que los iconos del prompt (taza de Java, ramas de Git, carpetas) se muestren correctamente, necesitamos una fuente con glifos extendidos:
     ```powershell
     # Instalar Warp Terminal
@@ -84,7 +142,7 @@ Sigue las instrucciones correspondientes al sistema operativo de tu equipo:
     ```
     *(Si winget experimenta problemas de red en tu equipo, puedes descargar directamente el instalador desde [warp.dev](https://www.warp.dev) y la fuente desde [nerdfonts.com](https://www.nerdfonts.com)).*
 
-    ### Paso 4: Configurar el perfil de PowerShell 7 (`$PROFILE`)
+    ### Paso 5: Configurar el perfil de PowerShell 7 (`$PROFILE`)
     El archivo de perfil se ejecuta al abrir cada sesión. Vamos a inicializar Starship y registrar atajos de desarrollo:
     
     1. Abre o crea el archivo de perfil:
@@ -109,7 +167,7 @@ Sigue las instrucciones correspondientes al sistema operativo de tu equipo:
        function adb-restart { adb kill-server; adb start-server }
        ```
 
-    ### Paso 5: Ajustar Warp Terminal
+    ### Paso 6: Ajustar Warp Terminal
     Abre Warp y accede a **Settings** (`Ctrl + ,`):
 
     1. **Features ➔ Startup shell:** Selecciona **Custom** e introduce la ruta directa al ejecutable de Scoop:
@@ -144,7 +202,7 @@ Sigue las instrucciones correspondientes al sistema operativo de tu equipo:
     ```
 
     ### Paso 3: Instalar y gestionar JDK con SDKMAN!
-    En entornos Unix, [SDKMAN!](https://sdkman.io) es la forma estándar de instalar y alternar versiones del JDK:
+    En entornos Unix, [SDKMAN!](https://sdkman.io) es la herramienta estándar de la industria para instalar y alternar versiones del JDK:
     ```bash
     # 1. Instalar SDKMAN
     curl -s "https://get.sdkman.io" | bash
@@ -153,6 +211,26 @@ Sigue las instrucciones correspondientes al sistema operativo de tu equipo:
     # 2. Instalar Java 17 LTS (Eclipse Temurin)
     sdk install java 17.0.12-tem
     ```
+
+    #### Comandos de control de versiones con SDKMAN!:
+
+    - **Usar temporalmente en la terminal activa (`sdk use`):**
+      ```bash
+      sdk use java 17.0.12-tem
+      ```
+      Modifica `JAVA_HOME` y el `PATH` únicamente para la sesión o pestaña actual.
+
+    - **Fijar por defecto para todo el sistema (`sdk default`):**
+      ```bash
+      sdk default java 17.0.12-tem
+      ```
+      Establece la versión permanente para cualquier nueva sesión de terminal y para el sistema.
+
+    - **Comprobar la versión activa:**
+      ```bash
+      sdk current java
+      java -version
+      ```
 
     ### Paso 4: Configurar el perfil de Zsh (`~/.zshrc`)
     Edita tu archivo de configuración personal:
