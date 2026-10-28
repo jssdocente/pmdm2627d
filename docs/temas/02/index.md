@@ -79,7 +79,10 @@ En este bloque dejamos atrás las tecnologías imperativas antiguas (archivos XM
    Punto de entrada `setContent { ... }`, funciones `@Composable`, separación arquitectónica entre componente contenedor (*Stateful*) y componente de contenido (*Stateless*), y uso profesional de `@Preview` con datos mock.
 
 4. **[2.4 Laboratorio de Prácticas y Codelabs](./2.4-laboratorio-retos.md):**  
-   Proyecto unificado de laboratorio (`pmdm-lab-ut02`) con 5 Codelabs guiados paso a paso (Ciclo de Vida/Logcat, Contador Incremental, Tarjeta y Previews, Lanzador de Dados, Semáforo Inteligente) y banco de Retos Autónomos para evaluación (*Lemonade App* y *Marcador de Baloncesto*).
+   Proyecto unificado de laboratorio (`pmdm-lab-ut02`) con 5 Codelabs guiados paso a paso (Ciclo de Vida/Logcat, Contador Incremental, Tarjeta y Previews, Lanzador de Dados, Semáforo Inteligente) y banco de Retos Autónomos para evaluación:
+
+   - **[Reto Autónomo 1: Lemonade App](./2.4-laboratorio-retos.md#reto-autonomo-1-el-juego-de-la-limonada-lemonade-app-):** Máquina de 4 estados interactiva (árbol, exprimido de limón, vaso lleno y vaso vacío).
+   - **[Reto Autónomo 2: Marcador de Baloncesto](./2.4-laboratorio-retos.md#reto-autonomo-2-marcador-deportivo-de-baloncesto-score-tracker-):** Marcadores simultáneos de equipos con anotaciones (+3, +2, +1) y detección reactiva de líder.
 
 ---
 

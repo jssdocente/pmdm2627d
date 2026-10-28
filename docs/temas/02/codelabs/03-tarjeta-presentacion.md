@@ -10,6 +10,24 @@ Además, aplicarás uno de los principios arquitectónicos más importantes del 
 
 Construirás una **Tarjeta de Presentación de Desarrollador** interactiva. La tarjeta muestra información personal del perfil (nombre, especialidad técnica, insignia con número de proyectos completados) y dos botones de acción: uno para incrementar el número de proyectos y otro para reiniciar la cuenta.
 
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; margin: 1.8rem 0;" markdown="1">
+
+<figure style="margin: 0; text-align: center; max-width: 260px;" markdown="1">
+
+![Tarjeta de Presentación - Perfil Inicial](./images/Lab3.1.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 250px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 1:</strong> Perfil inicial (Ada Lovelace, 0 proyectos).</figcaption>
+</figure>
+
+<figure style="margin: 0; text-align: center; max-width: 260px;" markdown="1">
+
+![Tarjeta de Presentación con Datos Avanzados](./images/Lab3.2.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 250px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 2:</strong> Vista previa con datos avanzados (Alan Turing, 12 proyectos).</figcaption>
+</figure>
+
+</div>
+
 ```mermaid
 graph TD
     Screen["TarjetaPresentacionScreen (Stateful)"] -->|Gestiona proyectos con rememberSaveable| Content["TarjetaPresentacionContent (Stateless)"]

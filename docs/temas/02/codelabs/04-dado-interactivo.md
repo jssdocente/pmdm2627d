@@ -16,6 +16,24 @@ Construirás una aplicación interactiva que simula una tirada de dado de 6 cara
 4. El usuario dispone de un botón secundario para reiniciar el contador a cero.
 5. Todos los valores (la cara del dado y las tiradas acumuladas) permanecen intactos si el usuario rota la pantalla del dispositivo.
 
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; margin: 1.8rem 0;" markdown="1">
+
+<figure style="margin: 0; text-align: center; max-width: 260px;" markdown="1">
+
+![Lanzador de dados - Estado inicial](./images/Lab4.1.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 250px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 1:</strong> Estado inicial (0 tiradas realizadas).</figcaption>
+</figure>
+
+<figure style="margin: 0; text-align: center; max-width: 260px;" markdown="1">
+
+![Lanzador de dados tras tirada](./images/Lab4.2.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 250px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 2:</strong> Estado interactivo tras varias tiradas (resultado 6, 15 tiradas acumuladas).</figcaption>
+</figure>
+
+</div>
+
 ```mermaid
 graph TD
     User[Usuario pulsa 'Lanzar Dado'] --> Event[Evento onClick]

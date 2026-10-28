@@ -15,6 +15,24 @@ Construirás una pantalla de laboratorio interactiva (`CicloVidaScreen`) que con
 
 Paralelamente, instrumentarás los métodos del ciclo de vida de tu `MainActivity` con trazas de `Log.d(...)`. Al rotar el emulador o dispositivo de vertical a horizontal, observarás en **Logcat** la destrucción y recreación de la Activity y verificarás en la interfaz cómo el contador volátil se reinicia a cero mientras que el contador persistente mantiene intacto su valor.
 
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; margin: 1.8rem 0;" markdown="1">
+
+<figure style="margin: 0; text-align: center; max-width: 260px;" markdown="1">
+
+![Estado inicial: Ambos contadores a cero](./images/Lab1.1.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 250px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 1:</strong> Estado inicial con ambos contadores en 0.</figcaption>
+</figure>
+
+<figure style="margin: 0; text-align: center; max-width: 260px;" markdown="1">
+
+![Tras rotación: El contador persistente mantiene su valor](./images/Lab1.2.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 250px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 2:</strong> Tras el giro, el persistente conserva su valor (14) y el volátil se reinicia.</figcaption>
+</figure>
+
+</div>
+
 ```mermaid
 graph TD
     subgraph Fase1 ["1. Estado Previo al Giro"]

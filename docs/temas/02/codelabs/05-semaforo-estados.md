@@ -18,6 +18,31 @@ Construirás una interfaz interactiva que simula un semáforo de tráfico urbano
 5. **Modo Noche / Precaución:** Un conmutador que activa la fase especial de ámbar fijo.
 6. **Resistencia a giros:** La fase activa se almacena con `rememberSaveable`, manteniendo el estado intacto al rotar el dispositivo.
 
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 1.2rem; flex-wrap: wrap; margin: 1.8rem 0;" markdown="1">
+
+<figure style="margin: 0; text-align: center; max-width: 240px;" markdown="1">
+
+![Semáforo - Fase Roja: ¡Alto!](./images/Lab5.1.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 220px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 1:</strong> Fase Roja (detención obligatoria).</figcaption>
+</figure>
+
+<figure style="margin: 0; text-align: center; max-width: 240px;" markdown="1">
+
+![Semáforo - Fase Verde: Vía Libre](./images/Lab5.2.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 220px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 2:</strong> Fase Verde (paso permitido).</figcaption>
+</figure>
+
+<figure style="margin: 0; text-align: center; max-width: 240px;" markdown="1">
+
+![Semáforo - Fase Ámbar: Precaución](./images/Lab5.3.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 220px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 3:</strong> Fase Ámbar (precaución y transición).</figcaption>
+</figure>
+
+</div>
+
 ```mermaid
 stateDiagram-v2
     [*] --> ROJO: Inicio / Reset

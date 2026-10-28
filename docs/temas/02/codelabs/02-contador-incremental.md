@@ -20,6 +20,24 @@ La pantalla incluye:
   - Botón **"Reiniciar"** para restablecer la cuenta a cero.
 - Botón de regreso al catálogo del laboratorio.
 
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; margin: 1.8rem 0;" markdown="1">
+
+<figure style="margin: 0; text-align: center; max-width: 260px;" markdown="1">
+
+![Estado inicial del contador](./images/Lab2.1.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 250px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 1:</strong> Estado inicial (conteo en 0, botón -1 deshabilitado).</figcaption>
+</figure>
+
+<figure style="margin: 0; text-align: center; max-width: 260px;" markdown="1">
+
+![Contador tras pulsar incrementar](./images/Lab2.2.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 250px;" }
+
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 2:</strong> Estado interactivo tras pulsar incrementar (15 clics).</figcaption>
+</figure>
+
+</div>
+
 ```mermaid
 graph LR
     A["var cuenta by rememberSaveable { mutableIntStateOf(0) }"] -->|Pinta valor inicial| B["Text: 'Cuenta: 0'"]
