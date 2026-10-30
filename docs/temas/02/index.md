@@ -22,7 +22,8 @@ graph TD
     subgraph B2 ["Bloque II: Introducción a Android y Compose"]
         A1["2.1 Primeros Pasos y Proyecto pmdm-lab-ut02"] --> A2["2.2 Ciclo de Vida Moderno y Estados"]
         A2 --> A3["2.3 Primera App y Metodología @Preview"]
-        A3 --> A4["2.4 Laboratorio de Retos UT02"]
+        A3 --> A31["2.3.1 Maquetación: Column, Row, Box y Modifier"]
+        A31 --> A4["2.4 Laboratorio de Retos UT02"]
     end
 
     B1 --> B2
@@ -77,6 +78,8 @@ En este bloque dejamos atrás las tecnologías imperativas antiguas (archivos XM
 
 3. **[2.3 Primera aplicación y Metodología @Preview en Compose](./2.3-primera-app.md):**  
    Punto de entrada `setContent { ... }`, funciones `@Composable`, separación arquitectónica entre componente contenedor (*Stateful*) y componente de contenido (*Stateless*), y uso profesional de `@Preview` con datos mock.
+
+    - **[2.3.1 Maquetación básica: `Column`, `Row`, `Box` y `Modifier`](./2.3.1-layouts-modificadores.md):** Ejes principal y cruzado, `Arrangement` y `Alignment`, `weight` y `Spacer`, el orden de los modificadores y dos playgrounds interactivos para experimentar con alineaciones y cadenas de modificadores.
 
 4. **[2.4 Laboratorio de Prácticas y Codelabs](./2.4-laboratorio-retos.md):**  
    Proyecto unificado de laboratorio (`pmdm-lab-ut02`) con 5 Codelabs guiados paso a paso (Ciclo de Vida/Logcat, Contador Incremental, Tarjeta y Previews, Lanzador de Dados, Semáforo Inteligente) y banco de Retos Autónomos para evaluación:

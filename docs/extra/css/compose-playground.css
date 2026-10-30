@@ -1,0 +1,393 @@
+/* Compose Playground: estilos (se adapta a los modos claro y oscuro de Material) */
+
+.md-typeset .cpg {
+  --cpg-border: var(--md-default-fg-color--lightest);
+  --cpg-muted: var(--md-default-fg-color--light);
+  --cpg-surface: var(--md-code-bg-color);
+  --cpg-accent: var(--md-accent-fg-color);
+  --cpg-primary: var(--md-primary-fg-color);
+  margin: 1.5em 0;
+  border: 1px solid var(--cpg-border);
+  border-radius: 0.6rem;
+  overflow: hidden;
+  font-size: 0.72rem;
+}
+
+.md-typeset .cpg-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.8rem;
+  align-items: baseline;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--cpg-border);
+  background: var(--cpg-surface);
+}
+
+.md-typeset .cpg-title span {
+  color: var(--cpg-muted);
+}
+
+.md-typeset .cpg-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media screen and (min-width: 60em) {
+  .md-typeset .cpg-body {
+    grid-template-columns: minmax(16rem, 2fr) minmax(0, 3fr);
+  }
+  .md-typeset .cpg-panel {
+    border-right: 1px solid var(--cpg-border);
+  }
+}
+
+.md-typeset .cpg-panel,
+.md-typeset .cpg-output {
+  padding: 0.8rem 0.9rem;
+  min-width: 0;
+}
+
+/* ---------- controles */
+
+.md-typeset .cpg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.7rem;
+}
+
+.md-typeset .cpg-field label,
+.md-typeset .cpg-label,
+.md-typeset .cpg-sub {
+  font-weight: 700;
+  color: var(--cpg-muted);
+  font-size: 0.65rem;
+  margin: 0;
+}
+
+.md-typeset .cpg-sub {
+  margin: 0.4rem 0 0.4rem;
+}
+
+.md-typeset .cpg select,
+.md-typeset .cpg button {
+  font: inherit;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--cpg-border);
+  border-radius: 0.35rem;
+  padding: 0.25rem 0.45rem;
+  cursor: pointer;
+}
+
+.md-typeset .cpg select {
+  max-width: 100%;
+}
+
+.md-typeset .cpg button:hover:not(:disabled),
+.md-typeset .cpg select:hover {
+  border-color: var(--cpg-accent);
+}
+
+.md-typeset .cpg button:focus-visible,
+.md-typeset .cpg select:focus-visible {
+  outline: 2px solid var(--cpg-accent);
+  outline-offset: 1px;
+}
+
+.md-typeset .cpg button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.md-typeset .cpg-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.md-typeset .cpg-seg button.cpg-on {
+  background: var(--cpg-primary);
+  border-color: var(--cpg-primary);
+  color: var(--md-primary-bg-color);
+}
+
+.md-typeset .cpg-children {
+  border-top: 1px dashed var(--cpg-border);
+  padding-top: 0.4rem;
+}
+
+.md-typeset .cpg-child-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.md-typeset .cpg-child-row .cpg-field {
+  margin-bottom: 0.3rem;
+  flex: 1 1 8rem;
+}
+
+.md-typeset .cpg-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-bottom: 0.35rem;
+  border-radius: 0.35rem;
+  color: #1d1b20;
+  font-weight: 700;
+  flex: none;
+}
+
+/* ---------- escenario de layouts */
+
+.md-typeset .cpg-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 16rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--cpg-surface);
+  background-image: radial-gradient(var(--cpg-border) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.md-typeset .cpg-frame {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  height: 300px;
+  border: 2px solid var(--cpg-muted);
+  border-radius: 1rem;
+  padding: 10px;
+  box-sizing: border-box;
+  background: var(--md-default-bg-color);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.md-typeset .cpg-container {
+  position: relative;
+  display: flex;
+  outline: 2px dashed var(--cpg-accent);
+  outline-offset: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.md-typeset .cpg-container.cpg-fill {
+  width: 100%;
+  height: 100%;
+}
+
+.md-typeset .cpg-c-column {
+  flex-direction: column;
+}
+
+.md-typeset .cpg-c-row {
+  flex-direction: row;
+}
+
+.md-typeset .cpg-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: 0.3rem;
+  color: #1d1b20;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+/* En un Box los hijos ocupan la misma celda: se superponen */
+.md-typeset .cpg-c-box {
+  display: grid;
+}
+
+.md-typeset .cpg-c-box > .cpg-box {
+  grid-area: 1 / 1;
+  opacity: 0.95;
+}
+
+.md-typeset .cpg-container-label {
+  position: absolute;
+  top: -1.15rem;
+  left: 0;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--cpg-accent);
+  pointer-events: none;
+}
+
+.md-typeset .cpg-hint {
+  min-height: 2.6em;
+  margin: 0.6rem 0;
+  color: var(--cpg-muted);
+}
+
+/* ---------- código generado */
+
+.md-typeset .cpg-code {
+  position: relative;
+}
+
+.md-typeset .cpg-code pre {
+  margin: 0;
+}
+
+.md-typeset .cpg-code code {
+  display: block;
+  padding: 0.7rem 0.9rem;
+  overflow-x: auto;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.md-typeset .cpg-copy {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  font-size: 0.6rem !important;
+  z-index: 1;
+}
+
+.md-typeset .cpg-tk-str { color: var(--md-code-hl-string-color); }
+.md-typeset .cpg-tk-num { color: var(--md-code-hl-number-color); }
+.md-typeset .cpg-tk-com { color: var(--md-code-hl-comment-color); }
+.md-typeset .cpg-tk-type { color: var(--md-code-hl-constant-color); font-weight: 600; }
+.md-typeset .cpg-tk-fn { color: var(--md-code-hl-function-color); }
+.md-typeset .cpg-tk-method { color: var(--md-code-hl-keyword-color); }
+
+/* ---------- playground de modificadores */
+
+.md-typeset .cpg-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.md-typeset .cpg-chain {
+  margin: 0 0 0.6rem 0 !important;
+  padding: 0;
+  list-style: none;
+  counter-reset: cpg;
+}
+
+.md-typeset .cpg-chain li {
+  counter-increment: cpg;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.35rem 0 !important;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--cpg-border);
+  border-radius: 0.4rem;
+  background: var(--md-default-bg-color);
+}
+
+.md-typeset .cpg-chain li::before {
+  content: counter(cpg);
+  font-weight: 700;
+  color: var(--cpg-muted);
+  min-width: 1rem;
+}
+
+.md-typeset .cpg-chain li.cpg-empty::before {
+  content: none;
+}
+
+.md-typeset .cpg-params {
+  display: flex;
+  gap: 0.3rem;
+  flex: 1 1 auto;
+}
+
+.md-typeset .cpg-actions {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.md-typeset .cpg-actions button {
+  padding: 0.1rem 0.4rem;
+}
+
+.md-typeset .cpg-adder {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.md-typeset .cpg-stage-mod {
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.md-typeset .cpg-bounds {
+  display: inline-flex;
+  outline: 1px dashed var(--cpg-muted);
+  outline-offset: 0;
+}
+
+/* Cada modificador es una capa que envuelve a la siguiente */
+.md-typeset .cpg-mod {
+  display: flex;
+  box-sizing: border-box;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.md-typeset .cpg-mod > * {
+  flex: 1 1 auto;
+}
+
+.md-typeset .cpg-mod.cpg-has-bg {
+  color: #1d1b20;
+}
+
+.md-typeset .cpg-mod-clickable {
+  cursor: pointer;
+}
+
+.md-typeset .cpg-mod-clickable::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.md-typeset .cpg-mod-clickable:hover::after {
+  opacity: 0.12;
+}
+
+.md-typeset .cpg-mod-clickable:active::after {
+  opacity: 0.25;
+}
+
+.md-typeset .cpg-text {
+  display: block;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.md-typeset .cpg-legend {
+  margin: 0;
+  color: var(--cpg-muted);
+  font-size: 0.62rem;
+  text-align: center;
+}
