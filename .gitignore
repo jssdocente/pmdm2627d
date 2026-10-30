@@ -9,3 +9,7 @@ _bck/
 **/.gradle/
 **/build/
 **/.kotlin/
+
+# Salida de compilación de IntelliJ en los proyectos de exámenes
+.exams/**/bin/
+!.exams/.cuestionarios/bin/
