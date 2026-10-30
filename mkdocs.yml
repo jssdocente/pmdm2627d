@@ -82,6 +82,10 @@ nav:
   #    - "Requisitos": temas/proyectos/proyecto-intermodular/requisitos-pmdm.md
   - "UT2 - Lenguaje Kotlin e Introducción a Android":
       - "Inicio": temas/02/index.md
+      - "Guía de clases":
+          - "Plan de sesiones": temas/02/sesiones/index.md
+          - "Sesión 2.01 · Primer contacto con Compose": temas/02/sesiones/s01-primer-contacto-compose.md
+          - "Sesión 2.02 · Estado y state hoisting": temas/02/sesiones/s02-estado-state-hoisting.md
       - "2.1. Primeros pasos y Creación del Proyecto": temas/02/2.1-primeros-pasos.md
       - "2.2. Ciclo de Vida en Android": temas/02/2.2-ciclo-vida-app.md
       - "2.3. Primera App y Previews en Compose": temas/02/2.3-primera-app.md

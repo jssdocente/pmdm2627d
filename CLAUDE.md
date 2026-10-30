@@ -8,7 +8,7 @@ Las reglas de rol, tono pedagógico, extensiones de MkDocs y, sobre todo, el **f
 
 @.agents/AGENTS.md
 
-Ampliaciones bajo demanda: `.agents/context/pedagogical_styleguide.md` (estructura de lección, convenciones Kotlin/Compose/Unity), `.agents/context/mkdocs_stack.md` (sintaxis de admonitions, tabs, anotaciones de código), `.agents/context/pmdm_curriculum.md` (temario y proyecto GameVault).
+Ampliaciones bajo demanda: `.agents/context/pedagogical_styleguide.md` (estructura de lección, convenciones Kotlin/Compose/Unity), `.agents/context/mkdocs_stack.md` (sintaxis de admonitions, tabs, anotaciones de código), `.agents/context/pmdm_curriculum.md` (temario y proyecto GameVault), `.agents/context/session_guide.md` (plantilla de las guías de sesión, una por clase de 2 h / 1:30, en `docs/temas/NN/sesiones/`).
 
 ## Comandos
 
