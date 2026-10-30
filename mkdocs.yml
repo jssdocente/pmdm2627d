@@ -106,7 +106,13 @@ nav:
           - "3B.2. Diseño adaptativo y edge-to-edge": temas/03/b-navegacion/3b.2-diseno-adaptativo.md
       - "3C · Arquitectura de la app":
           - "3C.1. Capa de UI: ViewModel y StateFlow": temas/03/c-arquitectura/3c.1-capa-ui-viewmodel.md
-          - "3C.4. Testing de interfaz en Compose": temas/03/c-arquitectura/3c.4-testing.md
+          - "3C.2. Clean Architecture paso a paso": temas/03/c-arquitectura/3c.2-clean-architecture.md
+          - "3C.3. Inyección de dependencias con Koin": temas/03/c-arquitectura/3c.3-inyeccion-dependencias-koin.md
+          - "3C.4. Testing: dominio, ViewModel e interfaz": temas/03/c-arquitectura/3c.4-testing.md
+      - "3D · Kotlin Multiplatform en la práctica":
+          - "3D.1. Anatomía de un proyecto KMP": temas/03/d-kmp/3d.1-anatomia-proyecto-kmp.md
+          - "3D.2. Compartir la lógica en commonMain": temas/03/d-kmp/3d.2-compartir-logica.md
+          - "3D.3. Compose Multiplatform y app de escritorio": temas/03/d-kmp/3d.3-compose-multiplatform.md
       - "Laboratorio de prácticas y codelabs":
           - "Puesta en Marcha y Retos": temas/03/3.6-laboratorio-retos.md
           - "Codelab 1: Theming M3": temas/03/codelabs/01-theming-material3.md

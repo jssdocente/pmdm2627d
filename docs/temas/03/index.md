@@ -44,17 +44,17 @@ Una app real tiene varias pantallas y debe funcionar igual de bien en un móvil,
 Cómo organizar el código para que sea mantenible, testeable y fácil de ampliar.
 
 - **[3C.1 Capa de UI: ViewModel, UiState y UDF](./c-arquitectura/3c.1-capa-ui-viewmodel.md):** el ViewModel como contenedor del estado, `UiState` inmutable, `StateFlow` y flujo unidireccional de datos.
-- **3C.2 Clean Architecture paso a paso** *(en preparación)*: capas de dominio y datos, casos de uso, repositorios y modelos.
-- **3C.3 Inyección de dependencias con Koin** *(en preparación)*: de crear los objetos a mano a dejar que Koin los proporcione, `koinViewModel()` e integración con Navigation 3.
-- **[3C.4 Testing de interfaz en Compose](./c-arquitectura/3c.4-testing.md):** `createComposeRule()`, árbol semántico, acciones y aserciones.
+- **[3C.2 Clean Architecture paso a paso](./c-arquitectura/3c.2-clean-architecture.md):** capas de dominio y datos, casos de uso, repositorios y modelos.
+- **[3C.3 Inyección de dependencias con Koin](./c-arquitectura/3c.3-inyeccion-dependencias-koin.md):** de crear los objetos a mano a dejar que Koin los proporcione, `koinViewModel()` e integración con Navigation 3.
+- **[3C.4 Testing: dominio, ViewModel e interfaz](./c-arquitectura/3c.4-testing.md):** tests de casos de uso con repositorios *fake*, tests de ViewModel con corrutinas y Turbine, y tests de pantallas Compose con el árbol semántico.
 
-### 3D · Kotlin Multiplatform en la práctica *(en preparación)*
+### 3D · Kotlin Multiplatform en la práctica
 
 Llevamos a tierra lo que vimos de forma conceptual en UT1: compartir el dominio, los ViewModel y la interfaz de Compose entre Android y escritorio.
 
-- **3D.1** Anatomía de un proyecto KMP actual.
-- **3D.2** Compartir la lógica en `commonMain`.
-- **3D.3** Compose Multiplatform: interfaz compartida y versión de escritorio.
+- **[3D.1 Anatomía de un proyecto KMP](./d-kmp/3d.1-anatomia-proyecto-kmp.md):** crear el proyecto, módulos `shared`, `androidApp` y `desktopApp`, *source sets*, Gradle, puntos de entrada, Compose Hot Reload y `expect`/`actual`.
+- **[3D.2 Compartir la lógica en `commonMain`](./d-kmp/3d.2-compartir-logica.md):** dominio, datos, ViewModel y Koin en el código común, código específico de cada plataforma (`expect`/`actual` frente a interfaces inyectadas) y tests en `commonTest`.
+- **[3D.3 Compose Multiplatform y app de escritorio](./d-kmp/3d.3-compose-multiplatform.md):** pantallas en el código común, recursos con `Res`, Navigation 3 multiplataforma, ventanas redimensionables y empaquetado de instaladores.
 
 ### 3E · Del código a la tienda *(en preparación)*
 
