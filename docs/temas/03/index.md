@@ -1,77 +1,90 @@
 # **UT3. Interfaz de Usuario con Jetpack Compose**
 
-En esta unidad nos adentramos en el diseño y desarrollo de interfaces de usuario modernas, accesibles y profesionales para la plataforma Android. Tras asentar en la unidad anterior los fundamentos del ciclo de vida y la sintaxis declarativa, abordamos aquí el estándar de diseño de la industria: **Material Design 3 (Material You)**.
+En UT2 aprendimos los fundamentos: funciones `@Composable`, maquetación con `Column`, `Row` y `Box`, modificadores, imágenes y estado básico. En esta unidad damos el salto a una **aplicación móvil completa y moderna**, tal como se desarrolla hoy en la industria.
 
-A lo largo del tema aprenderemos a estructurar pantallas completas con **`Scaffold`**, a implementar navegación mediante menús laterales (**Drawer**), a presentar grandes volúmenes de datos con **Listas perezosas (`LazyColumn` y `LazyVerticalGrid`)**, y a conectar la interfaz con la lógica de presentación mediante **`ViewModel`** y **`StateFlow`**.
+La unidad está organizada en **cinco subunidades** que siguen la vida de una app: primero se diseña la interfaz, después se conecta en varias pantallas que se adaptan a cualquier dispositivo, se organiza el código con una arquitectura profesional, se comparte con otras plataformas gracias a Kotlin Multiplatform y, por último, se prepara para publicarla en la tienda.
 
-Todo el trabajo práctico se articulará en torno al proyecto de prácticas: **`pmdm-lab-ut03`**, donde combinaremos codelabs de componentes guiados con la creación de interfaces gráficas para los juegos desarrollados previamente en Kotlin (El Ahorcado, Wordle y Memory Match).
+!!! info "Datos en memoria, de momento"
+    En esta unidad la app trabaja con datos **en memoria** (repositorios *fake*). Así podemos centrarnos en la interfaz y la arquitectura sin depender todavía de bases de datos ni de internet. En **UT4** sustituiremos esa fuente de datos por DataStore, Room y una API REST sin tocar el resto de la app: esa es precisamente la ventaja de la arquitectura que construiremos en 3C.
 
 ---
 
-## 🧭 Hoja de Ruta de la Unidad
+## 🧭 Hoja de ruta de la unidad
 
 ```mermaid
-graph TD
-    subgraph B1 ["Bloque I: Sistema de Diseño y Estructura"]
-        A1["3.1 Material Design 3, Theming, Providers y Scaffold"] --> A2["3.2 Componentes Interactivos, Formularios y Diálogos"]
-        A2 --> A3["3.3 Listas y Cuadrículas Eficientes: Lazy Layouts"]
-    end
-
-    subgraph B2 ["Bloque II: Arquitectura de UI y Validación"]
-        B21["3.4 Capa de UI: ViewModel, UiState y UDF"] --> B22["3.5 Testing de Interfaz con ComposeTestRule"]
-    end
-
-    subgraph B3 ["Bloque III: Laboratorio de Retos"]
-        C1["3.6 Proyecto pmdm-lab-ut03"]
-    end
-
-    B1 --> B2
-    B2 --> B3
+graph LR
+    A["3A<br>Diseño con<br>Material 3"] --> B["3B<br>Navegación y<br>diseño adaptativo"]
+    B --> C["3C<br>Arquitectura<br>de la app"]
+    C --> D["3D<br>Kotlin<br>Multiplatform"]
+    D --> E["3E<br>Del código<br>a la tienda"]
 ```
 
 ---
 
-## 📚 Contenidos del Tema
+## 📚 Contenidos
 
-1. **[3.1 Material Design 3, Theming, Providers y Scaffold](./3.1-material-design-3-scaffold.md):**  
-   Filosofía de Material You, esquemas de color (`lightColorScheme` / `darkColorScheme`), inyección de datos globales con `CompositionLocalProvider` (Modo Oscuro global), estructura de pantalla con `Scaffold` y el menú hamburguesa con `ModalNavigationDrawer`.
+### 3A · Diseño de interfaces con Material 3
 
-2. **[3.2 Componentes Interactivos, Formularios y Diálogos](./3.2-componentes-interactivos.md):**  
-   Catálogo de botones M3, campos de texto `OutlinedTextField` con validación reactiva, conmutadores (`Switch`), selectores (`Checkbox`, `Slider`), menús desplegables (`DropdownMenu`) y modales (`AlertDialog`, `ModalBottomSheet`).
+Cómo construir pantallas atractivas y coherentes con el sistema de diseño de Google.
 
-3. **[3.3 Listas y Cuadrículas Eficientes: Lazy Layouts](./3.3-listas-cuadriculas-lazy.md):**  
-   Rendimiento en Compose: `LazyColumn`, `LazyRow` y `LazyVerticalGrid`. Claves únicas (`key`) para optimizar recomposiciones y tarjetas de catálogo interactivas (`ElevatedCard`).
+- **[3A.1 Material Design 3, Theming, Providers y Scaffold](./a-diseno/3a.1-material-design-3-scaffold.md):** esquemas de color claro y oscuro, tipografía, `CompositionLocalProvider`, estructura de pantalla con `Scaffold`, barras superiores, `Snackbar` y menú lateral.
+- **[3A.2 Componentes interactivos, formularios y diálogos](./a-diseno/3a.2-componentes-interactivos.md):** botones, campos de texto con validación, `Switch`, `Checkbox`, `Slider`, menús desplegables y diálogos.
+- **[3A.3 Listas y cuadrículas eficientes](./a-diseno/3a.3-listas-cuadriculas.md):** `LazyColumn`, `LazyRow`, `LazyVerticalGrid` y claves (`key`).
+- **3A.4 Animaciones y microinteracciones** *(en preparación)*: `animate*AsState`, `AnimatedVisibility`, `AnimatedContent`, *pull-to-refresh*, deslizar para borrar y cargas tipo *shimmer*.
 
-4. **[3.4 Capa de Interfaz (UI): ViewModel, UiState y UDF](./3.4-capa-ui-viewmodel.md):**  
-   Arquitectura oficial recomendada por Google: supervivencia ante rotaciones con `ViewModel`, modelado inmutable de pantalla con `data class UiState`, consumo asíncrono seguro con `StateFlow` y el patrón *Unidirectional Data Flow* (UDF).
+### 3B · Navegación y diseño adaptativo
 
-5. **[3.5 Testing Automatizado de UI en Compose](./3.5-testing-ui-compose.md):**  
-   Configuración de pruebas de interfaz con `createComposeRule()`, búsqueda de nodos por texto o semántica, simulación de pulsaciones y aserciones visuales.
+Una app real tiene varias pantallas y debe funcionar igual de bien en un móvil, una tablet o un plegable.
 
-6. **[3.6 Laboratorio de Retos de la UT03 (`pmdm-lab-ut03`)](./3.6-laboratorio-retos.md):**  
-   Proyecto modular de prácticas con menú Drawer. Codelabs formativos M3 y el desarrollo de interfaces completas para El Ahorcado, Wordle y Memory Match con ViewModel.
+- **[3B.1 Navegación con Navigation 3](./b-navegacion/3b.1-navigation3.md):** la pila de navegación como estado, destinos tipados con `@Serializable`, `NavDisplay`, paso de argumentos, ViewModel por pantalla, devolver resultados y barra de navegación inferior.
+- **[3B.2 Diseño adaptativo y edge-to-edge](./b-navegacion/3b.2-diseno-adaptativo.md):** dibujar bajo las barras del sistema, clases de tamaño de ventana, `NavigationSuiteScaffold` y diseños lista-detalle, y por qué Android 16 y 17 los hacen obligatorios en pantallas grandes.
+
+### 3C · Arquitectura de la app
+
+Cómo organizar el código para que sea mantenible, testeable y fácil de ampliar.
+
+- **[3C.1 Capa de UI: ViewModel, UiState y UDF](./c-arquitectura/3c.1-capa-ui-viewmodel.md):** el ViewModel como contenedor del estado, `UiState` inmutable, `StateFlow` y flujo unidireccional de datos.
+- **3C.2 Clean Architecture paso a paso** *(en preparación)*: capas de dominio y datos, casos de uso, repositorios y modelos.
+- **3C.3 Inyección de dependencias con Koin** *(en preparación)*: de crear los objetos a mano a dejar que Koin los proporcione, `koinViewModel()` e integración con Navigation 3.
+- **[3C.4 Testing de interfaz en Compose](./c-arquitectura/3c.4-testing.md):** `createComposeRule()`, árbol semántico, acciones y aserciones.
+
+### 3D · Kotlin Multiplatform en la práctica *(en preparación)*
+
+Llevamos a tierra lo que vimos de forma conceptual en UT1: compartir el dominio, los ViewModel y la interfaz de Compose entre Android y escritorio.
+
+- **3D.1** Anatomía de un proyecto KMP actual.
+- **3D.2** Compartir la lógica en `commonMain`.
+- **3D.3** Compose Multiplatform: interfaz compartida y versión de escritorio.
+
+### 3E · Del código a la tienda *(en preparación)*
+
+- **3E.1** Preparar el lanzamiento: versiones, tipos de compilación, firma, R8 y Android App Bundle.
+- **3E.2** Publicar en Google Play: Play Console, ficha de la app, pistas de prueba y requisitos para cuentas nuevas.
+
+### Laboratorio de prácticas
+
+- **[Laboratorio de retos de la UT3 (`pmdm-lab-ut03`)](./3.6-laboratorio-retos.md):** proyecto de prácticas con menú lateral, codelabs guiados de Material 3 y las interfaces completas de El Ahorcado, Wordle y Memory Match con ViewModel.
 
 ---
 
-## 🛠️ Recursos de Referencia y Showroom
+## 🛠️ Recursos de referencia
 
-Para facilitar el estudio y la experimentación, este tema se apoya en tres recursos complementarios:
+- **Showroom local de componentes (`Material3_example`):**
 
-- **Showroom Local de Componentes (`Material3_example`):**
+    Dentro del repositorio dispones del proyecto de referencia [`.others_courses/Material3_example`](../../.others_courses/Material3_example), una aplicación con ejemplos aislados y listos para ejecutar de cada componente de Material 3 (`Scaffold`, `AppBars`, `Drawer`, `Dialogs`, `Menus`…).
 
-      Dentro del repositorio dispones del proyecto de referencia [`.others_courses/Material3_example`](../../.others_courses/Material3_example), una aplicación interactiva que contiene ejemplos aislados y listos para ejecutar de cada componente de Material 3 (`Scaffold`, `AppBars`, `Drawer`, `Dialogs`, `Menus`, etc.). Cada apartado del tema incluye referencias y códigos directos a este proyecto.
+- **Manual de referencia de Compose:**
 
-- **Manual de Referencia de Compose:**
+    - [Funciones componibles y modificadores](../00-android/00-compose/21-composable-functions.md)
+    - [Gestión del estado en Compose](../00-android/00-compose/22-state-management.md)
+    - [Listas y cuadrículas perezosas](../00-android/00-compose/23-listas-cuadriculas.md)
+    - [Material Design 3 y theming](../00-android/00-compose/25-material-design.md)
+    - [Contexto, CompositionLocal y efectos secundarios](../00-android/00-compose/27-compositionlocal-contexto-efectos.md)
 
-      Puedes consultar los capítulos detallados en la sección de referencia:
+- **Manual de referencia de arquitectura:** [Arquitectura en Android y KMP](../00-android/02-arquitectura/index.md).
 
-      - [Funciones Componibles y Modificadores](../00-android/00-compose/21-composable-functions.md)
-      - [Gestión del Estado en Compose](../00-android/00-compose/22-state-management.md)
-      - [Listas y Cuadrículas Perezosas](../00-android/00-compose/23-listas-cuadriculas.md)
-      - [Material Design 3 y Theming](../00-android/00-compose/25-material-design.md)
-      - [Contexto, CompositionLocal y Efectos Secundarios](../00-android/00-compose/27-compositionlocal-contexto-efectos.md)
+- **Documentación oficial de Google:**
 
-- **Documentación Oficial de Google:**
-
-      - [Guía de Material Design 3 en Compose](https://developer.android.com/develop/ui/compose/designsystems/material3?hl=es-419)
-      - [Arquitectura de la Capa de UI (Android Developers)](https://developer.android.com/topic/architecture/ui-layer?hl=es-419)
+    - [Material Design 3 en Compose](https://developer.android.com/develop/ui/compose/designsystems/material3?hl=es-419)
+    - [Capa de UI (Android Developers)](https://developer.android.com/topic/architecture/ui-layer?hl=es-419)
+    - [Navigation 3](https://developer.android.com/guide/navigation/navigation-3?hl=es-419)
