@@ -113,6 +113,9 @@ nav:
           - "3D.1. Anatomía de un proyecto KMP": temas/03/d-kmp/3d.1-anatomia-proyecto-kmp.md
           - "3D.2. Compartir la lógica en commonMain": temas/03/d-kmp/3d.2-compartir-logica.md
           - "3D.3. Compose Multiplatform y app de escritorio": temas/03/d-kmp/3d.3-compose-multiplatform.md
+      - "3E · Del código a la tienda":
+          - "3E.1. Preparar el lanzamiento": temas/03/e-publicacion/3e.1-preparar-lanzamiento.md
+          - "3E.2. Publicar en Google Play": temas/03/e-publicacion/3e.2-publicar-google-play.md
       - "Laboratorio de prácticas y codelabs":
           - "Puesta en Marcha y Retos": temas/03/3.6-laboratorio-retos.md
           - "Codelab 1: Theming M3": temas/03/codelabs/01-theming-material3.md

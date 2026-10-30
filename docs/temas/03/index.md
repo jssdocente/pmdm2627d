@@ -56,10 +56,10 @@ Llevamos a tierra lo que vimos de forma conceptual en UT1: compartir el dominio,
 - **[3D.2 Compartir la lógica en `commonMain`](./d-kmp/3d.2-compartir-logica.md):** dominio, datos, ViewModel y Koin en el código común, código específico de cada plataforma (`expect`/`actual` frente a interfaces inyectadas) y tests en `commonTest`.
 - **[3D.3 Compose Multiplatform y app de escritorio](./d-kmp/3d.3-compose-multiplatform.md):** pantallas en el código común, recursos con `Res`, Navigation 3 multiplataforma, ventanas redimensionables y empaquetado de instaladores.
 
-### 3E · Del código a la tienda *(en preparación)*
+### 3E · Del código a la tienda
 
-- **3E.1** Preparar el lanzamiento: versiones, tipos de compilación, firma, R8 y Android App Bundle.
-- **3E.2** Publicar en Google Play: Play Console, ficha de la app, pistas de prueba y requisitos para cuentas nuevas.
+- **[3E.1 Preparar el lanzamiento](./e-publicacion/3e.1-preparar-lanzamiento.md):** tipos de compilación, identidad y versión de la app, firma con Play App Signing, R8 y Android App Bundle.
+- **[3E.2 Publicar en Google Play](./e-publicacion/3e.2-publicar-google-play.md):** Play Console, ficha de la app, pistas de prueba y requisitos para cuentas nuevas.
 
 ### Laboratorio de prácticas
 
