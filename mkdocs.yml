@@ -75,6 +75,8 @@ nav:
           - "Ecosistema Multiplataforma (KMP)": temas/00-android/02-arquitectura/04-ecosistema-kmp-multiplataforma.md
           - "Testing en Android y KMP": temas/00-android/02-arquitectura/06-testing-android-kmp.md
           - "Glosario de Patrones": temas/00-android/02-arquitectura/05-glosario-patrones.md
+      - "Anexos":
+          - "A. Iconos de la app y gestión de recursos": temas/00-android/anexos/a-iconos-app-recursos.md
   - "UT1 - Visión General y Entorno de desarrollo": temas/01/index.md
   # - "Proyecto Intermodular":
   #    - "Requisitos": temas/proyectos/proyecto-intermodular/requisitos-pmdm.md
@@ -84,6 +86,7 @@ nav:
       - "2.2. Ciclo de Vida en Android": temas/02/2.2-ciclo-vida-app.md
       - "2.3. Primera App y Previews en Compose": temas/02/2.3-primera-app.md
       - "2.3.1. Maquetación: Column, Row, Box y Modifier": temas/02/2.3.1-layouts-modificadores.md
+      - "2.3.2. Imágenes, iconos y recursos": temas/02/2.3.2-imagenes-iconos-recursos.md
       - "2.4. Laboratorio de Prácticas y Codelabs":
           - "Puesta en Marcha y Retos": temas/02/2.4-laboratorio-retos.md
           - "Codelab 1: Ciclo de Vida y Logcat": temas/02/codelabs/01-ciclo-vida-logcat.md

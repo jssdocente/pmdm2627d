@@ -7,6 +7,7 @@
  * Uso en un .md:
  *   <div class="cpg" data-cpg="layout"></div>      -> Column / Row / Box
  *   <div class="cpg" data-cpg="modifiers"></div>   -> orden de los Modifier
+ *   <div class="cpg" data-cpg="contentscale"></div> -> contentScale de Image
  *
  * Es una aproximación didáctica: reproduce el comportamiento de Compose en los
  * casos que se trabajan en clase, no el motor de medición real.
@@ -577,9 +578,148 @@
     render();
   }
 
+  // ------------------------------------------------ playground de contentScale
+
+  // Imagen de ejemplo (300 x 200, apaisada) con una diana en el centro y marcas
+  // en las esquinas para que se aprecie qué parte se recorta.
+  var SAMPLE_W = 300;
+  var SAMPLE_H = 200;
+  var SAMPLE_IMG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">' +
+    '<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fb8f0"/><stop offset="1" stop-color="#d9ecff"/></linearGradient></defs>' +
+    '<rect width="300" height="200" fill="url(#s)"/>' +
+    '<circle cx="245" cy="45" r="22" fill="#ffd54f"/>' +
+    '<path d="M0 160 L70 80 L120 135 L175 60 L240 140 L300 100 L300 200 L0 200 Z" fill="#5c8a5a"/>' +
+    '<path d="M0 175 L300 165 L300 200 L0 200 Z" fill="#3e6b3c"/>' +
+    '<circle cx="150" cy="100" r="16" fill="none" stroke="#e53935" stroke-width="4"/>' +
+    '<circle cx="150" cy="100" r="4" fill="#e53935"/>' +
+    '<g font-family="sans-serif" font-size="14" font-weight="700" fill="#1d1b20">' +
+    '<text x="8" y="20">A</text><text x="282" y="20">B</text><text x="8" y="192">C</text><text x="281" y="192">D</text></g>' +
+    "</svg>"
+  );
+
+  var SCALES = {
+    Crop: function (W, H) { var s = Math.max(W / SAMPLE_W, H / SAMPLE_H); return [s, s]; },
+    Fit: function (W, H) { var s = Math.min(W / SAMPLE_W, H / SAMPLE_H); return [s, s]; },
+    FillBounds: function (W, H) { return [W / SAMPLE_W, H / SAMPLE_H]; },
+    FillWidth: function (W) { var s = W / SAMPLE_W; return [s, s]; },
+    FillHeight: function (W, H) { var s = H / SAMPLE_H; return [s, s]; },
+    Inside: function (W, H) { var s = Math.min(1, W / SAMPLE_W, H / SAMPLE_H); return [s, s]; },
+    None: function () { return [1, 1]; }
+  };
+
+  var SCALE_HINTS = {
+    Crop: "Crop rellena todo el hueco manteniendo la proporción y recorta lo que sobra. Es la opción habitual para fotos, portadas y avatares.",
+    Fit: "Fit (valor por defecto) muestra la imagen entera manteniendo la proporción; si no coincide con el hueco, quedan franjas vacías.",
+    FillBounds: "FillBounds estira la imagen hasta ocupar exactamente el hueco: no recorta, pero deforma si la proporción no coincide.",
+    FillWidth: "FillWidth ajusta el ancho y mantiene la proporción; lo que sobre en vertical se recorta.",
+    FillHeight: "FillHeight ajusta el alto y mantiene la proporción; lo que sobre en horizontal se recorta.",
+    Inside: "Inside es como Fit, pero nunca amplía la imagen por encima de su tamaño original.",
+    None: "None dibuja la imagen a su tamaño original, centrada, sin escalar: puede quedar pequeña o recortada."
+  };
+
+  var FRAMES = {
+    square: { label: "Cuadrado 160 × 160", w: 160, h: 160, code: ".size(160.dp)" },
+    wide: { label: "Apaisado 260 × 110", w: 260, h: 110, code: ".size(width = 260.dp, height = 110.dp)" },
+    tall: { label: "Vertical 120 × 200", w: 120, h: 200, code: ".size(width = 120.dp, height = 200.dp)" }
+  };
+
+  var SHAPES = {
+    none: { label: "Sin recorte", radius: "0", code: null },
+    rounded: { label: "RoundedCornerShape(16.dp)", radius: "16px", code: ".clip(RoundedCornerShape(16.dp))" },
+    circle: { label: "CircleShape", radius: "50%", code: ".clip(CircleShape)" }
+  };
+
+  function contentScalePlayground(root) {
+    var state = { scale: "Crop", frame: "square", shape: "none", ghost: true };
+
+    var controls = h("div", { class: "cpg-controls" });
+    var stage = h("div", { class: "cpg-stage cpg-stage-img" });
+    var hint = h("p", { class: "cpg-hint", "aria-live": "polite" });
+    var code = codePanel();
+
+    root.appendChild(h("div", { class: "cpg-title" }, [
+      h("strong", { text: "Playground: contentScale de Image" }),
+      h("span", { text: "La imagen original es apaisada (3:2). Observa cómo se adapta a cada hueco" })
+    ]));
+    root.appendChild(h("div", { class: "cpg-body" }, [
+      h("div", { class: "cpg-panel" }, [controls]),
+      h("div", { class: "cpg-output" }, [stage, hint, code.el])
+    ]));
+
+    function renderControls() {
+      controls.innerHTML = "";
+      controls.appendChild(segmented("contentScale", opts(Object.keys(SCALES)), state.scale, function (v) {
+        state.scale = v; render();
+      }));
+      controls.appendChild(segmented("Tamaño del Image", Object.keys(FRAMES).map(function (k) {
+        return { value: k, label: FRAMES[k].label };
+      }), state.frame, function (v) { state.frame = v; render(); }));
+      controls.appendChild(segmented("Forma (clip)", Object.keys(SHAPES).map(function (k) {
+        return { value: k, label: SHAPES[k].label };
+      }), state.shape, function (v) { state.shape = v; render(); }));
+      controls.appendChild(segmented("Parte que queda fuera", [
+        { value: "on", label: "Mostrar" },
+        { value: "off", label: "Ocultar" }
+      ], state.ghost ? "on" : "off", function (v) { state.ghost = v === "on"; render(); }));
+    }
+
+    function placed(W, H) {
+      var s = SCALES[state.scale](W, H);
+      var w = SAMPLE_W * s[0];
+      var hgt = SAMPLE_H * s[1];
+      return { left: (W - w) / 2, top: (H - hgt) / 2, width: w, height: hgt };
+    }
+
+    function imgEl(p, cls) {
+      return h("img", { src: SAMPLE_IMG, alt: "", class: cls, style: {
+        left: p.left + "px", top: p.top + "px", width: p.width + "px", height: p.height + "px"
+      } });
+    }
+
+    function renderStage() {
+      stage.innerHTML = "";
+      var f = FRAMES[state.frame];
+      var p = placed(f.w, f.h);
+      var holder = h("div", { class: "cpg-img-holder", style: { width: f.w + "px", height: f.h + "px" } });
+      if (state.ghost) holder.appendChild(imgEl(p, "cpg-img-ghost"));
+      var frame = h("div", { class: "cpg-img-frame", role: "img",
+        "aria-label": "Imagen con contentScale " + state.scale, style: { borderRadius: SHAPES[state.shape].radius } }, [
+        imgEl(p, "cpg-img")
+      ]);
+      holder.appendChild(frame);
+      stage.appendChild(holder);
+      stage.appendChild(h("p", { class: "cpg-legend", text: "Línea discontinua: tamaño del Image. La diana marca el centro de la imagen y las letras A–D, sus esquinas." }));
+    }
+
+    function renderCode() {
+      var mods = [FRAMES[state.frame].code];
+      if (SHAPES[state.shape].code) mods.push(SHAPES[state.shape].code);
+      var lines = [
+        "Image(",
+        "    painter = painterResource(R.drawable.paisaje),",
+        '    contentDescription = "Paisaje de montaña",',
+        "    contentScale = ContentScale." + state.scale + ",",
+        "    modifier = Modifier"
+      ];
+      mods.forEach(function (m) { lines.push("        " + m); });
+      lines.push(")");
+      code.set(lines.join("\n"));
+    }
+
+    function render() {
+      renderControls();
+      renderStage();
+      renderCode();
+      hint.textContent = SCALE_HINTS[state.scale];
+    }
+
+    render();
+  }
+
   // --------------------------------------------------------------- arranque
 
-  var PLAYGROUNDS = { layout: layoutPlayground, modifiers: modifierPlayground };
+  var PLAYGROUNDS = { layout: layoutPlayground, modifiers: modifierPlayground, contentscale: contentScalePlayground };
 
   function init() {
     var nodes = document.querySelectorAll(".cpg[data-cpg]:not([data-cpg-ready])");

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 170" font-family="Roboto, Arial, sans-serif">
+  <rect width="360" height="170" fill="#ffffff"/>
+  <rect x="20" y="30" width="230" height="78" rx="12" fill="#eaddff"/>
+  <text x="36" y="62" font-size="16" font-weight="500" fill="#21005d">Ana García</text>
+  <text x="36" y="88" font-size="14" fill="#21005d">ana@ejemplo.com</text>
+  <g stroke="#e53935" stroke-width="1" fill="none" stroke-dasharray="3 2">
+    <line x1="20" y1="20" x2="36" y2="20"/><line x1="20" y1="16" x2="20" y2="24"/><line x1="36" y1="16" x2="36" y2="24"/>
+    <line x1="36" y1="66" x2="36" y2="74"/>
+  </g>
+  <text x="18" y="14" font-size="10" fill="#e53935">16.dp</text>
+  <text x="262" y="34" font-size="10" fill="#e53935">esquinas 12.dp</text>
+  <path d="M258 32 L246 34" stroke="#e53935"/>
+  <text x="262" y="74" font-size="10" fill="#e53935">spacedBy(4.dp)</text>
+  <path d="M258 72 L170 74" stroke="#e53935" stroke-dasharray="3 2"/>
+  <text x="20" y="140" font-size="11" fill="#555">Column con fondo redondeado, padding interior y dos textos</text>
+</svg>

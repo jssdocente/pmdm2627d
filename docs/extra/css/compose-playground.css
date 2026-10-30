@@ -391,3 +391,36 @@
   font-size: 0.62rem;
   text-align: center;
 }
+
+/* ---------- playground de contentScale */
+
+.md-typeset .cpg-stage-img {
+  flex-direction: column;
+  gap: 0.8rem;
+  min-height: 18rem;
+  margin-bottom: 0.8rem;
+}
+
+.md-typeset .cpg-img-holder {
+  position: relative;
+  outline: 1px dashed var(--cpg-muted);
+  outline-offset: 2px;
+}
+
+.md-typeset .cpg-img-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.md-typeset .cpg-img,
+.md-typeset .cpg-img-ghost {
+  position: absolute;
+  max-width: none;
+  transition: all 0.25s ease;
+}
+
+.md-typeset .cpg-img-ghost {
+  opacity: 0.22;
+  pointer-events: none;
+}

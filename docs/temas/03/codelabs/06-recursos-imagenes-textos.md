@@ -88,6 +88,9 @@ Para importar un icono SVG o un icono oficial de Material Design:
 
 4. Asigna un nombre en minúsculas (ej. `ic_badge_check.xml`) y pulsa **Finish**.
 
+!!! warning "¿No aparece *Vector Asset* o está en gris?"
+    Consulta el [Anexo A: solución de problemas con los recursos](../../00-android/anexos/a-iconos-app-recursos.md#4-solucion-de-problemas).
+
 Para este codelab, crearemos tres vectores en `app/src/main/res/drawable/`:
 
 ??? example "Ver archivo XML: res/drawable/ic_profile_avatar.xml"
