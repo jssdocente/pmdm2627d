@@ -39,6 +39,11 @@ Las **guías de sesión** son documentos cortos, uno por clase, que el alumnado 
 
 ## Reglas
 
+- **Una sola guía para todos los grupos:** las páginas publicadas no mencionan grupos, fechas ni festivos; solo la secuencia de sesiones. El calendario por grupo, el proyecto y el examen están en los documentos internos de `.profesor/` (ignorado por Git, porque el repositorio es público), que se publican cifrados en `docs/profesor/` con `.profesor/publicar.sh` (StaticCrypt; lo marcado `<!-- privado -->` no se publica).
+- **Las guías ya redactadas no se modifican** después de escribirlas, aunque cambie la planificación: los cambios van en el plan de sesiones (`index.md`) y en las guías nuevas.
+- Sesiones de estudio autónomo: se marcan con 📚 en el plan y tienen guía con el mismo formato.
+- Portadas e imágenes del proyecto de clase: ilustraciones incluidas en el propio repositorio del proyecto (nunca carátulas con derechos).
+
 - Enlaces relativos al `.md` con ancla. Comprobar los anclajes con `mkdocs build` (MkDocs avisa de anclas inexistentes).
 - Código: solo fragmentos mínimos (≤ 15 líneas) que se escriben en directo; el código completo vive en los apuntes/codelabs.
 - Segunda persona del singular dirigida al alumno («abre», «comprueba»).

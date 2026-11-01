@@ -215,6 +215,42 @@ Añade debajo de la línea del género una `Row` con «chips» de texto para las
 ??? success "Pista"
     Haz una función `ChipPlataforma(nombre: String)` y llámala tres veces dentro de la `Row`. Si añades `plataformas: List<String>` a `Juego`, puedes recorrerla con `forEach`.
 
+??? success "Solución"
+
+    En `FichaJuego.kt`, dos funciones nuevas: el chip y la fila que los reparte.
+
+    ```kotlin
+    @Composable
+    fun FilaPlataformas(plataformas: List<String>, modifier: Modifier = Modifier) {
+        Row(
+            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            plataformas.forEach { nombre -> ChipPlataforma(nombre = nombre) }
+        }
+    }
+
+    @Composable
+    fun ChipPlataforma(nombre: String, modifier: Modifier = Modifier) {
+        Text(
+            text = nombre,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = modifier
+                .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(8.dp))
+                .padding(horizontal = 10.dp, vertical = 4.dp)
+        )
+    }
+    ```
+
+    Y en `FichaJuego`, justo después del `Text` del género:
+
+    ```kotlin
+    FilaPlataformas(plataformas = listOf("PC", "Switch", "PS5"))
+    ```
+
+    Fíjate en el orden de los modificadores del chip: primero el fondo con las esquinas redondeadas y después el `padding`, para que el margen interior quede **dentro** del color.
+
 ---
 
 ## 🧪 Comprobación rápida

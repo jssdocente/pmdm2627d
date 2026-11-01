@@ -16,3 +16,6 @@ _bck/
 
 # Proyectos de clase: cada uno es un repositorio Git propio (publicado en GitHub)
 .projects/*-clase/
+
+# Documentación interna del profesor: no se sube (el repositorio es público)
+.profesor/

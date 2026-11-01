@@ -2,7 +2,7 @@
 
 Esta sección recoge **una guía por clase**. Cada guía te dice qué vamos a hacer en la sesión, en qué orden y qué apartado de los apuntes corresponde a cada bloque. Los apuntes siguen siendo la referencia completa: la guía solo los ordena en el tiempo.
 
-Todas las clases de la UT2 trabajan sobre un mismo **proyecto de clase**, **FichaJuego**, que construimos paso a paso a partir de la plantilla del curso.
+Todas las clases trabajan sobre un mismo **proyecto de clase**, **FichaJuego**, que construimos paso a paso a partir de la plantilla del curso. El proyecto empieza en la UT2 y continúa en la [guía de clases de la UT3](../../03/sesiones/index.md).
 
 ---
 
@@ -11,6 +11,7 @@ Todas las clases de la UT2 trabajan sobre un mismo **proyecto de clase**, **Fich
 - **Punto de partida:** la plantilla `ProyectoComposeBase` del curso (IntelliJ IDEA 2026.2, AGP 9.1.1, compileSdk 37), ya renombrada a `com.pmdm.fichajuego`.
 - **Repositorio:** [github.com/jssdocente/pmdm2627-fichajuego](https://github.com/jssdocente/pmdm2627-fichajuego).
 - **Un tag por sesión:** cada clase tiene un tag de inicio (`s2.01-inicio`) y otro de fin (`s2.01-fin`). Si faltas a una clase, descarga el tag de fin y continúa desde ahí.
+- **En la UT3 seguimos en el mismo repositorio**, con tags `s3.01-inicio`, `s3.01-fin`, etc.
 
 ```bash
 git clone https://github.com/jssdocente/pmdm2627-fichajuego.git fichajuego
@@ -32,6 +33,9 @@ Cada sesión corresponde a una clase de **2 horas**.
 | :--- | :--- | :--- | :--- |
 | [**2.01** · Primer contacto con Compose](./s01-primer-contacto-compose.md) | Funciones composable, árbol de la composición, `MainActivity`, `@Preview`, `Column`, `Row`, `Box` y `Modifier` | [2.3](../2.3-primera-app.md), [2.3.1](../2.3.1-layouts-modificadores.md) | `s2.01-inicio` → `s2.01-fin` |
 | [**2.02** · Estado y *state hoisting*](./s02-estado-state-hoisting.md) | Estado y recomposición, `remember` y `rememberSaveable`, elevación del estado | [2.3 §3](../2.3-primera-app.md), [2.2 §4](../2.2-ciclo-vida-app.md), [Gestión del estado](../../00-android/00-compose/22-state-management.md) | `s2.02-inicio` → `s2.02-fin` |
-| **2.03** · Imágenes, iconos y recursos *(pendiente)* | La portada real con `Image`, iconos, textos en `strings.xml` | [2.3.2](../2.3.2-imagenes-iconos-recursos.md) | `s2.03-inicio` → `s2.03-fin` |
+| [**2.03** · Imágenes, iconos y recursos](./s03-imagenes-iconos-recursos.md) · 📚 *estudio autónomo* | La portada real con `Image`, iconos, textos en `strings.xml` | [2.3.2](../2.3.2-imagenes-iconos-recursos.md) | `s2.03-inicio` → `s2.03-fin` |
 
-Las sesiones se irán publicando a medida que avance la unidad.
+!!! info "Sesiones de estudio autónomo"
+    Las sesiones marcadas con 📚 no se dan en el aula: tienen su guía para que las sigas por tu cuenta, a tu ritmo, con el mismo formato que el resto.
+
+Las guías se irán publicando a medida que avance el curso. La siguiente sesión de clase es la [**3.01**](../../03/sesiones/index.md#plan-de-sesiones), ya en la UT3.

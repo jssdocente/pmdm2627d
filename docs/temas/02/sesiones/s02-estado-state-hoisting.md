@@ -217,6 +217,66 @@ Compose no repinta toda la pantalla: solo vuelve a ejecutar las funciones que **
 ??? success "Pista"
     Sigue la regla: un valor hacia abajo y un evento hacia arriba. Necesitas `onRestarPartida: () -> Unit` en `FilaPartidas`, en `FichaJuego` y en `FichaJuegoScreen`, y quien lo implementa es `BibliotecaScreen`, que es quien guarda las partidas. «Reiniciar» no necesita tocar las fichas.
 
+??? success "Solución"
+
+    **1. Botón «−1».** `FilaPartidas` recibe el nuevo evento y desactiva el botón si no hay partidas:
+
+    ```kotlin
+    @Composable
+    fun FilaPartidas(
+        partidas: Int,
+        onSumarPartida: () -> Unit,
+        onRestarPartida: () -> Unit,
+        modifier: Modifier = Modifier
+    ) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = "Partidas jugadas: $partidas", style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.weight(1f))
+            OutlinedButton(onClick = onRestarPartida, enabled = partidas > 0) {
+                Text("−1")
+            }
+            FilledTonalButton(onClick = onSumarPartida) {
+                Text("+1")
+            }
+        }
+    }
+    ```
+
+    El parámetro `onRestarPartida: () -> Unit` se añade también a `FichaJuego` y a `FichaJuegoScreen`, que solo lo pasan hacia abajo. Las previews necesitan `onRestarPartida = {}`.
+
+    **2. Reiniciar.** En `BibliotecaScreen`, que es quien guarda las partidas:
+
+    ```kotlin
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = "Partidas en total: ${partidasHollow + partidasStardew}",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.weight(1f)
+        )
+        TextButton(
+            onClick = {
+                partidasHollow = 0
+                partidasStardew = 0
+            }
+        ) {
+            Text("Reiniciar")
+        }
+    }
+    FichaJuegoScreen(
+        juego = juegoEjemplo,
+        partidas = partidasHollow,
+        onSumarPartida = { partidasHollow++ },
+        onRestarPartida = { partidasHollow-- }
+    )
+    // … y lo mismo para Stardew Valley con partidasStardew
+    ```
+
+    No hace falta comprobar que `partidasHollow` sea mayor que 0 antes de restar: el botón ya está desactivado en ese caso.
+
 ---
 
 ## 🧪 Comprobación rápida

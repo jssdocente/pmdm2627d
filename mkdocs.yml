@@ -86,6 +86,7 @@ nav:
           - "Plan de sesiones": temas/02/sesiones/index.md
           - "Sesión 2.01 · Primer contacto con Compose": temas/02/sesiones/s01-primer-contacto-compose.md
           - "Sesión 2.02 · Estado y state hoisting": temas/02/sesiones/s02-estado-state-hoisting.md
+          - "Sesión 2.03 · Imágenes, iconos y recursos 📚": temas/02/sesiones/s03-imagenes-iconos-recursos.md
       - "2.1. Primeros pasos y Creación del Proyecto": temas/02/2.1-primeros-pasos.md
       - "2.2. Ciclo de Vida en Android": temas/02/2.2-ciclo-vida-app.md
       - "2.3. Primera App y Previews en Compose": temas/02/2.3-primera-app.md
@@ -101,6 +102,14 @@ nav:
 
   - "UT3 - Interfaz de Usuario con Jetpack Compose":
       - "Inicio": temas/03/index.md
+      - "Guía de clases":
+          - "Plan de sesiones": temas/03/sesiones/index.md
+          - "Sesión 3.01 · Tema M3, Scaffold y listas": temas/03/sesiones/s01-tema-scaffold-listas.md
+          - "Sesión 3.02 · Componentes interactivos": temas/03/sesiones/s02-componentes-interactivos.md
+          - "Sesión 3.03 · Navigation 3 (I)": temas/03/sesiones/s03-navigation3-i.md
+          - "Sesión 3.04 · Navigation 3 (II) y edge-to-edge": temas/03/sesiones/s04-navigation3-ii-edge-to-edge.md
+          - "Sesión 3.05 · ViewModel y UiState (I)": temas/03/sesiones/s05-viewmodel-uistate-i.md
+          - "Sesión 3.06 · ViewModel y UiState (II)": temas/03/sesiones/s06-viewmodel-uistate-ii.md
       - "3A · Diseño de interfaces con Material 3":
           - "3A.1. Material Design 3, Providers y Scaffold": temas/03/a-diseno/3a.1-material-design-3-scaffold.md
           - "3A.2. Componentes interactivos y diálogos": temas/03/a-diseno/3a.2-componentes-interactivos.md
