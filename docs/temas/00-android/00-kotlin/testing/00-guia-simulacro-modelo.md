@@ -310,8 +310,9 @@ H06   | Brom       | GUERRERO   | 4     | 70    | (Sin mentor)
 El proyecto Gradle listo para abrir en IntelliJ IDEA se encuentra en:
 
 - Acceso al proyecto: [proyecto](../../../../_res/00-ejemplo-modelo-resuelto.zip)
-- Para compilar y verificar tests desde la terminal:
-  ```bash
-  cd .exams/00-ejemplo-modelo-resuelto
-  ./gradlew test run
-  ```
+- Para compilar y verificar tests desde la terminal, descomprime el zip y ejecuta:
+
+    ```bash
+    cd 00-ejemplo-modelo-resuelto
+    ./gradlew test run
+    ```

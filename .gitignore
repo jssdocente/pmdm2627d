@@ -10,9 +10,9 @@ _bck/
 **/build/
 **/.kotlin/
 
-# Salida de compilación de IntelliJ en los proyectos de exámenes
-.exams/**/bin/
-!.exams/.cuestionarios/bin/
+# Exámenes, simulacros y solucionarios: viven en el repositorio privado
+# del profesor (jssdocente/pmdm2627_OfP), nunca en este repositorio público
+.exams/
 
 # Proyectos de clase: cada uno es un repositorio Git propio (publicado en GitHub)
 .projects/*-clase/
