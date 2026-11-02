@@ -1,0 +1,67 @@
+<svg class="arq-svg" viewBox="0 0 760 400" role="img" aria-labelledby="arq-ssa-t arq-ssa-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-ssa-t">Qué devuelve cada scope function</title>
+  <desc id="arq-ssa-d">Cinco recorridos con el mismo jugador de nivel 3. apply y also devuelven el mismo jugador, ahora de nivel 4. let, run y with devuelven lo que calcula la última línea del bloque, un texto: Ana, nivel 3.</desc>
+  <defs>
+    <marker id="arq-ssa-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-ssa-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="105" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">entra</text>
+  <text x="370" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">bloque</text>
+  <text x="640" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">sale (resultado)</text>
+  <rect x="40" y="44" width="130" height="46" rx="10" class="arq-data"/>
+  <text x="105" y="64" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">jugador</text>
+  <text x="105" y="80" class="arq-t arq-xs" text-anchor="middle">Ana · nivel 3</text>
+  <line x1="170" y1="67" x2="212" y2="67" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="214" y="44" width="312" height="46" rx="10" class="arq-box"/>
+  <text x="226" y="63" class="arq-t arq-code arq-xs arq-strong">jugador.apply {</text>
+  <text x="244" y="80" class="arq-t arq-code arq-xs">nivel += 1 }</text>
+  <line x1="526" y1="67" x2="568" y2="67" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="570" y="44" width="140" height="46" rx="10" class="arq-data"/>
+  <text x="640" y="64" class="arq-t arq-xs arq-strong" text-anchor="middle">el mismo jugador</text>
+  <text x="640" y="80" class="arq-t arq-xs" text-anchor="middle">Ana · nivel 4</text>
+  <rect x="40" y="112" width="130" height="46" rx="10" class="arq-data"/>
+  <text x="105" y="132" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">jugador</text>
+  <text x="105" y="148" class="arq-t arq-xs" text-anchor="middle">Ana · nivel 3</text>
+  <line x1="170" y1="135" x2="212" y2="135" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="214" y="112" width="312" height="46" rx="10" class="arq-box"/>
+  <text x="226" y="131" class="arq-t arq-code arq-xs arq-strong">jugador.also {</text>
+  <text x="244" y="148" class="arq-t arq-code arq-xs">it.nivel += 1 }</text>
+  <line x1="526" y1="135" x2="568" y2="135" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="570" y="112" width="140" height="46" rx="10" class="arq-data"/>
+  <text x="640" y="132" class="arq-t arq-xs arq-strong" text-anchor="middle">el mismo jugador</text>
+  <text x="640" y="148" class="arq-t arq-xs" text-anchor="middle">Ana · nivel 4</text>
+  <rect x="40" y="180" width="130" height="46" rx="10" class="arq-data"/>
+  <text x="105" y="200" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">jugador</text>
+  <text x="105" y="216" class="arq-t arq-xs" text-anchor="middle">Ana · nivel 3</text>
+  <line x1="170" y1="203" x2="212" y2="203" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="214" y="180" width="312" height="46" rx="10" class="arq-box"/>
+  <text x="226" y="199" class="arq-t arq-code arq-xs arq-strong">jugador.let {</text>
+  <text x="244" y="216" class="arq-t arq-code arq-xs">"${it.nombre}, nivel ${it.nivel}" }</text>
+  <line x1="526" y1="203" x2="568" y2="203" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="570" y="180" width="140" height="46" rx="10" class="arq-dom"/>
+  <text x="640" y="200" class="arq-t arq-xs arq-strong" text-anchor="middle">un String</text>
+  <text x="640" y="216" class="arq-t arq-code arq-xs" text-anchor="middle">"Ana, nivel 3"</text>
+  <rect x="40" y="248" width="130" height="46" rx="10" class="arq-data"/>
+  <text x="105" y="268" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">jugador</text>
+  <text x="105" y="284" class="arq-t arq-xs" text-anchor="middle">Ana · nivel 3</text>
+  <line x1="170" y1="271" x2="212" y2="271" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="214" y="248" width="312" height="46" rx="10" class="arq-box"/>
+  <text x="226" y="267" class="arq-t arq-code arq-xs arq-strong">jugador.run {</text>
+  <text x="244" y="284" class="arq-t arq-code arq-xs">"$nombre, nivel $nivel" }</text>
+  <line x1="526" y1="271" x2="568" y2="271" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="570" y="248" width="140" height="46" rx="10" class="arq-dom"/>
+  <text x="640" y="268" class="arq-t arq-xs arq-strong" text-anchor="middle">un String</text>
+  <text x="640" y="284" class="arq-t arq-code arq-xs" text-anchor="middle">"Ana, nivel 3"</text>
+  <rect x="40" y="316" width="130" height="46" rx="10" class="arq-data"/>
+  <text x="105" y="336" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">jugador</text>
+  <text x="105" y="352" class="arq-t arq-xs" text-anchor="middle">Ana · nivel 3</text>
+  <line x1="170" y1="339" x2="212" y2="339" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="214" y="316" width="312" height="46" rx="10" class="arq-box"/>
+  <text x="226" y="335" class="arq-t arq-code arq-xs arq-strong">with(jugador) {</text>
+  <text x="244" y="352" class="arq-t arq-code arq-xs">"$nombre, nivel $nivel" }</text>
+  <line x1="526" y1="339" x2="568" y2="339" class="arq-dep" marker-end="url(#arq-ssa-a)"/>
+  <rect x="570" y="316" width="140" height="46" rx="10" class="arq-dom"/>
+  <text x="640" y="336" class="arq-t arq-xs arq-strong" text-anchor="middle">un String</text>
+  <text x="640" y="352" class="arq-t arq-code arq-xs" text-anchor="middle">"Ana, nivel 3"</text>
+  <text x="380" y="392" class="arq-t arq-s arq-strong" text-anchor="middle">Si la última línea es una asignación o un println, let, run y with devuelven Unit.</text>
+</svg>

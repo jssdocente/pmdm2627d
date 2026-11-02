@@ -14,12 +14,11 @@ Para apreciar el valor real de las funciones de ámbito, debemos examinar cómo 
 
 ### 1.1. Los 3 Problemas Habituales en POO Tradicional
 
-1. **Repetición continua del nombre de la variable (*Verbosidad*):**  
-   Al configurar un objeto con múltiples propiedades (como un cuadro de diálogo, una notificación o una petición de red), nos vemos obligados a teclear el nombre de la variable una y otra vez (`dialog.setTitle(...)`, `dialog.setMessage(...)`, `dialog.setIcon(...)`).
-2. **Contaminación del ámbito (*Namespace Pollution*):**  
-   Para instanciar y configurar ese objeto, creamos una variable temporal en el método (`val dialog = ...`). Una vez configurado y mostrado, esa variable sigue existiendo en el ámbito de la función, aumentando el riesgo de que otro desarrollador la modifique o reutilice por error más abajo.
-3. **Ruptura de la fluidez en cadenas de datos:**  
-   Si queremos imprimir un log de depuración a mitad de un cálculo, en Java nos vemos obligados a "romper" la cadena, guardar el resultado intermedio en una variable temporal, imprimir el log y luego continuar.
+1. **Repetición continua del nombre de la variable (*Verbosidad*):** al configurar un objeto con múltiples propiedades (como un cuadro de diálogo, una notificación o una petición de red), nos vemos obligados a teclear el nombre de la variable una y otra vez (`dialog.setTitle(...)`, `dialog.setMessage(...)`, `dialog.setIcon(...)`).
+
+2. **Contaminación del ámbito (*Namespace Pollution*):** para instanciar y configurar ese objeto, creamos una variable temporal en el método (`val dialog = ...`). Una vez configurado y mostrado, esa variable sigue existiendo en el ámbito de la función, aumentando el riesgo de que otro desarrollador la modifique o reutilice por error más abajo.
+
+3. **Ruptura de la fluidez en cadenas de datos:** si queremos imprimir un log de depuración a mitad de un cálculo, en Java nos vemos obligados a "romper" la cadena, guardar el resultado intermedio en una variable temporal, imprimir el log y luego continuar.
 
 ---
 
@@ -42,8 +41,8 @@ Comparemos la misma tarea habitual en el desarrollo de Android: crear y configur
     // 3. Enviamos el objeto a la UI:
     mostrarDialogo(dialogo);
 
-    // Problema: La variable 'dialogo' sigue viva aquí abajo durante todo el método,
-    // ocupando memoria y pudiendo ser mutada por accidente.
+    // Problema: la variable 'dialogo' sigue visible aquí abajo durante todo el método,
+    // y alguien podría reutilizarla o modificarla por error.
     ```
 
 === "Kotlin Idiomático (Con la Scope Function 'apply')"
@@ -71,31 +70,22 @@ Comparemos la misma tarea habitual en el desarrollo de Android: crear y configur
 
 Aunque las 5 funciones realizan tareas aparentemente similares, difieren exactamente en dos decisiones de diseño:
 
-```mermaid
-flowchart LR
-    ScopeFunctions["Scope Functions"] --> D1["1. ¿Cómo accedo al objeto dentro de la lambda?"]
-    ScopeFunctions --> D2["2. ¿Qué valor retorna la función al terminar?"]
-    
-    D1 --> This["'this' (Receptor implícito)<br/>apply, run, with"]
-    D1 --> It["'it' (Argumento con nombre)<br/>let, also"]
-    
-    D2 --> RetObj["El propio Objeto de Contexto<br/>apply, also"]
-    D2 --> RetRes["El Resultado de la Lambda<br/>let, run, with"]
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/scope/scope-cuadrante.svg"
+<figcaption>Las cinco funciones según las dos preguntas. Cada una ocupa su casilla; solo <code>run</code> y <code>with</code> comparten la suya.</figcaption>
+</figure>
 
 ### Dimensión 1: ¿`this` o `it`?
 
-- **`this` (Receptor implícito):** El objeto se convierte en el receptor de la lambda. Puedes llamar a sus propiedades y métodos directamente sin prefijo (`titulo = "Hola"` en lugar de `this.titulo = "Hola"`).  
-  *Ideal para:* Configurar propiedades de un objeto (`apply`, `run`, `with`).
-- **`it` (Argumento de la lambda):** El objeto se pasa como parámetro ordinario. Puedes usar el nombre implícito `it` o asignarle un nombre semántico (`{ usuario -> ... }`).  
-  *Ideal para:* Pasar el objeto como argumento a otras funciones o cuando el nombre `it` aporta claridad (`let`, `also`).
+- **`this` (Receptor implícito):** El objeto se convierte en el receptor de la lambda. Puedes llamar a sus propiedades y métodos directamente sin prefijo (`titulo = "Hola"` en lugar de `this.titulo = "Hola"`). *Ideal para:* configurar propiedades de un objeto (`apply`, `run`, `with`).
+
+- **`it` (Argumento de la lambda):** El objeto se pasa como parámetro ordinario. Puedes usar el nombre implícito `it` o asignarle un nombre semántico (`{ usuario -> ... }`). *Ideal para:* pasar el objeto como argumento a otras funciones o cuando el nombre `it` aporta claridad (`let`, `also`).
 
 ### Dimensión 2: ¿Retornar el Objeto o el Resultado de la Lambda?
 
-- **Retorna el Objeto de Contexto (`this` o `it`):** Devuelve la misma instancia sobre la que se llamó la función.  
-  *Ideal para:* Encadenamiento de métodos continuos (*fluent chaining*), como configurar un objeto y pasarlo inmediatamente (`apply`, `also`).
-- **Retorna el Resultado de la Lambda:** Devuelve el valor de la **última línea** de código ejecutada dentro del bloque.  
-  *Ideal para:* Transformaciones de datos o cálculos derivados (`let`, `run`, `with`).
+- **Retorna el Objeto de Contexto (`this` o `it`):** Devuelve la misma instancia sobre la que se llamó la función. *Ideal para:* encadenamiento de métodos continuos (*fluent chaining*), como configurar un objeto y pasarlo inmediatamente (`apply`, `also`).
+
+- **Retorna el Resultado de la Lambda:** Devuelve el valor de la **última línea** de código ejecutada dentro del bloque. *Ideal para:* transformaciones de datos o cálculos derivados (`let`, `run`, `with`). Ojo: si la última línea es una asignación (`nivel = 4`) o un `println`, lo que se devuelve es `Unit`.
 
 ---
 
@@ -109,26 +99,21 @@ flowchart LR
 | **`run`** | **`this`** (implícito) | **Resultado de la lambda** | Sí (`obj.run { ... }`) | Configurar un objeto y calcular/devolver inmediatamente un resultado derivado. |
 | **`with`** | **`this`** (implícito) | **Resultado de la lambda** | No (`with(obj) { ... }`) | Agrupar múltiples lecturas o llamadas sobre un objeto que ya sabemos que no es nulo. |
 
+Visto como un recorrido, lo único que cambia es qué sale por la derecha:
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/scope/scope-salida.svg"
+<figcaption><code>apply</code> y <code>also</code> devuelven la misma caja que entró (ya modificada, si el bloque la cambia). <code>let</code>, <code>run</code> y <code>with</code> devuelven lo que calcule la última línea.</figcaption>
+</figure>
+
 ---
 
 ## 4. Guía Visual: ¿Cuál Debo Elegir en 3 Preguntas?
 
-```mermaid
-flowchart TD
-    Inicio(["¿Qué necesitas hacer con el objeto?"]) --> Q1{"¿Solo quieres configurar sus propiedades y retornar el propio objeto?"}
-    
-    Q1 -- "Sí" --> Apply["Usa 'apply'<br/>(Acceso: this | Retorno: this)"]
-    Q1 -- "No" --> Q2{"¿Quieres realizar una acción secundaria (ej. logging) sin alterar el objeto?"}
-    
-    Q2 -- "Sí" --> Also["Usa 'also'<br/>(Acceso: it | Retorno: it)"]
-    Q2 -- "No" --> Q3{"¿Quieres proteger contra nulos (?.) o transformar el valor a otro tipo?"}
-    
-    Q3 -- "Sí" --> Let["Usa 'let'<br/>(Acceso: it | Retorno: resultado de la lambda)"]
-    Q3 -- "No" --> Q4{"¿El objeto ya existe en una variable y solo quieres agrupar llamadas sin repetir su nombre?"}
-    
-    Q4 -- "Sí" --> With["Usa 'with'<br/>with(objeto) { ... }"]
-    Q4 -- "No" --> Run["Usa 'run'<br/>objeto.run { ... }"]
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/scope/scope-decision.svg"
+<figcaption>Empieza por la pregunta de arriba: ¿qué quieres que te devuelva?</figcaption>
+</figure>
 
 ---
 
@@ -139,6 +124,7 @@ flowchart TD
 La regla mental de **`apply`** es: *"Toma este objeto recién creado, **aplica** las siguientes asignaciones a sus propiedades y devuélvelo listo para usar"*.
 
 Dentro del bloque `{ }`:
+
 - El objeto de contexto es **`this`** (puedes asignar directamente sus atributos sin anteponer el nombre de la variable).
 - La función **retorna la propia instancia configurada**.
 
@@ -202,22 +188,24 @@ fun main() {
     La respuesta es fundamental para comprender la arquitectura moderna en Kotlin y Android: **los modelos de datos deben ser inmutables**.
 
     - **Modelos de Dominio (`data class` inmutable):** Las entidades de datos (`Usuario`, `Partida`, `ItemInventario`) se modelan mediante `data class` con propiedades de solo lectura (`val`). Se inicializan de una sola vez en el constructor primario usando parámetros con nombre:
-      ```kotlin
-      // ✔️ Correcto: Inmutable, thread-safe y predecible
-      data class Usuario(
-          val id: Long,
-          val nombre: String,
-          val email: String,
-          val activo: Boolean = true
-      )
 
-      val usuario = Usuario(
-          id = 42,
-          nombre = "Lucía",
-          email = "lucia@pmdm.es"
-      )
-      ```
-      En una `data class` inmutable con `val`, **`apply` no tiene sentido**, porque las propiedades no se pueden reasignar después de llamar al constructor.
+        ```kotlin
+        // ✔️ Correcto: Inmutable, thread-safe y predecible
+        data class Usuario(
+            val id: Long,
+            val nombre: String,
+            val email: String,
+            val activo: Boolean = true
+        )
+
+        val usuario = Usuario(
+            id = 42,
+            nombre = "Lucía",
+            email = "lucia@pmdm.es"
+        )
+        ```
+
+        En una `data class` inmutable con `val`, **`apply` no tiene sentido**, porque las propiedades no se pueden reasignar después de llamar al constructor. Para «cambiar» un valor se crea una copia: `usuario.copy(activo = false)`.
 
     - **El verdadero propósito de `apply`:** Se reserva para **objetos de configuración, constructores (Builders) y componentes operativos de Android / librerías** (como canales de notificación, lienzos gráficos `Paint`, configuraciones de red o animaciones), que por diseño son clases de soporte con estado mutable interno y decenas de parámetros opcionales.
 
@@ -287,6 +275,17 @@ fun main() {
 }
 ```
 
+#### `run { }` sin objeto: agrupar un cálculo en un bloque
+
+`run` también existe **sin objeto delante**. Ejecuta el bloque y devuelve su última línea. Su uso más habitual es como alternativa de varias líneas detrás de un `?:`:
+
+```kotlin
+val nombre = jugador?.nombre ?: run {
+    println("⚠ Jugador desconocido")
+    "Invitado"                         // valor que se usa si jugador o su nombre son null
+}
+```
+
 ---
 
 ### 5.5. `with`: Agrupación de Llamadas sobre un Objeto
@@ -314,7 +313,91 @@ fun main() {
 
 ---
 
-## 6. Retos Prácticos
+## 6. Pruébalo: laboratorio de *scope functions*
+
+Elige la función, qué se hace dentro del bloque y si el jugador puede ser `null`. El playground te muestra qué es `this` o `it` dentro del bloque, qué vale `resultado`, de qué tipo es y si el jugador original ha cambiado. Si eliges la forma incorrecta de referirte al objeto, verás el error que daría el compilador.
+
+<div class="cpg" data-cpg="scopefn"></div>
+
+Cosas que conviene probar:
+
+- Con «subir de nivel», compara `apply` (devuelve el jugador) con `run` (devuelve `Unit`, porque la última línea es una asignación).
+- Con «jugador = null», mira qué devuelve cada función y si llega a ejecutarse el bloque.
+- Prueba `with` con un jugador que puede ser `null`: no compila.
+
+---
+
+## 7. Errores Frecuentes
+
+### 7.1. La trampa de `?.let { } ?: …`
+
+Parece un `if-else`, pero no lo es: la parte de `?:` se ejecuta si **toda la expresión de la izquierda** vale `null`, y eso pasa cuando el objeto es `null` **o cuando el bloque de `let` devuelve `null`**:
+
+```kotlin
+fun apodoDe(nombre: String): String? = if (nombre == "Ana") "La Imparable" else null
+
+fun main() {
+    val nombre: String? = "Luis"
+
+    nombre?.let { apodoDe(it) } ?: println("⚠ No hay jugador")   // ❌ se imprime, ¡aunque hay jugador!
+}
+```
+
+Si lo que quieres es «haz esto si no es `null` y, si no, aquello», usa un `if`, o `also`, que devuelve el propio objeto y no el resultado del bloque:
+
+```kotlin
+if (nombre != null) println(apodoDe(nombre)) else println("⚠ No hay jugador")   // ✅
+
+nombre?.also { println(apodoDe(it)) } ?: println("⚠ No hay jugador")            // ✅
+```
+
+### 7.2. Un `it` dentro de otro `it`
+
+Si anidas dos funciones que usan `it`, el de dentro **tapa** al de fuera y es fácil equivocarse (el compilador avisa con *«Implicit parameter 'it' of enclosing lambda is shadowed»*). Pon nombre a los parámetros:
+
+```kotlin
+// ❌ ¿Qué es cada 'it'? Aquí los dos son el equipo
+jugador?.let { equipo?.let { println("${it.nombre} juega en ${it.nombre}") } }
+
+// ✅ Con nombres, se lee solo
+jugador?.let { j -> equipo?.let { e -> println("${j.nombre} juega en ${e.nombre}") } }
+```
+
+### 7.3. El `this` que no es el que crees
+
+Dentro de `apply`, `run` o `with`, si escribes una propiedad que el objeto **no tiene**, Kotlin la busca en la clase que contiene el código. Compila sin errores, pero modifica otra cosa:
+
+```kotlin
+class PantallaPerfil {
+    var cargando = false
+
+    fun crearDialogo() = DialogoConfig().apply {
+        titulo = "¿Cerrar sesión?"
+        cargando = true      // ⚠ DialogoConfig no tiene 'cargando': cambia el de la pantalla
+    }
+}
+```
+
+Si el bloque mezcla propiedades del objeto y de la clase, usa `also` (con `it.` delante queda claro de quién es cada una) o escribe `this@PantallaPerfil.cargando`.
+
+### 7.4. Abusar de ellas
+
+Las *scope functions* hacen el código más corto, no siempre más claro. Una cadena de cinco seguidas obliga a ir siguiendo qué es `it` o `this` en cada paso:
+
+```kotlin
+// ❌ Ingenioso, pero cuesta leerlo
+val saludo = jugador?.let { it.nombre }?.run { trim() }?.also { log(it) }?.let { "Hola, $it" } ?: "Hola, invitado"
+
+// ✅ Igual de corto y se entiende a la primera
+val nombre = jugador?.nombre?.trim()
+val saludo = if (nombre != null) "Hola, $nombre" else "Hola, invitado"
+```
+
+**Regla práctica:** usa una *scope function* cuando ahorre una variable o una repetición y se lea de un vistazo. Si dudas, un `if` o una variable con buen nombre suelen ser mejor opción.
+
+---
+
+## 8. Retos Prácticos
 
 ### 🟢 Reto 1: Inicialización con `apply` (Básico)
 Diseña una clase mutable `DialogoConfig` con propiedades `titulo`, `mensaje` y `cancelable: Boolean = true`. Crea una instancia utilizando `apply` para configurar sus tres propiedades e imprímela.
@@ -339,19 +422,19 @@ Diseña una clase mutable `DialogoConfig` con propiedades `titulo`, `mensaje` y 
     ```
 
 ### 🟡 Reto 2: Encadenamiento con `let` y `also` (Intermedio)
-Dada una lista de números en texto `listOf("10", "20", "invalido", "40")`, utiliza operaciones funcionales encadenadas con `let` para transformar a número y `also` para registrar en consola cada número válido procesado.
+Dada una lista de números en texto `listOf("10", "20", "invalido", "40")`, conviértela a números descartando los que no lo son (`mapNotNull`), usa `also` para mostrar en consola la lista de números válidos sin romper la cadena, y `let` para calcular a partir de ella un texto con la suma total.
 
 ??? tip "Ver solución"
     ```kotlin
     fun main() {
         val strings = listOf("10", "20", "error", "40")
 
-        val total = strings
-            .mapNotNull { it.toIntOrNull() }
-            .also { println("Números válidos filtrados: $it") }
-            .sum()
+        val resumen = strings
+            .mapNotNull { it.toIntOrNull() }                         // [10, 20, 40]
+            .also { validos -> println("Números válidos: $validos") } // log, devuelve la misma lista
+            .let { validos -> "Suma total: ${validos.sum()}" }       // transforma la lista en un texto
 
-        println("Suma total: $total")
+        println(resumen)
     }
     ```
 

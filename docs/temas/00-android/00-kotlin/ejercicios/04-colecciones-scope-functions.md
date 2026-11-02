@@ -958,7 +958,7 @@ fun main() {
 
 ### Ejercicio 4.10: Configuración de Objetos con `apply` y Trazas con `also`
 📄 **Archivo:** `E10_ScopeFunctionsApplyAlso.kt`  
-📚 **Teoría de referencia:** [apply: Configuración de Objetos](../31-scope-functions.md#21-apply-configuracion-e-inicializacion-de-objetos) y [also: Efectos Secundarios y Logging](../31-scope-functions.md#23-also-efectos-secundarios-side-effects-y-logging)
+📚 **Teoría de referencia:** [apply: Configuración de Objetos](../31-scope-functions.md#51-apply-configuracion-e-inicializacion-de-objetos) y [also: Efectos Secundarios y Logging](../31-scope-functions.md#53-also-efectos-secundarios-side-effects-y-logging)
 
 #### 1. Enunciado y Código de Partida
 
@@ -1030,7 +1030,7 @@ Estado final -> Volumen: 75, Brillo: 80, Subtítulos: true
 
 ### Ejercicio 4.11: Transformación DTO a Dominio con `run` y `let` (Data Mapper)
 📄 **Archivo:** `E11_MapperDtoADominio.kt`  
-📚 **Teoría de referencia:** [let: Operaciones Null-Safe](../31-scope-functions.md#22-let-operaciones-null-safe-y-transformaciones-locales) y [run: Cómputo de Resultado](../31-scope-functions.md#24-run-configuracion-y-computo-de-resultado)
+📚 **Teoría de referencia:** [let: Operaciones Null-Safe](../31-scope-functions.md#52-let-operaciones-null-safe-y-transformaciones-locales) y [run: Cómputo de Resultado](../31-scope-functions.md#54-run-configuracion-y-computo-de-resultado)
 
 #### 1. Enunciado y Código de Partida
 
@@ -1127,7 +1127,7 @@ DTO Inválido transformado: null
 
 ### Ejercicio 4.12: Pipeline Funcional Completo: Analítica de Sesiones
 📄 **Archivo:** `E12_PipelineAnaliticaCompleta.kt`  
-📚 **Teoría de referencia:** [Tabla Maestra de Scope Functions](../31-scope-functions.md#1-tabla-maestra-de-seleccion-rapida) y [Operaciones Funcionales](../42-listas.md#4-operaciones-funcionales-imprescindibles)
+📚 **Teoría de referencia:** [Tabla Maestra de Scope Functions](../31-scope-functions.md#3-tabla-maestra-de-seleccion-rapida) y [Operaciones Funcionales](../42-listas.md#4-operaciones-funcionales-imprescindibles)
 
 #### 1. Enunciado y Código de Partida
 

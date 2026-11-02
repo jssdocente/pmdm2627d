@@ -2566,3 +2566,50 @@
 .md-typeset .cpc-pg-full .cpg-field select {
   max-width: 100%;
 }
+
+/* ---------- Scope functions (apuntes 31-scope-functions) */
+
+.md-typeset .csf-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.md-typeset .csf-box {
+  display: flex;
+  flex: 1 1 9rem;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-width: 15rem;
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid;
+  border-radius: 0.6rem;
+  font-size: 0.65rem;
+}
+
+.md-typeset .csf-box code {
+  padding: 0;
+  background: transparent;
+  font-size: 0.62rem;
+  word-break: break-word;
+}
+
+.md-typeset .csf-in,
+.md-typeset .csf-obj { border-color: #2eaa6e; background: rgba(46, 170, 110, 0.12); }
+.md-typeset .csf-block { border-color: var(--cpg-border); background: var(--md-default-bg-color); }
+.md-typeset .csf-res { border-color: #e09400; background: rgba(240, 160, 32, 0.14); }
+.md-typeset .csf-err { border-color: #e5484d; background: rgba(229, 72, 77, 0.10); }
+
+.md-typeset .csf-arrow {
+  align-self: center;
+  font-size: 1.1rem;
+  color: var(--cpg-muted);
+}
+
+.md-typeset ul.csf-facts {
+  margin: 0.6rem 0 0.2rem;
+  font-size: 0.68rem;
+}

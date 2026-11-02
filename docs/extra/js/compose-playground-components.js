@@ -24,6 +24,7 @@
  *   <div class="cpg" data-cpg="flowhot"></div>    -> flujo frío, StateFlow y SharedFlow con suscriptores (apuntes 52-flows)
  *   <div class="cpg" data-cpg="mainthread"></div> -> bloquear el hilo principal frente a suspender, y ANR (apuntes 51-corrutinas)
  *   <div class="cpg" data-cpg="coroutines"></div> -> secuencial, async/await, cancelación y errores (apuntes 51-corrutinas)
+ *   <div class="cpg" data-cpg="scopefn"></div>    -> apply, also, let, run y with: this/it, resultado y nulos (apuntes 31-scope-functions)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -3620,6 +3621,122 @@
     reset();
   }
 
+  // ------------------------------------ scope functions (apuntes 31-scope)
+
+  var SF_FUNCS = {
+    apply: { recv: "this", ret: "obj" },
+    also: { recv: "it", ret: "obj" },
+    let: { recv: "it", ret: "res" },
+    run: { recv: "this", ret: "res" },
+    "with": { recv: "this", ret: "res" }
+  };
+
+  var SF_BODIES = {
+    nivel: { label: "Subir de nivel", "this": "nivel += 1", it: "it.nivel += 1", type: "Unit" },
+    texto: { label: "Construir un texto", "this": "\"$nombre (nivel $nivel)\"", it: "\"${it.nombre} (nivel ${it.nivel})\"", type: "String" },
+    log: { label: "Escribir un log", "this": "println(\"Jugador: $nombre\")", it: "println(\"Jugador: ${it.nombre}\")", type: "Unit" }
+  };
+
+  var SF_SOURCES = [
+    { value: "val", label: "Jugador (no puede ser null)" },
+    { value: "nullable", label: "Jugador? con valor" },
+    { value: "null", label: "Jugador? = null" }
+  ];
+
+  function scopeFunctionsPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = { fn: "apply", body: "nivel", src: "val", wrong: false };
+    var ui = shell(root, "Playground: laboratorio de scope functions", "Elige la función y qué se hace dentro: mira qué entra, qué es this o it y qué sale");
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(segmented("Función", Object.keys(SF_FUNCS).map(function (k) { return { value: k, label: k }; }), state.fn, function (v) { state.fn = v; render(); }));
+      ui.controls.appendChild(segmented("Dentro del bloque", Object.keys(SF_BODIES).map(function (k) { return { value: k, label: SF_BODIES[k].label }; }), state.body, function (v) { state.body = v; render(); }));
+      ui.controls.appendChild(select("El jugador", SF_SOURCES, state.src, function (v) { state.src = v; render(); }));
+      ui.controls.appendChild(segmented("Cómo te refieres al objeto", [{ value: "ok", label: "Como toca (" + SF_FUNCS[state.fn].recv + ")" },
+        { value: "bad", label: "Al revés (" + (SF_FUNCS[state.fn].recv === "this" ? "it" : "this") + ")" }], state.wrong ? "bad" : "ok", function (v) { state.wrong = v === "bad"; render(); }));
+    }
+
+    // Simula la ejecución y devuelve lo que pasa (o el error de compilación).
+    function evaluate() {
+      var f = SF_FUNCS[state.fn], b = SF_BODIES[state.body];
+      var nullable = state.src !== "val";
+      var isNull = state.src === "null";
+      var style = state.wrong ? (f.recv === "this" ? "it" : "this") : f.recv;
+      var r = { style: style, nullable: nullable, isNull: isNull, ran: !isNull, console: [], before: { n: "Ana", lv: 3 }, after: { n: "Ana", lv: 3 } };
+      if (state.fn === "with" && nullable) {
+        r.error = "Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type Jugador?";
+        r.errorHint = "with no es una función de extensión: no admite ?. delante. Con un objeto que puede ser null, usa ?.run { } o ?.let { }.";
+        return r;
+      }
+      if (state.wrong) {
+        r.error = style === "it" ? "Unresolved reference: it" : "Unresolved reference: " + (state.body === "nivel" ? "nivel" : "nombre");
+        r.errorHint = style === "it" ? "En " + state.fn + " el objeto es this, no hay ningún it: escribe nivel o nombre directamente."
+          : "En " + state.fn + " el objeto llega como it: escribe it.nombre o it.nivel (o ponle nombre: { jugador -> … }).";
+        return r;
+      }
+      if (isNull) { r.value = "null"; r.type = (f.ret === "obj" ? "Jugador" : b.type) + "?"; return r; }
+      if (state.body === "nivel") r.after.lv = 4;
+      if (state.body === "log") r.console.push("Jugador: Ana");
+      if (f.ret === "obj") { r.value = "Jugador(nombre=Ana, nivel=" + r.after.lv + ")"; r.type = "Jugador"; r.same = true; }
+      else if (b.type === "Unit") { r.value = "kotlin.Unit"; r.type = "Unit"; }
+      else { r.value = "\"Ana (nivel 3)\""; r.type = "String"; }
+      if (nullable) r.type += "?";
+      r.console.push(r.value.replace(/^"|"$/g, ""));
+      return r;
+    }
+
+    function code(r) {
+      var b = SF_BODIES[state.body];
+      var decl = state.src === "val" ? "val jugador = Jugador(\"Ana\", nivel = 3)" : state.src === "nullable" ? "val jugador: Jugador? = Jugador(\"Ana\", nivel = 3)" : "val jugador: Jugador? = null";
+      var call = state.fn === "with" ? "with(jugador) {" : "jugador" + (r.nullable ? "?." : ".") + state.fn + " {";
+      return ["data class Jugador(val nombre: String, var nivel: Int)", "", decl,
+        "val resultado = " + call, "    " + b[r.style], "}", "println(resultado)" + (r.error ? "" : "   // " + r.value.replace(/^"|"$/g, ""))].join("\n");
+    }
+
+    function box(cls, title, lines) {
+      return h("div", { class: "csf-box " + cls }, [h("strong", { text: title })].concat(lines.map(function (l) { return h("code", { text: l }); })));
+    }
+
+    function renderStage() {
+      var r = evaluate();
+      ui.stage.innerHTML = "";
+      var f = SF_FUNCS[state.fn];
+      var col = h("div", { class: "cfl-col" });
+      var inBox = box("csf-in", "Entra", r.isNull ? ["jugador = null"] : ["jugador", "Ana · nivel 3"]);
+      var blockLines = r.error ? ["no compila"] : r.isNull ? ["no se ejecuta", "(jugador es null)"] : [(r.style === "this" ? "this" : "it") + " = jugador", SF_BODIES[state.body][r.style]];
+      var block = box("csf-block" + (r.error ? " csf-err" : ""), "Bloque { }", blockLines);
+      var outLines = r.error ? ["—"] : [r.value, "tipo: " + r.type];
+      var out = box(r.error ? "csf-err" : f.ret === "obj" && !r.isNull ? "csf-obj" : "csf-res", "Sale: resultado", outLines);
+      col.appendChild(h("div", { class: "csf-flow" }, [inBox, h("span", { class: "csf-arrow", text: "→" }), block, h("span", { class: "csf-arrow", text: "→" }), out]));
+      if (r.error) {
+        col.appendChild(h("pre", { class: "cpc-koin-log cpc-sem-result cpc-sem-fail", text: "e: " + r.error }));
+      } else {
+        var facts = [];
+        facts.push(r.isNull ? "El bloque no se ejecuta: con ?. y jugador null, todo vale null." :
+          f.ret === "obj" ? "resultado es el mismo objeto que jugador (resultado === jugador)." :
+          SF_BODIES[state.body].type === "Unit" ? "La última línea no produce ningún valor, así que resultado es Unit." :
+          "resultado es lo que calcula la última línea del bloque.");
+        if (!r.isNull) facts.push(r.after.lv !== r.before.lv ? "El jugador original ha cambiado: ahora tiene nivel 4." : "El jugador original no ha cambiado.");
+        col.appendChild(h("ul", { class: "csf-facts" }, facts.map(function (t) { return h("li", { text: t }); })));
+        col.appendChild(h("p", { class: "cpc-navstack-title", text: "Consola" }));
+        col.appendChild(h("pre", { class: "cpc-koin-log cfl-console", text: r.console.join("\n") || "null" }));
+      }
+      ui.stage.appendChild(col);
+      ui.code.set(code(r));
+      ui.hint.textContent = r.error ? r.errorHint : {
+        apply: "apply: el objeto es this y devuelve el propio objeto. Ideal para configurarlo.",
+        also: "also: el objeto es it y devuelve el propio objeto. Ideal para hacer algo más sin cambiar lo que fluye (un log, una comprobación).",
+        let: "let: el objeto es it y devuelve la última línea. Con ?. es la forma habitual de trabajar con algo que puede ser null.",
+        run: "run: el objeto es this y devuelve la última línea. Para calcular algo usando varias propiedades del objeto.",
+        "with": "with(jugador): como run, pero el objeto va entre paréntesis. No admite ?., así que úsalo con objetos que no pueden ser null."
+      }[state.fn];
+    }
+
+    function render() { renderControls(); renderStage(); }
+    render();
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -3640,7 +3757,8 @@
     flowops: flowOperatorsPlayground,
     flowhot: flowHotPlayground,
     mainthread: mainThreadPlayground,
-    coroutines: coroutinesPlayground
+    coroutines: coroutinesPlayground,
+    scopefn: scopeFunctionsPlayground
   };
 
   function init() {

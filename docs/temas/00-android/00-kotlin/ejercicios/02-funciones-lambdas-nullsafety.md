@@ -857,7 +857,7 @@ Precio con divisa formateado: 90.0 EUR
 
 ### Ejercicio 2.5: Validaciones Idiomáticas con `takeIf` y `takeUnless`
 📄 **Archivo:** `E05_TakeIfTakeUnless.kt`  
-📚 **Teoría de referencia:** [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos) y [Scope Functions](../31-scope-functions.md#1-tabla-maestra-de-seleccion-rapida)
+📚 **Teoría de referencia:** [Operadores para el Manejo Seguro de Nulos](../14-null-safety.md#2-operadores-para-el-manejo-seguro-de-nulos) y [Scope Functions](../31-scope-functions.md#3-tabla-maestra-de-seleccion-rapida)
 
 #### 1. Enunciado y Requisitos
 

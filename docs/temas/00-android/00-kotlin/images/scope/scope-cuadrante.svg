@@ -1,0 +1,47 @@
+<svg class="arq-svg" viewBox="0 0 760 400" role="img" aria-labelledby="arq-sqd-t arq-sqd-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-sqd-t">Las cinco scope functions según dos preguntas</title>
+  <desc id="arq-sqd-d">Tabla de dos por dos. Filas: el objeto se usa como this o como it. Columnas: la función devuelve el propio objeto o el resultado de la lambda. apply está en this y devuelve el objeto: sirve para configurar. also está en it y devuelve el objeto: sirve para hacer algo más, como un log. run y with están en this y devuelven el resultado: sirven para calcular algo con el objeto. let está en it y devuelve el resultado: sirve para transformar y para los nulos.</desc>
+  <defs>
+    <marker id="arq-sqd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-sqd-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="470" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">¿Qué devuelve?</text>
+  <rect x="190" y="36" width="280" height="34" rx="8" class="arq-data"/>
+  <text x="330" y="58" class="arq-t arq-s arq-strong" text-anchor="middle">el propio objeto</text>
+  <rect x="480" y="36" width="260" height="34" rx="8" class="arq-dom"/>
+  <text x="610" y="58" class="arq-t arq-s arq-strong" text-anchor="middle">el resultado de la última línea</text>
+  <text x="20" y="24" class="arq-t arq-s arq-strong">¿Cómo lo llamas</text>
+  <text x="20" y="40" class="arq-t arq-s arq-strong">dentro del bloque?</text>
+  <rect x="20" y="80" width="160" height="150" rx="8" class="arq-ui"/>
+  <text x="100" y="146" class="arq-t arq-h arq-code" text-anchor="middle">this</text>
+  <text x="100" y="168" class="arq-t arq-xs" text-anchor="middle">receptor implícito:</text>
+  <text x="100" y="184" class="arq-t arq-code arq-xs" text-anchor="middle">titulo = "Hola"</text>
+  <rect x="20" y="240" width="160" height="150" rx="8" class="arq-gray"/>
+  <text x="100" y="306" class="arq-t arq-h arq-code" text-anchor="middle">it</text>
+  <text x="100" y="328" class="arq-t arq-xs" text-anchor="middle">parámetro:</text>
+  <text x="100" y="344" class="arq-t arq-code arq-xs" text-anchor="middle">it.titulo = "Hola"</text>
+  <rect x="190" y="80" width="280" height="150" rx="10" class="arq-box"/>
+  <text x="330.0" y="118" class="arq-t arq-h arq-code" text-anchor="middle">apply</text>
+  <text x="330.0" y="140" class="arq-t arq-s" text-anchor="middle">configurar un objeto</text>
+  <text x="208" y="172" class="arq-t arq-code arq-xs">Dialogo().apply {</text>
+  <text x="208" y="190" class="arq-t arq-code arq-xs">    titulo = "Hola"</text>
+  <text x="208" y="208" class="arq-t arq-code arq-xs">}</text>
+  <rect x="480" y="80" width="260" height="150" rx="10" class="arq-box"/>
+  <text x="610.0" y="118" class="arq-t arq-h arq-code" text-anchor="middle">run · with</text>
+  <text x="610.0" y="140" class="arq-t arq-s" text-anchor="middle">calcular algo con el objeto</text>
+  <text x="498" y="172" class="arq-t arq-code arq-xs">motor.run { calcular() }</text>
+  <text x="498" y="190" class="arq-t arq-code arq-xs">with(stats) { nivel * 2 }</text>
+  <text x="498" y="208" class="arq-t arq-code arq-xs"></text>
+  <rect x="190" y="240" width="280" height="150" rx="10" class="arq-box"/>
+  <text x="330.0" y="278" class="arq-t arq-h arq-code" text-anchor="middle">also</text>
+  <text x="330.0" y="300" class="arq-t arq-s" text-anchor="middle">«y además…»: log, comprobar</text>
+  <text x="208" y="332" class="arq-t arq-code arq-xs">ruta.also {</text>
+  <text x="208" y="350" class="arq-t arq-code arq-xs">    println(it)</text>
+  <text x="208" y="368" class="arq-t arq-code arq-xs">}</text>
+  <rect x="480" y="240" width="260" height="150" rx="10" class="arq-box"/>
+  <text x="610.0" y="278" class="arq-t arq-h arq-code" text-anchor="middle">let</text>
+  <text x="610.0" y="300" class="arq-t arq-s" text-anchor="middle">transformar, o si no es null</text>
+  <text x="498" y="332" class="arq-t arq-code arq-xs">nombre?.let {</text>
+  <text x="498" y="350" class="arq-t arq-code arq-xs">    it.length</text>
+  <text x="498" y="368" class="arq-t arq-code arq-xs">}</text>
+</svg>
