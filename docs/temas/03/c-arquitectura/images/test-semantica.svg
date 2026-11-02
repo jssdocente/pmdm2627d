@@ -1,0 +1,77 @@
+<svg class="arq-svg" viewBox="0 0 760 480" role="img" aria-labelledby="arq-sem-t arq-sem-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-sem-t">La pantalla de catálogo y su árbol semántico</title>
+  <desc id="arq-sem-d">A la izquierda, la pantalla con el título Catálogo y tres filas: Hades y Celeste de PC, y Zelda de Switch marcada como favorita. En el centro, su árbol semántico: cada fila clicable es un nodo que reúne los textos de sus hijos, y dentro tiene un nodo botón con su descripción de accesibilidad. A la derecha, los finders: onNodeWithText Zelda encuentra un nodo; onNodeWithText PC encuentra dos y falla; onNodeWithContentDescription Quitar de favoritos encuentra el botón de Zelda. Abajo, en estado Cargando, el indicador se encuentra por su testTag.</desc>
+  <defs>
+    <marker id="arq-sem-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-sem-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <!-- Pantalla -->
+  <text x="115" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">Lo que ves</text>
+  <rect x="20" y="36" width="190" height="320" rx="16" class="arq-box"/>
+  <text x="38" y="68" class="arq-t arq-h">Catálogo</text>
+  <line x1="20" y1="84" x2="210" y2="84" class="arq-guide"/>
+  <text x="38" y="112" class="arq-t arq-strong">Hades</text>
+  <text x="38" y="130" class="arq-t arq-xs arq-muted">PC</text>
+  <text x="186" y="122" class="arq-t" text-anchor="middle">♡</text>
+  <line x1="32" y1="146" x2="198" y2="146" class="arq-guide"/>
+  <text x="38" y="174" class="arq-t arq-strong">Celeste</text>
+  <text x="38" y="192" class="arq-t arq-xs arq-muted">PC</text>
+  <text x="186" y="184" class="arq-t" text-anchor="middle">♡</text>
+  <line x1="32" y1="208" x2="198" y2="208" class="arq-guide"/>
+  <text x="38" y="236" class="arq-t arq-strong">Zelda</text>
+  <text x="38" y="254" class="arq-t arq-xs arq-muted">Switch</text>
+  <text x="186" y="246" class="arq-t arq-red" text-anchor="middle">♥</text>
+  <!-- Árbol -->
+  <text x="380" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">Lo que ve el test (árbol semántico)</text>
+  <line x1="252" y1="64" x2="252" y2="306" class="arq-guide"/>
+  <rect x="236" y="36" width="64" height="26" rx="6" class="arq-gray"/>
+  <text x="268" y="53" class="arq-t arq-code arq-xs" text-anchor="middle">Root</text>
+  <line x1="252" y1="83" x2="264" y2="83" class="arq-guide"/>
+  <rect x="264" y="70" width="170" height="26" rx="6" class="arq-box"/>
+  <text x="274" y="87" class="arq-t arq-code arq-xs">Text "Catálogo"</text>
+  <line x1="252" y1="124" x2="264" y2="124" class="arq-guide"/>
+  <rect x="264" y="106" width="250" height="38" rx="6" class="arq-ui"/>
+  <text x="274" y="121" class="arq-t arq-xs arq-muted">fila · onClick</text>
+  <text x="274" y="137" class="arq-t arq-code arq-xs">Text "Hades", "PC"</text>
+  <rect x="276" y="150" width="242" height="24" rx="6" class="arq-box"/>
+  <text x="286" y="166" class="arq-t arq-code arq-xs">Button "Añadir a favoritos"</text>
+  <line x1="252" y1="200" x2="264" y2="200" class="arq-guide"/>
+  <rect x="264" y="182" width="250" height="38" rx="6" class="arq-ui"/>
+  <text x="274" y="197" class="arq-t arq-xs arq-muted">fila · onClick</text>
+  <text x="274" y="213" class="arq-t arq-code arq-xs">Text "Celeste", "PC"</text>
+  <rect x="276" y="226" width="242" height="24" rx="6" class="arq-box"/>
+  <text x="286" y="242" class="arq-t arq-code arq-xs">Button "Añadir a favoritos"</text>
+  <line x1="252" y1="276" x2="264" y2="276" class="arq-guide"/>
+  <rect x="264" y="258" width="250" height="38" rx="6" class="arq-ui"/>
+  <text x="274" y="273" class="arq-t arq-xs arq-muted">fila · onClick</text>
+  <text x="274" y="289" class="arq-t arq-code arq-xs">Text "Zelda", "Switch"</text>
+  <rect x="276" y="302" width="242" height="24" rx="6" class="arq-box"/>
+  <text x="286" y="318" class="arq-t arq-code arq-xs">Button "Quitar de favoritos"</text>
+  <text x="380" y="346" class="arq-t arq-xs arq-muted" text-anchor="middle">Una fila clicable reúne en un nodo los textos de sus hijos.</text>
+  <!-- Finders -->
+  <text x="645" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">Finders</text>
+  <rect x="548" y="150" width="200" height="44" rx="8" class="arq-warn"/>
+  <text x="558" y="168" class="arq-t arq-code arq-xs">onNodeWithText("PC")</text>
+  <text x="558" y="185" class="arq-t arq-xs arq-strong">✗ 2 nodos: el test falla</text>
+  <path d="M548,164 C530,150 525,134 516,128" class="arq-flow" marker-end="url(#arq-sem-f)"/>
+  <path d="M548,182 C530,192 526,200 516,204" class="arq-flow" marker-end="url(#arq-sem-f)"/>
+  <rect x="548" y="246" width="200" height="44" rx="8" class="arq-data"/>
+  <text x="558" y="264" class="arq-t arq-code arq-xs">onNodeWithText("Zelda")</text>
+  <text x="558" y="281" class="arq-t arq-xs arq-strong">✓ 1 nodo: la fila</text>
+  <line x1="548" y1="272" x2="518" y2="276" class="arq-dep" marker-end="url(#arq-sem-a)"/>
+  <rect x="548" y="300" width="200" height="56" rx="8" class="arq-data"/>
+  <text x="558" y="317" class="arq-t arq-code arq-xs">onNodeWithContent</text>
+  <text x="558" y="331" class="arq-t arq-code arq-xs">Description("Quitar…")</text>
+  <text x="558" y="347" class="arq-t arq-xs arq-strong">✓ 1 nodo: el botón</text>
+  <line x1="548" y1="320" x2="518" y2="315" class="arq-dep" marker-end="url(#arq-sem-a)"/>
+  <!-- Estado Cargando -->
+  <rect x="20" y="380" width="728" height="84" rx="12" class="arq-gray"/>
+  <text x="36" y="404" class="arq-t arq-s arq-strong">¿Y lo que no tiene texto? En estado Cargando:</text>
+  <circle cx="60" cy="436" r="14" class="arq-dep" style="stroke:#4a7dff; stroke-width:4; stroke-dasharray:60 30"/>
+  <text x="92" y="432" class="arq-t arq-code arq-xs">CircularProgressIndicator(</text>
+  <text x="92" y="448" class="arq-t arq-code arq-xs">  Modifier.testTag("cargando"))</text>
+  <line x1="340" y1="438" x2="420" y2="438" class="arq-dep" marker-end="url(#arq-sem-a)"/>
+  <rect x="426" y="418" width="200" height="40" rx="8" class="arq-data"/>
+  <text x="526" y="443" class="arq-t arq-code arq-xs" text-anchor="middle">onNodeWithTag("cargando")</text>
+  <text x="640" y="443" class="arq-t arq-xs">✓ por su etiqueta</text>
+</svg>

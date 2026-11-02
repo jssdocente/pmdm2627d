@@ -18,6 +18,7 @@
  *   <div class="cpg" data-cpg="navigation"></div> -> pila de Navigation 3, pestañas y transiciones (apuntes 3B.1)
  *   <div class="cpg" data-cpg="adaptive"></div>   -> ventana redimensionable: clases de tamaño y navegación adaptativa (apuntes 3B.2)
  *   <div class="cpg" data-cpg="koin"></div>       -> resolutor de Koin: single, factory, bind y errores (apuntes 3C.3)
+ *   <div class="cpg" data-cpg="semantics"></div>  -> árbol semántico: finders, acciones y errores de los tests de UI (apuntes 3C.4)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -2472,6 +2473,260 @@
     open("Catalogo");
   }
 
+  // ------------------------------------- playground del árbol semántico (3C.4)
+
+  var SEM_GAMES = {
+    tres: [
+      { id: 1, t: "Hades", p: "PC", fav: false },
+      { id: 2, t: "Celeste", p: "PC", fav: false },
+      { id: 7, t: "Zelda", p: "Switch", fav: true }
+    ],
+    zelda: [{ id: 7, t: "Zelda", p: "Switch", fav: false }]
+  };
+
+  var SEM_STATES = [
+    { value: "tres", label: "Exito: Hades, Celeste y Zelda ★" },
+    { value: "zelda", label: "Exito: solo Zelda (como en 5.4)" },
+    { value: "cargando", label: "Cargando" },
+    { value: "vacio", label: "Vacio" }
+  ];
+
+  var SEM_FINDERS = {
+    onNodeWithText: { all: false, by: "text", desc: function (v) { return "Text + InputText + EditableText contains '" + v + "' (ignoreCase: false)"; } },
+    onNodeWithContentDescription: { all: false, by: "desc", desc: function (v) { return "ContentDescription = '" + v + "' (ignoreCase: false)"; } },
+    onNodeWithTag: { all: false, by: "tag", desc: function (v) { return "TestTag = '" + v + "'"; } },
+    onAllNodesWithText: { all: true, by: "text", desc: function (v) { return "Text + InputText + EditableText contains '" + v + "' (ignoreCase: false)"; } }
+  };
+
+  var SEM_EXAMPLES = [
+    { label: "Pulsar la fila de Zelda", st: "tres", f: "onNodeWithText", v: "Zelda", a: "performClick" },
+    { label: "Buscar «PC» con onNodeWithText", st: "tres", f: "onNodeWithText", v: "PC", a: "assertIsDisplayed" },
+    { label: "Contar los juegos de «PC»", st: "tres", f: "onAllNodesWithText", v: "PC", a: "assertCountEquals(2)" },
+    { label: "Pulsar «Añadir a favoritos» con tres juegos", st: "tres", f: "onNodeWithContentDescription", v: "Añadir a favoritos", a: "performClick" },
+    { label: "Pulsar «Añadir a favoritos» como en 5.4", st: "zelda", f: "onNodeWithContentDescription", v: "Añadir a favoritos", a: "performClick" },
+    { label: "Buscar «hades» en minúsculas", st: "tres", f: "onNodeWithText", v: "hades", a: "assertIsDisplayed" },
+    { label: "Indicador de carga por su testTag", st: "cargando", f: "onNodeWithTag", v: "cargando", a: "assertIsDisplayed" },
+    { label: "Comprobar que no hay mensaje de vacío", st: "tres", f: "onNodeWithText", v: "No hay juegos para mostrar", a: "assertDoesNotExist" }
+  ];
+
+  function semanticsPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = { st: "tres", f: "onNodeWithText", v: "Zelda", a: "performClick", theme: siteMode() };
+    var ui = shell(root, "Playground: el árbol semántico", "Elige un finder y una acción: mira qué nodos encuentra y si el test pasa");
+
+    // Árbol semántico (ya fusionado) de PantallaCatalogo para el estado elegido.
+    function tree() {
+      if (state.st === "cargando") return [{ key: "load", label: "ProgressBar · TestTag \"cargando\"", tag: "cargando", texts: [] }];
+      if (state.st === "vacio") return [{ key: "empty", label: "Text \"No hay juegos para mostrar\"", texts: ["No hay juegos para mostrar"] }];
+      var nodes = [{ key: "title", label: "Text \"Catálogo\"", texts: ["Catálogo"] }];
+      SEM_GAMES[state.st].forEach(function (g) {
+        var d = g.fav ? "Quitar de favoritos" : "Añadir a favoritos";
+        nodes.push({ key: "row" + g.id, label: "fila · onClick · Text \"" + g.t + "\", \"" + g.p + "\"", texts: [g.t, g.p], click: { lambda: "onJuegoClick", id: g.id } });
+        nodes.push({ key: "fav" + g.id, label: "Button · ContentDescription \"" + d + "\"", child: true, desc: d, texts: [], click: { lambda: "onFavoritoClick", id: g.id } });
+      });
+      return nodes;
+    }
+
+    function matches(n) {
+      var by = SEM_FINDERS[state.f].by;
+      if (by === "text") return n.texts.indexOf(state.v) >= 0;
+      if (by === "desc") return n.desc === state.v;
+      return n.tag === state.v;
+    }
+
+    // Ejecuta el test imaginario: devuelve los nodos encontrados, si pasa y qué variables cambian.
+    function run() {
+      var nodes = tree();
+      var hits = nodes.filter(matches);
+      var fin = SEM_FINDERS[state.f];
+      var res = { hits: hits, ok: true, msg: "", vars: { idPulsado: null, idFavorito: null } };
+      var reason = "(" + fin.desc(state.v) + ")";
+      if (fin.all) {
+        var want = parseInt(state.a.replace(/\D/g, ""), 10);
+        res.ok = hits.length === want;
+        res.msg = res.ok ? "✓ Test superado: hay " + want + " nodo" + (want === 1 ? "" : "s") + "."
+          : "✗ AssertionError: Failed to assert count of nodes.\nReason: Expected '" + want + "' nodes but found '" + hits.length + "' nodes that satisfy: " + reason;
+        return res;
+      }
+      if (state.a === "assertDoesNotExist") {
+        res.ok = hits.length === 0;
+        res.msg = res.ok ? "✓ Test superado: no existe ningún nodo así."
+          : "✗ AssertionError: Failed: assertDoesNotExist.\nReason: Did not expect any node but found '" + hits.length + "' node" + (hits.length === 1 ? "" : "s") + " that satisf" + (hits.length === 1 ? "ies" : "y") + ": " + reason;
+        return res;
+      }
+      var what = state.a === "performClick" ? "perform a gesture" : "assert the following: (Is displayed)";
+      if (hits.length === 0) {
+        res.ok = false;
+        res.msg = "✗ AssertionError: Failed to " + what + ".\nReason: Expected exactly '1' node but could not find any node that satisfies: " + reason;
+        return res;
+      }
+      if (hits.length > 1) {
+        res.ok = false;
+        res.msg = "✗ AssertionError: Failed to " + what + ".\nReason: Expected exactly '1' node but found '" + hits.length + "' nodes that satisfy: " + reason;
+        return res;
+      }
+      if (state.a === "performClick") {
+        var c = hits[0].click;
+        if (c) {
+          res.vars[c.lambda === "onJuegoClick" ? "idPulsado" : "idFavorito"] = c.id;
+          res.msg = "✓ Clic en el nodo: la pantalla llama a " + c.lambda + "(" + c.id + ").";
+        } else res.msg = "✓ Se inyecta el clic, pero el nodo no tiene onClick: no pasa nada.";
+        return res;
+      }
+      res.msg = "✓ Test superado: el nodo existe y se ve en pantalla.";
+      return res;
+    }
+
+    function pick(f, v, a) {
+      state.f = f; state.v = v; state.a = a;
+      render();
+    }
+
+    function actionsFor(f) {
+      return SEM_FINDERS[f].all ? ["assertCountEquals(0)", "assertCountEquals(1)", "assertCountEquals(2)", "assertCountEquals(3)"]
+        : ["assertIsDisplayed", "assertDoesNotExist", "performClick"];
+    }
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      var ex = [{ value: "", label: "— elige un ejemplo —" }].concat(SEM_EXAMPLES.map(function (e, i) { return { value: String(i), label: e.label }; }));
+      ui.controls.appendChild(select("Ejemplos", ex, "", function (i) {
+        if (i === "") return;
+        var e = SEM_EXAMPLES[+i];
+        state.st = e.st;
+        pick(e.f, e.v, e.a);
+      }));
+      ui.controls.appendChild(select("Estado que recibe la pantalla", SEM_STATES, state.st, function (v) { state.st = v; render(); }));
+      ui.controls.appendChild(select("Finder", opts(Object.keys(SEM_FINDERS)), state.f, function (v) {
+        state.f = v;
+        if (actionsFor(v).indexOf(state.a) < 0) state.a = actionsFor(v)[0];
+        render();
+      }));
+      ui.controls.appendChild(textField("Valor que se busca (distingue mayúsculas)", state.v, function (v) { state.v = v; renderStage(); renderCode(); }));
+      ui.controls.appendChild(select("Acción o comprobación", opts(actionsFor(state.f)), state.a, function (v) { state.a = v; render(); }));
+      ui.controls.appendChild(modeControl({ get mode() { return state.theme; }, set mode(v) { state.theme = v; } }, function () { renderStage(); }));
+    }
+
+    function renderPhone(hitKeys) {
+      var phone = applyScheme(h("div", { class: "cpc-phone" }), state.theme);
+      var hit = function (k) { return hitKeys.indexOf(k) >= 0 ? " cpc-sem-hit" : ""; };
+      var body;
+      if (state.st === "cargando") {
+        body = h("div", { class: "cpc-sem-center" }, [h("span", { class: "cpc-sem-spinner" + hit("load"), "aria-label": "Cargando" })]);
+      } else if (state.st === "vacio") {
+        body = h("div", { class: "cpc-sem-center" }, [h("p", { class: "cpc-sem-mark" + hit("empty"), text: "No hay juegos para mostrar" })]);
+      } else {
+        body = h("div", { class: "cpc-list" });
+        SEM_GAMES[state.st].forEach(function (g) {
+          var row = h("div", { class: "cpc-sem-row" + hit("row" + g.id), role: "button", tabindex: "0", title: "Pulsa para buscar esta fila por su texto" }, [
+            h("span", { class: "cpc-sem-texts" }, [h("span", { class: "cpc-nav-row-title", text: g.t }), h("span", { class: "cpc-nav-row-sub", text: g.p })])
+          ]);
+          var heart = h("button", { type: "button", class: "cpc-icon-btn cpc-fav" + (g.fav ? " cpc-on" : "") + hit("fav" + g.id), "aria-label": g.fav ? "Quitar de favoritos" : "Añadir a favoritos", title: "Pulsa para buscar este botón por su descripción" }, [icon("favorite", 20)]);
+          heart.addEventListener("click", function (e) { e.stopPropagation(); pick("onNodeWithContentDescription", g.fav ? "Quitar de favoritos" : "Añadir a favoritos", "performClick"); });
+          row.addEventListener("click", function () { pick("onNodeWithText", g.t, "performClick"); });
+          row.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick("onNodeWithText", g.t, "performClick"); } });
+          row.appendChild(heart);
+          body.appendChild(row);
+        });
+      }
+      phone.appendChild(h("div", { class: "cpc-nav-screen" }, [
+        h("div", { class: "cpc-phone-bar cpc-bar-nav" }, [h("span", { class: "cpc-appbar-gap" }), h("span", { class: "cpc-appbar-title" + hit("title"), text: "Catálogo" })]),
+        body
+      ]));
+      return phone;
+    }
+
+    function renderStage() {
+      var res = run();
+      var hitKeys = res.hits.map(function (n) { return n.key; });
+      ui.stage.innerHTML = "";
+      var ul = h("ul", { class: "cpc-koin-tree cpc-sem-tree" });
+      var root = h("li", null, [h("span", { class: "cpc-koin-node cpc-sem-node" }, [h("code", { text: "Root" })])]);
+      var level = h("ul");
+      var lastRow = null;
+      tree().forEach(function (n) {
+        var li = h("li", null, [h("span", { class: "cpc-koin-node cpc-sem-node" + (n.click && !n.child ? " cpc-koin-ui" : "") + (hitKeys.indexOf(n.key) >= 0 ? " cpc-sem-hit" : "") }, [h("code", { text: n.label })])]);
+        if (n.child && lastRow) {
+          var sub = h("ul");
+          sub.appendChild(li);
+          lastRow.appendChild(sub);
+        } else {
+          level.appendChild(li);
+          lastRow = li;
+        }
+      });
+      root.appendChild(level);
+      ul.appendChild(root);
+      var out = h("pre", { class: "cpc-koin-log cpc-sem-result " + (res.ok ? "cpc-sem-ok" : "cpc-sem-fail") });
+      out.textContent = res.msg;
+      var vars = h("p", { class: "cpc-state" }, [h("code", { text: "idPulsado = " + res.vars.idPulsado + " · idFavorito = " + res.vars.idFavorito })]);
+      ui.stage.appendChild(h("div", { class: "cpc-nav-layout" }, [
+        h("div", { class: "cpc-col" }, [renderPhone(hitKeys), vars]),
+        h("div", { class: "cpc-koin-side" }, [
+          h("p", { class: "cpc-navstack-title", text: "Árbol semántico (lo que ve el test)" }),
+          h("div", { class: "cpc-koin-graph" }, [ul]),
+          h("p", { class: "cpc-navstack-title cpc-sem-gap", text: "Resultado del test · " + res.hits.length + " nodo" + (res.hits.length === 1 ? "" : "s") + " encontrado" + (res.hits.length === 1 ? "" : "s") }),
+          out
+        ])
+      ]));
+      renderHint(res);
+    }
+
+    function renderHint(res) {
+      var hint;
+      var fin = SEM_FINDERS[state.f];
+      if (!fin.all && res.hits.length > 1) hint = "onNode… exige que haya exactamente un nodo. Si el texto se repite, usa onAllNodes…, busca algo único (el título del juego) o añade un testTag.";
+      else if (res.hits.length === 0 && state.a !== "assertDoesNotExist" && !fin.all) {
+        var all = tree();
+        var ci = all.filter(function (n) { return n.texts.concat(n.desc ? [n.desc] : []).some(function (t) { return t.toLowerCase() === state.v.toLowerCase(); }); });
+        if (ci.length) hint = "Existe un nodo con ese texto, pero cambian las mayúsculas: la búsqueda es exacta salvo que pases ignoreCase = true.";
+        else if (fin.by === "tag") hint = "Solo encuentra el testTag si el composable lo declara con Modifier.testTag(…). Prueba el estado Cargando.";
+        else hint = "Ningún nodo coincide. El test busca en el árbol semántico (textos, descripciones y etiquetas), no en los píxeles de la pantalla.";
+      } else if (state.a === "performClick" && res.ok && res.hits[0] && res.hits[0].click) hint = "La pantalla no cambia: es stateless y nadie actualiza el estado. El test solo comprueba que la pantalla avisó, leyendo la variable que guardó la lambda.";
+      else if (fin.all) hint = "onAllNodes… devuelve todos los nodos que coinciden, aunque sean varios o ninguno: se comprueban con assertCountEquals, o se elige uno con [0].";
+      else if (fin.by === "tag" && res.ok) hint = "El indicador de carga no tiene texto ni descripción: el test lo encuentra por la etiqueta que le pone la pantalla con Modifier.testTag(\"cargando\").";
+      else if (state.st === "tres" && state.v === "Zelda") hint = "La fila es clicable, así que reúne en un nodo los textos de sus hijos («Zelda» y «Switch»): por eso el clic llega a onJuegoClick.";
+      else hint = "Pulsa una fila o un corazón del móvil para buscarlos, o elige uno de los ejemplos.";
+      ui.hint.textContent = hint;
+    }
+
+    function stateCode() {
+      if (state.st === "cargando") return "CatalogoUiState.Cargando";
+      if (state.st === "vacio") return "CatalogoUiState.Vacio";
+      if (state.st === "zelda") return "CatalogoUiState.Exito(listOf(Juego(7, \"Zelda\", \"Switch\")), filtro = null)";
+      return "CatalogoUiState.Exito(listOf(hades, celeste, zelda), filtro = null)";
+    }
+
+    function renderCode() {
+      var res = run();
+      var lines = [
+        "@Test",
+        "fun prueba() {",
+        "    var idPulsado: Int? = null",
+        "    var idFavorito: Int? = null",
+        "    composeTestRule.setContent {",
+        "        PantallaCatalogo(",
+        "            estado = " + stateCode() + ",",
+        "            onJuegoClick = { idPulsado = it },",
+        "            onFavoritoClick = { idFavorito = it },",
+        "            onFiltroCambiado = {}",
+        "        )",
+        "    }",
+        "",
+        "    composeTestRule." + state.f + "(" + kstr(state.v) + ")." + state.a + (state.a.indexOf("(") < 0 ? "()" : "")
+      ];
+      if (res.ok && state.a === "performClick" && res.hits[0] && res.hits[0].click) {
+        var c = res.hits[0].click;
+        lines.push("", "    assertEquals(" + c.id + ", " + (c.lambda === "onJuegoClick" ? "idPulsado" : "idFavorito") + ")");
+      }
+      lines.push("}");
+      ui.code.set(lines.join("\n"));
+    }
+
+    function render() { renderControls(); renderStage(); renderCode(); }
+    render();
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -2486,7 +2741,8 @@
     lazygrid: lazyGridPlayground,
     navigation: navPlayground,
     adaptive: adaptivePlayground,
-    koin: koinPlayground
+    koin: koinPlayground,
+    semantics: semanticsPlayground
   };
 
   function init() {

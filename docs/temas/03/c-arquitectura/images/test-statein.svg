@@ -1,0 +1,64 @@
+<svg class="arq-svg" viewBox="0 0 760 390" role="img" aria-labelledby="arq-sti-t arq-sti-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-sti-t">stateIn con WhileSubscribed solo calcula si alguien escucha</title>
+  <desc id="arq-sti-d">Tres columnas. En la app, la pantalla recoge uiState, el grifo de stateIn está abierto y el valor pasa a Exito. En un test sin colector nadie escucha, el grifo está cerrado y uiState.value se queda en Cargando. En un test con backgroundScope.launch y collect, el colector hace de pantalla, el grifo se abre y el valor pasa a Exito.</desc>
+  <defs>
+    <marker id="arq-sti-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-sti-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <!-- Columna 1: app -->
+  <text x="130" y="24" class="arq-t arq-h" text-anchor="middle">En la app</text>
+  <rect x="30" y="40" width="200" height="38" rx="8" class="arq-dom"/>
+  <text x="130" y="64" class="arq-t arq-code arq-xs" text-anchor="middle">obtenerJuegos(): Flow</text>
+  <line x1="130" y1="78" x2="130" y2="104" class="arq-flow" marker-end="url(#arq-sti-f)"/>
+  <rect x="30" y="106" width="200" height="46" rx="8" class="arq-ui"/>
+  <text x="130" y="125" class="arq-t arq-code arq-xs" text-anchor="middle">stateIn(WhileSubscribed)</text>
+  <text x="130" y="143" class="arq-t arq-xs arq-strong" text-anchor="middle">🟢 grifo abierto</text>
+  <line x1="130" y1="152" x2="130" y2="178" class="arq-flow" marker-end="url(#arq-sti-f)"/>
+  <rect x="30" y="180" width="200" height="46" rx="8" class="arq-box"/>
+  <text x="130" y="198" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">uiState.value</text>
+  <text x="130" y="216" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Exito([celeste, hades])</text>
+  <line x1="130" y1="266" x2="130" y2="230" class="arq-dep" marker-end="url(#arq-sti-a)"/>
+  <text x="138" y="252" class="arq-t arq-xs arq-muted">escucha</text>
+  <rect x="18" y="268" width="224" height="46" rx="8" class="arq-ui"/>
+  <text x="130" y="287" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">PantallaCatalogo</text>
+  <text x="130" y="305" class="arq-t arq-code arq-xs" text-anchor="middle">collectAsStateWithLifecycle()</text>
+  <text x="130" y="336" class="arq-t arq-xs" text-anchor="middle">La pantalla siempre escucha:</text>
+  <text x="130" y="350" class="arq-t arq-xs" text-anchor="middle">nunca hay que pensar en ello.</text>
+  <!-- Columna 2: test sin colector -->
+  <text x="380" y="24" class="arq-t arq-h" text-anchor="middle">Test sin colector ✗</text>
+  <rect x="280" y="40" width="200" height="38" rx="8" class="arq-dom"/>
+  <text x="380" y="64" class="arq-t arq-code arq-xs" text-anchor="middle">obtenerJuegos(): Flow</text>
+  <line x1="380" y1="78" x2="380" y2="104" class="arq-guide"/>
+  <rect x="280" y="106" width="200" height="46" rx="8" class="arq-gray"/>
+  <text x="380" y="125" class="arq-t arq-code arq-xs" text-anchor="middle">stateIn(WhileSubscribed)</text>
+  <text x="380" y="143" class="arq-t arq-xs arq-strong" text-anchor="middle">🔴 grifo cerrado</text>
+  <line x1="380" y1="152" x2="380" y2="178" class="arq-guide"/>
+  <rect x="280" y="180" width="200" height="46" rx="8" class="arq-warn"/>
+  <text x="380" y="198" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">uiState.value</text>
+  <text x="380" y="216" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Cargando… para siempre</text>
+  <rect x="280" y="268" width="200" height="46" rx="8" class="arq-gray arq-dashed"/>
+  <text x="380" y="296" class="arq-t arq-xs arq-muted" text-anchor="middle">nadie escucha</text>
+  <text x="380" y="336" class="arq-t arq-xs" text-anchor="middle">assertIs&lt;Exito&gt; falla: el flujo</text>
+  <text x="380" y="350" class="arq-t arq-xs" text-anchor="middle">no ha llegado a calcularse.</text>
+  <!-- Columna 3: test con colector -->
+  <text x="630" y="24" class="arq-t arq-h" text-anchor="middle">Test con colector ✓</text>
+  <rect x="530" y="40" width="200" height="38" rx="8" class="arq-dom"/>
+  <text x="630" y="64" class="arq-t arq-code arq-xs" text-anchor="middle">obtenerJuegos(): Flow</text>
+  <line x1="630" y1="78" x2="630" y2="104" class="arq-flow" marker-end="url(#arq-sti-f)"/>
+  <rect x="530" y="106" width="200" height="46" rx="8" class="arq-ui"/>
+  <text x="630" y="125" class="arq-t arq-code arq-xs" text-anchor="middle">stateIn(WhileSubscribed)</text>
+  <text x="630" y="143" class="arq-t arq-xs arq-strong" text-anchor="middle">🟢 grifo abierto</text>
+  <line x1="630" y1="152" x2="630" y2="178" class="arq-flow" marker-end="url(#arq-sti-f)"/>
+  <rect x="530" y="180" width="200" height="46" rx="8" class="arq-box"/>
+  <text x="630" y="198" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">uiState.value</text>
+  <text x="630" y="216" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Exito([celeste, hades])</text>
+  <line x1="630" y1="266" x2="630" y2="230" class="arq-dep" marker-end="url(#arq-sti-a)"/>
+  <text x="638" y="252" class="arq-t arq-xs arq-muted">escucha</text>
+  <rect x="530" y="268" width="200" height="46" rx="8" class="arq-gray arq-dashed"/>
+  <text x="630" y="287" class="arq-t arq-code arq-xs" text-anchor="middle">backgroundScope.launch {</text>
+  <text x="630" y="305" class="arq-t arq-code arq-xs" text-anchor="middle">  uiState.collect {} }</text>
+  <text x="630" y="336" class="arq-t arq-xs" text-anchor="middle">El colector hace de pantalla y</text>
+  <text x="630" y="350" class="arq-t arq-xs" text-anchor="middle">se cancela solo al acabar el test.</text>
+  <!-- Idea -->
+  <text x="380" y="380" class="arq-t arq-s arq-strong" text-anchor="middle">WhileSubscribed: el estado solo se calcula mientras alguien lo recoge.</text>
+</svg>

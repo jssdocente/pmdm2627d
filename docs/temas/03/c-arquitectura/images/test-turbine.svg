@@ -1,0 +1,52 @@
+<svg class="arq-svg" viewBox="0 0 760 360" role="img" aria-labelledby="arq-tur-t arq-tur-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-tur-t">Línea de tiempo de un test con Turbine</title>
+  <desc id="arq-tur-d">Arriba, las emisiones del Flow de obtenerJuegos a lo largo del tiempo. Abajo, los pasos del test dentro de test. El primer awaitItem consume la primera emisión, Celeste y Hades. Después el test llama a alternarFavorito, que provoca la segunda emisión, Hades favorito y Celeste, que consume el segundo awaitItem. Al final cancelAndIgnoreRemainingEvents cierra la escucha.</desc>
+  <defs>
+    <marker id="arq-tur-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-tur-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <!-- Carril del Flow -->
+  <text x="20" y="80" class="arq-t arq-strong">Flow</text>
+  <text x="20" y="96" class="arq-t arq-xs arq-muted">emisiones</text>
+  <line x1="140" y1="86" x2="744" y2="86" class="arq-dep" marker-end="url(#arq-tur-a)"/>
+  <text x="744" y="108" class="arq-t arq-xs arq-muted" text-anchor="end">tiempo</text>
+  <circle cx="220" cy="86" r="15" class="arq-data"/>
+  <text x="220" y="91" class="arq-t arq-s arq-strong" text-anchor="middle">1</text>
+  <text x="220" y="56" class="arq-t arq-code arq-xs" text-anchor="middle">[celeste, hades]</text>
+  <circle cx="550" cy="86" r="15" class="arq-data"/>
+  <text x="550" y="91" class="arq-t arq-s arq-strong" text-anchor="middle">2</text>
+  <text x="550" y="56" class="arq-t arq-code arq-xs" text-anchor="middle">[hades ★, celeste]</text>
+  <!-- Carril del test -->
+  <text x="20" y="196" class="arq-t arq-strong">Test</text>
+  <text x="20" y="214" class="arq-t arq-code arq-xs arq-muted">obtenerJuegos()</text>
+  <text x="20" y="230" class="arq-t arq-code arq-xs arq-muted">  .test { … }</text>
+  <rect x="140" y="160" width="610" height="80" rx="12" class="arq-gray arq-dashed"/>
+  <rect x="150" y="176" width="140" height="48" rx="8" class="arq-box"/>
+  <text x="220" y="196" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">awaitItem()</text>
+  <text x="220" y="214" class="arq-t arq-xs" text-anchor="middle">✓ assertEquals</text>
+  <rect x="305" y="176" width="160" height="48" rx="8" class="arq-box"/>
+  <text x="385" y="196" class="arq-t arq-code arq-xs" text-anchor="middle">repositorio.</text>
+  <text x="385" y="212" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">alternarFavorito(1)</text>
+  <rect x="480" y="176" width="140" height="48" rx="8" class="arq-box"/>
+  <text x="550" y="196" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">awaitItem()</text>
+  <text x="550" y="214" class="arq-t arq-xs" text-anchor="middle">✓ assertEquals</text>
+  <rect x="632" y="176" width="110" height="48" rx="8" class="arq-box"/>
+  <text x="687" y="196" class="arq-t arq-code arq-xs" text-anchor="middle">cancelAnd…</text>
+  <text x="687" y="212" class="arq-t arq-xs" text-anchor="middle">fin de la escucha</text>
+  <!-- Relaciones -->
+  <line x1="220" y1="102" x2="220" y2="172" class="arq-dep" marker-end="url(#arq-tur-a)"/>
+  <text x="228" y="134" class="arq-t arq-xs arq-muted">consume</text>
+  <line x1="550" y1="102" x2="550" y2="172" class="arq-dep" marker-end="url(#arq-tur-a)"/>
+  <text x="558" y="134" class="arq-t arq-xs arq-muted">consume</text>
+  <path d="M385,176 C385,120 470,96 532,90" class="arq-flow" marker-end="url(#arq-tur-f)"/>
+  <text x="400" y="128" class="arq-t arq-xs arq-strong">provoca la 2.ª emisión</text>
+  <!-- Fallos -->
+  <rect x="20" y="276" width="360" height="70" rx="10" class="arq-warn"/>
+  <text x="34" y="298" class="arq-t arq-s arq-strong">awaitItem() y no llega nada</text>
+  <text x="34" y="316" class="arq-t arq-xs">Turbine espera unos segundos y el test falla:</text>
+  <text x="34" y="332" class="arq-t arq-xs">el Flow no reaccionó como esperabas.</text>
+  <rect x="390" y="276" width="360" height="70" rx="10" class="arq-warn"/>
+  <text x="404" y="298" class="arq-t arq-s arq-strong">Se cierra el bloque con valores sin leer</text>
+  <text x="404" y="316" class="arq-t arq-xs">El test falla. cancelAndIgnoreRemainingEvents()</text>
+  <text x="404" y="332" class="arq-t arq-xs">cierra la escucha descartando lo que quede.</text>
+</svg>
