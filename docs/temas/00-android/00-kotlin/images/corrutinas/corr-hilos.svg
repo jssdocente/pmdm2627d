@@ -1,0 +1,68 @@
+<svg class="arq-svg" viewBox="0 0 760 300" role="img" aria-labelledby="arq-chi-t arq-chi-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-chi-t">Hilos frente a corrutinas</title>
+  <desc id="arq-chi-d">A la izquierda, cuatro tareas con un hilo cada una: cada hilo pasa casi todo el tiempo esperando y ocupa en torno a 1 MB. A la derecha, las mismas cinco tareas como corrutinas sobre solo dos hilos: cuando una corrutina se suspende, el hilo queda libre y ejecuta un trozo de otra.</desc>
+  <defs>
+    <marker id="arq-chi-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-chi-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="180" y="24" class="arq-t arq-h" text-anchor="middle">Un hilo por tarea</text>
+  <text x="180" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">cada hilo ≈ 1 MB, casi siempre esperando</text>
+  <text x="20" y="81" class="arq-t arq-code arq-xs">Thread 1</text>
+  <rect x="90" y="66" width="40" height="22" rx="4" class="arq-ui"/>
+  <rect x="130" y="66" width="170" height="22" rx="4" class="arq-gray"/>
+  <rect x="300" y="66" width="30" height="22" rx="4" class="arq-ui"/>
+  <text x="215" y="81" class="arq-t arq-xs arq-muted" text-anchor="middle">esperando (bloqueado)</text>
+  <text x="20" y="125" class="arq-t arq-code arq-xs">Thread 2</text>
+  <rect x="90" y="110" width="40" height="22" rx="4" class="arq-ui"/>
+  <rect x="130" y="110" width="170" height="22" rx="4" class="arq-gray"/>
+  <rect x="300" y="110" width="30" height="22" rx="4" class="arq-ui"/>
+  <text x="215" y="125" class="arq-t arq-xs arq-muted" text-anchor="middle">esperando (bloqueado)</text>
+  <text x="20" y="169" class="arq-t arq-code arq-xs">Thread 3</text>
+  <rect x="90" y="154" width="40" height="22" rx="4" class="arq-ui"/>
+  <rect x="130" y="154" width="170" height="22" rx="4" class="arq-gray"/>
+  <rect x="300" y="154" width="30" height="22" rx="4" class="arq-ui"/>
+  <text x="215" y="169" class="arq-t arq-xs arq-muted" text-anchor="middle">esperando (bloqueado)</text>
+  <text x="20" y="213" class="arq-t arq-code arq-xs">Thread 4</text>
+  <rect x="90" y="198" width="40" height="22" rx="4" class="arq-ui"/>
+  <rect x="130" y="198" width="170" height="22" rx="4" class="arq-gray"/>
+  <rect x="300" y="198" width="30" height="22" rx="4" class="arq-ui"/>
+  <text x="215" y="213" class="arq-t arq-xs arq-muted" text-anchor="middle">esperando (bloqueado)</text>
+  <line x1="380" y1="20" x2="380" y2="250" class="arq-guide"/>
+  <text x="575" y="24" class="arq-t arq-h" text-anchor="middle">Corrutinas sobre 2 hilos</text>
+  <text x="575" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">al suspenderse, dejan el hilo a otra</text>
+  <text x="400" y="72" class="arq-t arq-code arq-xs">hilo 1</text>
+  <rect x="410" y="80" width="38" height="26" rx="4" class="arq-ui"/>
+  <text x="429.0" y="97" class="arq-t arq-xs arq-strong" text-anchor="middle">C1</text>
+  <rect x="450" y="80" width="28" height="26" rx="4" class="arq-data"/>
+  <text x="464.0" y="97" class="arq-t arq-xs arq-strong" text-anchor="middle">C2</text>
+  <rect x="480" y="80" width="33" height="26" rx="4" class="arq-dom"/>
+  <text x="496.5" y="97" class="arq-t arq-xs arq-strong" text-anchor="middle">C3</text>
+  <rect x="515" y="80" width="28" height="26" rx="4" class="arq-ui"/>
+  <text x="529.0" y="97" class="arq-t arq-xs arq-strong" text-anchor="middle">C1</text>
+  <rect x="560" y="80" width="38" height="26" rx="4" class="arq-warn"/>
+  <text x="579.0" y="97" class="arq-t arq-xs arq-strong" text-anchor="middle">C4</text>
+  <rect x="600" y="80" width="28" height="26" rx="4" class="arq-data"/>
+  <text x="614.0" y="97" class="arq-t arq-xs arq-strong" text-anchor="middle">C2</text>
+  <rect x="640" y="80" width="33" height="26" rx="4" class="arq-gray"/>
+  <text x="656.5" y="97" class="arq-t arq-xs arq-strong" text-anchor="middle">C5</text>
+  <rect x="680" y="80" width="38" height="26" rx="4" class="arq-dom"/>
+  <text x="699.0" y="97" class="arq-t arq-xs arq-strong" text-anchor="middle">C3</text>
+  <text x="400" y="132" class="arq-t arq-code arq-xs">hilo 2</text>
+  <rect x="410" y="140" width="33" height="26" rx="4" class="arq-warn"/>
+  <text x="426.5" y="157" class="arq-t arq-xs arq-strong" text-anchor="middle">C4</text>
+  <rect x="445" y="140" width="38" height="26" rx="4" class="arq-gray"/>
+  <text x="464.0" y="157" class="arq-t arq-xs arq-strong" text-anchor="middle">C5</text>
+  <rect x="500" y="140" width="28" height="26" rx="4" class="arq-dom"/>
+  <text x="514.0" y="157" class="arq-t arq-xs arq-strong" text-anchor="middle">C3</text>
+  <rect x="530" y="140" width="33" height="26" rx="4" class="arq-data"/>
+  <text x="546.5" y="157" class="arq-t arq-xs arq-strong" text-anchor="middle">C2</text>
+  <rect x="565" y="140" width="38" height="26" rx="4" class="arq-ui"/>
+  <text x="584.0" y="157" class="arq-t arq-xs arq-strong" text-anchor="middle">C1</text>
+  <rect x="610" y="140" width="28" height="26" rx="4" class="arq-gray"/>
+  <text x="624.0" y="157" class="arq-t arq-xs arq-strong" text-anchor="middle">C5</text>
+  <rect x="650" y="140" width="38" height="26" rx="4" class="arq-warn"/>
+  <text x="669.0" y="157" class="arq-t arq-xs arq-strong" text-anchor="middle">C4</text>
+  <text x="575" y="232" class="arq-t arq-xs" text-anchor="middle">C1…C5: cinco corrutinas. Cada trozo es lo que hacen</text>
+  <text x="575" y="248" class="arq-t arq-xs" text-anchor="middle">entre una suspensión y la siguiente.</text>
+  <text x="380" y="286" class="arq-t arq-s arq-strong" text-anchor="middle">Mientras una corrutina espera (delay, red, base de datos), no ocupa ningún hilo.</text>
+</svg>

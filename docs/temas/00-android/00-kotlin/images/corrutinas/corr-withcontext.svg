@@ -1,0 +1,64 @@
+<svg class="arq-svg" viewBox="0 0 760 316" role="img" aria-labelledby="arq-cwc-t arq-cwc-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-cwc-t">Una corrutina cambia de hilo con withContext</title>
+  <desc id="arq-cwc-d">Tres carriles: Main, IO y Default. La corrutina empieza en Main con viewModelScope.launch, salta a IO para leer un fichero, vuelve a Main para actualizar el estado, salta a Default para ordenar una lista enorme y vuelve a Main para pintar. Mientras trabaja en IO o en Default, el hilo principal sigue libre y pintando.</desc>
+  <defs>
+    <marker id="arq-cwc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-cwc-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="65" class="arq-t arq-code arq-xs arq-strong">Dispatchers.Main</text>
+  <line x1="150" y1="60" x2="740" y2="60" class="arq-guide"/>
+  <text x="20" y="155" class="arq-t arq-code arq-xs arq-strong">Dispatchers.IO</text>
+  <line x1="150" y1="150" x2="740" y2="150" class="arq-guide"/>
+  <text x="20" y="245" class="arq-t arq-code arq-xs arq-strong">Dispatchers.Default</text>
+  <line x1="150" y1="240" x2="740" y2="240" class="arq-guide"/>
+  <rect x="150" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="168" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="186" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="204" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="222" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="240" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="258" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="276" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="294" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="312" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="330" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="348" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="366" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="384" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="402" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="420" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="438" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="456" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="474" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="492" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="510" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="528" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="546" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="564" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="582" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="600" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="618" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="636" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="654" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="672" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="690" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="708" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="726" y="52" width="10" height="16" rx="2" class="arq-ui" style="opacity:0.45"/>
+  <rect x="154" y="46" width="95" height="28" rx="6" class="arq-ui" style="stroke-width:2.5"/>
+  <text x="201.5" y="65" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">launch {</text>
+  <rect x="266" y="136" width="140" height="28" rx="6" class="arq-data" style="stroke-width:2.5"/>
+  <text x="336.0" y="155" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">withContext(IO) {</text>
+  <rect x="420" y="46" width="90" height="28" rx="6" class="arq-ui" style="stroke-width:2.5"/>
+  <text x="465.0" y="65" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">uiState = …</text>
+  <rect x="525" y="226" width="155" height="28" rx="6" class="arq-dom" style="stroke-width:2.5"/>
+  <text x="602.5" y="245" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">withContext(Default)</text>
+  <rect x="690" y="46" width="55" height="28" rx="6" class="arq-ui" style="stroke-width:2.5"/>
+  <text x="717.5" y="65" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">pinta</text>
+  <path d="M249,74 C262,110 262,128 270,136" class="arq-flow" marker-end="url(#arq-cwc-f)"/>
+  <path d="M406,136 C410,110 412,90 418,76" class="arq-flow" marker-end="url(#arq-cwc-f)"/>
+  <path d="M510,74 C516,160 516,210 525,226" class="arq-flow" marker-end="url(#arq-cwc-f)"/>
+  <path d="M680,226 C690,160 692,100 700,76" class="arq-flow" marker-end="url(#arq-cwc-f)"/>
+  <text x="336" y="180" class="arq-t arq-xs" text-anchor="middle">leer un fichero</text>
+  <text x="602" y="272" class="arq-t arq-xs" text-anchor="middle">ordenar 100.000 juegos</text>
+  <text x="380" y="306" class="arq-t arq-s arq-strong" text-anchor="middle">Al salir de withContext, la corrutina vuelve sola al hilo de antes. El hilo principal nunca se bloquea.</text>
+</svg>

@@ -198,7 +198,7 @@ class MunecaSensorFlow {
 ---
 
 ### Paso 4: Programa Principal y Orquestación Concurrente (`JuegoCalamarApp.kt`)
-📚 **Teoría de referencia:** [async y await: Peticiones en Paralelo](../51-corrutinas.md#42-async-y-await-peticiones-en-paralelo-con-retorno-de-valor), [StateFlow Reactivo](../52-flows.md#4-stateflow-el-rey-de-la-arquitectura-en-android-y-compose) y [Operaciones en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
+📚 **Teoría de referencia:** [async y await: Peticiones en Paralelo](../51-corrutinas.md#44-cuando-y-por-que-usamos-entonces-async-y-await), [StateFlow Reactivo](../52-flows.md#4-stateflow-el-rey-de-la-arquitectura-en-android-y-compose) y [Operaciones en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
 
 Crea el archivo ejecutable `JuegoCalamarApp.kt`:
 ```kotlin

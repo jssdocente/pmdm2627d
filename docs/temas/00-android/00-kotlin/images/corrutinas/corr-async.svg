@@ -1,0 +1,43 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="arq-cas-t arq-cas-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-cas-t">Secuencial, async bien usado y falso paralelismo</title>
+  <desc id="arq-cas-d">Tres formas de pedir el catálogo y los amigos, que tardan 2 segundos cada uno. Secuencial: uno detrás de otro, 4 segundos. Con async y los await al final: los dos a la vez, 2 segundos. Con async seguido de await en la misma línea: el segundo no empieza hasta que acaba el primero, 4 segundos, el falso paralelismo.</desc>
+  <defs>
+    <marker id="arq-cas-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-cas-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="54" class="arq-t arq-s arq-strong">Secuencial</text>
+  <text x="20" y="72" class="arq-t arq-code arq-xs">val c = catalogo()</text>
+  <text x="20" y="88" class="arq-t arq-code arq-xs arq-muted">val a = amigos()</text>
+  <rect x="220" y="40" width="238" height="24" rx="5" class="arq-dom"/>
+  <text x="340.0" y="56" class="arq-t arq-xs" text-anchor="middle">catálogo (2 s)</text>
+  <rect x="460" y="70" width="238" height="24" rx="5" class="arq-data"/>
+  <text x="580.0" y="86" class="arq-t arq-xs" text-anchor="middle">amigos (2 s)</text>
+  <line x1="700" y1="36" x2="700" y2="98" class="arq-dep" style="stroke-width:2"/>
+  <text x="708" y="72" class="arq-t arq-s">total 4 s</text>
+  <line x1="20" y1="114" x2="740" y2="114" class="arq-guide"/>
+  <text x="20" y="144" class="arq-t arq-s arq-strong">async + await al final</text>
+  <text x="20" y="162" class="arq-t arq-code arq-xs">async { } ×2</text>
+  <text x="20" y="178" class="arq-t arq-code arq-xs arq-muted">await() al final</text>
+  <rect x="220" y="130" width="238" height="24" rx="5" class="arq-dom"/>
+  <text x="340.0" y="146" class="arq-t arq-xs" text-anchor="middle">catálogo (2 s)</text>
+  <rect x="220" y="160" width="238" height="24" rx="5" class="arq-data"/>
+  <text x="340.0" y="176" class="arq-t arq-xs" text-anchor="middle">amigos (2 s)</text>
+  <line x1="460" y1="126" x2="460" y2="188" class="arq-dep" style="stroke-width:2"/>
+  <text x="468" y="162" class="arq-t arq-s arq-strong">total 2 s</text>
+  <line x1="20" y1="204" x2="740" y2="204" class="arq-guide"/>
+  <text x="20" y="234" class="arq-t arq-s arq-strong">async { }.await()</text>
+  <text x="20" y="252" class="arq-t arq-code arq-xs">await() inmediato</text>
+  <text x="20" y="268" class="arq-t arq-code arq-xs arq-muted">falso paralelismo</text>
+  <rect x="220" y="220" width="238" height="24" rx="5" class="arq-dom"/>
+  <text x="340.0" y="236" class="arq-t arq-xs" text-anchor="middle">catálogo (2 s)</text>
+  <rect x="460" y="250" width="238" height="24" rx="5" class="arq-data"/>
+  <text x="580.0" y="266" class="arq-t arq-xs" text-anchor="middle">amigos (2 s)</text>
+  <line x1="700" y1="216" x2="700" y2="278" class="arq-dep" style="stroke-width:2"/>
+  <text x="708" y="252" class="arq-t arq-s">total 4 s</text>
+  <line x1="220" y1="300" x2="720" y2="300" class="arq-dep" marker-end="url(#arq-cas-a)"/>
+  <text x="220" y="318" class="arq-t arq-xs arq-muted" text-anchor="middle">0 s</text>
+  <text x="340" y="318" class="arq-t arq-xs arq-muted" text-anchor="middle">1 s</text>
+  <text x="460" y="318" class="arq-t arq-xs arq-muted" text-anchor="middle">2 s</text>
+  <text x="580" y="318" class="arq-t arq-xs arq-muted" text-anchor="middle">3 s</text>
+  <text x="700" y="318" class="arq-t arq-xs arq-muted" text-anchor="middle">4 s</text>
+</svg>

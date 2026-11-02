@@ -22,6 +22,8 @@
  *   <div class="cpg" data-cpg="flowbelt"></div>   -> animación de la cinta transportadora de un Flow (apuntes 52-flows)
  *   <div class="cpg" data-cpg="flowops"></div>    -> diagrama de canicas en vivo con map, filter, take, debounce… (apuntes 52-flows)
  *   <div class="cpg" data-cpg="flowhot"></div>    -> flujo frío, StateFlow y SharedFlow con suscriptores (apuntes 52-flows)
+ *   <div class="cpg" data-cpg="mainthread"></div> -> bloquear el hilo principal frente a suspender, y ANR (apuntes 51-corrutinas)
+ *   <div class="cpg" data-cpg="coroutines"></div> -> secuencial, async/await, cancelación y errores (apuntes 51-corrutinas)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -3243,6 +3245,381 @@
     restart();
   }
 
+  // ------------------------------------- corrutinas (apuntes 51-corrutinas)
+
+  // Carril con tramos (inicio, fin) que se desplaza con el tiempo, como los de canicas.
+  function segmentLane(parent, label) {
+    var track = h("div", { class: "cfl-track ccr-track" });
+    parent.appendChild(h("div", { class: "cfl-lane" }, [h("code", { class: "cfl-label", text: label }), track]));
+    var segs = [];
+    return {
+      open: function (t, cls, text) {
+        var el = h("span", { class: "ccr-seg " + cls, text: text || "" });
+        track.appendChild(el);
+        var s = { el: el, start: t, end: null };
+        segs.push(s);
+        return s;
+      },
+      close: function (s, t) { if (s && s.end === null) s.end = t; },
+      update: function (now) {
+        var offset = Math.max(0, now - FL_WINDOW * 1.6 * 0.92);
+        var win = FL_WINDOW * 1.6;
+        segs = segs.filter(function (s) {
+          var end = s.end === null ? now : s.end;
+          var l = (s.start - offset) / win * 100, r = (end - offset) / win * 100;
+          if (r < -2) { s.el.remove(); return false; }
+          s.el.style.left = Math.max(l, 0) + "%";
+          s.el.style.width = Math.max(r - Math.max(l, 0), 0.3) + "%";
+          return true;
+        });
+      }
+    };
+  }
+
+  var MT_MODES = {
+    sleep: {
+      label: "Thread.sleep(…) en el hilo principal", block: true,
+      code: ["Button(onClick = {", "    Thread.sleep(DURACION)        // ❌ bloquea el hilo principal", "    juegos = cargarJuegos()", "}) {", "    Text(\"Cargar\")", "}"],
+      hint: "Mientras dura Thread.sleep, el hilo principal no pinta ni atiende toques: la animación se congela y los toques se quedan en cola. Con 8 s y un toque pendiente, Android muestra el diálogo ANR."
+    },
+    delay: {
+      label: "delay(…) dentro de viewModelScope.launch", block: false,
+      code: ["fun cargar() {", "    viewModelScope.launch {          // se ejecuta en Main…", "        delay(DURACION)              // …pero aquí se aparta y deja el hilo libre", "        _uiState.value = Exito(juegos)", "    }", "}"],
+      hint: "La corrutina se ejecuta en el hilo principal, pero mientras espera en delay está suspendida: el hilo sigue pintando y atendiendo toques. Es lo que pasa con las llamadas suspend de Room o Retrofit."
+    },
+    calcMain: {
+      label: "Cálculo pesado en el hilo principal", block: true,
+      code: ["fun cargar() {", "    viewModelScope.launch {", "        val ordenados = ordenarCatalogoEnorme()   // ❌ cálculo sin suspensiones, en Main", "        _uiState.value = Exito(ordenados)", "    }", "}"],
+      hint: "Estar dentro de launch no basta: un cálculo largo no tiene puntos de suspensión, así que ocupa el hilo principal todo el rato y la app se congela igual que con Thread.sleep."
+    },
+    calcDefault: {
+      label: "Cálculo pesado con withContext(Dispatchers.Default)", block: false, worker: true,
+      code: ["fun cargar() {", "    viewModelScope.launch {", "        val ordenados = withContext(Dispatchers.Default) {", "            ordenarCatalogoEnorme()               // ✅ el cálculo va a otro hilo", "        }", "        _uiState.value = Exito(ordenados)         // de vuelta en Main", "    }", "}"],
+      hint: "withContext(Dispatchers.Default) lleva el cálculo a otro hilo. La corrutina espera suspendida en Main y vuelve sola cuando el cálculo termina: la app responde en todo momento."
+    }
+  };
+
+  function mainThreadPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = { mode: "sleep", secs: 3, theme: siteMode() };
+    var ui = shell(root, "Playground: no bloquees el hilo principal", "Pulsa «Cargar» y, mientras carga, toca el contador: ¿responde?");
+    var rt, phone, lanes, mainLane, coLane, bgLane, els = {};
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(select("Cómo se hace la carga", Object.keys(MT_MODES).map(function (k) { return { value: k, label: MT_MODES[k].label }; }),
+        state.mode, function (v) { state.mode = v; reset(); }));
+      ui.controls.appendChild(segmented("Duración", [{ value: "3", label: "3 s" }, { value: "8", label: "8 s" }], String(state.secs), function (v) { state.secs = +v; reset(); }));
+      ui.controls.appendChild(modeControl({ get mode() { return state.theme; }, set mode(v) { state.theme = v; } }, function () { buildStage(); }));
+    }
+
+    function reset() {
+      rt = { phase: "idle", until: 0, taps: 0, pending: [], anr: false, result: null, mainSeg: null, coSeg: null, bgSeg: null };
+      renderControls();
+      buildStage();
+      renderCode();
+      ui.hint.textContent = MT_MODES[state.mode].hint;
+    }
+
+    function buildStage() {
+      ui.stage.innerHTML = "";
+      phone = applyScheme(h("div", { class: "cpc-phone ccr-phone" }), state.theme);
+      els.spinner = h("span", { class: "cpc-sem-spinner ccr-spin" });
+      els.count = h("span", { class: "ccr-count", text: "0" });
+      els.status = h("p", { class: "ccr-status" });
+      var plus = h("button", { type: "button", class: "ccr-tap", "aria-label": "Sumar un toque" }, [h("span", { text: "👆 Tócame" })]);
+      plus.addEventListener("click", tap);
+      els.load = h("button", { type: "button", class: "ccr-load", text: "Cargar" });
+      els.load.addEventListener("click", load);
+      els.anr = h("div", { class: "ccr-anr", hidden: true }, [
+        h("p", { class: "ccr-anr-title", text: "Mis juegos no responde" }),
+        h("p", { text: "¿Quieres cerrar la app?" })
+      ]);
+      var wait = h("button", { type: "button", text: "Esperar" });
+      wait.addEventListener("click", function () { els.anr.hidden = true; rt.anrDismissed = true; });
+      var close = h("button", { type: "button", text: "Cerrar la app" });
+      close.addEventListener("click", reset);
+      els.anr.appendChild(h("div", { class: "ccr-anr-actions" }, [wait, close]));
+      phone.appendChild(h("div", { class: "cpc-nav-screen" }, [
+        h("div", { class: "cpc-phone-bar cpc-bar-nav" }, [h("span", { class: "cpc-appbar-gap" }), h("span", { class: "cpc-appbar-title", text: "Mis juegos" })]),
+        h("div", { class: "ccr-body" }, [
+          h("div", { class: "ccr-anim" }, [els.spinner, h("small", { text: "animación (se pinta 60 veces por segundo)" })]),
+          h("div", { class: "ccr-counter" }, [plus, h("span", { text: "Toques: " }), els.count]),
+          els.load, els.status
+        ]),
+        els.anr
+      ]));
+      var side = h("div", { class: "cpc-koin-side ccr-side" });
+      lanes = h("div", { class: "cfl-lanes" });
+      side.appendChild(h("p", { class: "cpc-navstack-title", text: "Qué hace cada hilo" }));
+      side.appendChild(lanes);
+      mainLane = segmentLane(lanes, "hilo principal (Main)");
+      coLane = segmentLane(lanes, "la corrutina");
+      bgLane = segmentLane(lanes, "Dispatchers.Default");
+      side.appendChild(h("p", { class: "ccr-legend" }, [h("span", { class: "ccr-seg ccr-free" }), h("span", { text: " libre: pinta y responde  " }),
+        h("span", { class: "ccr-seg ccr-block" }), h("span", { text: " bloqueado  " }), h("span", { class: "ccr-seg ccr-wait" }), h("span", { text: " suspendida  " }),
+        h("span", { class: "ccr-seg ccr-work" }), h("span", { text: " trabajando" })]));
+      ui.stage.appendChild(h("div", { class: "cpc-nav-layout" }, [h("div", { class: "cpc-col" }, [phone]), side]));
+      rt.mainSeg = mainLane.open(clock ? clock.now : 0, "ccr-free");
+      draw();
+    }
+
+    function blocked() { return rt.phase === "busy" && MT_MODES[state.mode].block; }
+
+    function tap() {
+      if (blocked()) { rt.pending.push(clock.now); draw(); return; }
+      rt.taps += 1;
+      draw();
+    }
+
+    function load() {
+      if (rt.phase === "busy") { tap(); return; }
+      var m = MT_MODES[state.mode];
+      var now = clock.now;
+      rt.phase = "busy";
+      rt.until = now + state.secs * 1000;
+      rt.anrDismissed = false;
+      rt.result = null;
+      if (m.block) {
+        mainLane.close(rt.mainSeg, now);
+        rt.mainSeg = mainLane.open(now, "ccr-block", m.label.indexOf("sleep") >= 0 ? "Thread.sleep" : "cálculo");
+        rt.coSeg = m.label.indexOf("sleep") >= 0 ? null : coLane.open(now, "ccr-work", "calculando en Main");
+      } else {
+        rt.coSeg = coLane.open(now, "ccr-wait", m.worker ? "suspendida en withContext" : "suspendida en delay");
+        if (m.worker) rt.bgSeg = bgLane.open(now, "ccr-work", "ordenando");
+      }
+      draw();
+    }
+
+    function finish(now) {
+      var m = MT_MODES[state.mode];
+      rt.phase = "idle";
+      if (m.block) { mainLane.close(rt.mainSeg, now); rt.mainSeg = mainLane.open(now, "ccr-free"); }
+      coLane.close(rt.coSeg, now);
+      bgLane.close(rt.bgSeg, now);
+      if (rt.pending.length) {
+        rt.taps += rt.pending.length;
+        rt.result = rt.pending.length === 1 ? "Se ha procesado de golpe el toque que estaba en cola."
+          : "Se han procesado de golpe los " + rt.pending.length + " toques que estaban en cola.";
+      }
+      rt.pending = [];
+      els.anr.hidden = true;
+      rt.loaded = true;
+      draw();
+    }
+
+    function draw() {
+      if (!els.count) return;
+      els.count.textContent = String(rt.taps) + (rt.pending.length ? " (+" + rt.pending.length + " en cola)" : "");
+      els.spinner.classList.toggle("ccr-frozen", blocked());
+      els.load.disabled = rt.phase === "busy";
+      els.load.textContent = rt.phase === "busy" ? "Cargando…" : "Cargar";
+      els.status.textContent = rt.phase === "busy" ? (blocked() ? "⛔ El hilo principal está ocupado" : "⏳ Esperando… la app sigue respondiendo")
+        : rt.result ? "✓ 3 juegos cargados. " + rt.result : rt.loaded ? "✓ 3 juegos cargados." : "Pulsa «Cargar».";
+    }
+
+    function renderCode() {
+      ui.code.set(MT_MODES[state.mode].code.join("\n").replace("DURACION", state.secs * 1000));
+    }
+
+    var clock = flowClock(root, function (now) {
+      if (!rt) return;
+      if (rt.phase === "busy" && now >= rt.until) finish(now);
+      if (blocked() && rt.pending.length && !rt.anrDismissed && els.anr.hidden && now - rt.pending[0] >= 5000) els.anr.hidden = false;
+      if (mainLane) { mainLane.update(now); coLane.update(now); bgLane.update(now); }
+    });
+
+    reset();
+  }
+
+  // ---- Playground: async, await y cancelación
+
+  var CR_TASKS = [
+    { id: "catalogo", label: "catalogo()", ms: 2000 },
+    { id: "amigos", label: "amigos()", ms: 1500 },
+    { id: "logros", label: "logros()", ms: 1000 }
+  ];
+
+  var CR_MODES = [
+    { value: "seq", label: "Secuencial" },
+    { value: "async", label: "async + await al final" },
+    { value: "fake", label: "async { }.await()" }
+  ];
+
+  function coroutinesPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = { mode: "async", fail: false };
+    var ui = shell(root, "Playground: async, await y cancelación", "Elige cómo se piden las tres descargas y pulsa «Ejecutar»");
+    var rt, rows, parentRow, log, totalEl, cancelBtn;
+    var SCALE = 5000;
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(segmented("Cómo se piden", CR_MODES, state.mode, function (v) { state.mode = v; reset(); }));
+      ui.controls.appendChild(yesNo("amigos() lanza una excepción a mitad", state.fail, function (v) { state.fail = v; reset(); }));
+      var run = h("button", { type: "button", text: "▶ Ejecutar" });
+      run.addEventListener("click", start);
+      cancelBtn = h("button", { type: "button", text: "✕ Cancelar el scope" });
+      cancelBtn.addEventListener("click", cancelAll);
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Acciones" }), h("div", { class: "cpg-seg" }, [run, cancelBtn])]));
+    }
+
+    function row(parent, label) {
+      var bar = h("span", { class: "ccr-bar" });
+      var tag = h("span", { class: "ccr-tag" });
+      var track = h("div", { class: "ccr-ttrack" }, [bar, tag]);
+      parent.appendChild(h("div", { class: "cfl-lane" }, [h("code", { class: "cfl-label", text: label }), track]));
+      return { bar: bar, tag: tag };
+    }
+
+    function reset() {
+      rt = { running: false, t0: 0, tasks: CR_TASKS.map(function (t) { return { def: t, start: null, end: null, status: "pending" }; }), parent: "idle", end: null };
+      renderControls();
+      ui.stage.innerHTML = "";
+      var col = h("div", { class: "cfl-col" });
+      ui.stage.appendChild(col);
+      var lanes = h("div", { class: "cfl-lanes" });
+      col.appendChild(lanes);
+      parentRow = row(lanes, "launch { cargarPantalla() }  ← padre");
+      rows = CR_TASKS.map(function (t) { return row(lanes, (state.mode === "seq" ? "" : "async { ") + t.label + (state.mode === "seq" ? "" : " }") + "  · " + t.ms / 1000 + " s"); });
+      var scale = h("div", { class: "ccr-scale" });
+      for (var s = 0; s <= 5; s++) scale.appendChild(h("span", { style: { left: s * 20 + "%" }, text: s + " s" }));
+      col.appendChild(h("div", { class: "cfl-lane" }, [h("span"), scale]));
+      totalEl = h("p", { class: "ccr-total" });
+      log = h("pre", { class: "cpc-koin-log cfl-console" });
+      col.appendChild(totalEl);
+      col.appendChild(h("p", { class: "cpc-navstack-title", text: "Consola" }));
+      col.appendChild(log);
+      renderCode();
+      renderHint();
+      draw(0);
+    }
+
+    function say(t, msg) { log.textContent += "[" + (t / 1000).toFixed(1).replace(".", ",") + " s] " + msg + "\n"; log.scrollTop = log.scrollHeight; }
+
+    function start() {
+      reset();
+      rt.running = true;
+      rt.t0 = clock.now;
+      rt.parent = "running";
+      say(0, "launch: empieza cargarPantalla()");
+      if (state.mode === "async") rt.tasks.forEach(function (t) { begin(t, 0); });
+      else begin(rt.tasks[0], 0);
+    }
+
+    function begin(t, at) {
+      t.start = at;
+      t.status = "running";
+      t.failAt = state.fail && t.def.id === "amigos" ? at + t.def.ms / 2 : null;
+      say(at, t.def.label + " empieza");
+    }
+
+    function stopRun(at) {
+      rt.running = false;
+      rt.end = at;
+    }
+
+    function cancelAll() {
+      if (!rt.running) return;
+      var at = clock.now - rt.t0;
+      say(at, "✕ scope.cancel(): la cancelación baja a todos los hijos");
+      rt.tasks.forEach(function (t) {
+        if (t.status === "running") { t.status = "cancelled"; t.end = at; say(at, "  " + t.def.label + " cancelada"); }
+        else if (t.status === "pending") { t.status = "never"; }
+      });
+      rt.parent = "cancelled";
+      stopRun(at);
+    }
+
+    function fail(t, at) {
+      t.status = "failed";
+      t.end = at;
+      say(at, "💥 " + t.def.label + " lanza IOException");
+      rt.tasks.forEach(function (o) {
+        if (o !== t && o.status === "running") { o.status = "cancelled"; o.end = at; say(at, "  " + o.def.label + " cancelada por su hermana"); }
+        else if (o.status === "pending") o.status = "never";
+      });
+      say(at, "el error sube al padre: cargarPantalla() también falla");
+      rt.parent = "failed";
+      stopRun(at);
+    }
+
+    function tick(now) {
+      if (!rt.running) return;
+      var at = now - rt.t0;
+      rt.tasks.forEach(function (t, i) {
+        if (t.status !== "running") return;
+        if (t.failAt !== null && at >= t.failAt) { fail(t, t.failAt); return; }
+        if (at >= t.start + t.def.ms) {
+          t.status = "done";
+          t.end = t.start + t.def.ms;
+          say(t.end, t.def.label + " termina" + (state.mode === "async" ? " (su resultado espera al await)" : ""));
+          if (state.mode !== "async" && rt.tasks[i + 1]) begin(rt.tasks[i + 1], t.end);
+        }
+      });
+      if (rt.running && rt.tasks.every(function (t) { return t.status === "done"; })) {
+        var end = Math.max.apply(null, rt.tasks.map(function (t) { return t.end; }));
+        say(end, "todos los await han vuelto: se pinta la pantalla");
+        rt.parent = "done";
+        stopRun(end);
+      }
+    }
+
+    function place(r, from, to, cls, text) {
+      if (from === null) { r.bar.style.width = "0"; r.tag.textContent = text || ""; r.tag.style.left = "0"; r.bar.className = "ccr-bar"; return; }
+      r.bar.className = "ccr-bar " + cls;
+      r.bar.style.left = from / SCALE * 100 + "%";
+      r.bar.style.width = Math.max((to - from) / SCALE * 100, 0.4) + "%";
+      r.tag.style.left = Math.min(to / SCALE * 100 + 1, 82) + "%";
+      r.tag.textContent = text || "";
+    }
+
+    function draw(at) {
+      rt.tasks.forEach(function (t, i) {
+        var to = t.end !== null ? t.end : at;
+        var txt = { pending: "", running: "", done: "✓", cancelled: "✕ cancelada", failed: "💥 excepción", never: "no llega a empezar" }[t.status];
+        if (t.start === null) place(rows[i], null, null, "", txt);
+        else place(rows[i], t.start, to, "ccr-" + t.status, txt);
+      });
+      if (rt.parent === "idle") place(parentRow, null, null, "", "");
+      else place(parentRow, 0, rt.end !== null ? rt.end : at, "ccr-parent-" + rt.parent, { running: "", done: "✓", cancelled: "✕ cancelado", failed: "💥 falla" }[rt.parent]);
+      totalEl.textContent = rt.end !== null ? "Tiempo total: " + (rt.end / 1000).toFixed(1).replace(".", ",") + " s" : rt.running ? "Ejecutando…" : "";
+      cancelBtn.disabled = !rt.running;
+    }
+
+    function renderCode() {
+      var lines = ["viewModelScope.launch {"];
+      if (state.mode === "seq") {
+        lines.push("    val catalogo = catalogo()   // espera 2 s", "    val amigos = amigos()       // y después 1,5 s", "    val logros = logros()       // y después 1 s");
+      } else if (state.mode === "async") {
+        lines.push("    val c = async { catalogo() }   // las tres empiezan ya", "    val a = async { amigos() }", "    val l = async { logros() }",
+          "    pintar(c.await(), a.await(), l.await())   // se espera al final");
+      } else {
+        lines.push("    val catalogo = async { catalogo() }.await()   // ❌ espera aquí", "    val amigos = async { amigos() }.await()", "    val logros = async { logros() }.await()");
+      }
+      if (state.mode !== "async") lines.push("    pintar(catalogo, amigos, logros)");
+      lines.push("}");
+      ui.code.set(lines.join("\n"));
+    }
+
+    function renderHint() {
+      var t = {
+        seq: "Cada llamada suspend espera a la anterior: el tiempo total es la suma (4,5 s). Es lo correcto cuando una tarea necesita el resultado de la otra.",
+        async: "Las tres empiezan a la vez y el tiempo total es el de la más lenta (2 s). Prueba a cancelar el scope a mitad, o activa el fallo de amigos(): sus hermanas se cancelan.",
+        fake: "Como cada await va justo después de su async, la corrutina espera a que termine cada tarea antes de lanzar la siguiente: el mismo tiempo que en secuencial (4,5 s)."
+      }[state.mode];
+      ui.hint.textContent = t;
+    }
+
+    var clock = flowClock(root, function (now) {
+      if (!rt) return;
+      tick(now);
+      draw(rt.running ? now - rt.t0 : rt.end || 0);
+    });
+
+    reset();
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -3261,7 +3638,9 @@
     semantics: semanticsPlayground,
     flowbelt: flowBeltPlayground,
     flowops: flowOperatorsPlayground,
-    flowhot: flowHotPlayground
+    flowhot: flowHotPlayground,
+    mainthread: mainThreadPlayground,
+    coroutines: coroutinesPlayground
   };
 
   function init() {

@@ -1,0 +1,45 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="arq-car-t arq-car-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-car-t">Concurrencia estructurada: la cancelación baja y los errores suben</title>
+  <desc id="arq-car-d">Dos copias del mismo árbol: viewModelScope tiene un hijo launch que carga la pantalla, con dos hijos async, catálogo y amigos. A la izquierda, al cancelar el scope, la cancelación baja y cancela a todos los hijos. A la derecha, si async de amigos falla, el error sube al launch padre, que cancela al hermano catálogo y propaga el error hacia arriba.</desc>
+  <defs>
+    <marker id="arq-car-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-car-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="110" y="50" width="180" height="34" rx="8" class="arq-ui"/>
+  <text x="200" y="72" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">viewModelScope</text>
+  <rect x="90" y="130" width="220" height="34" rx="8" class="arq-dom"/>
+  <text x="200" y="152" class="arq-t arq-code arq-xs" text-anchor="middle">launch { cargarPantalla() }</text>
+  <rect x="22" y="214" width="168" height="34" rx="8" class="arq-data"/>
+  <text x="105" y="236" class="arq-t arq-code arq-xs" text-anchor="middle">async { catalogo() }</text>
+  <rect x="212" y="214" width="168" height="34" rx="8" class="arq-data"/>
+  <text x="296" y="236" class="arq-t arq-code arq-xs" text-anchor="middle">async { amigos() }</text>
+  <line x1="200" y1="84" x2="200" y2="128" class="arq-guide"/>
+  <line x1="170" y1="164" x2="110" y2="212" class="arq-guide"/>
+  <line x1="230" y1="164" x2="290" y2="212" class="arq-guide"/>
+  <text x="200" y="30" class="arq-t arq-s arq-strong" text-anchor="middle">✕ scope.cancel()</text>
+  <line x1="220" y1="86" x2="220" y2="126" class="arq-flow" marker-end="url(#arq-car-f)"/>
+  <line x1="140" y1="166" x2="90" y2="210" class="arq-flow" marker-end="url(#arq-car-f)"/>
+  <line x1="260" y1="166" x2="320" y2="210" class="arq-flow" marker-end="url(#arq-car-f)"/>
+  <text x="105" y="272" class="arq-t arq-xs arq-strong" text-anchor="middle">✕ cancelada</text>
+  <text x="295" y="272" class="arq-t arq-xs arq-strong" text-anchor="middle">✕ cancelada</text>
+  <text x="200" y="300" class="arq-t arq-s arq-strong" text-anchor="middle">La cancelación baja a todos los hijos</text>
+  <line x1="380" y1="20" x2="380" y2="310" class="arq-guide"/>
+  <rect x="490" y="50" width="180" height="34" rx="8" class="arq-ui"/>
+  <text x="580" y="72" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">viewModelScope</text>
+  <rect x="470" y="130" width="220" height="34" rx="8" class="arq-dom"/>
+  <text x="580" y="152" class="arq-t arq-code arq-xs" text-anchor="middle">launch { cargarPantalla() }</text>
+  <rect x="402" y="214" width="168" height="34" rx="8" class="arq-data"/>
+  <text x="485" y="236" class="arq-t arq-code arq-xs" text-anchor="middle">async { catalogo() }</text>
+  <rect x="592" y="214" width="168" height="34" rx="8" class="arq-data"/>
+  <text x="676" y="236" class="arq-t arq-code arq-xs" text-anchor="middle">async { amigos() }</text>
+  <line x1="580" y1="84" x2="580" y2="128" class="arq-guide"/>
+  <line x1="550" y1="164" x2="490" y2="212" class="arq-guide"/>
+  <line x1="610" y1="164" x2="670" y2="212" class="arq-guide"/>
+  <text x="675" y="272" class="arq-t arq-xs arq-strong" text-anchor="middle">💥 lanza una excepción</text>
+  <line x1="700" y1="212" x2="640" y2="168" class="arq-flow" marker-end="url(#arq-car-f)"/>
+  <line x1="565" y1="128" x2="565" y2="88" class="arq-flow" marker-end="url(#arq-car-f)"/>
+  <line x1="530" y1="166" x2="475" y2="210" class="arq-dep" marker-end="url(#arq-car-a)"/>
+  <text x="485" y="272" class="arq-t arq-xs arq-strong" text-anchor="middle">✕ cancelada por su hermana</text>
+  <text x="600" y="108" class="arq-t arq-xs" text-anchor="start">el error sube</text>
+  <text x="580" y="300" class="arq-t arq-s arq-strong" text-anchor="middle">Un error sube y cancela a los hermanos</text>
+</svg>

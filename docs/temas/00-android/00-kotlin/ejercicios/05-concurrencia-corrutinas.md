@@ -26,7 +26,7 @@ Ubicación: `src/main/kotlin/b05_corrutinas/`
 
 #### Ejercicio 0.1: Primer `launch` vs `new Thread` en Java
 📄 **Archivo:** `E00_CalentamientoCorrutinas.kt`  
-📚 **Teoría de referencia:** [Constructores de Corrutinas: launch](../51-corrutinas.md#4-constructores-de-corrutinas-coroutine-builders)
+📚 **Teoría de referencia:** [Constructores de Corrutinas: launch](../51-corrutinas.md#4-ambitos-y-constructores-coroutinescope-y-builders)
 
 ##### 1. Concepto y Código Resuelto
 En Java, crear concurrencia requiere instanciar hilos del sistema operativo (`Thread`), los cuales consumen ~1 MB de pila cada uno y son muy costosos. En Kotlin, una corrutina es un **hilo ligero en espacio de usuario**; se pueden ejecutar decenas de miles simultáneamente sin agotar la memoria.
@@ -218,7 +218,7 @@ Descarga completada: Avatar_de_Zelda.png
 
 ### Ejercicio 5.2: `launch` para Tareas en Segundo Plano
 📄 **Archivo:** `E02_LaunchFireAndForget.kt`  
-📚 **Teoría de referencia:** [launch: Lanzar y Olvidar (Fire and Forget)](../51-corrutinas.md#41-launch-lanzar-y-olvidar-fire-and-forget)
+📚 **Teoría de referencia:** [launch: Lanzar y Olvidar (Fire and Forget)](../51-corrutinas.md#42-launch-lanzar-y-olvidar-fire-and-forget)
 
 #### 1. Enunciado y Requisitos
 
@@ -263,7 +263,7 @@ Hilo principal: Abriendo pantalla inmediatamente...
 
 ### Ejercicio 5.3: Múltiples Tareas Concurrentes con `join()`
 📄 **Archivo:** `E03_MultiplesLaunchJoin.kt`  
-📚 **Teoría de referencia:** [Constructores de Corrutinas (Coroutine Builders)](../51-corrutinas.md#4-constructores-de-corrutinas-coroutine-builders)
+📚 **Teoría de referencia:** [Constructores de Corrutinas (Coroutine Builders)](../51-corrutinas.md#4-ambitos-y-constructores-coroutinescope-y-builders)
 
 #### 1. Enunciado y Requisitos
 
@@ -442,7 +442,7 @@ Monitorización finalizada tras 3 alertas de actividad.
 
 ### Ejercicio 5.6: Paralelismo con `async` y `await`
 📄 **Archivo:** `E06_AsyncAwaitParalelo.kt`  
-📚 **Teoría de referencia:** [async y await: Peticiones en Paralelo con Retorno de Valor](../51-corrutinas.md#42-async-y-await-peticiones-en-paralelo-con-retorno-de-valor)
+📚 **Teoría de referencia:** [async y await: Peticiones en Paralelo con Retorno de Valor](../51-corrutinas.md#44-cuando-y-por-que-usamos-entonces-async-y-await)
 
 #### 1. Enunciado y Requisitos
 
@@ -563,7 +563,7 @@ Configuración recuperada: {"tema": "oscuro", "notificaciones": true}
 
 ### Ejercicio 5.8: Manejo Seguro de Excepciones en Corrutinas
 📄 **Archivo:** `E08_ExcepcionesEnCorrutinas.kt`  
-📚 **Teoría de referencia:** [Manejo de Errores con try-catch](../51-corrutinas.md#6-manejo-de-errores-con-try-catch)
+📚 **Teoría de referencia:** [Manejo de Errores con try-catch](../51-corrutinas.md#7-manejo-de-errores-con-try-catch)
 
 #### 1. Enunciado y Requisitos
 
@@ -894,7 +894,7 @@ Sincronizando con backend en segundo plano...
 
 ### Ejercicio 5.13: Cancelación Cooperativa de Corrutinas (`isActive` y `ensureActive`)
 📄 **Archivo:** `E13_CancelacionCooperativa.kt`  
-📚 **Teoría de referencia:** [Cancelación y Tiempos de Espera](../51-corrutinas.md#4-constructores-de-corrutinas-coroutine-builders)
+📚 **Teoría de referencia:** [Cancelación y Tiempos de Espera](../51-corrutinas.md#4-ambitos-y-constructores-coroutinescope-y-builders)
 
 #### 1. Enunciado y Requisitos
 En aplicaciones móviles con Android y Jetpack Compose, cuando el usuario sale de una pantalla, el `viewModelScope` cancela todas las corrutinas en vuelo para no desperdiciar batería ni memoria.
@@ -957,7 +957,7 @@ Fin de la prueba de cancelación cooperativa.
 
 ### Reto 5.14: Carrera Espacial Galáctica (*Space Grand Prix*)
 📄 **Archivo:** `Reto05_CarreraEspacial.kt`  
-📚 **Teoría de referencia:** [Constructores de Corrutinas: launch](../51-corrutinas.md#41-launch-lanzar-y-olvidar-fire-and-forget) y [StateFlow y SharedFlow](../52-flows.md#4-stateflow-el-rey-de-la-arquitectura-en-android-y-compose)
+📚 **Teoría de referencia:** [Constructores de Corrutinas: launch](../51-corrutinas.md#42-launch-lanzar-y-olvidar-fire-and-forget) y [StateFlow y SharedFlow](../52-flows.md#4-stateflow-el-rey-de-la-arquitectura-en-android-y-compose)
 
 #### 1. Contexto y Misión
 

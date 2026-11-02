@@ -2384,3 +2384,185 @@
   width: 100%;
   min-width: 0;
 }
+
+/* ---------- Corrutinas: hilo principal y async (apuntes 51-corrutinas) */
+
+.md-typeset .ccr-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.md-typeset .ccr-anim {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .ccr-spin.ccr-frozen {
+  animation-play-state: paused;
+  border-top-color: var(--m3-error);
+}
+
+.md-typeset .ccr-counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.md-typeset .cpg button.ccr-tap,
+.md-typeset .cpg button.ccr-load {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--m3-secondary-container);
+  color: var(--m3-on-secondary-container);
+  font: 500 14px Roboto, system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.md-typeset .cpg button.ccr-load {
+  background: var(--m3-primary);
+  color: var(--m3-on-primary);
+}
+
+.md-typeset .cpg button.ccr-load:disabled {
+  opacity: 0.6;
+}
+
+.md-typeset .ccr-count {
+  font-weight: 700;
+}
+
+.md-typeset .ccr-status {
+  margin: 0;
+  font-size: 13px;
+}
+
+.md-typeset .ccr-anr {
+  position: absolute;
+  inset: 30% 12px auto;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--m3-surface-container-high, var(--m3-surface));
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.4);
+  color: var(--m3-on-surface);
+}
+
+.md-typeset .ccr-anr[hidden] {
+  display: none;
+}
+
+.md-typeset .ccr-anr p {
+  margin: 0 0 8px;
+}
+
+.md-typeset .ccr-anr-title {
+  font-size: 18px;
+}
+
+.md-typeset .ccr-anr-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.md-typeset .ccr-side {
+  max-width: 34rem;
+}
+
+.md-typeset .ccr-seg {
+  position: absolute;
+  top: 25%;
+  bottom: 25%;
+  overflow: hidden;
+  border-radius: 4px;
+  font-size: 0.5rem;
+  line-height: 1rem;
+  white-space: nowrap;
+  text-indent: 4px;
+}
+
+.md-typeset .ccr-legend .ccr-seg {
+  position: static;
+  display: inline-block;
+  width: 1.4rem;
+  height: 0.6rem;
+  vertical-align: middle;
+}
+
+.md-typeset .ccr-legend {
+  font-size: 0.6rem;
+}
+
+.md-typeset .ccr-free { background: repeating-linear-gradient(90deg, rgba(74, 125, 255, 0.55) 0 6px, transparent 6px 9px); }
+.md-typeset .ccr-block { background: rgba(229, 72, 77, 0.75); color: #fff; }
+.md-typeset .ccr-wait { border: 1.5px dashed rgba(128, 128, 128, 0.8); background: rgba(128, 128, 128, 0.15); }
+.md-typeset .ccr-work { background: rgba(46, 170, 110, 0.8); color: #fff; }
+
+.md-typeset .ccr-ttrack {
+  position: relative;
+  height: 1.6rem;
+  border-bottom: 1px dashed var(--cpg-border);
+}
+
+.md-typeset .ccr-bar {
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  border-radius: 4px;
+}
+
+.md-typeset .ccr-tag {
+  position: absolute;
+  top: 50%;
+  font-size: 0.58rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.md-typeset .ccr-running { background: rgba(46, 170, 110, 0.55); }
+.md-typeset .ccr-done { background: #4a7dff; }
+.md-typeset .ccr-cancelled { background: repeating-linear-gradient(45deg, rgba(229, 72, 77, 0.65) 0 5px, rgba(229, 72, 77, 0.25) 5px 10px); }
+.md-typeset .ccr-failed { background: #e5484d; }
+.md-typeset .ccr-parent-running { background: rgba(224, 148, 0, 0.35); }
+.md-typeset .ccr-parent-done { background: #e09400; }
+.md-typeset .ccr-parent-cancelled,
+.md-typeset .ccr-parent-failed { background: repeating-linear-gradient(45deg, rgba(229, 72, 77, 0.65) 0 5px, rgba(229, 72, 77, 0.25) 5px 10px); }
+
+.md-typeset .ccr-scale {
+  position: relative;
+  height: 1rem;
+  font-size: 0.55rem;
+  color: var(--cpg-muted);
+}
+
+.md-typeset .ccr-scale span {
+  position: absolute;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.md-typeset .ccr-scale span:first-child { transform: none; }
+.md-typeset .ccr-scale span:last-child { transform: translateX(-100%); }
+
+.md-typeset .ccr-total {
+  margin: 0.4rem 0 0;
+  font-weight: 700;
+}
+
+/* Selects con opciones largas: que no ensanchen el panel en el móvil */
+.md-typeset .cpc-pg-full .cpg-field {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.md-typeset .cpc-pg-full .cpg-field select {
+  max-width: 100%;
+}

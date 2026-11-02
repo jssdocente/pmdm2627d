@@ -10,14 +10,6 @@ Históricamente en Java y Android se utilizaban hilos manuales (`Thread`), manej
 
 Imagina un restaurante concurrido:
 
-```mermaid
-flowchart LR
-    subgraph Malo ["Enfoque Bloqueante (Sin Corrutinas)"]
-        Cam1[Camarero / Main Thread] -->|Pide café a cocina| Cocina1[Espera 5 min quieto sin atender]
-        Cocina1 -->|App se congela| ANR[Error ANR: App Not Responding]
-    end
-```
-
 - **El Hilo Principal (*Main Thread* o Hilo de UI):** Es el **único camarero** del restaurante. Su trabajo vital es escuchar al usuario (toques en la pantalla, gestos, teclado) y redibujar los componentes visuales.
 
 - **La Tarea Pesada:** Es un pedido complejo (por ejemplo, descargar el catálogo de juegos desde un servidor).
@@ -30,11 +22,24 @@ Si el camarero toma el pedido, se mete a la cocina y se queda allí de pie 4 seg
 
 - Si un cliente intenta pulsar un botón, la app no responde.
 
-- El sistema operativo Android detecta que el hilo principal lleva más de 5 segundos sin procesar eventos y lanza el temido diálogo del sistema: **ANR (Application Not Responding)**, cerrando la app a la fuerza.
+- Si el hilo principal lleva unos 5 segundos sin responder a un toque, Android muestra el temido diálogo del sistema **ANR (Application Not Responding)**, que ofrece al usuario esperar o cerrar la app. Casi todos la cierran.
 
 ### El Enfoque con Corrutinas (No Bloqueante)
-Con corrutinas, el camarero pasa la comanda a la cocina (lanza una corrutina en segundo plano) y **vuelve inmediatamente a la sala a seguir atendiendo a los clientes**. 
-Cuando la cocina termina, la corrutina avisa al camarero, quien recoge el plato y lo entrega en la mesa sin haber dejado de atender la sala en ningún momento.
+
+Con corrutinas, el camarero pasa la comanda a la cocina y, en lugar de quedarse esperando, **apunta en qué punto se quedó y vuelve a la sala a seguir atendiendo**. Cuando la cocina termina, el camarero retoma ese pedido justo donde lo dejó y lleva el plato a la mesa. No ha hecho falta contratar a otro camarero: es **el mismo hilo**, que no se queda parado.
+
+Esa es la idea clave de este tema: **suspender no es irse a otro hilo, es apartarse del hilo mientras se espera**.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-hilo-principal.svg"
+<figcaption>El mismo hilo principal en los dos casos. Con <code>Thread.sleep</code> deja de pintar y de responder; con <code>delay</code> sigue pintando mientras la corrutina espera.</figcaption>
+</figure>
+
+### Pruébalo: no bloquees el hilo principal
+
+El móvil tiene una animación y un contador que puedes pulsar en todo momento. Elige cómo se hace la carga y pulsa «Cargar»: mira si la animación se congela y si el contador responde.
+
+<div class="cpg" data-cpg="mainthread"></div>
 
 ---
 
@@ -48,6 +53,11 @@ A menudo se confunden, pero su coste en recursos es drásticamente distinto:
 | **Creación** | Muy costosa (requiere intervención del kernel del SO) | Prácticamente instantánea (gestionada en espacio de usuario) |
 | **Escalabilidad** | Crear 5.000 hilos colapsa la memoria de un teléfono móvil (`OutOfMemoryError`). | Puedes lanzar **100.000 corrutinas** simultáneamente sin problema. |
 | **Concepto clave** | "Hilos de hardware/SO" | "Hilos virtuales cooperativos" que se ejecutan sobre un grupo de hilos reales. |
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-hilos.svg"
+<figcaption>Una corrutina solo ocupa un hilo mientras está haciendo algo. Al suspenderse, el hilo pasa a ejecutar otra.</figcaption>
+</figure>
 
 ---
 
@@ -133,7 +143,7 @@ flowchart TD
 
 ### 3.2. La Solución con `suspend`: Código Asíncrono con Sintaxis Secuencial
 
-Una función marcada con la palabra clave **`suspend`** puede pausar su ejecución en segundo plano y reanudarse más tarde **sin bloquear el hilo de ejecución** y **sin requerir callbacks anidados**.
+Una función marcada con la palabra clave **`suspend`** puede pausar su ejecución (*suspenderse*) y reanudarse más tarde **sin bloquear el hilo en el que se ejecuta** y **sin requerir callbacks anidados**.
 
 Mira exactamente el mismo caso anterior reescrito con funciones `suspend`:
 
@@ -213,14 +223,10 @@ fun <T> CoroutineScope.async(...): Deferred<T>
 
 Por eso, el compilador **no te permite** llamar a `launch { }` al aire de forma estática; siempre debes tener un `CoroutineScope` de referencia:
 
-```mermaid
-flowchart TD
-    Scope["🏢 CoroutineScope (Delimita el ciclo de vida)"]
-    Scope -->|"launch { ... }"| C1["👷 Corrutina 1 (Tarea sin retorno de datos)"]
-    Scope -->|"async { ... }"| C2["👷 Corrutina 2 (Tarea en paralelo con retorno)"]
-    
-    note["Si el Scope se destruye (el usuario cierra la pantalla),<br/>todas sus corrutinas hijas se cancelan a la vez."]
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-arbol.svg"
+<figcaption>Las corrutinas forman un árbol dentro de su <i>scope</i>. Lo verás con detalle en el apartado 6.</figcaption>
+</figure>
 
 En Android no necesitas inventar scopes globales; utilizas los que provee el propio sistema adaptados al ciclo de vida:
 
@@ -232,11 +238,15 @@ En Android no necesitas inventar scopes globales; utilizas los que provee el pro
 
 ### 4.2. `launch`: Lanzar y Olvidar (*Fire and Forget*)
 
-El constructor **`launch`** arranca una corrutina en segundo plano y devuelve inmediatamente un objeto **`Job`**.
+El constructor **`launch`** arranca una corrutina nueva, que avanza a la vez que el código que la lanzó, y devuelve inmediatamente un objeto **`Job`** con el que puedes esperarla (`join()`) o cancelarla (`cancel()`).
+
+!!! info "`launch` no significa «otro hilo»"
+    La corrutina se ejecuta en el hilo que diga su *dispatcher* (apartado 5). Un `viewModelScope.launch { }` se ejecuta en el **hilo principal**, y no pasa nada: mientras espera una función `suspend`, se aparta y deja el hilo libre.
 
 Se utiliza cuando la corrutina tiene como objetivo realizar una acción en segundo plano y **no necesitamos que devuelva un dato directo al código que la invocó**.
 
 **Casos típicos de uso:**
+
 - Enviar analíticas o eventos a Firebase.
 - Registrar una línea de log.
 - Guardar o actualizar un registro en la base de datos local SQLite/Room.
@@ -248,7 +258,7 @@ import kotlinx.coroutines.*
 fun main() = runBlocking {
     println("1. Antes de lanzar la corrutina")
 
-    // launch arranca la tarea en segundo plano sin congelar la ejecución:
+    // launch arranca la corrutina y el código de abajo sigue sin esperarla:
     val ticketTrabajo: Job = launch {
         println("2. Guardando datos en base de datos local...")
         delay(1000) // Simula la escritura en disco
@@ -312,6 +322,13 @@ fun main() = runBlocking {
 }
 ```
 
+**Salida en consola** (la última línea aparece 1,5 segundos después de la primera):
+
+```text
+Iniciando consulta...
+Usuario cargado: Mario_Bros tiene 150 monedas.
+```
+
 > 💡 **Regla de Oro en Android:**  
 > Más del 90% del código que escribirás en tus ViewModels funciona exactamente así: un `viewModelScope.launch { ... }` dentro del cual llamas a funciones `suspend` del Repositorio de forma secuencial, limpia y directa.
 
@@ -324,6 +341,7 @@ Si ya podemos recoger datos con llamadas directas, **¿para qué demonios sirve 
 La respuesta es una sola palabra: **PARALELISMO**.
 
 Imagina que para mostrar la pantalla de perfil necesitas consultar dos cosas distintas:
+
 1. El catálogo de juegos (tarda 2 segundos).
 2. La lista de amigos conectados (tarda 2 segundos).
 
@@ -332,7 +350,8 @@ Si las llamas secuencialmente una tras otra, el usuario esperará **4 segundos**
 Para eso existe **`async`**: para disparar múltiples tareas a la vez en paralelo y esperar los resultados cuando los necesites.
 
 #### ¿Cómo funciona `async`?
-1. **`async { ... }`** arranca la tarea en segundo plano de inmediato y te devuelve un objeto **`Deferred<T>`** (una "promesa" de que habrá un resultado de tipo `T` en el futuro).
+
+1. **`async { ... }`** arranca la tarea de inmediato, a la vez que el resto del código, y te devuelve un objeto **`Deferred<T>`** (una "promesa" de que habrá un resultado de tipo `T` en el futuro).
 2. **`.await()`** es la función que te permite recoger ese valor. Si la tarea aún está en curso cuando llamas a `.await()`, la corrutina se pausa hasta que el dato esté listo.
 
 #### Ejemplo Comparativo de Rendimiento
@@ -369,22 +388,10 @@ fun main() = runBlocking {
 }
 ```
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Main as Corrutina Principal
-    participant Tarea1 as async { descargarCatalogo() }
-    participant Tarea2 as async { descargarAmigos() }
-
-    Main->>Tarea1: Se inicia en paralelo (tarda 2s)
-    Main->>Tarea2: Se inicia en paralelo (tarda 2s)
-    Note over Tarea1,Tarea2: Ambas tareas se ejecutan a la vez
-    Main->>Tarea1: diferidoCatalogo.await() (Espera a que termine)
-    Tarea1-->>Main: Entrega "Catálogo" tras 2s
-    Main->>Tarea2: diferidoAmigos.await() (¡Ya había terminado a la vez!)
-    Tarea2-->>Main: Entrega "Amigos" de inmediato
-    Main->>Main: Pinta la pantalla en un total de solo 2 segundos
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-async.svg"
+<figcaption>Las tres formas de pedir dos datos que tardan 2 segundos cada uno. Solo la segunda los pide a la vez.</figcaption>
+</figure>
 
 ---
 
@@ -401,8 +408,16 @@ val amigos = async { descargarAmigos() }.await()     // ...y no arranca esta has
 ```
 
 **La regla para usar `async` correctamente es:**
+
 1. Dispara primero **todas** las tareas con `async`.
+
 2. Espera y recoge los resultados con `.await()` **al final**.
+
+### Pruébalo: `async`, `await` y cancelación
+
+Elige cómo se piden las tres descargas y pulsa «Ejecutar». Mientras se ejecutan, puedes cancelar el *scope* o hacer que falle una de ellas (lo explicamos en el apartado 6).
+
+<div class="cpg" data-cpg="coroutines"></div>
 
 ---
 
@@ -426,10 +441,11 @@ En casi todos los ejemplos de código verás `fun main() = runBlocking { ... }`.
 
 | Situación | Qué debes usar | Ejemplo |
 | :--- | :--- | :--- |
-| **Quiero ejecutar una tarea en segundo plano sin retorno directo (guardar en BD, analítica, actualizar UI)** | `launch` | `viewModelScope.launch { repo.guardar(item) }` |
+| **Quiero lanzar una tarea sin esperar su resultado (guardar en BD, analítica, actualizar UI)** | `launch` | `viewModelScope.launch { repo.guardar(item) }` |
 | **Quiero llamar a una función `suspend` y recoger su resultado** | Llamada directa dentro de un `launch` | `viewModelScope.launch { val data = repo.cargar() }` |
 | **Tengo dos o más peticiones independientes y quiero ejecutarlas a la vez para ahorrar tiempo** | `async` + `.await()` | `val d1 = async { ... }; val d2 = async { ... }; d1.await(); d2.await()` |
-| **Estoy en una función `main()` de consola o en un test unitario rápido** | `runBlocking` | `fun main() = runBlocking { ... }` |
+| **Estoy en una función `main()` de consola** | `runBlocking` | `fun main() = runBlocking { ... }` |
+| **Estoy escribiendo un test de algo que usa corrutinas** | `runTest` | `` @Test fun `carga los datos`() = runTest { ... } `` (ver [3C.4](../../03/c-arquitectura/3c.4-testing.md)) |
 
 
 
@@ -442,7 +458,7 @@ Un **Dispatcher** indica en qué grupo de hilos (*Thread Pool*) debe ejecutarse 
 | Despachador | Diseñado para | Ejemplos en Android |
 | :--- | :--- | :--- |
 | **`Dispatchers.Main`** | Operaciones exclusivas de Interfaz de Usuario (hilo principal). | Actualizar estados de Jetpack Compose, animaciones, navegación. |
-| **`Dispatchers.IO`** | Operaciones de Entrada/Salida bloqueantes fuera de CPU. | Consultas SQL con Room, peticiones HTTP de red, lectura/escritura de ficheros. |
+| **`Dispatchers.IO`** | Operaciones de Entrada/Salida **bloqueantes** (que esperan sin hacer cálculo). | Leer o escribir ficheros con `java.io`, librerías antiguas que no tienen funciones `suspend`. |
 | **`Dispatchers.Default`** | Tareas intensivas en cómputo de procesador. | Parseo de JSONs masivos, ordenación de listas gigantescas, compresión o filtros de imagen. |
 
 ### Cambio de Contexto Seguro con `withContext`
@@ -464,9 +480,89 @@ suspend fun cargarCatalogoYActualizarUi() {
 }
 ```
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-withcontext.svg"
+<figcaption><code>withContext</code> lleva la corrutina a otro hilo solo durante su bloque y la devuelve al de antes.</figcaption>
+</figure>
+
+!!! tip "Las funciones `suspend` de Room y Retrofit ya son seguras"
+    Google recomienda que toda función `suspend` sea **segura para el hilo principal** (*main-safe*): que se pueda llamar desde Main sin bloquearlo. Las funciones `suspend` de **Room** y **Retrofit** ya lo son, porque cambian de hilo por dentro. Por eso en un ViewModel basta con `viewModelScope.launch { repositorio.cargar() }`, **sin** `withContext(Dispatchers.IO)`. Usa `withContext` solo cuando tú escribas código bloqueante o cálculo pesado.
+
 ---
 
-## 6. Manejo de Errores con `try-catch`
+## 6. Cancelación de Corrutinas
+
+Cancelar es tan importante como lanzar: si el usuario sale de una pantalla, no tiene sentido seguir descargando sus datos. En Android casi nunca cancelas a mano, porque lo hace el *scope* (`viewModelScope` se cancela al destruirse el ViewModel), pero conviene entender cómo funciona.
+
+### 6.1. `cancel()` y la concurrencia estructurada
+
+Cada `launch` y cada `async` devuelve un `Job`, y cada `Job` es **hijo** del *scope* o de la corrutina que lo lanzó. Así se forma un árbol con dos reglas:
+
+- **La cancelación baja:** cancelar un padre cancela a todos sus hijos (y a los hijos de estos).
+- **Los errores suben:** si un hijo falla, el error sube al padre, que **cancela a los hermanos** y lo propaga hacia arriba.
+
+Es el árbol de la figura del apartado 4.1, y lo puedes probar con los botones «Cancelar el scope» y «Falla una tarea» del playground del apartado 4.5.
+
+```kotlin
+import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    val job = launch {
+        repeat(10) { i ->
+            println("Descargando parte $i…")
+            delay(500)
+        }
+    }
+
+    delay(1300)
+    println("El usuario pulsa «Cancelar»")
+    job.cancel()   // pide la cancelación…
+    job.join()     // …y espera a que termine de verdad
+    println("Descarga cancelada")
+}
+```
+
+**Salida en consola:**
+
+```text
+Descargando parte 0…
+Descargando parte 1…
+Descargando parte 2…
+El usuario pulsa «Cancelar»
+Descarga cancelada
+```
+
+### 6.2. La cancelación es cooperativa
+
+Cancelar una corrutina **no la detiene a la fuerza**: solo le pide que pare. La corrutina se detiene en el siguiente **punto de suspensión** (`delay`, `withContext`, una llamada `suspend` de Room o Retrofit…), donde se lanza una `CancellationException` que la hace terminar.
+
+Un bucle de cálculo que nunca se suspende **no se entera** de que lo han cancelado. Para que coopere, comprueba de vez en cuando si sigue activo:
+
+```kotlin
+val job = launch(Dispatchers.Default) {
+    for (i in 1..1_000_000) {
+        ensureActive()          // si la han cancelado, termina aquí
+        calcularPaso(i)         // cálculo sin ningún punto de suspensión
+    }
+}
+```
+
+!!! danger "No te tragues la `CancellationException`"
+    La cancelación viaja como una excepción, `CancellationException`. Si escribes `catch (e: Exception)`, también la capturas y la corrutina **sigue funcionando aunque la hayan cancelado**. Captura excepciones concretas (`IOException`, `HttpException`…) o, si capturas `Exception`, vuelve a lanzar la de cancelación:
+
+    ```kotlin
+    try {
+        val datos = repositorio.cargar()
+    } catch (e: CancellationException) {
+        throw e                                  // deja que la cancelación siga su camino
+    } catch (e: Exception) {
+        _uiState.value = UiState.Error(e.message)
+    }
+    ```
+
+---
+
+## 7. Manejo de Errores con `try-catch`
 
 A diferencia de los callbacks antiguos donde las excepciones se perdían entre hilos, en las corrutinas puedes capturar errores de operaciones asíncronas con la sintaxis clásica de `try-catch`:
 
@@ -486,9 +582,15 @@ suspend fun descargarConFalloSeguro() {
 }
 ```
 
+Dónde se recoge el error depende de cómo se lanzó la corrutina:
+
+- **Llamada `suspend` directa:** con un `try-catch` alrededor de la llamada, como en el ejemplo.
+- **`async`:** la excepción se guarda y se lanza al llamar a `.await()`, así que el `try-catch` va alrededor del `await()`.
+- **`launch`:** si nadie la captura dentro, la excepción sube al padre y cancela a los hermanos (apartado 6.1). Por eso el `try-catch` se escribe **dentro** del `launch`.
+
 ---
 
-## 7. Retos Prácticos
+## 8. Retos Prácticos
 
 ### 🟢 Reto 1: Saludo con retardo (Básico)
 Crea una función de suspensión `saludarConRetardo(nombre: String, tiempoMs: Long)` que imprima "Iniciando espera...", espere el tiempo indicado usando `delay()` y luego imprima "¡Hola, $nombre!". Pruébala dentro de un bloque `runBlocking`.
