@@ -247,9 +247,11 @@ extra:
 extra_css:
   - extra/css/extra.css
   - extra/css/compose-playground.css
+  - extra/css/compose-playground-components.css
 
 extra_javascript:
   - extra/js/compose-playground.js
+  - extra/js/compose-playground-components.js
 
 plugins:
   - search

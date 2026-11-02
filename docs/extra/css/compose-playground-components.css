@@ -1,0 +1,766 @@
+/*
+ * Compose Playground: componentes interactivos de Material 3 (apuntes 3A.2)
+ * Se apoya en compose-playground.css (.cpg-*) y añade los componentes (.cpc-*).
+ * Los colores salen de las variables --m3-* que el JS pone en cada "pantalla".
+ * Los selectores llevan ".md-typeset .cpg .cpc-…" para ganar a los estilos
+ * genéricos de los controles del playground (.cpg button, .cpg select).
+ */
+
+.md-typeset .cpc-stage {
+  min-height: 12rem;
+}
+
+.md-typeset .cpc-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.md-typeset .cpc-wide .cpc-screen {
+  width: 100%;
+  max-width: 22rem;
+}
+
+.md-typeset .cpc-screen {
+  box-sizing: border-box;
+  min-width: 14rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--m3-surface);
+  color: var(--m3-on-surface);
+  font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.md-typeset .cpc-center {
+  display: flex;
+  justify-content: center;
+}
+
+.md-typeset .cpc-state {
+  margin: 0;
+  text-align: center;
+}
+
+.md-typeset .cpc-state code {
+  white-space: pre-wrap;
+  font-size: 0.65rem;
+}
+
+.md-typeset .cpc-icon {
+  flex: none;
+}
+
+/* ---------- botones */
+
+.md-typeset .cpg button.cpc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  min-width: 48px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 20px;
+  font: 500 14px/20px Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.1px;
+  opacity: 1;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.md-typeset .cpg button.cpc-btn-icon {
+  padding-left: 16px;
+}
+
+.md-typeset .cpg button.cpc-btn:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.md-typeset .cpg button.cpc-btn:active:not(:disabled) {
+  filter: brightness(0.86);
+}
+
+.md-typeset .cpg button.cpc-btn-filled {
+  background: var(--m3-primary);
+  color: var(--m3-on-primary);
+}
+
+.md-typeset .cpg button.cpc-btn-tonal {
+  background: var(--m3-secondary-container);
+  color: var(--m3-on-secondary-container);
+}
+
+.md-typeset .cpg button.cpc-btn-elevated {
+  background: var(--m3-surface-container-low);
+  color: var(--m3-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+.md-typeset .cpg button.cpc-btn-outlined {
+  background: transparent;
+  color: var(--m3-on-surface-variant);
+  border: 1px solid var(--m3-outline-variant);
+}
+
+.md-typeset .cpg button.cpc-btn-text {
+  background: transparent;
+  color: var(--m3-primary);
+  padding: 0 12px;
+}
+
+.md-typeset .cpg button.cpc-btn:disabled {
+  background: color-mix(in srgb, var(--m3-on-surface) 12%, transparent);
+  color: color-mix(in srgb, var(--m3-on-surface) 38%, transparent);
+  border-color: transparent;
+  box-shadow: none;
+  filter: none;
+  cursor: default;
+}
+
+.md-typeset .cpg button.cpc-btn-text:disabled,
+.md-typeset .cpg button.cpc-btn-outlined:disabled {
+  background: transparent;
+}
+
+.md-typeset .cpg button.cpc-btn-outlined:disabled {
+  border: 1px solid color-mix(in srgb, var(--m3-on-surface) 12%, transparent);
+}
+
+.md-typeset .cpg button.cpc-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--m3-on-surface-variant);
+  cursor: pointer;
+}
+
+.md-typeset .cpg button.cpc-icon-btn:hover {
+  background: color-mix(in srgb, var(--m3-on-surface-variant) 8%, transparent);
+}
+
+/* ---------- OutlinedTextField */
+
+.md-typeset .cpc-tf {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 56px;
+  padding: 0 4px 0 16px;
+  border: 1px solid var(--m3-outline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--m3-on-surface);
+  text-align: left;
+}
+
+.md-typeset .cpc-tf.cpc-has-lead {
+  padding-left: 12px;
+}
+
+.md-typeset .cpc-tf.cpc-focused {
+  border: 2px solid var(--m3-primary);
+  padding-left: 15px;
+}
+
+.md-typeset .cpc-tf.cpc-has-lead.cpc-focused {
+  padding-left: 11px;
+}
+
+.md-typeset .cpc-tf.cpc-error {
+  border-color: var(--m3-error);
+}
+
+.md-typeset .cpc-tf-lead {
+  display: inline-flex;
+  margin-right: 12px;
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .cpc-tf-inner {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}
+
+.md-typeset .cpc-tf-label {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 100%;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--m3-on-surface-variant);
+  font-size: 16px;
+  pointer-events: none;
+  transition: top 0.15s ease, font-size 0.15s ease, left 0.15s ease;
+}
+
+/* Con foco o con texto, la etiqueta sube y se posa sobre el borde */
+.md-typeset .cpc-tf.cpc-focused .cpc-tf-label,
+.md-typeset .cpc-tf.cpc-filled .cpc-tf-label {
+  top: -1px;
+  font-size: 12px;
+  line-height: 16px;
+  padding: 0 4px;
+  margin-left: -4px;
+  background: var(--m3-surface);
+}
+
+.md-typeset .cpc-tf.cpc-has-lead.cpc-focused .cpc-tf-label,
+.md-typeset .cpc-tf.cpc-has-lead.cpc-filled .cpc-tf-label {
+  left: -36px;
+}
+
+.md-typeset .cpc-tf.cpc-focused .cpc-tf-label {
+  color: var(--m3-primary);
+}
+
+.md-typeset .cpc-tf.cpc-error .cpc-tf-label {
+  color: var(--m3-error);
+}
+
+.md-typeset .cpc-tf-input,
+.md-typeset .cpc-tf-value {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 16px 0;
+  background: transparent;
+  color: var(--m3-on-surface);
+  font: 400 16px/24px Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  caret-color: var(--m3-primary);
+}
+
+.md-typeset .cpc-tf-input::placeholder {
+  color: var(--m3-on-surface-variant);
+  opacity: 0.8;
+}
+
+.md-typeset .cpc-tf-trail {
+  display: inline-flex;
+  align-items: center;
+  min-width: 12px;
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .cpc-tf-trail .cpc-err-icon {
+  margin: 0 8px;
+  color: var(--m3-error);
+}
+
+.md-typeset .cpc-tf-support {
+  min-height: 16px;
+  margin: 4px 16px 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .cpc-tf-support.cpc-error {
+  color: var(--m3-error);
+}
+
+/* Campo del ExposedDropdownMenuBox: es un <button> con aspecto de campo */
+.md-typeset .cpg button.cpc-tf.cpc-exposed {
+  border: 1px solid var(--m3-outline);
+  border-radius: 4px;
+  padding: 0 4px 0 16px;
+  font: inherit;
+  color: var(--m3-on-surface);
+  background: transparent;
+  cursor: pointer;
+}
+
+.md-typeset .cpg button.cpc-tf.cpc-exposed.cpc-focused {
+  border: 2px solid var(--m3-primary);
+  padding-left: 15px;
+}
+
+.md-typeset .cpc-tf-trail.cpc-rotated .cpc-icon {
+  transform: rotate(180deg);
+}
+
+/* ---------- Switch, Checkbox, RadioButton */
+
+.md-typeset .cpc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+}
+
+.md-typeset .cpc-row-start {
+  justify-content: flex-start;
+}
+
+.md-typeset .cpc-row-click {
+  cursor: pointer;
+  border-radius: 8px;
+  padding-right: 8px;
+}
+
+.md-typeset .cpc-row-click:hover {
+  background: color-mix(in srgb, var(--m3-on-surface) 6%, transparent);
+}
+
+.md-typeset .cpc-row-click:focus-visible {
+  outline: 2px solid var(--m3-primary);
+}
+
+.md-typeset .cpc-disabled {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.md-typeset .cpg button.cpc-switch {
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 32px;
+  padding: 0;
+  border: 2px solid var(--m3-outline);
+  border-radius: 16px;
+  background: var(--m3-surface-container-highest);
+  opacity: 1;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.md-typeset .cpg button.cpc-switch.cpc-on {
+  border-color: var(--m3-primary);
+  background: var(--m3-primary);
+}
+
+.md-typeset .cpc-switch-thumb {
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--m3-outline);
+  color: var(--m3-on-primary-container);
+  transform: translateY(-50%);
+  transition: left 0.15s ease, width 0.15s ease, height 0.15s ease;
+}
+
+.md-typeset .cpc-switch.cpc-thumb-icon .cpc-switch-thumb {
+  left: 2px;
+  width: 24px;
+  height: 24px;
+}
+
+.md-typeset .cpc-switch.cpc-on .cpc-switch-thumb {
+  left: 22px;
+  width: 24px;
+  height: 24px;
+  background: var(--m3-on-primary);
+}
+
+.md-typeset .cpg button.cpc-switch:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.md-typeset .cpg button.cpc-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 11px;
+  padding: 0;
+  border: 2px solid var(--m3-on-surface-variant);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--m3-on-primary);
+  opacity: 1;
+  cursor: pointer;
+}
+
+.md-typeset .cpg button.cpc-check.cpc-on {
+  border-color: var(--m3-primary);
+  background: var(--m3-primary);
+}
+
+.md-typeset .cpg button.cpc-check:disabled {
+  opacity: 0.38;
+}
+
+.md-typeset .cpc-radio {
+  flex: none;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  margin: 10px;
+  border: 2px solid var(--m3-on-surface-variant);
+  border-radius: 50%;
+}
+
+.md-typeset .cpc-radio.cpc-on {
+  border-color: var(--m3-primary);
+  background: radial-gradient(var(--m3-primary) 0 4.5px, transparent 5px);
+}
+
+/* ---------- Slider (aspecto de Material 3 Expressive: pista gruesa y asa vertical) */
+
+.md-typeset .cpc-slider-label {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.md-typeset .cpc-slider {
+  position: relative;
+  height: 44px;
+  margin: 0 8px;
+}
+
+.md-typeset .cpc-slider-inactive {
+  display: none;
+}
+
+.md-typeset .cpc-slider-active,
+.md-typeset .cpc-slider-inactive-part {
+  position: absolute;
+  top: 50%;
+  height: 16px;
+  transform: translateY(-50%);
+}
+
+.md-typeset .cpc-slider-active {
+  left: 0;
+  min-width: 0;
+  border-radius: 8px 2px 2px 8px;
+  background: var(--m3-primary);
+}
+
+.md-typeset .cpc-slider-inactive-part {
+  right: 0;
+  border-radius: 2px 8px 8px 2px;
+  background: var(--m3-secondary-container);
+}
+
+.md-typeset .cpc-slider-handle {
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 44px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--m3-primary);
+}
+
+.md-typeset .cpc-slider-tick {
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--m3-on-secondary-container);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.md-typeset .cpc-slider-tick.cpc-on {
+  background: var(--m3-on-primary);
+}
+
+/* El <input type="range"> real va encima, transparente: da el teclado y la accesibilidad */
+.md-typeset .cpc-slider-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.md-typeset .cpc-slider:focus-within .cpc-slider-handle {
+  outline: 2px solid var(--m3-primary);
+  outline-offset: 3px;
+}
+
+.md-typeset .cpc-slider.cpc-disabled {
+  pointer-events: none;
+}
+
+/* ---------- móvil simulado para menús, diálogos y hojas */
+
+.md-typeset .cpc-stage-phone {
+  padding: 1rem 0.5rem;
+}
+
+.md-typeset .cpc-phone {
+  position: relative;
+  width: 17rem;
+  height: 26rem;
+  overflow: hidden;
+  border: 6px solid #1d1b20;
+  border-radius: 1.4rem;
+  background: var(--m3-surface);
+  color: var(--m3-on-surface);
+  font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.md-typeset .cpc-phone-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0 4px 0 16px;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.md-typeset .cpc-phone-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 16px;
+}
+
+.md-typeset .cpc-anchor {
+  position: relative;
+}
+
+.md-typeset .cpc-card {
+  height: 64px;
+  border-radius: 12px;
+  background: var(--m3-surface-container-low);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.md-typeset .cpc-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  border-radius: 16px;
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+}
+
+.md-typeset .cpc-center-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.md-typeset .cpc-catcher {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.md-typeset .cpc-menu {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  min-width: 112px;
+  padding: 8px 0;
+  border-radius: 4px;
+  background: var(--m3-surface-container);
+  box-shadow: 0 2px 6px 2px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.md-typeset .cpc-menu-top {
+  top: 48px;
+  right: 8px;
+}
+
+.md-typeset .cpc-menu-exposed {
+  top: 66px;
+  left: 16px;
+  right: 16px;
+}
+
+.md-typeset .cpg button.cpc-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--m3-on-surface);
+  font: 400 14px/20px Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-align: left;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.md-typeset .cpg button.cpc-menu-item .cpc-icon {
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .cpg button.cpc-menu-item:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--m3-on-surface) 8%, transparent);
+}
+
+.md-typeset .cpg button.cpc-menu-item:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.md-typeset .cpg button.cpc-menu-error,
+.md-typeset .cpg button.cpc-menu-error .cpc-icon {
+  color: var(--m3-error);
+}
+
+.md-typeset .cpc-divider {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid var(--m3-outline-variant);
+}
+
+.md-typeset .cpc-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--m3-scrim);
+}
+
+.md-typeset .cpc-dialog {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  box-sizing: border-box;
+  width: calc(100% - 48px);
+  padding: 24px;
+  border-radius: 28px;
+  background: var(--m3-surface-container-high);
+  transform: translate(-50%, -50%);
+}
+
+.md-typeset .cpc-dialog-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--m3-secondary, var(--m3-primary));
+}
+
+.md-typeset .cpc-dialog-title {
+  margin: 0 0 16px;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.md-typeset .cpc-dialog-title.cpc-centered {
+  text-align: center;
+}
+
+.md-typeset .cpc-dialog-text {
+  margin: 0 0 24px;
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .cpc-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.md-typeset .cpg button.cpc-fab {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: none;
+  border-radius: 16px;
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+  opacity: 1;
+  cursor: pointer;
+}
+
+.md-typeset .cpc-sheet {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 24px 24px;
+  border-radius: 28px 28px 0 0;
+  background: var(--m3-surface-container-low);
+  transform: translateY(100%);
+  transition: transform 0.25s ease-out;
+}
+
+.md-typeset .cpc-sheet.cpc-shown {
+  transform: translateY(0);
+}
+
+.md-typeset .cpc-sheet-handle {
+  align-self: center;
+  width: 32px;
+  height: 4px;
+  margin-top: 22px;
+  border-radius: 2px;
+  background: var(--m3-on-surface-variant);
+  opacity: 0.4;
+}
+
+.md-typeset .cpc-sheet-title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 28px;
+}
+
+.md-typeset .cpc-sheet .cpc-tf-label,
+.md-typeset .cpc-exposed .cpc-tf-label {
+  background: var(--m3-surface-container-low);
+}
+
+.md-typeset .cpc-exposed .cpc-tf-label {
+  background: var(--m3-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .cpc-sheet,
+  .md-typeset .cpc-switch-thumb,
+  .md-typeset .cpc-tf-label {
+    transition: none;
+  }
+}
