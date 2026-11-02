@@ -13,6 +13,8 @@
  *   <div class="cpg" data-cpg="drawer"></div>     -> ModalNavigationDrawer (apuntes 3A.1)
  *   <div class="cpg" data-cpg="topappbar"></div>  -> variantes de TopAppBar y scrollBehavior (apuntes 3A.1)
  *   <div class="cpg" data-cpg="snackbar"></div>   -> SnackbarHostState.showSnackbar (apuntes 3A.1)
+ *   <div class="cpg" data-cpg="lazylist"></div>   -> LazyColumn / LazyRow frente a Column, y key (apuntes 3A.3)
+ *   <div class="cpg" data-cpg="lazygrid"></div>   -> LazyVerticalGrid / LazyHorizontalGrid y GridCells (apuntes 3A.3)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -1309,6 +1311,294 @@
     render();
   }
 
+  // --------------------------------------------- playground de listas Lazy
+
+  var LAZY_TITLES = ["Hollow Knight", "Celeste", "Hades", "Stardew Valley", "Tunic", "Cuphead", "Outer Wilds",
+    "Dead Cells", "Ori", "Inside", "Gris", "Disco Elysium", "Undertale", "Terraria", "Spiritfarer", "Obra Dinn"];
+
+  function makeGames(n) {
+    var out = [];
+    for (var i = 0; i < n; i++) out.push({ id: i + 1, title: LAZY_TITLES[i % LAZY_TITLES.length] });
+    return out;
+  }
+
+  function lazyListPlayground(root) {
+    var state = {
+      container: "LazyColumn", count: 100, spacing: 8, padding: 16, key: true, mode: siteMode(),
+      games: makeGames(100), nextId: 101, favById: {}, favByPos: {}, created: 0, event: ""
+    };
+    var ui = shell(root, "Playground: LazyColumn, LazyRow y Column con scroll", "Haz scroll, marca favoritos y elimina el primero", "cpc-stage-phone");
+    var composed = {};
+
+    function reset() {
+      state.games = makeGames(state.count); state.nextId = state.count + 1;
+      state.favById = {}; state.favByPos = {}; state.created = 0; state.event = ""; composed = {};
+    }
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(segmented("Contenedor", opts(["LazyColumn", "LazyRow", "Column + verticalScroll"]), state.container, function (v) {
+        state.container = v; reset(); render();
+      }));
+      ui.controls.appendChild(segmented("Número de elementos", opts(["20", "100", "1000"]), String(state.count), function (v) {
+        state.count = Number(v); reset(); render();
+      }));
+      ui.controls.appendChild(yesNo("key = { it.id }", state.key, function (v) { state.key = v; state.favById = {}; state.favByPos = {}; render(); }));
+      ui.controls.appendChild(segmented("contentPadding", opts(["0", "16"]), String(state.padding), function (v) { state.padding = Number(v); render(); }));
+      ui.controls.appendChild(segmented("spacedBy", opts(["0", "8", "16"]), String(state.spacing), function (v) { state.spacing = Number(v); render(); }));
+      var del = h("button", { type: "button", text: "Eliminar el primero", disabled: !state.games.length });
+      del.addEventListener("click", function () {
+        var g = state.games.shift();
+        state.event = "eliminado #" + g.id + " " + g.title + ": todos los demás suben una posición";
+        renderStage(true); renderCode();
+      });
+      var add = h("button", { type: "button", text: "Añadir al principio" });
+      add.addEventListener("click", function () {
+        var id = state.nextId++;
+        state.games.unshift({ id: id, title: LAZY_TITLES[id % LAZY_TITLES.length] });
+        state.event = "añadido #" + id + " al principio: todos los demás bajan una posición";
+        renderStage(true); renderCode();
+      });
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Cambiar la lista" }), h("div", { class: "cpg-seg" }, [del, add])]));
+      ui.controls.appendChild(modeControl(state, render));
+    }
+
+    function isFav(g, i) { return state.key ? !!state.favById[g.id] : !!state.favByPos[i]; }
+    function toggleFav(g, i) {
+      if (state.key) state.favById[g.id] = !state.favById[g.id];
+      else state.favByPos[i] = !state.favByPos[i];
+    }
+
+    var scrollPos = 0;
+
+    function renderStage(keepScroll) {
+      if (!keepScroll) scrollPos = 0;
+      ui.stage.innerHTML = "";
+      var horizontal = state.container === "LazyRow";
+      var lazy = state.container !== "Column + verticalScroll";
+      var phone = applyScheme(h("div", { class: "cpc-phone" }), state.mode);
+      phone.appendChild(h("div", { class: "cpc-phone-bar" }, [h("span", { text: "Catálogo" })]));
+      var vp = h("div", { class: "cpc-lazy-viewport" + (horizontal ? " cpc-lazy-h" : "") });
+      phone.appendChild(vp);
+      var stateEl = stateLine("");
+      var ROW = horizontal ? 112 : 56, pad = state.padding, gap = state.spacing, step = ROW + gap;
+      var inner = h("div", { class: "cpc-lazy-inner" });
+      vp.appendChild(inner);
+
+      function rowEl(g, i, fresh) {
+        var fav = isFav(g, i);
+        var heart = h("button", { type: "button", class: "cpc-icon-btn cpc-fav" + (fav ? " cpc-on" : ""), "aria-pressed": String(fav), "aria-label": "Favorito " + g.title }, [icon("favorite", 20)]);
+        heart.addEventListener("click", function () { toggleFav(g, i); draw(); });
+        var el = h("div", { class: "cpc-lazy-item" + (horizontal ? " cpc-lazy-card" : "") + (fresh ? " cpc-fresh" : "") }, [
+          h("span", { class: "cpc-avatar", text: g.title.charAt(0) }),
+          h("span", { class: "cpc-lazy-title" }, [h("strong", { text: "#" + g.id }), " " + g.title]),
+          heart
+        ]);
+        return el;
+      }
+
+      function draw() {
+        var n = state.games.length;
+        var total = n ? pad * 2 + n * ROW + (n - 1) * gap : 0;
+        inner.innerHTML = "";
+        var first = 0, last = n - 1;
+        if (lazy) {
+          var pos = horizontal ? vp.scrollLeft : vp.scrollTop;
+          var size = horizontal ? vp.clientWidth : vp.clientHeight;
+          first = Math.max(0, Math.floor((pos - pad) / step) - 1);
+          last = Math.min(n - 1, Math.floor((pos + size - pad) / step) + 1);
+          inner.style[horizontal ? "width" : "height"] = total + "px";
+          inner.style[horizontal ? "height" : "width"] = "100%";
+        } else {
+          inner.style.height = total + "px";
+          inner.style.width = "100%";
+        }
+        var now = {};
+        for (var i = first; i <= last && n; i++) {
+          var g = state.games[i];
+          var fresh = lazy && !composed[g.id];
+          if (!composed[g.id]) state.created++;
+          now[g.id] = true;
+          var el = rowEl(g, i, fresh);
+          var offset = pad + i * step;
+          if (horizontal) { el.style.left = offset + "px"; el.style.top = pad + "px"; el.style.bottom = pad + "px"; el.style.width = ROW + "px"; }
+          else { el.style.top = offset + "px"; el.style.left = pad + "px"; el.style.right = pad + "px"; el.style.height = ROW + "px"; }
+          inner.appendChild(el);
+        }
+        composed = now;
+        var count = n ? last - first + 1 : 0;
+        stateEl.firstChild.textContent = "compuestos ahora: " + count + " de " + n + "   filas creadas en total: " + state.created +
+          (state.event ? "\n← " + state.event : "");
+      }
+
+      vp.addEventListener("scroll", function () {
+        scrollPos = horizontal ? vp.scrollLeft : vp.scrollTop;
+        if (lazy) draw();
+      });
+      ui.stage.appendChild(h("div", { class: "cpc-col" }, [phone, stateEl]));
+      if (!lazy) composed = {};
+      draw();
+      if (scrollPos) { vp[horizontal ? "scrollLeft" : "scrollTop"] = scrollPos; draw(); }
+    }
+
+    function renderCode() {
+      var pad = state.padding ? "PaddingValues(" + state.padding + ".dp)" : null;
+      var lines;
+      var body = ["        var favorito by remember { mutableStateOf(false) }",
+        "        FilaJuego(juego, favorito, onFavorito = { favorito = !favorito })"];
+      if (state.container === "Column + verticalScroll") {
+        lines = ["Column(", "    modifier = Modifier", "        .verticalScroll(rememberScrollState())" + (pad ? "" : ""),];
+        if (pad) lines.push("        .padding(" + state.padding + ".dp),"); else lines[lines.length - 1] += ",";
+        lines.push("    verticalArrangement = Arrangement.spacedBy(" + state.spacing + ".dp)", ") {", "    // Se ejecuta para TODOS los juegos, se vean o no");
+        if (state.key) {
+          lines.push("    juegos.forEach { juego ->", "        key(juego.id) {");
+          body.forEach(function (l) { lines.push("    " + l); });
+          lines.push("        }", "    }", "}");
+        } else {
+          lines.push("    juegos.forEach { juego ->");
+          body.forEach(function (l) { lines.push(l); });
+          lines.push("    }", "}");
+        }
+      } else {
+        var row = state.container === "LazyRow";
+        lines = [state.container + "("];
+        if (pad) lines.push("    contentPadding = " + pad + ",");
+        lines.push("    " + (row ? "horizontalArrangement" : "verticalArrangement") + " = Arrangement.spacedBy(" + state.spacing + ".dp)", ") {");
+        if (state.key) lines.push("    items(", "        items = juegos,", "        key = { juego -> juego.id }", "    ) { juego ->");
+        else lines.push("    items(juegos) { juego ->");
+        body.forEach(function (l) { lines.push(l); });
+        lines.push("    }", "}");
+      }
+      ui.code.set(lines.join("\n"));
+      var hint;
+      if (state.container === "Column + verticalScroll") {
+        hint = "Column compone los " + state.count + " elementos de golpe aunque solo se vean unos pocos. Compáralo con LazyColumn: «compuestos ahora» baja a los que caben en pantalla.";
+      } else if (!state.key) {
+        hint = "Sin key, el estado de cada fila (el favorito guardado con remember) va unido a la POSICIÓN. Marca algún corazón y pulsa «Eliminar el primero»: los corazones se quedan donde estaban y pasan a otros juegos.";
+      } else {
+        hint = "Con key, el estado va unido al id del juego: al eliminar o añadir elementos, cada corazón sigue a su juego. Las filas que se iluminan son las que se acaban de componer al hacer scroll.";
+      }
+      ui.hint.textContent = hint + " (En una app real el favorito iría en el modelo; aquí usamos remember para ver qué le pasa al estado de cada fila).";
+    }
+
+    function render() { renderControls(); renderStage(); renderCode(); }
+    render();
+  }
+
+  // ------------------------------------------------ playground de cuadrículas
+
+  function lazyGridPlayground(root) {
+    var state = {
+      orientation: "LazyVerticalGrid", cells: "Adaptive", fixed: 3, adaptive: 110, fixedSize: 96,
+      size: 360, spacing: 8, headers: false, mode: siteMode()
+    };
+    var ui = shell(root, "Playground: LazyVerticalGrid y LazyHorizontalGrid", "Cambia el tipo de celdas y el espacio disponible");
+    var PAD = 12, COUNT = 24;
+
+    function vertical() { return state.orientation === "LazyVerticalGrid"; }
+    function sizeRange() { return vertical() ? [200, 560] : [140, 420]; }
+
+    function layout() {
+      var avail = state.size - PAD * 2, gap = state.spacing, n, cell;
+      if (state.cells === "Fixed") { n = state.fixed; cell = (avail - gap * (n - 1)) / n; }
+      else if (state.cells === "Adaptive") { n = Math.max(1, Math.floor((avail + gap) / (state.adaptive + gap))); cell = (avail - gap * (n - 1)) / n; }
+      else { n = Math.max(1, Math.floor((avail + gap) / (state.fixedSize + gap))); cell = state.fixedSize; }
+      return { n: n, cell: Math.max(24, cell) };
+    }
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(segmented("Contenedor", opts(["LazyVerticalGrid", "LazyHorizontalGrid"]), state.orientation, function (v) {
+        state.orientation = v; state.size = v === "LazyVerticalGrid" ? 360 : 260; render();
+      }));
+      ui.controls.appendChild(segmented(vertical() ? "columns = GridCells…" : "rows = GridCells…", opts(["Fixed", "Adaptive", "FixedSize"]), state.cells, function (v) {
+        state.cells = v; render();
+      }));
+      if (state.cells === "Fixed") {
+        ui.controls.appendChild(segmented("Fixed(count)", opts(["2", "3", "4", "5"]), String(state.fixed), function (v) { state.fixed = Number(v); render(); }));
+      } else if (state.cells === "Adaptive") {
+        ui.controls.appendChild(segmented("Adaptive(minSize) en dp", opts(["80", "110", "140"]), String(state.adaptive), function (v) { state.adaptive = Number(v); render(); }));
+      } else {
+        ui.controls.appendChild(segmented("FixedSize(size) en dp", opts(["72", "96", "120"]), String(state.fixedSize), function (v) { state.fixedSize = Number(v); render(); }));
+      }
+      var r = sizeRange(), id = nextId("size");
+      var range = h("input", { id: id, type: "range", min: r[0], max: r[1], step: 10, value: state.size });
+      var out = h("span", { class: "cpc-range-value", text: state.size + " dp" });
+      range.addEventListener("input", function () { state.size = Number(range.value); out.textContent = state.size + " dp"; renderStage(); renderCode(); });
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [
+        h("label", { for: id, text: vertical() ? "Ancho disponible (gira el móvil o usa una tablet)" : "Alto de la cuadrícula (Modifier.height)" }),
+        range, out
+      ]));
+      ui.controls.appendChild(segmented("spacedBy", opts(["4", "8", "12"]), String(state.spacing), function (v) { state.spacing = Number(v); render(); }));
+      ui.controls.appendChild(yesNo("Cabeceras de sección (span = maxLineSpan)", state.headers, function (v) { state.headers = v; render(); }));
+      ui.controls.appendChild(modeControl(state, render));
+    }
+
+    function renderStage() {
+      ui.stage.innerHTML = "";
+      var L = layout(), v = vertical();
+      var screen = applyScheme(h("div", { class: "cpc-grid-frame" }), state.mode);
+      var grid = h("div", { class: "cpc-grid" + (v ? "" : " cpc-grid-h") });
+      grid.style.gap = state.spacing + "px";
+      grid.style.padding = PAD + "px";
+      if (v) {
+        screen.style.width = state.size + "px";
+        screen.style.height = "360px";
+        grid.style.gridTemplateColumns = "repeat(" + L.n + ", " + L.cell + "px)";
+      } else {
+        screen.style.width = "100%";
+        screen.style.maxWidth = "520px";
+        screen.style.height = state.size + "px";
+        grid.style.gridTemplateRows = "repeat(" + L.n + ", " + L.cell + "px)";
+        grid.style.gridAutoColumns = L.cell + "px";
+      }
+      for (var i = 0; i < COUNT; i++) {
+        if (state.headers && i % 8 === 0) {
+          grid.appendChild(h("div", { class: "cpc-grid-header", text: "Sección " + (i / 8 + 1) }));
+        }
+        var tone = ["primary", "secondary", "tertiary"][i % 3];
+        grid.appendChild(h("div", { class: "cpc-grid-cell cpc-tone-" + tone }, [
+          h("span", { text: LAZY_TITLES[i % LAZY_TITLES.length].charAt(0) })
+        ]));
+      }
+      screen.appendChild(grid);
+      var desc = (v ? "columnas = " : "filas = ") + L.n + "   tamaño de celda = " + Math.round(L.cell) + " dp" +
+        (state.cells === "FixedSize" ? "   (sobran " + Math.round(state.size - PAD * 2 - (L.n * L.cell + (L.n - 1) * state.spacing)) + " dp)" : "");
+      ui.stage.appendChild(h("div", { class: "cpc-col cpc-grid-col" }, [screen, stateLine(desc)]));
+    }
+
+    function renderCode() {
+      var v = vertical();
+      var cells = state.cells === "Fixed" ? "GridCells.Fixed(" + state.fixed + ")"
+        : state.cells === "Adaptive" ? "GridCells.Adaptive(minSize = " + state.adaptive + ".dp)"
+          : "GridCells.FixedSize(size = " + state.fixedSize + ".dp)";
+      var lines = [state.orientation + "(", "    " + (v ? "columns" : "rows") + " = " + cells + ","];
+      if (!v) lines.push("    modifier = Modifier.height(" + state.size + ".dp), // ¡Obligatorio darle un alto!");
+      lines.push("    contentPadding = PaddingValues(" + PAD + ".dp),",
+        "    horizontalArrangement = Arrangement.spacedBy(" + state.spacing + ".dp),",
+        "    verticalArrangement = Arrangement.spacedBy(" + state.spacing + ".dp)", ") {");
+      if (state.headers) {
+        lines.push("    secciones.forEach { seccion ->",
+          "        item(span = { GridItemSpan(maxLineSpan) }) {",
+          "            Text(seccion.titulo, style = MaterialTheme.typography.titleMedium)", "        }",
+          "        items(seccion.juegos, key = { it.id }) { juego -> Portada(juego) }", "    }");
+      } else {
+        lines.push("    items(juegos, key = { it.id }) { juego -> Portada(juego) }");
+      }
+      lines.push("}");
+      ui.code.set(lines.join("\n"));
+      var hints = {
+        Fixed: "Fixed(" + state.fixed + "): siempre " + state.fixed + (v ? " columnas" : " filas") + ". Si hay más espacio, las celdas crecen. Ideal para tableros como un Memory 4 × 4.",
+        Adaptive: "Adaptive(" + state.adaptive + ".dp): caben tantas " + (v ? "columnas" : "filas") + " como sea posible de al menos " + state.adaptive + " dp, y se reparten el espacio sobrante. Mueve el deslizador: así se adapta al girar el móvil o en una tablet.",
+        FixedSize: "FixedSize(" + state.fixedSize + ".dp): las celdas miden exactamente " + state.fixedSize + " dp y caben tantas como quepan. El espacio que sobra no se reparte."
+      };
+      ui.hint.textContent = hints[state.cells] + (v ? "" : " Una cuadrícula horizontal necesita un alto definido: dentro de una LazyColumn, sin Modifier.height, la app se cierra.");
+    }
+
+    function render() { renderControls(); renderStage(); renderCode(); }
+    render();
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -1318,7 +1608,9 @@
     overlays: overlaysPlayground,
     drawer: drawerPlayground,
     topappbar: topAppBarPlayground,
-    snackbar: snackbarPlayground
+    snackbar: snackbarPlayground,
+    lazylist: lazyListPlayground,
+    lazygrid: lazyGridPlayground
   };
 
   function init() {

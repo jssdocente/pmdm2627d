@@ -1063,7 +1063,168 @@
   to { transform: scaleX(0); }
 }
 
+/* ---------- LazyColumn / LazyRow */
+
+.md-typeset .cpc-lazy-viewport {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.md-typeset .cpc-lazy-viewport.cpc-lazy-h {
+  bottom: auto;
+  height: 160px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.md-typeset .cpc-lazy-inner {
+  position: relative;
+}
+
+.md-typeset .cpc-lazy-item {
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px 0 8px;
+  border-radius: 12px;
+  background: var(--m3-surface-container-low);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.md-typeset .cpc-lazy-item.cpc-lazy-card {
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.md-typeset .cpc-lazy-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.md-typeset .cpc-lazy-card .cpc-lazy-title {
+  flex: none;
+  width: 100%;
+  font-size: 12px;
+}
+
+.md-typeset .cpg button.cpc-icon-btn.cpc-fav {
+  color: var(--m3-outline);
+}
+
+.md-typeset .cpg button.cpc-icon-btn.cpc-fav.cpc-on {
+  color: var(--m3-error);
+}
+
+/* Fila que se acaba de componer al hacer scroll */
+.md-typeset .cpc-lazy-item.cpc-fresh {
+  animation: cpc-fresh 0.9s ease-out;
+}
+
+@keyframes cpc-fresh {
+  from { box-shadow: 0 0 0 3px var(--m3-primary); }
+  to { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
+}
+
+/* ---------- LazyVerticalGrid / LazyHorizontalGrid */
+
+.md-typeset .cpc-grid-col {
+  align-items: flex-start;
+  overflow-x: auto;
+}
+
+.md-typeset .cpc-grid-frame {
+  flex: none;
+  box-sizing: content-box;
+  overflow: auto;
+  border: 6px solid #1d1b20;
+  border-radius: 1rem;
+  background: var(--m3-surface);
+  color: var(--m3-on-surface);
+  font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  overscroll-behavior: contain;
+}
+
+.md-typeset .cpc-grid {
+  display: grid;
+  box-sizing: border-box;
+  justify-content: start;
+  align-content: start;
+}
+
+.md-typeset .cpc-grid.cpc-grid-h {
+  grid-auto-flow: column;
+  width: max-content;
+  height: 100%;
+}
+
+.md-typeset .cpc-grid-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  border-radius: 12px;
+  font-size: 22px;
+}
+
+.md-typeset .cpc-grid:not(.cpc-grid-h) .cpc-grid-cell {
+  aspect-ratio: 1;
+}
+
+.md-typeset .cpc-tone-primary {
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+}
+
+.md-typeset .cpc-tone-secondary {
+  background: var(--m3-secondary-container);
+  color: var(--m3-on-secondary-container);
+}
+
+.md-typeset .cpc-tone-tertiary {
+  background: var(--m3-surface-container-highest);
+  color: var(--m3-on-surface);
+}
+
+.md-typeset .cpc-grid-header {
+  grid-column: 1 / -1;
+  padding: 8px 4px 0;
+  color: var(--m3-primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.md-typeset .cpc-grid-h .cpc-grid-header {
+  grid-column: auto;
+  grid-row: 1 / -1;
+  padding: 4px 0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+}
+
+.md-typeset .cpc-range-value {
+  color: var(--cpg-muted);
+  font-size: 0.65rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .md-typeset .cpc-lazy-item.cpc-fresh {
+    animation: none;
+  }
   .md-typeset .cpc-snackbar,
   .md-typeset .cpc-appbar,
   .md-typeset .cpc-drawer,
