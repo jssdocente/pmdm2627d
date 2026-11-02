@@ -8,6 +8,8 @@
  *   <div class="cpg" data-cpg="layout"></div>      -> Column / Row / Box
  *   <div class="cpg" data-cpg="modifiers"></div>   -> orden de los Modifier
  *   <div class="cpg" data-cpg="contentscale"></div> -> contentScale de Image
+ *   <div class="cpg" data-cpg="colorroles"></div>  -> roles de color de Material 3
+ *   <div class="cpg" data-cpg="typography"></div>  -> escala tipográfica de Material 3
  *
  * Es una aproximación didáctica: reproduce el comportamiento de Compose en los
  * casos que se trabajan en clase, no el motor de medición real.
@@ -717,9 +719,321 @@
     render();
   }
 
+  // ------------------------------------------------ playground de roles de color
+
+  // Esquemas completos (claro / oscuro). Los errores y contornos siguen la base de Material 3.
+  var ERR_L = { error: "#B3261E", onError: "#FFFFFF", errorContainer: "#F9DEDC", onErrorContainer: "#410E0B" };
+  var ERR_D = { error: "#F2B8B5", onError: "#601410", errorContainer: "#8C1D18", onErrorContainer: "#F9DEDC" };
+  function scheme(base, err) { return Object.assign({}, err, base); }
+  var PALETTES = {
+    indigo: {
+      label: "Índigo (FichaJuego)",
+      light: scheme({ primary: "#4F55B5", onPrimary: "#FFFFFF", primaryContainer: "#E0E0FF", onPrimaryContainer: "#0A0F6B",
+        secondary: "#006A63", onSecondary: "#FFFFFF", secondaryContainer: "#9FF2E8", onSecondaryContainer: "#00201D",
+        tertiary: "#8B5000", onTertiary: "#FFFFFF", tertiaryContainer: "#FFDCBE", onTertiaryContainer: "#2C1600",
+        surface: "#FBF8FF", onSurface: "#1B1B21", surfaceVariant: "#E3E1EC", onSurfaceVariant: "#46464F",
+        surfaceContainerLow: "#F5F2FA", outline: "#777680" }, ERR_L),
+      dark: scheme({ primary: "#BFC1FF", onPrimary: "#1F247E", primaryContainer: "#373C9B", onPrimaryContainer: "#E0E0FF",
+        secondary: "#82D5CC", onSecondary: "#003733", secondaryContainer: "#00504A", onSecondaryContainer: "#9FF2E8",
+        tertiary: "#FFB870", onTertiary: "#4A2800", tertiaryContainer: "#693C00", onTertiaryContainer: "#FFDCBE",
+        surface: "#131318", onSurface: "#E4E1E9", surfaceVariant: "#46464F", onSurfaceVariant: "#C7C5D0",
+        surfaceContainerLow: "#1B1B21", outline: "#918F9A" }, ERR_D)
+    },
+    base: {
+      label: "Morado (plantilla)",
+      light: scheme({ primary: "#6750A4", onPrimary: "#FFFFFF", primaryContainer: "#EADDFF", onPrimaryContainer: "#21005D",
+        secondary: "#625B71", onSecondary: "#FFFFFF", secondaryContainer: "#E8DEF8", onSecondaryContainer: "#1D192B",
+        tertiary: "#7D5260", onTertiary: "#FFFFFF", tertiaryContainer: "#FFD8E4", onTertiaryContainer: "#31111D",
+        surface: "#FEF7FF", onSurface: "#1D1B20", surfaceVariant: "#E7E0EC", onSurfaceVariant: "#49454F",
+        surfaceContainerLow: "#F7F2FA", outline: "#79747E" }, ERR_L),
+      dark: scheme({ primary: "#D0BCFF", onPrimary: "#381E72", primaryContainer: "#4F378B", onPrimaryContainer: "#EADDFF",
+        secondary: "#CCC2DC", onSecondary: "#332D41", secondaryContainer: "#4A4458", onSecondaryContainer: "#E8DEF8",
+        tertiary: "#EFB8C8", onTertiary: "#492532", tertiaryContainer: "#633B48", onTertiaryContainer: "#FFD8E4",
+        surface: "#141218", onSurface: "#E6E0E9", surfaceVariant: "#49454F", onSurfaceVariant: "#CAC4D0",
+        surfaceContainerLow: "#1D1B20", outline: "#938F99" }, ERR_D)
+    },
+    verde: {
+      label: "Verde",
+      light: scheme({ primary: "#386A20", onPrimary: "#FFFFFF", primaryContainer: "#B8F397", onPrimaryContainer: "#042100",
+        secondary: "#55624C", onSecondary: "#FFFFFF", secondaryContainer: "#D9E7CB", onSecondaryContainer: "#131F0D",
+        tertiary: "#386666", onTertiary: "#FFFFFF", tertiaryContainer: "#BBEBEB", onTertiaryContainer: "#002020",
+        surface: "#F8FAF0", onSurface: "#1A1C18", surfaceVariant: "#DFE4D7", onSurfaceVariant: "#43483F",
+        surfaceContainerLow: "#F2F5EA", outline: "#73796E" }, ERR_L),
+      dark: scheme({ primary: "#9DD67D", onPrimary: "#0C3900", primaryContainer: "#205107", onPrimaryContainer: "#B8F397",
+        secondary: "#BDCBB0", onSecondary: "#283420", secondaryContainer: "#3E4A36", onSecondaryContainer: "#D9E7CB",
+        tertiary: "#A0CFCF", onTertiary: "#003737", tertiaryContainer: "#1E4E4E", onTertiaryContainer: "#BBEBEB",
+        surface: "#12140F", onSurface: "#E2E3DC", surfaceVariant: "#43483F", onSurfaceVariant: "#C3C8BB",
+        surfaceContainerLow: "#1A1C17", outline: "#8D9286" }, ERR_D)
+    }
+  };
+
+  // Parejas fondo / contenido que se pueden inspeccionar, y dónde aparecen en la maqueta.
+  var ROLE_PAIRS = [
+    { bg: "primary", fg: "onPrimary", use: "Botón principal (Button) y acciones destacadas" },
+    { bg: "primaryContainer", fg: "onPrimaryContainer", use: "Barra superior y elementos destacados en reposo" },
+    { bg: "secondaryContainer", fg: "onSecondaryContainer", use: "Chips, filtros y botones tonales (FilledTonalButton)" },
+    { bg: "tertiary", fg: "onTertiary", use: "Acentos que contrastan: insignias, valoraciones" },
+    { bg: "surface", fg: "onSurface", use: "Fondo de la pantalla y texto principal" },
+    { bg: "surfaceContainerLow", fg: "onSurfaceVariant", use: "Tarjetas (ElevatedCard) y texto secundario" },
+    { bg: "errorContainer", fg: "onErrorContainer", use: "Avisos de error y validación" }
+  ];
+
+  function hexRgb(hex) {
+    var n = parseInt(hex.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function luminance(hex) {
+    var c = hexRgb(hex).map(function (v) {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+  function contrast(a, b) {
+    var la = luminance(a), lb = luminance(b);
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+  }
+
+  function colorRolesPlayground(root) {
+    var state = { palette: "indigo", mode: "light", pair: 0, fixedWhite: false };
+
+    var controls = h("div", { class: "cpg-controls" });
+    var stage = h("div", { class: "cpg-stage cpg-stage-color" });
+    var hint = h("p", { class: "cpg-hint", "aria-live": "polite" });
+    var code = codePanel();
+
+    root.appendChild(h("div", { class: "cpg-title" }, [
+      h("strong", { text: "Playground: roles de color de Material 3" }),
+      h("span", { text: "Elige una pareja fondo / contenido y mira dónde se usa en claro y en oscuro" })
+    ]));
+    root.appendChild(h("div", { class: "cpg-body" }, [
+      h("div", { class: "cpg-panel" }, [controls]),
+      h("div", { class: "cpg-output" }, [stage, hint, code.el])
+    ]));
+
+    function renderControls() {
+      controls.innerHTML = "";
+      controls.appendChild(segmented("Paleta", Object.keys(PALETTES).map(function (k) {
+        return { value: k, label: PALETTES[k].label };
+      }), state.palette, function (v) { state.palette = v; render(); }));
+      controls.appendChild(segmented("Modo", [
+        { value: "light", label: "Claro" }, { value: "dark", label: "Oscuro" }
+      ], state.mode, function (v) { state.mode = v; render(); }));
+      var list = h("div", { class: "cpg-swatches", role: "group", "aria-label": "Parejas de roles" });
+      var s = PALETTES[state.palette][state.mode];
+      ROLE_PAIRS.forEach(function (p, i) {
+        var b = h("button", {
+          type: "button",
+          class: "cpg-swatch" + (i === state.pair ? " cpg-on" : ""),
+          "aria-pressed": i === state.pair ? "true" : "false",
+          style: { background: s[p.bg], color: s[p.fg] }
+        }, [h("span", { text: p.bg }), h("small", { text: "texto: " + p.fg })]);
+        b.addEventListener("click", function () { state.pair = i; render(); });
+        list.appendChild(b);
+      });
+      controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Pareja de roles" }), list]));
+      controls.appendChild(segmented("Error típico", [
+        { value: "off", label: "Usar los roles" }, { value: "on", label: "Texto Color.White fijo" }
+      ], state.fixedWhite ? "on" : "off", function (v) { state.fixedWhite = v === "on"; render(); }));
+    }
+
+    function renderStage() {
+      stage.innerHTML = "";
+      var s = PALETTES[state.palette][state.mode];
+      var sel = ROLE_PAIRS[state.pair];
+      function mark(bg) { return bg === sel.bg ? " cpg-hl" : ""; }
+      function txt(fg) { return state.fixedWhite ? "#FFFFFF" : s[fg]; }
+
+      var phone = h("div", { class: "cpg-phone", style: { background: s.surface, color: txt("onSurface") } }, [
+        h("div", { class: "cpg-ph-bar" + mark("primaryContainer"), style: { background: s.primaryContainer, color: txt("onPrimaryContainer") } }, [
+          h("span", { text: "Mi biblioteca" }), h("span", { text: "⋮" })
+        ]),
+        h("div", { class: "cpg-ph-body" + mark("surface") }, [
+          h("p", { class: "cpg-ph-title", text: "Partidas en total: 4" }),
+          h("div", { class: "cpg-ph-card" + mark("surfaceContainerLow"), style: { background: s.surfaceContainerLow } }, [
+            h("div", { class: "cpg-ph-row" }, [
+              h("strong", { text: "Hollow Knight", style: { color: txt("onSurface") } }),
+              h("span", { class: "cpg-ph-badge" + mark("tertiary"), text: "NUEVO", style: { background: s.tertiary, color: txt("onTertiary") } })
+            ]),
+            h("span", { text: "Metroidvania · 2017", style: { color: txt("onSurfaceVariant") } }),
+            h("div", { class: "cpg-ph-row" }, [
+              h("span", { class: "cpg-ph-chip" + mark("secondaryContainer"), text: "Switch", style: { background: s.secondaryContainer, color: txt("onSecondaryContainer") } }),
+              h("span", { class: "cpg-ph-btn" + mark("primary"), text: "+1 partida", style: { background: s.primary, color: txt("onPrimary") } })
+            ])
+          ]),
+          h("div", { class: "cpg-ph-err" + mark("errorContainer"), text: "El título no puede estar vacío", style: { background: s.errorContainer, color: txt("onErrorContainer") } })
+        ])
+      ]);
+      stage.appendChild(phone);
+    }
+
+    function renderInfo() {
+      var s = PALETTES[state.palette][state.mode];
+      var p = ROLE_PAIRS[state.pair];
+      var fg = state.fixedWhite ? "#FFFFFF" : s[p.fg];
+      var ratio = contrast(s[p.bg], fg);
+      var verdict = ratio >= 4.5 ? "✅ legible (WCAG AA ≥ 4,5)" : ratio >= 3 ? "⚠️ solo vale para texto grande (≥ 3)" : "❌ ilegible (< 3)";
+      hint.textContent = p.use + ". Contraste " + (state.fixedWhite ? "con Color.White" : p.fg + " sobre " + p.bg) +
+        ": " + ratio.toFixed(1).replace(".", ",") + ":1 " + verdict + ".";
+      var lines = state.fixedWhite ? [
+        "// ❌ Color fijo: no cambia entre claro y oscuro",
+        "Surface(color = MaterialTheme.colorScheme." + p.bg + ") {",
+        "    Text(\"Hollow Knight\", color = Color.White)",
+        "}"
+      ] : [
+        "// ✅ Cada fondo con su on-color",
+        "Surface(color = MaterialTheme.colorScheme." + p.bg + ") {",
+        "    Text(\"Hollow Knight\", color = MaterialTheme.colorScheme." + p.fg + ")",
+        "}",
+        "",
+        "// En Theme.kt (" + (state.mode === "light" ? "lightColorScheme" : "darkColorScheme") + "):",
+        "    " + p.bg + " = Color(0xFF" + s[p.bg].slice(1) + "),",
+        "    " + p.fg + " = Color(0xFF" + s[p.fg].slice(1) + "),"
+      ];
+      code.set(lines.join("\n"));
+    }
+
+    function render() {
+      renderControls();
+      renderStage();
+      renderInfo();
+    }
+
+    render();
+  }
+
+  // ------------------------------------------------ playground de tipografía
+
+  // Escala tipográfica por defecto de Material 3: [tamaño sp, interlineado sp, peso, espaciado sp]
+  var TYPE_SCALE = [
+    ["displayLarge", 57, 64, 400, -0.25, "Números o titulares enormes (pantalla de bienvenida)"],
+    ["displayMedium", 45, 52, 400, 0, "Cifras destacadas"],
+    ["displaySmall", 36, 44, 400, 0, "Titulares cortos muy visibles"],
+    ["headlineLarge", 32, 40, 400, 0, "Título de pantalla en tablet"],
+    ["headlineMedium", 28, 36, 400, 0, "Título de sección importante"],
+    ["headlineSmall", 24, 32, 400, 0, "Título de una ficha o de un diálogo"],
+    ["titleLarge", 22, 28, 400, 0, "Título de la barra superior (TopAppBar)"],
+    ["titleMedium", 16, 24, 500, 0.15, "Título de una tarjeta o de un elemento de lista"],
+    ["titleSmall", 14, 20, 500, 0.1, "Subtítulos y pestañas"],
+    ["bodyLarge", 16, 24, 400, 0.5, "Texto principal; el estilo por defecto de Text"],
+    ["bodyMedium", 14, 20, 400, 0.25, "Texto secundario y descripciones"],
+    ["bodySmall", 12, 16, 400, 0.4, "Pies de foto y textos de ayuda"],
+    ["labelLarge", 14, 20, 500, 0.1, "Texto de los botones"],
+    ["labelMedium", 12, 16, 500, 0.5, "Insignias, chips y etiquetas"],
+    ["labelSmall", 11, 16, 500, 0.5, "Etiquetas muy pequeñas (marcas de tiempo)"]
+  ];
+  var FAMILIES = {
+    Default: { css: "Roboto, system-ui, sans-serif", code: "FontFamily.Default" },
+    Serif: { css: "Georgia, 'Times New Roman', serif", code: "FontFamily.Serif" },
+    Monospace: { css: "'Roboto Mono', ui-monospace, monospace", code: "FontFamily.Monospace" },
+    Cursive: { css: "'Comic Sans MS', 'Segoe Print', cursive", code: "FontFamily.Cursive" }
+  };
+  var WEIGHTS = { "": "Por defecto", "300": "Light", "400": "Normal", "500": "Medium", "600": "SemiBold", "700": "Bold" };
+  var WEIGHT_CODE = { "300": "FontWeight.Light", "400": "FontWeight.Normal", "500": "FontWeight.Medium", "600": "FontWeight.SemiBold", "700": "FontWeight.Bold" };
+
+  function typographyPlayground(root) {
+    var state = { role: "titleLarge", text: "Hollow Knight", family: "Default", weight: "", group: "all" };
+
+    var controls = h("div", { class: "cpg-controls" });
+    var stage = h("div", { class: "cpg-stage cpg-stage-type" });
+    var hint = h("p", { class: "cpg-hint", "aria-live": "polite" });
+    var code = codePanel();
+
+    root.appendChild(h("div", { class: "cpg-title" }, [
+      h("strong", { text: "Playground: escala tipográfica de Material 3" }),
+      h("span", { text: "15 estilos: 5 categorías × 3 tamaños. Pulsa uno para personalizarlo" })
+    ]));
+    root.appendChild(h("div", { class: "cpg-body" }, [
+      h("div", { class: "cpg-panel" }, [controls]),
+      h("div", { class: "cpg-output" }, [stage, hint, code.el])
+    ]));
+
+    function row(r) { return TYPE_SCALE.filter(function (t) { return t[0] === r; })[0]; }
+
+    function renderControls() {
+      controls.innerHTML = "";
+      controls.appendChild(segmented("Categoría", [
+        { value: "all", label: "Todas" }, { value: "display", label: "display" }, { value: "headline", label: "headline" },
+        { value: "title", label: "title" }, { value: "body", label: "body" }, { value: "label", label: "label" }
+      ], state.group, function (v) { state.group = v; render(); }));
+      var id = nextId("txt");
+      var input = h("input", { id: id, type: "text", value: state.text, class: "cpg-input" });
+      input.addEventListener("input", function () { state.text = input.value; renderStage(); renderCode(); });
+      controls.appendChild(h("div", { class: "cpg-field" }, [h("label", { for: id, text: "Texto de ejemplo" }), input]));
+      controls.appendChild(h("p", { class: "cpg-sub", text: "Personalizar " + state.role + " en Type.kt" }));
+      controls.appendChild(segmented("fontFamily", opts(Object.keys(FAMILIES)), state.family, function (v) { state.family = v; render(); }));
+      controls.appendChild(select("fontWeight", Object.keys(WEIGHTS).map(function (k) {
+        return { value: k, label: WEIGHTS[k] };
+      }), state.weight, function (v) { state.weight = v; render(); }));
+    }
+
+    function renderStage() {
+      stage.innerHTML = "";
+      var list = h("div", { class: "cpg-type-list" });
+      TYPE_SCALE.forEach(function (t) {
+        if (state.group !== "all" && t[0].indexOf(state.group) !== 0) return;
+        var on = t[0] === state.role;
+        var style = { fontSize: t[1] + "px", lineHeight: t[2] + "px", fontWeight: t[3], letterSpacing: t[4] + "px", fontFamily: FAMILIES.Default.css };
+        if (on) {
+          style.fontFamily = FAMILIES[state.family].css;
+          if (state.weight) style.fontWeight = state.weight;
+        }
+        var b = h("button", { type: "button", class: "cpg-type-row" + (on ? " cpg-on" : ""), "aria-pressed": on ? "true" : "false" }, [
+          h("span", { class: "cpg-type-meta", text: t[0] + " · " + t[1] + " sp" }),
+          h("span", { class: "cpg-type-sample", text: state.text || " ", style: style })
+        ]);
+        b.addEventListener("click", function () { state.role = t[0]; state.family = "Default"; state.weight = ""; render(); });
+        list.appendChild(b);
+      });
+      stage.appendChild(list);
+      // Deja visible el estilo seleccionado dentro de la lista con scroll
+      var sel = list.querySelector(".cpg-on");
+      if (sel) list.scrollTop = Math.max(0, sel.offsetTop - list.offsetTop - 8);
+      stage.appendChild(h("p", { class: "cpg-legend", text: "Tamaños en sp mostrados a escala 1 sp ≈ 1 px. En el móvil se ven proporcionalmente igual." }));
+    }
+
+    function renderCode() {
+      var t = row(state.role);
+      var custom = state.family !== "Default" || state.weight;
+      var lines = [
+        "Text(",
+        '    text = "' + (state.text || "").replace(/"/g, '\\"') + '",',
+        "    style = MaterialTheme.typography." + t[0],
+        ")"
+      ];
+      if (custom) {
+        lines.push("", "// Type.kt: solo redefines los estilos que cambias");
+        lines.push("val Typography = Typography(");
+        lines.push("    " + t[0] + " = TextStyle(");
+        lines.push("        fontFamily = " + FAMILIES[state.family].code + ",");
+        lines.push("        fontWeight = " + (WEIGHT_CODE[state.weight || String(t[3])]) + ",");
+        lines.push("        fontSize = " + t[1] + ".sp,");
+        lines.push("        lineHeight = " + t[2] + ".sp" + (t[4] ? "," : ""));
+        if (t[4]) lines.push("        letterSpacing = " + t[4] + ".sp");
+        lines.push("    )", ")");
+      }
+      code.set(lines.join("\n"));
+      hint.textContent = t[0] + ": " + t[5] + ". Por defecto: " + t[1] + " sp, interlineado " + t[2] + " sp, peso " + t[3] + ".";
+    }
+
+    function render() {
+      renderControls();
+      renderStage();
+      renderCode();
+    }
+
+    render();
+  }
+
   // --------------------------------------------------------------- arranque
 
-  var PLAYGROUNDS = { layout: layoutPlayground, modifiers: modifierPlayground, contentscale: contentScalePlayground };
+  var PLAYGROUNDS = {
+    layout: layoutPlayground,
+    modifiers: modifierPlayground,
+    contentscale: contentScalePlayground,
+    colorroles: colorRolesPlayground,
+    typography: typographyPlayground
+  };
 
   function init() {
     var nodes = document.querySelectorAll(".cpg[data-cpg]:not([data-cpg-ready])");

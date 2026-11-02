@@ -424,3 +424,176 @@
   opacity: 0.22;
   pointer-events: none;
 }
+
+/* ---------- playground de roles de color */
+
+.md-typeset .cpg-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.35rem;
+}
+
+.md-typeset .cpg .cpg-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  text-align: left;
+  border: 2px solid transparent;
+  padding: 0.35rem 0.5rem;
+}
+
+.md-typeset .cpg .cpg-swatch.cpg-on {
+  border-color: var(--md-default-fg-color);
+}
+
+.md-typeset .cpg-swatch span {
+  font-weight: 700;
+}
+
+.md-typeset .cpg-swatch small {
+  opacity: 0.9;
+}
+
+.md-typeset .cpg-stage-color {
+  padding: 1rem 0.5rem;
+}
+
+.md-typeset .cpg-phone {
+  width: 15rem;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  border: 6px solid #1d1b20;
+  font-size: 0.7rem;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.md-typeset .cpg-ph-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 0.8rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.md-typeset .cpg-ph-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.6rem;
+}
+
+.md-typeset .cpg-ph-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.md-typeset .cpg-ph-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.md-typeset .cpg-ph-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.md-typeset .cpg-ph-badge,
+.md-typeset .cpg-ph-chip,
+.md-typeset .cpg-ph-btn,
+.md-typeset .cpg-ph-err {
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.4rem;
+  font-weight: 600;
+}
+
+.md-typeset .cpg-ph-badge {
+  font-size: 0.55rem;
+  letter-spacing: 0.05em;
+}
+
+.md-typeset .cpg-ph-btn {
+  border-radius: 1rem;
+  padding: 0.3rem 0.8rem;
+}
+
+.md-typeset .cpg-ph-err {
+  font-weight: 400;
+}
+
+/* El rol seleccionado se señala con un contorno parpadeante */
+.md-typeset .cpg-hl {
+  outline: 3px dashed #ff3d00;
+  outline-offset: 2px;
+  animation: cpg-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes cpg-pulse {
+  from { outline-color: #ff3d00; }
+  to { outline-color: #ffd54f; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .cpg-hl { animation: none; }
+}
+
+/* ---------- playground de tipografía */
+
+.md-typeset .cpg-input {
+  font: inherit;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--cpg-border);
+  border-radius: 0.35rem;
+  padding: 0.3rem 0.45rem;
+}
+
+.md-typeset .cpg-stage-type {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.6rem;
+}
+
+.md-typeset .cpg-type-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  max-height: 26rem;
+  overflow-y: auto;
+}
+
+.md-typeset .cpg .cpg-type-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  text-align: left;
+  border-color: transparent;
+  background: transparent;
+  padding: 0.3rem 0.5rem;
+  min-width: 0;
+}
+
+.md-typeset .cpg .cpg-type-row.cpg-on {
+  border-color: var(--cpg-primary);
+  background: var(--md-default-bg-color);
+}
+
+.md-typeset .cpg-type-meta {
+  font-family: var(--md-code-font-family);
+  font-size: 0.6rem;
+  color: var(--cpg-muted);
+}
+
+.md-typeset .cpg-type-sample {
+  color: var(--md-default-fg-color);
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
