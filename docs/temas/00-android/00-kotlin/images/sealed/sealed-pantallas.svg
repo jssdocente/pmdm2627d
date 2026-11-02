@@ -1,0 +1,41 @@
+<svg class="arq-svg" viewBox="0 0 760 340" role="img" aria-labelledby="arq-spa-t arq-spa-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-spa-t">Una pantalla para cada estado</title>
+  <desc id="arq-spa-d">Tres móviles. Con Cargando, un indicador circular. Con Exito, la lista de juegos. Con Error, el mensaje Sin conexión con el código 503 y un botón Reintentar.</desc>
+  <defs>
+    <marker id="arq-spa-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-spa-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="130" y="22" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Cargando</text>
+  <text x="130" y="38" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">CircularProgressIndicator()</text>
+  <rect x="40" y="50" width="180" height="280" rx="18" class="arq-box" style="stroke-width:4"/>
+  <text x="58" y="84" class="arq-t arq-s arq-strong">Mis juegos</text>
+  <line x1="46" y1="96" x2="214" y2="96" class="arq-guide"/>
+  <circle cx="130" cy="190" r="22" class="arq-guide" style="fill:none;stroke-width:5"/>
+  <path d="M130,168 A22,22 0 0,1 152,190" class="arq-dep" style="stroke:#4a7dff;stroke-width:5"/>
+  <text x="380" y="22" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Exito(listaJuegos)</text>
+  <text x="380" y="38" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">LazyColumn { … }</text>
+  <rect x="290" y="50" width="180" height="280" rx="18" class="arq-box" style="stroke-width:4"/>
+  <text x="308" y="84" class="arq-t arq-s arq-strong">Mis juegos</text>
+  <line x1="296" y1="96" x2="464" y2="96" class="arq-guide"/>
+  <text x="308" y="126" class="arq-t arq-xs arq-strong">Zelda: Breath of the Wild</text>
+  <text x="308" y="140" class="arq-t arq-xs arq-muted">Switch</text>
+  <line x1="302" y1="150" x2="458" y2="150" class="arq-guide"/>
+  <text x="308" y="170" class="arq-t arq-xs arq-strong">Super Mario Odyssey</text>
+  <text x="308" y="184" class="arq-t arq-xs arq-muted">Switch</text>
+  <line x1="302" y1="194" x2="458" y2="194" class="arq-guide"/>
+  <text x="308" y="214" class="arq-t arq-xs arq-strong">Celeste</text>
+  <text x="308" y="228" class="arq-t arq-xs arq-muted">PC</text>
+  <line x1="302" y1="238" x2="458" y2="238" class="arq-guide"/>
+  <text x="308" y="258" class="arq-t arq-xs arq-strong">Hades</text>
+  <text x="308" y="272" class="arq-t arq-xs arq-muted">PC</text>
+  <line x1="302" y1="282" x2="458" y2="282" class="arq-guide"/>
+  <text x="630" y="22" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Error(mensaje)</text>
+  <text x="630" y="38" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">MensajeError(…)</text>
+  <rect x="540" y="50" width="180" height="280" rx="18" class="arq-box" style="stroke-width:4"/>
+  <text x="558" y="84" class="arq-t arq-s arq-strong">Mis juegos</text>
+  <line x1="546" y1="96" x2="714" y2="96" class="arq-guide"/>
+  <text x="630" y="170" class="arq-t arq-h" text-anchor="middle">⚠</text>
+  <text x="630" y="196" class="arq-t arq-xs arq-strong" text-anchor="middle">Sin conexión (503)</text>
+  <rect x="585" y="216" width="90" height="30" rx="15" class="arq-ui"/>
+  <text x="630" y="235" class="arq-t arq-xs arq-strong" text-anchor="middle">Reintentar</text>
+</svg>

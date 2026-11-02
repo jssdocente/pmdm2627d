@@ -1360,7 +1360,7 @@ Configuración activa: Modo Desafío -> Daño enemigo amplificado un 150%.
 
 ### Ejercicio 3.13: Modelado de Eventos con `sealed interface UiEvent`
 📄 **Archivo:** `E13_UiEventsSealed.kt`  
-📚 **Teoría de referencia:** [Sintaxis Moderna: sealed interface y data object](../26-sealed-classes.md#2-sintaxis-moderna-sealed-interface-y-data-object-kotlin-19) y [Manejo con when Exhaustivo](../26-sealed-classes.md#3-manejo-con-when-exhaustivo-y-smart-casting)
+📚 **Teoría de referencia:** [Sintaxis Moderna: sealed interface y data object](../26-sealed-classes.md#sintaxis-moderna-con-data-object-y-data-class) y [Manejo con when Exhaustivo](../26-sealed-classes.md#3-la-combinacion-perfecta-polimorfismo-when-smart-casting)
 
 #### 1. Enunciado y Requisitos
 
@@ -1601,7 +1601,7 @@ Login erróneo -> Error 401: Credenciales inválidas
 
 ### Ejercicio 3.17: Modelado de Rutas de Navegación con `sealed class`
 📄 **Archivo:** `E17_RutasNavegacionSealed.kt`  
-📚 **Teoría de referencia:** [Tipos Sellados (Sealed Classes e Interfaces)](../26-sealed-classes.md#1-que-es-una-sealed-class-y-que-problema-resuelve)
+📚 **Teoría de referencia:** [Tipos Sellados (Sealed Classes e Interfaces)](../26-sealed-classes.md#2-la-solucion-de-kotlin-tipos-sellados-polimorfismo-restringido)
 
 #### 1. Enunciado y Requisitos
 En el desarrollo moderno en Android con Jetpack Compose, la navegación entre pantallas se modela mediante una jerarquía sellada finita. Las pantallas estáticas sin argumentos se declaran como `object` (para ahorrar memoria compartiendo la misma instancia), mientras que las pantallas que reciben parámetros de ruta (como un ID o slug) se declaran como `data class`.
@@ -1782,7 +1782,7 @@ Juego no seleccionado (null): Ningún videojuego seleccionado
 
 ### Reto 3.19: El Motor de Wordle con Arquitectura de Estado (*State, Companion Object & Sealed Types*)
 📄 **Archivo:** `Reto03_WordleEngine.kt`  
-📚 **Teoría de referencia:** [El Método copy() y la Inmutabilidad](../23-data-classes.md#3-el-metodo-copy-mutacion-inmutable), [Companion Object y Factorías](../22-objetos-anonimos.md#3-companion-object-el-equivalente-a-static), [El Dúo Estrella: enum y when](../24-enum-classes.md#4-el-duo-estrella-enum-y-la-expresion-when-exhaustiva) y [Tipos Sellados (Sealed Classes e Interfaces)](../25-sealed-classes.md)
+📚 **Teoría de referencia:** [El Método copy() y la Inmutabilidad](../23-data-classes.md#3-el-metodo-copy-mutacion-inmutable), [Companion Object y Factorías](../22-objetos-anonimos.md#3-companion-object-el-equivalente-a-static), [El Dúo Estrella: enum y when](../24-enum-classes.md#4-el-duo-estrella-enum-y-la-expresion-when-exhaustiva) y [Tipos Sellados (Sealed Classes e Interfaces)](../26-sealed-classes.md)
 
 #### 1. Contexto Pedagógico: Arquitectura MVI / UDF en Compose y Tipos Sellados
 

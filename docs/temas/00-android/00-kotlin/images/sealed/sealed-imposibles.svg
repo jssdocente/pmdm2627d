@@ -1,0 +1,63 @@
+<svg class="arq-svg" viewBox="0 0 760 390" role="img" aria-labelledby="arq-sim-t arq-sim-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-sim-t">Estados imposibles con booleanos</title>
+  <desc id="arq-sim-d">Tabla con las 8 combinaciones de tres variables: cargando, hay error y hay datos. Solo tres tienen sentido: solo cargando, solo error y solo datos. Las otras cinco, como cargando y con error a la vez o todo apagado, son estados imposibles que el código permite. A la derecha, con un tipo sellado solo existen Cargando, Exito y Error.</desc>
+  <defs>
+    <marker id="arq-sim-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-sim-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="70" y="28" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">cargando</text>
+  <text x="150" y="28" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">error</text>
+  <text x="230" y="28" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">datos</text>
+  <text x="350" y="28" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">¿tiene sentido?</text>
+  <rect x="20" y="40" width="420" height="32" rx="6" class="arq-warn"/>
+  <text x="70" y="61" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="150" y="61" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="230" y="61" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="350" y="61" class="arq-t arq-xs arq-strong" text-anchor="middle">✗ pantalla en blanco</text>
+  <rect x="20" y="78" width="420" height="32" rx="6" class="arq-data"/>
+  <text x="70" y="99" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="150" y="99" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="230" y="99" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="350" y="99" class="arq-t arq-xs arq-strong" text-anchor="middle">✓ Cargando</text>
+  <rect x="20" y="116" width="420" height="32" rx="6" class="arq-data"/>
+  <text x="70" y="137" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="150" y="137" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="230" y="137" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="350" y="137" class="arq-t arq-xs arq-strong" text-anchor="middle">✓ Error</text>
+  <rect x="20" y="154" width="420" height="32" rx="6" class="arq-data"/>
+  <text x="70" y="175" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="150" y="175" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="230" y="175" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="350" y="175" class="arq-t arq-xs arq-strong" text-anchor="middle">✓ Exito</text>
+  <rect x="20" y="192" width="420" height="32" rx="6" class="arq-warn"/>
+  <text x="70" y="213" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="150" y="213" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="230" y="213" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="350" y="213" class="arq-t arq-xs arq-strong" text-anchor="middle">✗ cargando y con error</text>
+  <rect x="20" y="230" width="420" height="32" rx="6" class="arq-warn"/>
+  <text x="70" y="251" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="150" y="251" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="230" y="251" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="350" y="251" class="arq-t arq-xs arq-strong" text-anchor="middle">✗ cargando y con datos</text>
+  <rect x="20" y="268" width="420" height="32" rx="6" class="arq-warn"/>
+  <text x="70" y="289" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">false</text>
+  <text x="150" y="289" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="230" y="289" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="350" y="289" class="arq-t arq-xs arq-strong" text-anchor="middle">✗ error y datos</text>
+  <rect x="20" y="306" width="420" height="32" rx="6" class="arq-warn"/>
+  <text x="70" y="327" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="150" y="327" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="230" y="327" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">true</text>
+  <text x="350" y="327" class="arq-t arq-xs arq-strong" text-anchor="middle">✗ todo a la vez</text>
+  <line x1="470" y1="20" x2="470" y2="350" class="arq-guide"/>
+  <text x="610" y="28" class="arq-t arq-s arq-strong" text-anchor="middle">sealed interface</text>
+  <rect x="530" y="60" width="160" height="46" rx="8" class="arq-ui"/>
+  <text x="610.0" y="87.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Cargando</text>
+  <rect x="530" y="130" width="160" height="46" rx="8" class="arq-ui"/>
+  <text x="610.0" y="157.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Exito(juegos)</text>
+  <rect x="530" y="200" width="160" height="46" rx="8" class="arq-ui"/>
+  <text x="610.0" y="227.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Error(mensaje)</text>
+  <text x="610" y="290" class="arq-t arq-xs arq-strong" text-anchor="middle">Solo existen estos 3:</text>
+  <text x="610" y="306" class="arq-t arq-xs" text-anchor="middle">lo imposible no se puede escribir.</text>
+  <text x="230" y="376" class="arq-t arq-s arq-strong" text-anchor="middle">3 combinaciones válidas de 8. Las otras 5 las permite el código igualmente.</text>
+</svg>

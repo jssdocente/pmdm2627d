@@ -25,6 +25,7 @@
  *   <div class="cpg" data-cpg="mainthread"></div> -> bloquear el hilo principal frente a suspender, y ANR (apuntes 51-corrutinas)
  *   <div class="cpg" data-cpg="coroutines"></div> -> secuencial, async/await, cancelación y errores (apuntes 51-corrutinas)
  *   <div class="cpg" data-cpg="scopefn"></div>    -> apply, also, let, run y with: this/it, resultado y nulos (apuntes 31-scope-functions)
+ *   <div class="cpg" data-cpg="sealed"></div>     -> booleanos frente a sealed interface y when exhaustivo (apuntes 26-sealed-classes)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -3737,6 +3738,163 @@
     render();
   }
 
+  // --------------------------------- tipos sellados (apuntes 26-sealed-classes)
+
+  var SL_TYPES = {
+    Cargando: { decl: "data object Cargando : CatalogoUiState", obj: true, props: [] },
+    Exito: { decl: "data class Exito(val listaJuegos: List<String>, val totalRegistros: Int) : CatalogoUiState", props: ["listaJuegos", "totalRegistros"] },
+    Error: { decl: "data class Error(val mensaje: String, val codigoHttp: Int = 500) : CatalogoUiState", props: ["mensaje", "codigoHttp"] },
+    Vacio: { decl: "data object Vacio : CatalogoUiState", obj: true, props: [], extra: true },
+    SinConexion: { decl: "data object SinConexion : CatalogoUiState", obj: true, props: [], extra: true }
+  };
+
+  function sealedPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = {
+      mode: "bool", cargando: true, error: false, datos: false,
+      types: { Vacio: false, SinConexion: false },
+      branches: { Cargando: true, Exito: true, Error: true, Vacio: false, SinConexion: false },
+      hasElse: false, current: "Exito", theme: siteMode()
+    };
+    var ui = shell(root, "Playground: booleanos frente a sealed interface", "¿Qué pinta la pantalla? ¿Qué dice el compilador?");
+
+    function existing() { return Object.keys(SL_TYPES).filter(function (k) { return !SL_TYPES[k].extra || state.types[k]; }); }
+
+    function toggles(label, keys, isOn, onToggle) {
+      var group = h("div", { class: "cpg-seg", role: "group", "aria-label": label });
+      keys.forEach(function (k) {
+        var on = isOn(k);
+        var b = h("button", { type: "button", class: on ? "cpg-on" : "", "aria-pressed": String(on), text: (on ? "✓ " : "") + k });
+        b.addEventListener("click", function () { onToggle(k); render(); });
+        group.appendChild(b);
+      });
+      return h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: label }), group]);
+    }
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(segmented("Modelo del estado", [{ value: "bool", label: "Booleanos" }, { value: "sealed", label: "sealed interface" }], state.mode, function (v) { state.mode = v; render(); }));
+      if (state.mode === "bool") {
+        ui.controls.appendChild(yesNo("cargando", state.cargando, function (v) { state.cargando = v; render(); }));
+        ui.controls.appendChild(yesNo("mensajeError != null", state.error, function (v) { state.error = v; render(); }));
+        ui.controls.appendChild(yesNo("juegos != null", state.datos, function (v) { state.datos = v; render(); }));
+      } else {
+        ui.controls.appendChild(toggles("Subtipos nuevos de CatalogoUiState", ["Vacio", "SinConexion"], function (k) { return state.types[k]; },
+          function (k) { state.types[k] = !state.types[k]; if (!state.types[k] && state.current === k) state.current = "Exito"; }));
+        ui.controls.appendChild(toggles("Ramas del when", existing(), function (k) { return state.branches[k]; }, function (k) { state.branches[k] = !state.branches[k]; }));
+        ui.controls.appendChild(yesNo("Rama else", state.hasElse, function (v) { state.hasElse = v; render(); }));
+        ui.controls.appendChild(select("Estado que llega a la pantalla", opts(existing()), state.current, function (v) { state.current = v; render(); }));
+      }
+      ui.controls.appendChild(modeControl({ get mode() { return state.theme; }, set mode(v) { state.theme = v; } }, function () { renderStage(); }));
+    }
+
+    function phone(kids) {
+      var p = applyScheme(h("div", { class: "cpc-phone csl-phone" }), state.theme);
+      p.appendChild(h("div", { class: "cpc-nav-screen" }, [
+        h("div", { class: "cpc-phone-bar cpc-bar-nav" }, [h("span", { class: "cpc-appbar-gap" }), h("span", { class: "cpc-appbar-title", text: "Mis juegos" })]),
+        h("div", { class: "csl-body" }, kids)
+      ]));
+      return p;
+    }
+
+    function part(kind) {
+      if (kind === "Cargando") return h("div", { class: "csl-center" }, [h("span", { class: "cpc-sem-spinner" })]);
+      if (kind === "Exito") return h("div", { class: "cpc-list" }, ["Zelda", "Hades", "Celeste"].map(function (n) {
+        return h("div", { class: "cpc-nav-row cpc-static" }, [h("span", { class: "cpc-nav-row-title", text: n })]);
+      }));
+      if (kind === "Error") return h("div", { class: "csl-center" }, [h("p", { text: "⚠ Sin conexión (503)" }), h("span", { class: "csl-btn", text: "Reintentar" })]);
+      if (kind === "Vacio") return h("div", { class: "csl-center" }, [h("p", { text: "No hay juegos todavía" })]);
+      if (kind === "SinConexion") return h("div", { class: "csl-center" }, [h("p", { text: "📡 Revisa tu conexión" })]);
+      return h("div", { class: "csl-center" }, [h("p", { text: "Algo ha pasado" })]);
+    }
+
+    function boolStage() {
+      var combos = [];
+      [false, true].forEach(function (c) { [false, true].forEach(function (e) { [false, true].forEach(function (d) { combos.push([c, e, d]); }); }); });
+      var valid = function (c) { return (c[0] + c[1] + c[2]) === 1; };
+      var kids = [];
+      if (state.cargando) kids.push(part("Cargando"));
+      if (state.error) kids.push(part("Error"));
+      if (state.datos) kids.push(part("Exito"));
+      if (!kids.length) kids.push(h("p", { class: "csl-blank", text: "(pantalla en blanco)" }));
+      var cur = [state.cargando, state.error, state.datos];
+      var ok = valid(cur);
+      var grid = h("div", { class: "csl-grid" });
+      combos.forEach(function (c) {
+        var same = c[0] === cur[0] && c[1] === cur[1] && c[2] === cur[2];
+        grid.appendChild(h("span", { class: "csl-cell " + (valid(c) ? "csl-ok" : "csl-bad") + (same ? " csl-cur" : ""),
+          title: c.map(function (v) { return v ? "1" : "0"; }).join(""), text: (valid(c) ? "✓ " : "✗ ") + c.map(function (v) { return v ? "T" : "F"; }).join(" ") }));
+      });
+      var side = h("div", { class: "cpc-koin-side" }, [
+        h("p", { class: "cpc-navstack-title", text: "Las 8 combinaciones (cargando · error · datos)" }), grid,
+        h("pre", { class: "cpc-koin-log cpc-sem-result " + (ok ? "cpc-sem-ok" : "cpc-sem-fail"),
+          text: ok ? "✓ Combinación con sentido." : "✗ Estado imposible: " + describeBad(cur) })
+      ]);
+      ui.stage.appendChild(h("div", { class: "cpc-nav-layout" }, [h("div", { class: "cpc-col" }, [phone(kids)]), side]));
+      ui.hint.textContent = "Nada en el código impide llegar a las combinaciones marcadas con ✗: basta con olvidar poner cargando = false antes de guardar el error. Solo 3 de las 8 tienen sentido.";
+      ui.code.set(["// ❌ Tres variables que nadie obliga a mantener coherentes", "var cargando = " + state.cargando, "var mensajeError: String? = " + (state.error ? "\"Sin conexión (503)\"" : "null"),
+        "var juegos: List<String>? = " + (state.datos ? "listOf(\"Zelda\", \"Hades\", \"Celeste\")" : "null"), "",
+        "// La pantalla pinta lo que encuentra:", "if (cargando) CircularProgressIndicator()", "if (mensajeError != null) MensajeError(mensajeError)", "if (juegos != null) ListaJuegos(juegos)"].join("\n"));
+    }
+
+    function describeBad(c) {
+      if (!c[0] && !c[1] && !c[2]) return "todo apagado: el usuario ve una pantalla en blanco.";
+      var parts = [];
+      if (c[0]) parts.push("el indicador de carga");
+      if (c[1]) parts.push("el error");
+      if (c[2]) parts.push("la lista");
+      return "se pintan a la vez " + parts.join(" y ") + ".";
+    }
+
+    function sealedStage() {
+      var types = existing();
+      var missing = types.filter(function (k) { return !state.branches[k]; });
+      var redundantElse = state.hasElse && !missing.length;
+      var compiles = state.hasElse || !missing.length;
+      var out;
+      if (!compiles) out = "e: 'when' expression must be exhaustive. Add the " + missing.map(function (k) { return "'CatalogoUiState." + k + "'"; }).join(", ") + " branch" + (missing.length > 1 ? "es" : "") + " or an 'else' branch.";
+      else out = "✓ BUILD SUCCESSFUL" + (redundantElse ? "\nw: 'when' is exhaustive so 'else' is redundant here." : "");
+      var cur = state.current;
+      var branch = !compiles ? null : state.branches[cur] ? cur : "else";
+      var kids = !compiles ? [h("div", { class: "csl-center" }, [h("p", { class: "csl-blank", text: "(no compila: la app no llega a ejecutarse)" })])] : [part(branch === "else" ? "else" : cur)];
+      var t = SL_TYPES[cur];
+      var info = !compiles ? "—" : branch === "else" ? "Entra por else: dentro, estado sigue siendo CatalogoUiState y no puedes leer nada propio de " + cur + "."
+        : t.props.length ? "Dentro de la rama, estado es CatalogoUiState." + cur + ": puedes leer " + t.props.map(function (p) { return "estado." + p; }).join(", ") + "."
+        : "Dentro de la rama, estado es CatalogoUiState." + cur + " (no tiene datos que leer).";
+      var side = h("div", { class: "cpc-koin-side" }, [
+        h("p", { class: "cpc-navstack-title", text: "Compilador" }),
+        h("pre", { class: "cpc-koin-log cpc-sem-result " + (compiles ? "cpc-sem-ok" : "cpc-sem-fail"), text: out }),
+        h("p", { class: "cpc-navstack-title cpc-sem-gap", text: "Rama que se ejecuta y smart cast" }),
+        h("p", { class: "csl-info", text: info })
+      ]);
+      ui.stage.appendChild(h("div", { class: "cpc-nav-layout" }, [h("div", { class: "cpc-col" }, [phone(kids)]), side]));
+      ui.hint.textContent = !compiles ? "El compilador conoce todos los subtipos y te dice cuáles faltan: así es imposible olvidar una pantalla."
+        : branch === "else" && SL_TYPES[cur].extra ? "Compila, pero " + cur + " cae en el else y muestra una pantalla genérica. Nadie se entera de que faltaba diseñarla: por eso no se pone else con tipos sellados."
+        : redundantElse ? "Con todas las ramas, el else sobra (el compilador avisa). Y si mañana añades un subtipo, el else lo esconderá."
+        : "Todas las ramas cubiertas y sin else: si mañana añades un subtipo, el compilador te obligará a tratarlo.";
+      var lines = ["sealed interface CatalogoUiState {"];
+      types.forEach(function (k) { lines.push("    " + SL_TYPES[k].decl); });
+      lines.push("}", "", "@Composable", "fun PantallaCatalogo(estado: CatalogoUiState) {", "    when (estado) {");
+      types.forEach(function (k) {
+        if (!state.branches[k]) return;
+        var c = SL_TYPES[k].obj ? "CatalogoUiState." + k : "is CatalogoUiState." + k;
+        var body = { Cargando: "CircularProgressIndicator()", Exito: "ListaJuegos(estado.listaJuegos)", Error: "MensajeError(estado.mensaje)", Vacio: "Text(\"No hay juegos todavía\")", SinConexion: "Text(\"Revisa tu conexión\")" }[k];
+        lines.push("        " + c + " -> " + body);
+      });
+      if (state.hasElse) lines.push("        else -> Text(\"Algo ha pasado\")");
+      lines.push("    }", "}");
+      ui.code.set(lines.join("\n"));
+    }
+
+    function renderStage() {
+      ui.stage.innerHTML = "";
+      if (state.mode === "bool") boolStage(); else sealedStage();
+    }
+
+    function render() { renderControls(); renderStage(); }
+    render();
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -3758,7 +3916,8 @@
     flowhot: flowHotPlayground,
     mainthread: mainThreadPlayground,
     coroutines: coroutinesPlayground,
-    scopefn: scopeFunctionsPlayground
+    scopefn: scopeFunctionsPlayground,
+    sealed: sealedPlayground
   };
 
   function init() {

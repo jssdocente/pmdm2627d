@@ -1,0 +1,39 @@
+<svg class="arq-svg" viewBox="0 0 760 380" role="img" aria-labelledby="arq-swh-t arq-swh-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-swh-t">when exhaustivo y smart cast</title>
+  <desc id="arq-swh-d">El estado, de tipo CatalogoUiState, entra en un when que lo reparte en tres caminos. En el camino de Cargando no hay datos que leer. En el de Exito, el compilador ya sabe que es Exito y deja leer listaJuegos y totalRegistros. En el de Error, deja leer mensaje y codigoHttp. Si se añade un subtipo Vacio y el when no lo trata, aparece un error de compilación.</desc>
+  <defs>
+    <marker id="arq-swh-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-swh-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="128" width="170" height="52" rx="8" class="arq-ui"/>
+  <text x="105.0" y="150.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">estado</text>
+  <text x="105.0" y="166.0" class="arq-t arq-code arq-xs" text-anchor="middle">CatalogoUiState</text>
+  <line x1="190" y1="154" x2="232" y2="154" class="arq-dep" marker-end="url(#arq-swh-a)"/>
+  <rect x="234" y="124" width="120" height="60" rx="8" class="arq-gray"/>
+  <text x="294.0" y="158.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">when (estado)</text>
+  <path d="M354,154 C380,154 380,50 410,50" class="arq-dep" marker-end="url(#arq-swh-a)"/>
+  <rect x="412" y="20" width="150" height="60" rx="8" class="arq-dom"/>
+  <text x="487" y="55" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Cargando -&gt;</text>
+  <line x1="562" y1="50" x2="592" y2="50" class="arq-dep" marker-end="url(#arq-swh-a)"/>
+  <rect x="590" y="20" width="166" height="60" rx="8" class="arq-data"/>
+  <text x="673" y="55" class="arq-t arq-code arq-xs" text-anchor="middle">nada que leer</text>
+  <path d="M354,154 C380,154 380,154 410,154" class="arq-dep" marker-end="url(#arq-swh-a)"/>
+  <rect x="412" y="124" width="150" height="60" rx="8" class="arq-dom"/>
+  <text x="487" y="159" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">is Exito -&gt;</text>
+  <line x1="562" y1="154" x2="592" y2="154" class="arq-dep" marker-end="url(#arq-swh-a)"/>
+  <rect x="590" y="124" width="166" height="60" rx="8" class="arq-data"/>
+  <text x="673" y="148" class="arq-t arq-code arq-xs" text-anchor="middle">estado.listaJuegos</text>
+  <text x="673" y="166" class="arq-t arq-code arq-xs" text-anchor="middle">estado.totalRegistros</text>
+  <path d="M354,154 C380,154 380,258 410,258" class="arq-dep" marker-end="url(#arq-swh-a)"/>
+  <rect x="412" y="228" width="150" height="60" rx="8" class="arq-dom"/>
+  <text x="487" y="263" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">is Error -&gt;</text>
+  <line x1="562" y1="258" x2="592" y2="258" class="arq-dep" marker-end="url(#arq-swh-a)"/>
+  <rect x="590" y="228" width="166" height="60" rx="8" class="arq-data"/>
+  <text x="673" y="252" class="arq-t arq-code arq-xs" text-anchor="middle">estado.mensaje</text>
+  <text x="673" y="270" class="arq-t arq-code arq-xs" text-anchor="middle">estado.codigoHttp</text>
+  <text x="669" y="14" class="arq-t arq-xs arq-strong" text-anchor="middle">lo que puedes leer (smart cast)</text>
+  <rect x="20" y="306" width="736" height="64" rx="8" class="arq-warn"/>
+  <text x="34" y="324" class="arq-t arq-xs arq-strong">+ data object Vacio : CatalogoUiState  →  sin rama nueva, no compila:</text>
+  <text x="34" y="342" class="arq-t arq-code arq-xs">e: 'when' expression must be exhaustive.</text>
+  <text x="34" y="358" class="arq-t arq-code arq-xs">   Add the 'CatalogoUiState.Vacio' branch or an 'else' branch.</text>
+</svg>

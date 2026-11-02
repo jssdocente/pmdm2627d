@@ -139,7 +139,7 @@ enum class EstadoLuz(val emoji: String) {
 ---
 
 ### Paso 2: Estados Sellados de la Partida (`state/`)
-📚 **Teoría de referencia:** [Sintaxis Moderna: sealed interface](../26-sealed-classes.md#2-sintaxis-moderna-sealed-interface-y-data-object-kotlin-19) y [Patrón Arquitectónico UiState](../26-sealed-classes.md#5-el-patron-universal-de-arquitectura-en-android-uistate)
+📚 **Teoría de referencia:** [Sintaxis Moderna: sealed interface](../26-sealed-classes.md#sintaxis-moderna-con-data-object-y-data-class) y [Patrón Arquitectónico UiState](../26-sealed-classes.md#5-el-patron-universal-de-arquitectura-en-android-uistate)
 
 Crea el archivo `PartidaUiState.kt`:
 ```kotlin
