@@ -1,0 +1,39 @@
+<svg class="arq-svg" viewBox="0 0 760 300" role="img" aria-labelledby="arq-fst-t arq-fst-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-fst-t">Cuándo está activo un stateIn con WhileSubscribed(5_000)</title>
+  <desc id="arq-fst-d">La pantalla observa el StateFlow, desaparece un instante al girar el móvil y vuelve; después la app pasa a segundo plano. El flujo de origen arranca con el primer observador, sigue activo durante el giro porque dura menos de 5 segundos, y se detiene 5 segundos después de que se vaya el último observador. uiState.value empieza en Cargando y, cuando llegan datos, pasa a Exito y conserva ese valor aunque el origen se detenga.</desc>
+  <defs>
+    <marker id="arq-fst-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <!-- Pantalla -->
+  <text x="20" y="54" class="arq-t arq-s arq-strong">Pantalla</text>
+  <text x="20" y="70" class="arq-t arq-xs arq-muted">¿alguien observa?</text>
+  <line x1="170" y1="58" x2="744" y2="58" class="arq-guide"/>
+  <rect x="200" y="48" width="170" height="20" rx="5" class="arq-ui"/>
+  <text x="285" y="62" class="arq-t arq-xs arq-strong" text-anchor="middle">observa</text>
+  <rect x="390" y="48" width="130" height="20" rx="5" class="arq-ui"/>
+  <text x="455" y="62" class="arq-t arq-xs arq-strong" text-anchor="middle">observa</text>
+  <text x="380" y="36" class="arq-t arq-xs" text-anchor="middle">🔄 giro</text>
+  <text x="560" y="36" class="arq-t arq-xs">🏠 app a segundo plano</text>
+  <!-- Origen -->
+  <text x="20" y="124" class="arq-t arq-s arq-strong">Flujo de origen</text>
+  <text x="20" y="140" class="arq-t arq-xs arq-muted">Room, combine…</text>
+  <line x1="170" y1="128" x2="744" y2="128" class="arq-guide"/>
+  <rect x="200" y="118" width="490" height="20" rx="5" class="arq-bar-vm"/>
+  <text x="300" y="132" class="arq-t arq-xs arq-on arq-strong" text-anchor="middle">activo: recibe datos</text>
+  <line x1="200" y1="72" x2="200" y2="114" class="arq-dep" marker-end="url(#arq-fst-a)"/>
+  <text x="206" y="98" class="arq-t arq-xs">arranca</text>
+  <path d="M520,150 L520,158 L690,158 L690,150" class="arq-dep" style="stroke-width:1.4"/>
+  <text x="605" y="174" class="arq-t arq-xs" text-anchor="middle">5 s sin observadores → se detiene</text>
+  <text x="380" y="174" class="arq-t arq-xs" text-anchor="middle">el giro dura &lt; 5 s:</text>
+  <text x="380" y="188" class="arq-t arq-xs" text-anchor="middle">no se reinicia</text>
+  <!-- value -->
+  <text x="20" y="234" class="arq-t arq-s arq-strong">uiState.value</text>
+  <line x1="170" y1="230" x2="744" y2="230" class="arq-dep" marker-end="url(#arq-fst-a)"/>
+  <rect x="170" y="218" width="70" height="24" rx="6" class="arq-box"/>
+  <text x="205" y="234" class="arq-t arq-code arq-xs" text-anchor="middle">Cargando</text>
+  <rect x="240" y="218" width="490" height="24" rx="6" class="arq-data"/>
+  <text x="485" y="234" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Exito(juegos)</text>
+  <text x="205" y="262" class="arq-t arq-xs arq-muted" text-anchor="middle">initialValue</text>
+  <text x="485" y="262" class="arq-t arq-xs arq-muted" text-anchor="middle">conserva el último valor aunque el origen se detenga</text>
+  <text x="380" y="290" class="arq-t arq-s arq-strong" text-anchor="middle">WhileSubscribed: trabaja solo mientras alguien mira (más un margen de 5 s).</text>
+</svg>

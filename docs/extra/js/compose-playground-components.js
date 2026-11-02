@@ -19,6 +19,9 @@
  *   <div class="cpg" data-cpg="adaptive"></div>   -> ventana redimensionable: clases de tamaño y navegación adaptativa (apuntes 3B.2)
  *   <div class="cpg" data-cpg="koin"></div>       -> resolutor de Koin: single, factory, bind y errores (apuntes 3C.3)
  *   <div class="cpg" data-cpg="semantics"></div>  -> árbol semántico: finders, acciones y errores de los tests de UI (apuntes 3C.4)
+ *   <div class="cpg" data-cpg="flowbelt"></div>   -> animación de la cinta transportadora de un Flow (apuntes 52-flows)
+ *   <div class="cpg" data-cpg="flowops"></div>    -> diagrama de canicas en vivo con map, filter, take, debounce… (apuntes 52-flows)
+ *   <div class="cpg" data-cpg="flowhot"></div>    -> flujo frío, StateFlow y SharedFlow con suscriptores (apuntes 52-flows)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -2727,6 +2730,519 @@
     render();
   }
 
+  // --------------------------------------------- Kotlin Flow (apuntes 52-flows)
+
+  // Bucle de animación con reloj propio: avanza solo mientras no está en pausa
+  // y se detiene en cuanto el playground sale del documento.
+  function flowClock(root, onFrame) {
+    var clock = { now: 0, paused: false };
+    var last = null;
+    function frame(ts) {
+      if (!root.isConnected) return;
+      if (last !== null && !clock.paused) clock.now += Math.max(0, Math.min(ts - last, 100));
+      last = ts;
+      onFrame(clock.now);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    return clock;
+  }
+
+  function reducedMotion() {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  // Carriles de canicas que se desplazan hacia la izquierda con el tiempo.
+  var FL_WINDOW = 5000;
+
+  function marbleLanes(parent) {
+    var wrap = h("div", { class: "cfl-lanes" });
+    parent.appendChild(wrap);
+    var marbles = [];
+    return {
+      lane: function (label, cls) {
+        var track = h("div", { class: "cfl-track" });
+        wrap.appendChild(h("div", { class: "cfl-lane " + (cls || "") }, [h("code", { class: "cfl-label", text: label }), track]));
+        return {
+          add: function (text, t, extra) {
+            var el = h("span", { class: "cfl-marble" + (extra ? " " + extra : ""), text: String(text) });
+            track.appendChild(el);
+            marbles.push({ el: el, t: t });
+          },
+          end: function (t, text) {
+            var el = h("span", { class: "cfl-end", title: text || "fin" });
+            track.appendChild(el);
+            marbles.push({ el: el, t: t });
+          }
+        };
+      },
+      update: function (now) {
+        var offset = Math.max(0, now - FL_WINDOW * 0.92);
+        marbles = marbles.filter(function (m) {
+          var pct = (m.t - offset) / FL_WINDOW * 100;
+          if (pct < -8) { m.el.remove(); return false; }
+          m.el.style.left = (2 + pct * 0.94) + "%";
+          return true;
+        });
+      }
+    };
+  }
+
+  // ---- Animación: la cinta transportadora (un valor detrás de otro)
+
+  function flowBeltPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var ui = shell(root, "Animación: la cinta transportadora", "Un valor viaja por la cinta; el siguiente no sale hasta que el anterior llega al final");
+    var belt, prod, coll, list, box, status;
+    var run;
+
+    function reset(now) {
+      run = { n: 0, item: null, waitUntil: now + 1000, done: false, restartAt: null };
+      list.innerHTML = "";
+      status.textContent = "delay(1000)…";
+    }
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      var p = h("button", { type: "button", text: clock && clock.paused ? "▶ Reanudar" : "⏸ Pausa" });
+      p.addEventListener("click", function () { clock.paused = !clock.paused; renderControls(); });
+      var r = h("button", { type: "button", text: "↺ Reiniciar" });
+      r.addEventListener("click", function () { reset(clock.now); });
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Animación" }), h("div", { class: "cpg-seg" }, [p, r])]));
+    }
+
+    ui.stage.innerHTML = "";
+    status = h("span", { class: "cfl-status" });
+    prod = h("div", { class: "cfl-station cfl-prod" }, [h("strong", { text: "Productor" }), h("code", { text: "flow { emit(i) }" }), status]);
+    list = h("div", { class: "cfl-received" });
+    coll = h("div", { class: "cfl-station cfl-coll" }, [h("strong", { text: "Consumidor" }), h("code", { text: "collect { }" }), list]);
+    box = h("span", { class: "cfl-box", hidden: true });
+    belt = h("div", { class: "cfl-belt" }, [
+      h("div", { class: "cfl-belt-line" }),
+      h("div", { class: "cfl-gate", style: { left: "33%" } }, [h("code", { text: ".map { it * 10 }" })]),
+      h("div", { class: "cfl-gate cfl-gate-low", style: { left: "66%" } }, [h("code", { text: ".filter { it > 20 }" })]),
+      box
+    ]);
+    ui.stage.appendChild(h("div", { class: "cfl-belt-wrap" }, [prod, belt, coll]));
+    ui.code.set([
+      "flow {",
+      "    for (i in 1..5) {",
+      "        delay(1000)",
+      "        emit(i)          // espera aquí hasta que collect termine con el valor",
+      "    }",
+      "}",
+      "    .map { it * 10 }",
+      "    .filter { it > 20 }",
+      "    .collect { println(it) }"
+    ].join("\n"));
+    ui.hint.textContent = "El 1 y el 2 se convierten en 10 y 20 y se caen en filter: no llegan al consumidor. Fíjate en que nunca hay dos valores a la vez en la cinta: emit() no vuelve hasta que el valor ha terminado su recorrido.";
+
+    var clock = flowClock(root, function (now) {
+      if (!run) reset(now);
+      var it = run.item;
+      if (!it && !run.done && now >= run.waitUntil) {
+        run.n += 1;
+        run.item = it = { v: run.n, mapped: false, start: now, drop: null };
+        box.hidden = false;
+        box.className = "cfl-box";
+        status.textContent = "emit(" + run.n + ")";
+      }
+      if (it) {
+        var x = (now - it.start) / 2600;
+        if (!it.mapped && x >= 0.33) { it.mapped = true; it.v = it.v * 10; box.classList.add("cfl-mapped"); }
+        if (it.mapped && it.drop === null && x >= 0.66 && it.v <= 20) it.drop = now;
+        box.textContent = String(it.v);
+        if (it.drop !== null) {
+          var d = (now - it.drop) / 700;
+          box.style.left = "66%";
+          box.style.transform = "translate(-50%, " + (-50 + d * 120) + "%)";
+          box.style.opacity = String(Math.max(0, 1 - d));
+          if (d >= 1) finish(now, null);
+        } else {
+          box.style.left = Math.min(x, 1) * 100 + "%";
+          box.style.transform = "translate(-50%, -50%)";
+          box.style.opacity = "1";
+          if (x >= 1) finish(now, it.v);
+        }
+      }
+      if (run.done && run.restartAt !== null && now >= run.restartAt) reset(now);
+    });
+    clock.paused = reducedMotion();
+
+    function finish(now, value) {
+      box.hidden = true;
+      if (value !== null) list.appendChild(h("code", { text: "println(" + value + ")" }));
+      run.item = null;
+      if (run.n >= 5) {
+        run.done = true;
+        run.restartAt = now + 3000;
+        status.textContent = "fin del bucle";
+        list.appendChild(h("span", { class: "cfl-done", text: "✔ collect termina" }));
+      } else {
+        run.waitUntil = now + 1000;
+        status.textContent = "delay(1000)…";
+      }
+    }
+
+    renderControls();
+  }
+
+  // ---- Playground: la cinta de operadores (diagrama de canicas en vivo)
+
+  var FL_SOURCES = {
+    radar: {
+      label: "Radar", code: "radarAutovia()",
+      values: [115, 118, 120, 142, 119, 155, 120, 168], gaps: [600, 250, 600, 1300, 250, 1300, 600, 1000],
+      filter: { code: ".filter { it > 120 }", fn: function (v) { return v > 120; } },
+      map: { code: ".map { (it - 120) * 10 }", fn: function (v) { return (v - 120) * 10; } }
+    },
+    dado: {
+      label: "Dado", code: "tiradas   // Flow<Int>: un valor por cada tirada",
+      filter: { code: ".filter { it % 2 == 0 }", fn: function (v) { return v % 2 === 0; } },
+      map: { code: ".map { it * 10 }", fn: function (v) { return v * 10; } }
+    },
+    texto: {
+      label: "Buscador", code: "textoBuscado   // Flow<String>: el texto tras cada tecla",
+      filter: { code: ".filter { it.length >= 3 }", fn: function (v) { return v.length >= 3; } },
+      map: { code: ".map { it.uppercase() }", fn: function (v) { return v.toUpperCase(); } }
+    }
+  };
+
+  var FL_OPS = [
+    { value: "", label: "(ninguno)" },
+    { value: "filter", label: "filter" },
+    { value: "map", label: "map" },
+    { value: "take2", label: "take(2)" },
+    { value: "debounce", label: "debounce(300)" },
+    { value: "distinct", label: "distinctUntilChanged()" }
+  ];
+
+  var FL_OP_HINTS = {
+    filter: "filter deja pasar solo los valores que cumplen la condición: los demás desaparecen de los carriles de abajo.",
+    map: "map transforma cada valor en otro, uno por uno: el número de canicas no cambia. Prueba a ponerlo antes o después de filter: el orden importa.",
+    take2: "take(2) entrega dos valores, termina y cancela el flujo de arriba: el radar deja de emitir y el dado o el buscador ya no hacen nada.",
+    debounce: "debounce(300) espera 300 ms de silencio antes de dejar pasar el último valor. Teclea deprisa en el buscador: solo pasa el texto en el que te detienes.",
+    distinct: "distinctUntilChanged() descarta un valor si es igual al anterior. Tira el dado varias veces hasta que repita."
+  };
+
+  function flowOperatorsPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = { src: "radar", ops: ["filter", "map", ""] };
+    var ui = shell(root, "Playground: la cinta de operadores", "Elige una fuente y encadena operadores: cada carril muestra lo que sale de cada uno");
+    var lanes, stages, src, out, extra;
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(segmented("Fuente", Object.keys(FL_SOURCES).map(function (k) { return { value: k, label: FL_SOURCES[k].label }; }),
+        state.src, function (v) { state.src = v; restart(); }));
+      [0, 1, 2].forEach(function (i) {
+        ui.controls.appendChild(select("Operador " + (i + 1), FL_OPS, state.ops[i], function (v) { state.ops[i] = v; restart(); }));
+      });
+      var p = h("button", { type: "button", text: clock.paused ? "▶ Reanudar" : "⏸ Pausa" });
+      p.addEventListener("click", function () { clock.paused = !clock.paused; renderControls(); });
+      var r = h("button", { type: "button", text: "↺ Reiniciar" });
+      r.addEventListener("click", restart);
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Tiempo" }), h("div", { class: "cpg-seg" }, [p, r])]));
+    }
+
+    function opCode(op) {
+      var s = FL_SOURCES[state.src];
+      return { filter: s.filter.code, map: s.map.code, take2: ".take(2)", debounce: ".debounce(300)", distinct: ".distinctUntilChanged()" }[op];
+    }
+
+    // Cada etapa recibe valores (push) y avisa del final (complete) a la siguiente.
+    function makeStage(op, lane, next, cancelUpstream) {
+      var s = FL_SOURCES[state.src];
+      var st = { push: null, complete: null, tick: function () {} };
+      var closed = false;
+      function pass(v) { lane.add(v, clock.now); next.push(v); }
+      st.complete = function () { if (closed) return; closed = true; lane.end(clock.now); next.complete(); };
+      st.cancel = function () { if (closed) return; closed = true; lane.end(clock.now, "cancelado"); };
+      if (op === "filter") st.push = function (v) { if (s.filter.fn(v)) pass(v); };
+      else if (op === "map") st.push = function (v) { pass(s.map.fn(v)); };
+      else if (op === "take2") {
+        var count = 0;
+        st.push = function (v) {
+          if (closed) return;
+          count += 1;
+          pass(v);
+          if (count >= 2) { st.complete(); cancelUpstream(); }
+        };
+      } else if (op === "distinct") {
+        var has = false, last;
+        st.push = function (v) { if (has && v === last) return; has = true; last = v; pass(v); };
+      } else if (op === "debounce") {
+        var pending = null, due = 0;
+        st.push = function (v) { pending = { v: v }; due = clock.now + 300; };
+        st.tick = function (now) { if (pending && now >= due) { var v = pending.v; pending = null; pass(v); } };
+        st.complete = function () {
+          if (closed) return;
+          if (pending) { var v = pending.v; pending = null; pass(v); }
+          closed = true; lane.end(clock.now); next.complete();
+        };
+      }
+      return st;
+    }
+
+    function restart() {
+      ui.stage.innerHTML = "";
+      var s = FL_SOURCES[state.src];
+      var area = h("div", { class: "cfl-area" });
+      extra = h("div", { class: "cfl-input" });
+      out = h("pre", { class: "cpc-koin-log cfl-console" });
+      ui.stage.appendChild(h("div", { class: "cfl-col" }, [area, extra,
+        h("p", { class: "cpc-navstack-title", text: "Consola (lo que hace collect con cada valor)" }), out]));
+      lanes = marbleLanes(area);
+      var active = state.ops.filter(Boolean);
+      var srcLane = lanes.lane(s.code.split("   ")[0], "cfl-l-src");
+      var collector = {
+        push: function (v) { out.textContent += v + "\n"; out.scrollTop = out.scrollHeight; },
+        complete: function () { out.textContent += "— collect termina —\n"; }
+      };
+      stages = [];
+      var next = collector;
+      var laneObjs = active.map(function (op, i) { return lanes.lane(opCode(op), i === active.length - 1 ? "cfl-l-out" : "cfl-l-op"); });
+      for (var j = active.length - 1; j >= 0; j--) {
+        stages[j] = makeStage(active[j], laneObjs[j], next, (function (j) {
+          // take cancela todo lo que tiene por encima: la fuente y los operadores anteriores
+          return function () {
+            src.cancel();
+            for (var k = 0; k < j; k++) { stages[k].cancel(); }
+          };
+        })(j));
+        next = stages[j];
+      }
+      var first = next;
+      src = {
+        cancelled: false, done: false, i: 0, nextAt: clock.now + (s.gaps ? s.gaps[0] : 0),
+        emit: function (v) {
+          if (this.cancelled || this.done) return;
+          srcLane.add(v, clock.now);
+          first.push(v);
+        },
+        cancel: function () { if (this.cancelled || this.done) return; this.cancelled = true; srcLane.end(clock.now, "cancelado"); },
+        finish: function () { this.done = true; srcLane.end(clock.now); first.complete(); }
+      };
+      if (state.src === "dado") {
+        var b = h("button", { type: "button", text: "🎲 Tirar el dado" });
+        b.addEventListener("click", function () { src.emit(1 + Math.floor(Math.random() * 6)); });
+        extra.appendChild(b);
+      } else if (state.src === "texto") {
+        var input = h("input", { type: "text", class: "cpg-input", placeholder: "Escribe un juego, por ejemplo hades", "aria-label": "Texto del buscador" });
+        input.addEventListener("input", function () { src.emit(input.value); });
+        extra.appendChild(input);
+      } else {
+        extra.appendChild(h("span", { class: "cpg-label", text: "El radar emite solo, con pausas irregulares, y termina tras 8 lecturas." }));
+      }
+      clock.now = 0;
+      src.nextAt = s.gaps ? s.gaps[0] : 0;
+      out.textContent = "";
+      renderCode(active);
+      renderHint(active);
+      if (clock.paused) { clock.paused = false; }
+      renderControls();
+    }
+
+    function renderCode(active) {
+      var s = FL_SOURCES[state.src];
+      var lines = [s.code];
+      active.forEach(function (op) { lines.push("    " + opCode(op)); });
+      lines.push("    .collect { println(it) }");
+      ui.code.set(lines.join("\n"));
+    }
+
+    function renderHint(active) {
+      var parts = active.filter(function (op, i) { return active.indexOf(op) === i; }).map(function (op) { return FL_OP_HINTS[op]; });
+      ui.hint.textContent = parts.length ? parts.join(" ") : "Sin operadores, collect recibe exactamente lo que emite la fuente. Añade alguno para ver cómo cambia cada carril.";
+    }
+
+    var clock = flowClock(root, function (now) {
+      if (!src) return;
+      var s = FL_SOURCES[state.src];
+      if (s.values && !src.cancelled && !src.done && now >= src.nextAt) {
+        src.emit(s.values[src.i]);
+        src.i += 1;
+        if (src.i >= s.values.length) src.finish();
+        else src.nextAt = now + s.gaps[src.i];
+      }
+      stages.forEach(function (st) { st.tick(now); });
+      lanes.update(now);
+    });
+
+    restart();
+  }
+
+  // ---- Playground: frío, caliente y StateFlow
+
+  var FL_KINDS = [
+    { value: "frio", label: "flow { } (frío)" },
+    { value: "state", label: "StateFlow" },
+    { value: "shared0", label: "SharedFlow (replay = 0)" },
+    { value: "shared1", label: "SharedFlow (replay = 1)" }
+  ];
+
+  function flowHotPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = { kind: "state", auto: true, slow: false };
+    var ui = shell(root, "Playground: frío, caliente y StateFlow", "Suscribe y cancela a A, B y C en distintos momentos: mira qué recibe cada uno");
+    var lanes, srcLane, subs, rt;
+    var NAMES = ["A", "B", "C"];
+    var SLOW = 2500;
+
+    function isShared() { return state.kind === "shared0" || state.kind === "shared1"; }
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(select("Tipo de flujo", FL_KINDS, state.kind, function (v) { state.kind = v; restart(); }));
+      if (state.kind !== "frio") {
+        ui.controls.appendChild(yesNo(state.kind === "state" ? "Cambiar el valor solo, cada segundo" : "Emitir un evento solo, cada segundo", state.auto, function (v) { state.auto = v; rt.nextAuto = clock.now + 1000; renderControls(); }));
+        var acts = [];
+        if (state.kind === "state") {
+          var inc = h("button", { type: "button", text: "value = value + 1" });
+          inc.addEventListener("click", function () { setValue(rt.value + 1); });
+          var same = h("button", { type: "button", text: "value = mismo valor" });
+          same.addEventListener("click", function () { setValue(rt.value); });
+          acts = [inc, same];
+        } else {
+          var em = h("button", { type: "button", text: "emit(evento)" });
+          em.addEventListener("click", emitEvent);
+          acts = [em];
+        }
+        ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Fuente" }), h("div", { class: "cpg-seg" }, acts)]));
+      }
+      var sb = NAMES.map(function (n) {
+        var b = h("button", { type: "button", class: subs[n].active ? "cpg-on" : "", text: (subs[n].active ? "Cancelar " : "Suscribir ") + n });
+        b.addEventListener("click", function () { toggle(n); });
+        return b;
+      });
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Suscriptores (collect)" }), h("div", { class: "cpg-seg" }, sb)]));
+      if (!isShared()) {
+        ui.controls.appendChild(yesNo("A es un colector lento (tarda 2,5 s en procesar cada valor)", state.slow, function (v) { state.slow = v; renderControls(); renderCode(); }));
+      }
+      var r = h("button", { type: "button", text: "↺ Reiniciar" });
+      r.addEventListener("click", restart);
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: " " }), r]));
+    }
+
+    function deliver(sub, v, extra) {
+      sub.lane.add(v, clock.now, extra);
+      sub.last = v;
+      sub.got = true;
+      if (state.slow && sub.name === "A" && !isShared()) sub.busyUntil = clock.now + SLOW;
+    }
+
+    function setValue(v) {
+      if (v === rt.value) { srcLane.add("=", clock.now, "cfl-faded"); return; }
+      rt.value = v;
+      srcLane.add(v, clock.now);
+      NAMES.forEach(function (n) {
+        var s = subs[n];
+        if (s.active && clock.now >= s.busyUntil) deliver(s, v);
+      });
+    }
+
+    function emitEvent() {
+      rt.events += 1;
+      var ev = "★" + rt.events;
+      srcLane.add(ev, clock.now);
+      rt.lastEvent = ev;
+      NAMES.forEach(function (n) { if (subs[n].active) deliver(subs[n], ev); });
+    }
+
+    function toggle(n) {
+      var s = subs[n];
+      if (s.active) {
+        s.active = false;
+        s.lane.end(clock.now, "cancelado");
+      } else {
+        s.active = true;
+        s.busyUntil = 0;
+        s.got = false;
+        s.last = undefined;
+        s.lane.add("▶", clock.now, "cfl-start");
+        if (state.kind === "frio") { s.i = 0; s.nextAt = clock.now + 1000; }
+        else if (state.kind === "state") deliver(s, rt.value, "cfl-current");
+        else if (state.kind === "shared1" && rt.lastEvent) deliver(s, rt.lastEvent, "cfl-current");
+      }
+      renderControls();
+      renderHint();
+    }
+
+    function restart() {
+      ui.stage.innerHTML = "";
+      rt = { value: 0, events: 0, lastEvent: null, nextAuto: 1000 };
+      clock.now = 0;
+      var col = h("div", { class: "cfl-col" });
+      ui.stage.appendChild(col);
+      lanes = marbleLanes(col);
+      srcLane = lanes.lane(state.kind === "frio" ? "fuente: no hay (cada uno ejecuta la suya)" : state.kind === "state" ? "_contador (valor)" : "_eventos.emit()", "cfl-l-src");
+      subs = {};
+      NAMES.forEach(function (n) { subs[n] = { name: n, active: false, busyUntil: 0, lane: lanes.lane(n + (n === "A" ? " (puede ser lento)" : "") + " · collect", "cfl-l-out") }; });
+      if (state.kind === "state") srcLane.add(0, 0);
+      renderControls();
+      renderCode();
+      renderHint();
+    }
+
+    function renderCode() {
+      var lines;
+      if (state.kind === "frio") {
+        lines = ["val numeros: Flow<Int> = flow {", "    for (i in 0..5) {", "        delay(1000)", "        emit(i)", "    }", "}", "",
+          "// Cada suscriptor arranca su propia ejecución:",
+          "launch { numeros.collect { " + (state.slow ? "delay(2500); " : "") + "println(\"A: $it\") } }",
+          "launch { numeros.collect { println(\"B: $it\") } }"];
+      } else if (state.kind === "state") {
+        lines = ["private val _contador = MutableStateFlow(0)", "val contador: StateFlow<Int> = _contador.asStateFlow()", "",
+          "_contador.value = _contador.value + 1   // si es igual al actual, no emite", "",
+          "launch { contador.collect { " + (state.slow ? "delay(2500); " : "") + "println(\"A: $it\") } }",
+          "launch { contador.collect { println(\"B: $it\") } }"];
+      } else {
+        lines = ["private val _eventos = MutableSharedFlow<String>(replay = " + (state.kind === "shared1" ? 1 : 0) + ")",
+          "val eventos: SharedFlow<String> = _eventos.asSharedFlow()", "",
+          "_eventos.emit(\"★1\")   // suspend: dentro de una corrutina", "",
+          "launch { eventos.collect { println(\"A: $it\") } }",
+          "launch { eventos.collect { println(\"B: $it\") } }"];
+      }
+      ui.code.set(lines.join("\n"));
+    }
+
+    function renderHint() {
+      var t = {
+        frio: "Suscribe a A, espera a que vaya por el 3 y suscribe a B: B empieza desde 0, porque cada collect ejecuta el bloque flow { } desde el principio. Con A lento, su productor espera: emit() no vuelve hasta que A termina con el valor.",
+        state: "Al suscribirse, cada uno recibe el valor actual (canica con borde grueso). «value = mismo valor» no emite nada. Activa el colector lento: A se salta los valores intermedios y recibe solo el último (conflation).",
+        shared0: "Suscribe a B tarde: no recibe ninguno de los eventos anteriores, solo los que llegan después. Sirve para avisos de una sola vez, como un Snackbar.",
+        shared1: "Con replay = 1, quien se suscribe tarde recibe el último evento. Para un Snackbar no conviene: al girar el móvil, la pantalla volvería a mostrarlo."
+      }[state.kind];
+      ui.hint.textContent = t;
+    }
+
+    var clock = flowClock(root, function (now) {
+      if (!rt) return;
+      if (state.kind !== "frio" && state.auto && now >= rt.nextAuto) {
+        rt.nextAuto = now + 1000;
+        if (state.kind === "state") setValue(rt.value + 1); else emitEvent();
+      }
+      NAMES.forEach(function (n) {
+        var s = subs[n];
+        if (!s.active) return;
+        if (state.kind === "frio") {
+          if (s.i <= 5 && now >= s.nextAt && now >= s.busyUntil) {
+            deliver(s, s.i);
+            s.i += 1;
+            s.nextAt = Math.max(now, s.busyUntil) + 1000;
+            if (s.i > 5) { s.active = false; s.lane.end(now + 1, "fin"); renderControls(); }
+          }
+        } else if (state.kind === "state" && s.busyUntil && now >= s.busyUntil) {
+          s.busyUntil = 0;
+          if (s.last !== rt.value) deliver(s, rt.value, "cfl-conflated");
+        }
+      });
+      lanes.update(now);
+    });
+
+    restart();
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -2742,7 +3258,10 @@
     navigation: navPlayground,
     adaptive: adaptivePlayground,
     koin: koinPlayground,
-    semantics: semanticsPlayground
+    semantics: semanticsPlayground,
+    flowbelt: flowBeltPlayground,
+    flowops: flowOperatorsPlayground,
+    flowhot: flowHotPlayground
   };
 
   function init() {

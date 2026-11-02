@@ -1,0 +1,50 @@
+<svg class="arq-svg" viewBox="0 0 760 290" role="img" aria-labelledby="arq-frc-t arq-frc-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-frc-t">El recorrido de los datos desde Room hasta Compose</title>
+  <desc id="arq-frc-d">El DAO de Room devuelve un Flow de entidades. El repositorio lo convierte en un Flow de juegos del dominio. El ViewModel lo combina con el filtro, captura errores y lo convierte en un StateFlow con stateIn. La pantalla Compose lo recoge con collectAsStateWithLifecycle. Cuando el usuario marca un favorito, la orden baja hasta Room, que actualiza la tabla y emite una lista nueva que vuelve a subir sola hasta la pantalla.</desc>
+  <defs>
+    <marker id="arq-frc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-frc-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <!-- Cajas -->
+  <rect x="20" y="70" width="128" height="76" rx="12" class="arq-data"/>
+  <text x="84" y="94" class="arq-t arq-strong" text-anchor="middle">Room</text>
+  <text x="84" y="114" class="arq-t arq-code arq-xs" text-anchor="middle">JuegoDao</text>
+  <text x="84" y="132" class="arq-t arq-xs arq-muted" text-anchor="middle">tabla SQLite</text>
+  <rect x="173" y="70" width="128" height="76" rx="12" class="arq-data"/>
+  <text x="237" y="94" class="arq-t arq-strong" text-anchor="middle">Repositorio</text>
+  <text x="237" y="114" class="arq-t arq-code arq-xs" text-anchor="middle">entidad → Juego</text>
+  <text x="237" y="132" class="arq-t arq-xs arq-muted" text-anchor="middle">.map { }</text>
+  <rect x="326" y="70" width="128" height="76" rx="12" class="arq-ui"/>
+  <text x="390" y="94" class="arq-t arq-strong" text-anchor="middle">ViewModel</text>
+  <text x="390" y="114" class="arq-t arq-code arq-xs" text-anchor="middle">combine + catch</text>
+  <text x="390" y="132" class="arq-t arq-code arq-xs" text-anchor="middle">+ stateIn</text>
+  <rect x="479" y="70" width="128" height="76" rx="12" class="arq-ui"/>
+  <text x="543" y="94" class="arq-t arq-strong" text-anchor="middle">uiState</text>
+  <text x="543" y="114" class="arq-t arq-code arq-xs" text-anchor="middle">StateFlow</text>
+  <text x="543" y="132" class="arq-t arq-code arq-xs" text-anchor="middle">&lt;UiState&gt;</text>
+  <rect x="632" y="70" width="108" height="76" rx="12" class="arq-ui"/>
+  <text x="686" y="94" class="arq-t arq-strong" text-anchor="middle">Pantalla</text>
+  <text x="686" y="114" class="arq-t arq-code arq-xs" text-anchor="middle">collectAs…</text>
+  <text x="686" y="132" class="arq-t arq-code arq-xs" text-anchor="middle">WithLifecycle</text>
+  <!-- Tipos entre cajas -->
+  <line x1="148" y1="108" x2="171" y2="108" class="arq-flow" marker-end="url(#arq-frc-f)"/>
+  <line x1="301" y1="108" x2="324" y2="108" class="arq-flow" marker-end="url(#arq-frc-f)"/>
+  <line x1="454" y1="108" x2="477" y2="108" class="arq-flow" marker-end="url(#arq-frc-f)"/>
+  <line x1="607" y1="108" x2="630" y2="108" class="arq-flow" marker-end="url(#arq-frc-f)"/>
+  <text x="84" y="56" class="arq-t arq-code arq-xs" text-anchor="middle">Flow&lt;List&lt;Entity&gt;&gt;</text>
+  <text x="237" y="56" class="arq-t arq-code arq-xs" text-anchor="middle">Flow&lt;List&lt;Juego&gt;&gt;</text>
+  <text x="390" y="56" class="arq-t arq-xs arq-muted" text-anchor="middle">frío → caliente</text>
+  <text x="543" y="56" class="arq-t arq-xs arq-muted" text-anchor="middle">valor actual</text>
+  <text x="686" y="56" class="arq-t arq-xs arq-muted" text-anchor="middle">se redibuja sola</text>
+  <text x="380" y="26" class="arq-t arq-s arq-strong" text-anchor="middle">Los datos suben solos: nadie llama a «refrescar».</text>
+  <!-- Vuelta -->
+  <path d="M686,146 L686,206 L84,206 L84,150" class="arq-dep" marker-end="url(#arq-frc-a)"/>
+  <rect x="270" y="192" width="230" height="28" rx="14" class="arq-box"/>
+  <text x="385" y="211" class="arq-t arq-xs" text-anchor="middle">❤ el usuario marca un favorito</text>
+  <text x="380" y="240" class="arq-t arq-xs" text-anchor="middle">La orden baja hasta Room (una función suspend). Room actualiza la tabla y emite una lista nueva,</text>
+  <text x="380" y="256" class="arq-t arq-xs" text-anchor="middle">que vuelve a subir por la misma tubería hasta la pantalla.</text>
+  <rect x="20" y="270" width="28" height="12" rx="3" class="arq-data"/>
+  <text x="56" y="280" class="arq-t arq-xs">capa de datos</text>
+  <rect x="170" y="270" width="28" height="12" rx="3" class="arq-ui"/>
+  <text x="206" y="280" class="arq-t arq-xs">capa de presentación</text>
+</svg>

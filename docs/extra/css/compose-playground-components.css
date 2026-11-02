@@ -2182,3 +2182,205 @@
 
 .md-typeset pre.cpc-sem-ok { border-left-color: #2eaa6e; }
 .md-typeset pre.cpc-sem-fail { border-left-color: #e5484d; }
+
+/* ---------- Kotlin Flow: cinta, canicas y suscriptores (apuntes 52-flows) */
+
+.md-typeset .cfl-belt-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.md-typeset .cfl-station {
+  display: flex;
+  flex: 0 0 7.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border: 1.5px solid;
+  border-radius: 0.6rem;
+  font-size: 0.65rem;
+}
+
+.md-typeset .cfl-station code {
+  padding: 0;
+  background: transparent;
+  font-size: 0.6rem;
+}
+
+.md-typeset .cfl-prod { border-color: #2eaa6e; background: rgba(46, 170, 110, 0.12); }
+.md-typeset .cfl-coll { border-color: #4a7dff; background: rgba(74, 125, 255, 0.12); }
+
+.md-typeset .cfl-status {
+  margin-top: auto;
+  font-family: "Roboto Mono", ui-monospace, monospace;
+  font-weight: 700;
+}
+
+.md-typeset .cfl-received {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.md-typeset .cfl-done {
+  color: #2eaa6e;
+  font-weight: 700;
+}
+
+.md-typeset .cfl-belt {
+  position: relative;
+  flex: 1;
+  min-width: 8rem;
+  min-height: 9rem;
+}
+
+.md-typeset .cfl-belt-line {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 7px;
+  background: repeating-linear-gradient(90deg, var(--cpg-border) 0 10px, transparent 10px 18px);
+  border: 1px solid var(--cpg-border);
+}
+
+.md-typeset .cfl-gate {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+  border-left: 2px dashed #e09400;
+  font-size: 0.55rem;
+}
+
+.md-typeset .cfl-gate code {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.55rem;
+}
+
+.md-typeset .cfl-box {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  min-width: 2rem;
+  padding: 0.2rem 0.4rem;
+  border: 1.5px solid #2eaa6e;
+  border-radius: 0.4rem;
+  background: #d9f2e5;
+  color: #10301f;
+  font: 700 0.7rem "Roboto Mono", ui-monospace, monospace;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.md-typeset .cfl-box.cfl-mapped {
+  border-color: #e09400;
+  background: #fde9c7;
+  color: #3a2600;
+}
+
+.md-typeset .cfl-area {
+  width: 100%;
+}
+
+.md-typeset .cfl-lanes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+}
+
+.md-typeset .cfl-lane {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.md-typeset .cfl-label {
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+  font-size: 0.58rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.md-typeset .cfl-track {
+  position: relative;
+  height: 2rem;
+  overflow: hidden;
+  background: linear-gradient(var(--cpg-border), var(--cpg-border)) center / 100% 1.5px no-repeat;
+}
+
+.md-typeset .cfl-marble {
+  position: absolute;
+  top: 50%;
+  min-width: 1.5rem;
+  padding: 0.1rem 0.35rem;
+  border: 1.5px solid;
+  border-radius: 999px;
+  font: 700 0.58rem "Roboto Mono", ui-monospace, monospace;
+  text-align: center;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+.md-typeset .cfl-l-src .cfl-marble { border-color: #2eaa6e; background: #d9f2e5; color: #10301f; }
+.md-typeset .cfl-l-op .cfl-marble { border-color: #e09400; background: #fde9c7; color: #3a2600; }
+.md-typeset .cfl-l-out .cfl-marble { border-color: #4a7dff; background: #dde6ff; color: #0f2366; }
+.md-typeset .cfl-l-out .cfl-label { font-weight: 700; }
+
+.md-typeset .cfl-marble.cfl-faded { opacity: 0.45; border-style: dashed; }
+.md-typeset .cfl-marble.cfl-current { border-width: 3px; }
+.md-typeset .cfl-marble.cfl-conflated { border-color: #8e4ec6; }
+.md-typeset .cfl-marble.cfl-start { border-color: var(--cpg-border); background: transparent; color: var(--cpg-muted); }
+
+.md-typeset .cfl-end {
+  position: absolute;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  background: var(--md-default-fg-color);
+  transform: translateX(-50%);
+}
+
+.md-typeset .cfl-input {
+  margin: 0.6rem 0;
+}
+
+.md-typeset .cfl-input .cpg-input {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.md-typeset pre.cfl-console {
+  min-height: 3rem;
+  max-height: 7rem;
+}
+
+@media (max-width: 30em) {
+  .md-typeset .cfl-belt-wrap { flex-wrap: wrap; }
+  .md-typeset .cfl-belt { flex-basis: 100%; order: 2; }
+  .md-typeset .cfl-coll { order: 3; }
+  .md-typeset .cfl-station { flex: 1 1 6rem; }
+}
+
+.md-typeset .cfl-gate-low code {
+  top: auto;
+  bottom: 0;
+}
+
+.md-typeset .cfl-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 100%;
+  min-width: 0;
+}

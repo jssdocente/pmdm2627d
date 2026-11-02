@@ -110,6 +110,11 @@ Para entender la diferencia conceptual entre las herramientas que conoces y un `
 | **`fun obtener(): List<Int>`** | Devuelve **muchos valores** a la vez | **Sí** (deben estar todos en memoria) | Leer una lista de opciones estática |
 | **`fun obtener(): Flow<Int>`** | Emite **muchos valores en el tiempo** | **No** (cada valor fluye según llega) | Sensor en tiempo real, chat, Room |
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-tiempo.svg"
+<figcaption>Lo mismo que dice la tabla, en el tiempo: solo <code>Flow</code> entrega varios valores, cada uno en cuanto está listo y sin bloquear.</figcaption>
+</figure>
+
 ### La Analogía de la Fábrica
 
 - **Una función normal o `suspend`** es como pedir un paquete por mensajería: esperas a que el repartidor llegue a tu puerta, recoges **una única caja** y el servicio finaliza.
@@ -122,11 +127,9 @@ Para entender la diferencia conceptual entre las herramientas que conoces y un `
     
     - En el otro extremo se sitúa el **Consumidor o Recolector** (`collect()`), que permanece atento y procesa cada caja en el mismo instante en que llega.
 
-```mermaid
-flowchart LR
-    Productor["Productor de Datos: flow { emit() }"] -->|"Valores en el tiempo"| Intermediarios["Operadores: .filter { } / .map { }"]
-    Intermediarios -->|"Flujo procesado"| Consumidor["Consumidor / Recolector: .collect { }"]
-```
+Mira la cinta en marcha. El productor emite los números del 1 al 5; `map` los multiplica por 10 y `filter` deja pasar solo los mayores que 20:
+
+<div class="cpg" data-cpg="flowbelt"></div>
 
 ---
 
@@ -197,6 +200,16 @@ Conectando recolector con .collect()...
 ¡Instalación completada! El juego está listo para ejecutarse.
 ```
 
+Fíjate en el orden de la salida: cada «Emitiendo» va seguido de su «Barra de progreso». Productor y consumidor **se turnan**, y la última línea de `main` no se ejecuta hasta que el flujo termina:
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-collect.svg"
+<figcaption><code>emit()</code> no vuelve hasta que el consumidor ha procesado el valor, y <code>collect</code> no vuelve hasta que el flujo termina.</figcaption>
+</figure>
+
+!!! warning "Cuidado con dos `collect` seguidos"
+    Como `collect` suspende hasta que el flujo termina, si recolectas un flujo **infinito** (un sensor, un `StateFlow`) la línea siguiente no se ejecuta nunca. Para escuchar dos flujos a la vez, lanza cada `collect` en su propia corrutina con `launch { … }`.
+
 ---
 
 
@@ -216,30 +229,22 @@ El constructor estándar `flow { ... }` que acabamos de ver es un **flujo frío*
 
 ### Flujos Calientes (*Hot Flows*)
 
-Un flujo caliente está activo y produciendo datos **independientemente de si hay alguien suscrito escuchando o no**:
+Un flujo caliente **existe y reparte sus valores independientemente de si hay alguien suscrito o no**:
 
-- No espera a que llames a `.collect()`. Los datos fluyen continuamente.
+- No espera a que llames a `.collect()`. Sus valores cambian cuando alguien se los asigna (por ejemplo, el ViewModel), haya o no suscriptores.
 
-- Múltiples suscriptores comparten la misma fuente en tiempo real. Si te suscribes tarde, te pierdes los datos pasados.
+- Múltiples suscriptores comparten la misma fuente en tiempo real. Si te suscribes tarde, te pierdes los valores pasados: un `SharedFlow` no te da ninguno, y un `StateFlow` te da solo el actual.
+
+Ojo: un `MutableStateFlow` no genera datos por sí solo, como haría un `flow { }` con su bucle. Es una «caja» con un valor que otros modifican; lo que lo hace caliente es que ese valor existe y se reparte aunque nadie lo esté escuchando.
 
 > 📻 **La Analogía de la Radio FM o un Directo de Twitch:** Una emisora de radio o un canal en directo de Twitch es un flujo caliente. El locutor sigue hablando y la música sigue sonando aunque apagues el receptor. Si sintonizas la radio a las 10:15, escucharás lo que se esté emitiendo a las 10:15; no puedes pretender que la radio empiece el programa de las 10:00 desde el inicio.
 
 En el desarrollo móvil moderno con Android, los dos flujos calientes fundamentales son **`StateFlow`** y **`SharedFlow`**.
 
-```mermaid
-flowchart TD
-    subgraph Frio ["Flujo Frio: Cold Stream (Netflix o Spotify)"]
-        Netflix["Emisor inactivo: flow { ... }"]
-        User1["Usuario A llama a .collect()"] -->|"Empieza desde segundo 0"| Netflix
-        User2["Usuario B llama a .collect()"] -->|"Empieza desde segundo 0"| Netflix
-    end
-    
-    subgraph Caliente ["Flujo Caliente: Hot Stream (Radio FM o Directo Twitch)"]
-        Radio["Emisor activo continuo: StateFlow / SharedFlow"]
-        Oyente1["Usuario A sintoniza"] -->|"Recibe emision en directo"| Radio
-        Oyente2["Usuario B sintoniza 10 min tarde"] -->|"Recibe emision en directo"| Radio
-    end
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-frio-caliente.svg"
+<figcaption>Qué recibe un suscriptor que llega tarde según el tipo de flujo. Lo puedes probar en el playground del apartado 5.</figcaption>
+</figure>
 
 ---
 
@@ -255,9 +260,11 @@ Es la pieza angular que conecta el **ViewModel** con las pantallas declarativas 
 
 2. **Exige obligatoriamente un valor inicial:** Un estado de pantalla nunca puede estar "en la nada"; debe comenzar con un estado definido (por ejemplo, cargando, vacío o con valores por defecto).
 
-3. **Optimización nativa contra duplicados (*Conflation*):** Si emites exactamente el mismo valor dos veces consecutivas (`valorNuevo == valorAnterior`), `StateFlow` descarta la segunda emisión y **no notifica a los suscriptores**, protegiendo a Jetpack Compose de recomposiciones innecesarias.
+3. **No avisa si el valor no cambia:** Si asignas un valor igual al actual (`valorNuevo == valorAnterior`), `StateFlow` no emite nada y **no notifica a los suscriptores**, protegiendo a Jetpack Compose de recomposiciones innecesarias.
 
-4. **Encapsulación y separación de responsabilidades:** Se declara una propiedad interna y mutable (`MutableStateFlow`) para que solo el ViewModel tenga permiso de modificar el estado, y se expone a la interfaz una versión pública de solo lectura (`StateFlow`) mediante `.asStateFlow()`.
+4. **Solo importa el último valor (*conflation*):** Si el valor cambia más deprisa de lo que el colector es capaz de procesarlo, el colector **se salta los valores intermedios** y recibe directamente el más reciente. Para un estado de pantalla es justo lo que queremos: importa cómo está la pantalla *ahora*, no cada paso intermedio.
+
+5. **Encapsulación y separación de responsabilidades:** Se declara una propiedad interna y mutable (`MutableStateFlow`) para que solo el ViewModel tenga permiso de modificar el estado, y se expone a la interfaz una versión pública de solo lectura (`StateFlow`) mediante `.asStateFlow()`.
 
 ### Ejemplo Práctico: Estado de Batería y Modo Ahorro en un Smartphone
 
@@ -533,6 +540,7 @@ flowchart TD
     En el desarrollo móvil moderno (MVVM / MVI con Jetpack Compose), las corrutinas **no imprimen directamente en pantalla ni se cancelan entre sí**. 
     
     En su lugar:
+
     1. Modelamos los datos con un **`data class Corredor`**.
     2. Creamos un estado tipado **`EstadoCarrera`** gestionado en un **`StateFlow`** (*Single Source of Truth*).
     3. Cada corredor avanza y **actualiza el estado global**.
@@ -762,6 +770,29 @@ fun main() = runBlocking {
 }
 ```
 
+**Salida en consola:**
+
+```text
+🍞 [TOAST UI]: ✅ Compra confirmada: 'Pase de Batalla - Temporada 4' por 9.99€
+📊 [ANALYTICS]: Evento auditado en base de datos: ✅ Compra confirmada: 'Pase de Batalla - Temporada 4' por 9.99€
+🍞 [TOAST UI]: ✅ Compra confirmada: 'Pack 500 Gemas Mágicas' por 4.99€
+📊 [ANALYTICS]: Evento auditado en base de datos: ✅ Compra confirmada: 'Pack 500 Gemas Mágicas' por 4.99€
+```
+
+Cada evento llega **una vez a cada suscriptor**. Si quitas el `delay(100)` inicial, los suscriptores todavía no estarían escuchando cuando se emite la primera compra y, con `replay = 0`, se la perderían.
+
+### Pruébalo: frío, caliente, `StateFlow` y `SharedFlow`
+
+Elige el tipo de flujo y suscribe o cancela a A, B y C cuando quieras. Cada carril muestra lo que recibe cada suscriptor; el primero, lo que pasa en la fuente.
+
+<div class="cpg" data-cpg="flowhot"></div>
+
+Cosas que conviene probar:
+
+- **`flow { }`:** suscribe a B cuando A vaya por el 3. B empieza desde el 0.
+- **`StateFlow`:** suscribe a B tarde (recibe el valor actual), pulsa «value = mismo valor» (no pasa nada) y activa el colector lento (A se salta valores).
+- **`SharedFlow`:** compara qué recibe B al suscribirse tarde con `replay = 0` y con `replay = 1`.
+
 ---
 
 ## 6. Operadores de Transformación Comunes
@@ -828,19 +859,157 @@ fun main() = runBlocking {
 Patrulla completada: 2 sanciones tramitadas.
 ```
 
+Estos ejemplos se entienden mejor con un **diagrama de canicas**: cada carril es el flujo que sale de un operador, y cada canica, un valor en el momento en que pasa.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-canicas.svg"
+<figcaption>Arriba, el radar del ejemplo: <code>take(2)</code> cancela el flujo y el radar deja de emitir. Abajo, <code>debounce</code> en un buscador.</figcaption>
+</figure>
+
+### Pruébalo: la cinta de operadores
+
+Encadena hasta tres operadores sobre el radar, un dado o un buscador, y mira en directo qué sale de cada uno:
+
+<div class="cpg" data-cpg="flowops"></div>
+
+Cosas que conviene probar:
+
+- Con el radar, cambia el orden de `filter` y `map`: el resultado no es el mismo.
+- Con el buscador y `debounce(300)`, escribe deprisa y luego para: solo pasa la palabra en la que te detienes.
+- Con el dado y `distinctUntilChanged()`, tira hasta que repita número.
+
+### Combinar flujos: `combine`
+
+Muchas pantallas dependen de **varias fuentes a la vez**: la lista de juegos y el filtro que ha elegido el usuario, la temperatura y la unidad (ºC o ºF)… El operador **`combine`** junta dos (o más) flujos en uno: cada vez que **cualquiera** de ellos emite, recalcula el resultado con el **último valor de cada uno**.
+
+```kotlin
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
+data class Juego(val titulo: String, val plataforma: String)
+
+fun main() = runBlocking {
+    val juegos = MutableStateFlow(listOf(Juego("Hades", "PC"), Juego("Zelda", "Switch"), Juego("Celeste", "PC")))
+    val filtro = MutableStateFlow<String?>(null)   // null = todas las plataformas
+
+    val visibles: Flow<List<Juego>> = combine(juegos, filtro) { lista, plataforma ->
+        lista.filter { plataforma == null || it.plataforma == plataforma }
+    }
+
+    val job = launch {
+        visibles.collect { lista -> println("📋 " + lista.joinToString { it.titulo }) }
+    }
+
+    delay(100); filtro.value = "PC"                                   // cambia el filtro
+    delay(100); juegos.update { it + Juego("Stardew Valley", "PC") }  // cambian los datos
+    delay(100); filtro.value = "Switch"
+    delay(100); job.cancel()
+}
+```
+
+**Salida en consola:**
+
+```text
+📋 Hades, Zelda, Celeste
+📋 Hades, Celeste
+📋 Hades, Celeste, Stardew Valley
+📋 Zelda
+```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-combine.svg"
+<figcaption>Cada vez que emite cualquiera de los dos flujos, <code>combine</code> recalcula con el último valor de cada uno.</figcaption>
+</figure>
+
+- `combine` no emite nada hasta que **todos** sus flujos han emitido al menos una vez. Con `StateFlow` no hay problema, porque siempre tienen un valor.
+
+- Es exactamente lo que hace el `CatalogoViewModel` de [3C.2](../../03/c-arquitectura/3c.2-clean-architecture.md): `combine(obtenerJuegos(), filtro) { … }`.
+
+### Errores en el flujo: `catch`
+
+Si el productor lanza una excepción, el flujo termina y la excepción llega a quien llamó a `collect`: si nadie la captura, **la app se cierra**. El operador **`catch`** intercepta los errores de todo lo que tiene **por encima** y permite emitir un valor de recambio:
+
+```kotlin
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+
+fun leerSensor(): Flow<Int> = flow {
+    emit(20)
+    delay(200)
+    emit(22)
+    delay(200)
+    throw IllegalStateException("Sensor desconectado")
+}
+
+fun main() = runBlocking {
+    leerSensor()
+        .map { grados -> "🌡️ $grados ºC" }
+        .catch { e -> emit("⚠️ Error: ${e.message}") }   // captura los errores de leerSensor() y de map
+        .collect { texto -> println(texto) }
+
+    println("La app sigue funcionando")
+}
+```
+
+**Salida en consola:**
+
+```text
+🌡️ 20 ºC
+🌡️ 22 ºC
+⚠️ Error: Sensor desconectado
+La app sigue funcionando
+```
+
+!!! warning "`catch` solo mira hacia arriba"
+    `catch` no captura los errores que ocurran **después** de él, por ejemplo dentro del bloque de `collect`. Por eso se coloca al final de la cadena de operadores, justo antes de `collect` o de `stateIn`.
+
 ---
 
 ## 7. La Conexión Final: De Room a Jetpack Compose
 
+### 7.1. De `Flow` frío a `StateFlow`: el operador `stateIn`
+
+Los datos suelen llegar como un **`Flow` frío** (Room, una API, un `combine`…), pero la pantalla necesita un **`StateFlow`**: un valor actual que leer en cualquier momento y que se comparta entre todos los observadores. El operador **`stateIn`** hace esa conversión:
+
+```kotlin
+val uiState: StateFlow<CatalogoUiState> =
+    combine(obtenerJuegos(), filtro) { juegos, plataforma -> /* … */ }
+        .catch { e -> emit(CatalogoUiState.Error(e.message ?: "Error")) }
+        .stateIn(
+            scope = viewModelScope,                            // 1. dónde se ejecuta
+            started = SharingStarted.WhileSubscribed(5_000),   // 2. cuándo se ejecuta
+            initialValue = CatalogoUiState.Cargando            // 3. qué se ve mientras tanto
+        )
+```
+
+1. **`scope`**: el ámbito de corrutinas en el que se recolecta el flujo de origen. En un ViewModel es `viewModelScope`, así que se cancela solo al destruirse el ViewModel.
+
+2. **`started`**: cuándo se activa el flujo de origen.
+
+    - `SharingStarted.WhileSubscribed(5_000)`: solo mientras haya **alguien observando**, y sigue 5 segundos más después de que se vaya el último. Así, al girar el móvil (la pantalla desaparece y vuelve en menos de un segundo) no se reinicia, pero si la app pasa a segundo plano deja de gastar recursos. **Es la opción recomendada para estados de pantalla.**
+
+    - `SharingStarted.Eagerly`: se activa en el momento y no para nunca.
+
+    - `SharingStarted.Lazily`: se activa con el primer observador y no para nunca.
+
+3. **`initialValue`**: el valor que tiene el `StateFlow` antes de que llegue el primer dato (normalmente, `Cargando`).
+
+!!! tip "Si nadie observa, no hay datos"
+    Con `WhileSubscribed`, si nadie recolecta el `StateFlow`, el flujo de origen ni siquiera arranca y `.value` se queda en `initialValue`. En la app no se nota, porque la pantalla siempre observa; en los tests hay que poner un observador a mano (lo verás en [3C.4](../../03/c-arquitectura/3c.4-testing.md#42-activar-un-stateflow-creado-con-statein)).
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-statein.svg"
+<figcaption>Con <code>WhileSubscribed(5_000)</code>, el giro de pantalla no reinicia el flujo de origen, pero pasar a segundo plano sí lo detiene. El último valor se conserva.</figcaption>
+</figure>
+
+### 7.2. El recorrido completo
+
 En la arquitectura moderna recomendada por Google para Android, los flujos proporcionan una autopista de datos reactiva que conecta la base de datos con los píxeles de la pantalla de forma transparente:
 
-```mermaid
-flowchart LR
-    BD["Base de Datos Local (Room SQLite)"] -->|"Flow continuo de datos"| Repo["Capa de Datos (Repository)"]
-    Repo -->|"Flow de dominio"| VM["Gestor de Estado (ViewModel)"]
-    VM -->|"Convierte a StateFlow (.stateIn)"| State["StateFlow de UiState"]
-    State -->|"collectAsStateWithLifecycle()"| UI["Interfaz de Usuario (Jetpack Compose)"]
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-room-compose.svg"
+<figcaption>El recorrido completo: los datos suben solos por la tubería y las órdenes del usuario bajan hasta Room.</figcaption>
+</figure>
 
 ### El Ciclo Reactivo en 3 Pasos:
 

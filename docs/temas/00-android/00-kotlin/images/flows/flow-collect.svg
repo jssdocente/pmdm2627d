@@ -1,0 +1,60 @@
+<svg class="arq-svg" viewBox="0 0 760 450" role="img" aria-labelledby="arq-fco-t arq-fco-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-fco-t">Productor y consumidor se turnan</title>
+  <desc id="arq-fco-d">El tiempo avanza hacia abajo. El consumidor llama a collect y el bloque flow arranca. El productor espera con delay y llama a emit con 0: el consumidor pinta la barra y, al terminar, el productor sigue. Así con cada valor. Cuando el bucle del productor acaba, collect termina y solo entonces se ejecuta la línea siguiente del consumidor.</desc>
+  <defs>
+    <marker id="arq-fco-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-fco-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <!-- Cabeceras -->
+  <text x="150" y="24" class="arq-t arq-h" text-anchor="middle">Consumidor</text>
+  <text x="150" y="42" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">main() · collect { }</text>
+  <text x="450" y="24" class="arq-t arq-h" text-anchor="middle">Productor</text>
+  <text x="450" y="42" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">flow { … emit() }</text>
+  <line x1="150" y1="52" x2="150" y2="430" class="arq-guide"/>
+  <line x1="450" y1="52" x2="450" y2="430" class="arq-guide"/>
+  <!-- 1: collect arranca el flujo -->
+  <rect x="60" y="60" width="180" height="28" rx="8" class="arq-ui"/>
+  <text x="150" y="79" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">.collect { … }</text>
+  <line x1="240" y1="80" x2="436" y2="80" class="arq-flow" marker-end="url(#arq-fco-f)"/>
+  <text x="338" y="72" class="arq-t arq-xs" text-anchor="middle">arranca el bloque flow</text>
+  <!-- 2: delay + emit(0) -->
+  <rect x="440" y="88" width="20" height="40" rx="4" class="arq-gray arq-dashed"/>
+  <text x="472" y="112" class="arq-t arq-code arq-xs">delay(600)</text>
+  <line x1="440" y1="138" x2="164" y2="138" class="arq-dep" marker-end="url(#arq-fco-a)"/>
+  <text x="300" y="130" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">emit(0)</text>
+  <rect x="140" y="140" width="20" height="30" rx="4" class="arq-ui"/>
+  <text x="128" y="160" class="arq-t arq-xs" text-anchor="end">pinta la barra: 0%</text>
+  <line x1="160" y1="172" x2="436" y2="172" class="arq-guide" marker-end="url(#arq-fco-a)"/>
+  <text x="300" y="186" class="arq-t arq-xs arq-muted" text-anchor="middle">el productor sigue</text>
+  <!-- 3: delay + emit(25) -->
+  <rect x="440" y="174" width="20" height="40" rx="4" class="arq-gray arq-dashed"/>
+  <text x="472" y="198" class="arq-t arq-code arq-xs">delay(600)</text>
+  <line x1="440" y1="224" x2="164" y2="224" class="arq-dep" marker-end="url(#arq-fco-a)"/>
+  <text x="300" y="216" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">emit(25)</text>
+  <rect x="140" y="226" width="20" height="30" rx="4" class="arq-ui"/>
+  <text x="128" y="246" class="arq-t arq-xs" text-anchor="end">pinta la barra: 25%</text>
+  <line x1="160" y1="258" x2="436" y2="258" class="arq-guide" marker-end="url(#arq-fco-a)"/>
+  <text x="300" y="282" class="arq-t arq-s arq-muted" text-anchor="middle">… 50%, 75%, 100% …</text>
+  <!-- 4: fin -->
+  <rect x="380" y="300" width="140" height="28" rx="8" class="arq-dom"/>
+  <text x="450" y="319" class="arq-t arq-xs" text-anchor="middle">el bucle termina</text>
+  <line x1="380" y1="340" x2="164" y2="340" class="arq-flow" marker-end="url(#arq-fco-f)"/>
+  <text x="272" y="332" class="arq-t arq-xs arq-strong" text-anchor="middle">collect termina</text>
+  <rect x="30" y="352" width="240" height="44" rx="8" class="arq-ui"/>
+  <text x="150" y="370" class="arq-t arq-code arq-xs" text-anchor="middle">println("¡Instalación</text>
+  <text x="150" y="386" class="arq-t arq-code arq-xs" text-anchor="middle">completada!")</text>
+  <text x="150" y="418" class="arq-t arq-xs arq-muted" text-anchor="middle">la línea siguiente a collect</text>
+  <!-- Notas -->
+  <rect x="540" y="130" width="206" height="96" rx="10" class="arq-box"/>
+  <text x="552" y="152" class="arq-t arq-s arq-strong">Se turnan</text>
+  <text x="552" y="172" class="arq-t arq-xs">Mientras el consumidor procesa</text>
+  <text x="552" y="188" class="arq-t arq-xs">un valor, el productor espera</text>
+  <text x="552" y="204" class="arq-t arq-xs">dentro de emit(): un valor</text>
+  <text x="552" y="220" class="arq-t arq-xs">detrás de otro, en orden.</text>
+  <rect x="540" y="300" width="206" height="96" rx="10" class="arq-warn"/>
+  <text x="552" y="322" class="arq-t arq-s arq-strong">collect suspende</text>
+  <text x="552" y="342" class="arq-t arq-xs">No devuelve el control hasta</text>
+  <text x="552" y="358" class="arq-t arq-xs">que el flujo acaba. Con un flujo</text>
+  <text x="552" y="374" class="arq-t arq-xs">infinito, lo que va detrás no se</text>
+  <text x="552" y="390" class="arq-t arq-xs">ejecuta nunca: usa launch.</text>
+</svg>

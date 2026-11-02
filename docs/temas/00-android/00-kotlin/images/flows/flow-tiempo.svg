@@ -1,0 +1,53 @@
+<svg class="arq-svg" viewBox="0 0 760 320" role="img" aria-labelledby="arq-fti-t arq-fti-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-fti-t">Un valor frente a muchos valores en el tiempo</title>
+  <desc id="arq-fti-d">Cuatro líneas de tiempo desde el momento de la llamada. Una función normal bloquea el hilo y devuelve un valor. Una función suspend deja el hilo libre mientras espera y devuelve un valor. Una función que devuelve List bloquea hasta tener todos los valores y los entrega juntos al final. Una función que devuelve Flow entrega cada valor en cuanto está listo, sin bloquear, y al final termina.</desc>
+  <defs>
+    <marker id="arq-fti-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <!-- Llamada -->
+  <line x1="230" y1="30" x2="230" y2="268" class="arq-guide"/>
+  <text x="230" y="22" class="arq-t arq-xs arq-strong" text-anchor="middle">llamada</text>
+  <!-- fun -->
+  <text x="20" y="64" class="arq-t arq-code arq-xs">fun f(): Int</text>
+  <line x1="230" y1="60" x2="740" y2="60" class="arq-guide"/>
+  <rect x="232" y="52" width="184" height="16" rx="4" class="arq-bar-lost"/>
+  <text x="324" y="85" class="arq-t arq-xs" text-anchor="middle">el hilo espera bloqueado</text>
+  <circle cx="430" cy="60" r="13" class="arq-dom"/>
+  <text x="430" y="65" class="arq-t arq-xs arq-strong" text-anchor="middle">7</text>
+  <text x="452" y="64" class="arq-t arq-xs arq-muted">un valor</text>
+  <!-- suspend -->
+  <text x="20" y="124" class="arq-t arq-code arq-xs">suspend fun f(): Int</text>
+  <line x1="230" y1="120" x2="740" y2="120" class="arq-guide"/>
+  <rect x="232" y="112" width="184" height="16" rx="4" class="arq-gray arq-dashed"/>
+  <text x="324" y="145" class="arq-t arq-xs" text-anchor="middle">suspendida: el hilo queda libre</text>
+  <circle cx="430" cy="120" r="13" class="arq-dom"/>
+  <text x="430" y="125" class="arq-t arq-xs arq-strong" text-anchor="middle">7</text>
+  <text x="452" y="124" class="arq-t arq-xs arq-muted">un valor</text>
+  <!-- List -->
+  <text x="20" y="184" class="arq-t arq-code arq-xs">fun f(): List&lt;Int&gt;</text>
+  <line x1="230" y1="180" x2="740" y2="180" class="arq-guide"/>
+  <rect x="232" y="172" width="364" height="16" rx="4" class="arq-bar-lost"/>
+  <text x="414" y="205" class="arq-t arq-xs" text-anchor="middle">bloquea hasta tenerlos todos en memoria</text>
+  <rect x="604" y="166" width="96" height="28" rx="8" class="arq-dom"/>
+  <text x="652" y="185" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">[1, 2, 3, 4]</text>
+  <!-- Flow -->
+  <text x="20" y="244" class="arq-t arq-code arq-xs arq-strong">fun f(): Flow&lt;Int&gt;</text>
+  <line x1="230" y1="240" x2="740" y2="240" class="arq-dep" marker-end="url(#arq-fti-a)"/>
+  <circle cx="300" cy="240" r="13" class="arq-data"/>
+  <text x="300" y="245" class="arq-t arq-xs arq-strong" text-anchor="middle">1</text>
+  <circle cx="390" cy="240" r="13" class="arq-data"/>
+  <text x="390" y="245" class="arq-t arq-xs arq-strong" text-anchor="middle">2</text>
+  <circle cx="500" cy="240" r="13" class="arq-data"/>
+  <text x="500" y="245" class="arq-t arq-xs arq-strong" text-anchor="middle">3</text>
+  <circle cx="610" cy="240" r="13" class="arq-data"/>
+  <text x="610" y="245" class="arq-t arq-xs arq-strong" text-anchor="middle">4</text>
+  <line x1="670" y1="226" x2="670" y2="254" class="arq-dep"/>
+  <text x="670" y="272" class="arq-t arq-xs arq-muted" text-anchor="middle">termina</text>
+  <text x="455" y="272" class="arq-t arq-xs" text-anchor="middle">cada valor en cuanto está listo, sin bloquear</text>
+  <text x="740" y="232" class="arq-t arq-xs arq-muted" text-anchor="end">tiempo</text>
+  <!-- Leyenda -->
+  <rect x="20" y="294" width="28" height="12" rx="3" class="arq-bar-lost"/>
+  <text x="56" y="304" class="arq-t arq-xs">hilo bloqueado (la app se congela si es el principal)</text>
+  <rect x="400" y="294" width="28" height="12" rx="3" class="arq-gray arq-dashed"/>
+  <text x="436" y="304" class="arq-t arq-xs">esperando sin bloquear</text>
+</svg>

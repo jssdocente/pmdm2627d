@@ -1,0 +1,64 @@
+<svg class="arq-svg" viewBox="0 0 760 470" role="img" aria-labelledby="arq-fca-t arq-fca-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-fca-t">Diagrama de canicas del radar y de debounce</title>
+  <desc id="arq-fca-d">Arriba, el radar emite 115, 118, 120, 142, 119, 155, 120 y 168. filter deja pasar 142, 155 y 168. map los convierte en multas de 220, 350 y 480 euros. take(2) entrega las dos primeras y cancela el flujo, así que el radar ya no emite 120 ni 168. Abajo, el usuario escribe h, ha, had, hade y hades muy deprisa; debounce de 300 milisegundos solo deja pasar hades, cuando ha pasado ese tiempo sin teclear. Después escribe c y ce, y pasa ce.</desc>
+  <defs>
+    <marker id="arq-fca-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <text x="20" y="22" class="arq-t arq-s arq-strong">Radar de tráfico: cada carril es el flujo que sale de un operador</text>
+  <!-- Fuente -->
+  <text x="20" y="64" class="arq-t arq-code arq-xs arq-strong">radarAutovia()</text>
+  <line x1="190" y1="60" x2="744" y2="60" class="arq-dep" marker-end="url(#arq-fca-a)"/>
+  <circle cx="220" cy="60" r="15" class="arq-data"/><text x="220" y="64" class="arq-t arq-xs" text-anchor="middle">115</text>
+  <circle cx="285" cy="60" r="15" class="arq-data"/><text x="285" y="64" class="arq-t arq-xs" text-anchor="middle">118</text>
+  <circle cx="350" cy="60" r="15" class="arq-data"/><text x="350" y="64" class="arq-t arq-xs" text-anchor="middle">120</text>
+  <circle cx="415" cy="60" r="15" class="arq-data"/><text x="415" y="64" class="arq-t arq-xs arq-strong" text-anchor="middle">142</text>
+  <circle cx="480" cy="60" r="15" class="arq-data"/><text x="480" y="64" class="arq-t arq-xs" text-anchor="middle">119</text>
+  <circle cx="545" cy="60" r="15" class="arq-data"/><text x="545" y="64" class="arq-t arq-xs arq-strong" text-anchor="middle">155</text>
+  <circle cx="610" cy="60" r="15" class="arq-gray arq-dashed"/><text x="610" y="64" class="arq-t arq-xs arq-muted" text-anchor="middle">120</text>
+  <circle cx="675" cy="60" r="15" class="arq-gray arq-dashed"/><text x="675" y="64" class="arq-t arq-xs arq-muted" text-anchor="middle">168</text>
+  <!-- filter -->
+  <text x="20" y="124" class="arq-t arq-code arq-xs arq-strong">.filter { it &gt; 120 }</text>
+  <line x1="190" y1="120" x2="744" y2="120" class="arq-dep" marker-end="url(#arq-fca-a)"/>
+  <line x1="415" y1="76" x2="415" y2="103" class="arq-guide"/>
+  <line x1="545" y1="76" x2="545" y2="103" class="arq-guide"/>
+  <circle cx="415" cy="120" r="15" class="arq-dom"/><text x="415" y="124" class="arq-t arq-xs" text-anchor="middle">142</text>
+  <circle cx="545" cy="120" r="15" class="arq-dom"/><text x="545" y="124" class="arq-t arq-xs" text-anchor="middle">155</text>
+  <circle cx="675" cy="120" r="15" class="arq-gray arq-dashed"/><text x="675" y="124" class="arq-t arq-xs arq-muted" text-anchor="middle">168</text>
+  <!-- map -->
+  <text x="20" y="184" class="arq-t arq-code arq-xs arq-strong">.map { multa }</text>
+  <line x1="190" y1="180" x2="744" y2="180" class="arq-dep" marker-end="url(#arq-fca-a)"/>
+  <line x1="415" y1="136" x2="415" y2="163" class="arq-guide"/>
+  <line x1="545" y1="136" x2="545" y2="163" class="arq-guide"/>
+  <rect x="385" y="166" width="60" height="28" rx="8" class="arq-ui"/><text x="415" y="185" class="arq-t arq-xs" text-anchor="middle">220 €</text>
+  <rect x="515" y="166" width="60" height="28" rx="8" class="arq-ui"/><text x="545" y="185" class="arq-t arq-xs" text-anchor="middle">350 €</text>
+  <!-- take -->
+  <text x="20" y="244" class="arq-t arq-code arq-xs arq-strong">.take(2)</text>
+  <line x1="190" y1="240" x2="580" y2="240" class="arq-dep"/>
+  <line x1="415" y1="196" x2="415" y2="223" class="arq-guide"/>
+  <line x1="545" y1="196" x2="545" y2="223" class="arq-guide"/>
+  <rect x="385" y="226" width="60" height="28" rx="8" class="arq-ui"/><text x="415" y="245" class="arq-t arq-xs" text-anchor="middle">220 €</text>
+  <rect x="515" y="226" width="60" height="28" rx="8" class="arq-ui"/><text x="545" y="245" class="arq-t arq-xs" text-anchor="middle">350 €</text>
+  <line x1="584" y1="226" x2="584" y2="254" class="arq-dep" style="stroke-width:3"/>
+  <text x="596" y="236" class="arq-t arq-xs arq-strong">termina y cancela</text>
+  <text x="596" y="252" class="arq-t arq-xs">el radar ya no emite</text>
+  <line x1="20" y1="282" x2="740" y2="282" class="arq-guide"/>
+  <!-- debounce -->
+  <text x="20" y="312" class="arq-t arq-s arq-strong">Buscador: debounce espera a que el usuario deje de teclear</text>
+  <text x="20" y="354" class="arq-t arq-code arq-xs arq-strong">texto escrito</text>
+  <line x1="190" y1="350" x2="744" y2="350" class="arq-dep" marker-end="url(#arq-fca-a)"/>
+  <rect x="200" y="338" width="30" height="24" rx="6" class="arq-data"/><text x="215" y="354" class="arq-t arq-code arq-xs" text-anchor="middle">h</text>
+  <rect x="236" y="338" width="30" height="24" rx="6" class="arq-data"/><text x="251" y="354" class="arq-t arq-code arq-xs" text-anchor="middle">ha</text>
+  <rect x="272" y="338" width="34" height="24" rx="6" class="arq-data"/><text x="289" y="354" class="arq-t arq-code arq-xs" text-anchor="middle">had</text>
+  <rect x="312" y="338" width="40" height="24" rx="6" class="arq-data"/><text x="332" y="354" class="arq-t arq-code arq-xs" text-anchor="middle">hade</text>
+  <rect x="358" y="338" width="48" height="24" rx="6" class="arq-data"/><text x="382" y="354" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">hades</text>
+  <rect x="590" y="338" width="28" height="24" rx="6" class="arq-data"/><text x="604" y="354" class="arq-t arq-code arq-xs" text-anchor="middle">c</text>
+  <rect x="624" y="338" width="30" height="24" rx="6" class="arq-data"/><text x="639" y="354" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">ce</text>
+  <path d="M406,374 L406,382 L526,382 L526,374" class="arq-dep" style="stroke-width:1.4"/>
+  <text x="466" y="398" class="arq-t arq-xs" text-anchor="middle">300 ms sin teclear</text>
+  <text x="20" y="444" class="arq-t arq-code arq-xs arq-strong">.debounce(300)</text>
+  <line x1="190" y1="440" x2="744" y2="440" class="arq-dep" marker-end="url(#arq-fca-a)"/>
+  <rect x="502" y="428" width="48" height="24" rx="6" class="arq-ui"/><text x="526" y="444" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">hades</text>
+  <rect x="696" y="428" width="30" height="24" rx="6" class="arq-ui"/><text x="711" y="444" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">ce</text>
+  <line x1="526" y1="404" x2="526" y2="424" class="arq-guide"/>
+  <text x="300" y="424" class="arq-t arq-xs arq-muted" text-anchor="middle">h, ha, had, hade: descartados</text>
+</svg>

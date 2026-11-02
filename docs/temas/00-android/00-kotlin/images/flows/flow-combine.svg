@@ -1,0 +1,38 @@
+<svg class="arq-svg" viewBox="0 0 760 270" role="img" aria-labelledby="arq-fcb-t arq-fcb-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-fcb-t">combine recalcula con el último valor de cada flujo</title>
+  <desc id="arq-fcb-d">Dos flujos de entrada: juegos y filtro. Cada vez que cualquiera de los dos emite, combine calcula un resultado nuevo con el último valor de cada uno: todos los juegos con filtro null; Hades y Celeste al elegir PC; Hades, Celeste y Stardew Valley al añadirse un juego; y Zelda al elegir Switch.</desc>
+  <defs>
+    <marker id="arq-fcb-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <!-- juegos -->
+  <text x="20" y="54" class="arq-t arq-code arq-xs arq-strong">juegos</text>
+  <line x1="130" y1="50" x2="744" y2="50" class="arq-dep" marker-end="url(#arq-fcb-a)"/>
+  <rect x="150" y="36" width="96" height="28" rx="8" class="arq-data"/><text x="198" y="55" class="arq-t arq-xs" text-anchor="middle">3 juegos</text>
+  <rect x="436" y="36" width="128" height="28" rx="8" class="arq-data"/><text x="500" y="55" class="arq-t arq-xs" text-anchor="middle">+ Stardew Valley</text>
+  <!-- filtro -->
+  <text x="20" y="114" class="arq-t arq-code arq-xs arq-strong">filtro</text>
+  <line x1="130" y1="110" x2="744" y2="110" class="arq-dep" marker-end="url(#arq-fcb-a)"/>
+  <rect x="166" y="96" width="64" height="28" rx="8" class="arq-dom"/><text x="198" y="115" class="arq-t arq-code arq-xs" text-anchor="middle">null</text>
+  <rect x="302" y="96" width="56" height="28" rx="8" class="arq-dom"/><text x="330" y="115" class="arq-t arq-code arq-xs" text-anchor="middle">"PC"</text>
+  <rect x="616" y="96" width="78" height="28" rx="8" class="arq-dom"/><text x="655" y="115" class="arq-t arq-code arq-xs" text-anchor="middle">"Switch"</text>
+  <!-- Guías -->
+  <line x1="198" y1="124" x2="198" y2="186" class="arq-guide"/>
+  <line x1="330" y1="124" x2="330" y2="186" class="arq-guide"/>
+  <line x1="500" y1="64" x2="500" y2="186" class="arq-guide"/>
+  <line x1="655" y1="124" x2="655" y2="186" class="arq-guide"/>
+  <!-- combine -->
+  <text x="20" y="194" class="arq-t arq-code arq-xs arq-strong">combine</text>
+  <text x="20" y="210" class="arq-t arq-xs arq-muted">(juegos, filtro)</text>
+  <line x1="130" y1="200" x2="744" y2="200" class="arq-dep" marker-end="url(#arq-fcb-a)"/>
+  <rect x="140" y="188" width="116" height="40" rx="8" class="arq-ui"/>
+  <text x="198" y="205" class="arq-t arq-xs" text-anchor="middle">Hades, Zelda,</text>
+  <text x="198" y="220" class="arq-t arq-xs" text-anchor="middle">Celeste</text>
+  <rect x="276" y="188" width="108" height="40" rx="8" class="arq-ui"/>
+  <text x="330" y="212" class="arq-t arq-xs" text-anchor="middle">Hades, Celeste</text>
+  <rect x="436" y="188" width="128" height="40" rx="8" class="arq-ui"/>
+  <text x="500" y="205" class="arq-t arq-xs" text-anchor="middle">Hades, Celeste,</text>
+  <text x="500" y="220" class="arq-t arq-xs" text-anchor="middle">Stardew Valley</text>
+  <rect x="616" y="188" width="78" height="40" rx="8" class="arq-ui"/>
+  <text x="655" y="212" class="arq-t arq-xs" text-anchor="middle">Zelda</text>
+  <text x="380" y="256" class="arq-t arq-s arq-strong" text-anchor="middle">Cambie lo que cambie, combine vuelve a calcular con el último valor de cada flujo.</text>
+</svg>

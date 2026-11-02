@@ -1,0 +1,64 @@
+<svg class="arq-svg" viewBox="0 0 760 440" role="img" aria-labelledby="arq-ffc-t arq-ffc-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-ffc-t">Flujo frío, StateFlow y SharedFlow cuando un suscriptor llega tarde</title>
+  <desc id="arq-ffc-d">Dos suscriptores, A y B; B se suscribe más tarde. Con un flujo frío, cada suscriptor arranca su propia ejecución desde el principio y los dos reciben 0, 1, 2 y 3. Con StateFlow, la fuente es una sola: A recibe todos los valores y B recibe nada más suscribirse el valor actual, 2, y después los siguientes. Con SharedFlow y replay 0, B no recibe nada de lo que pasó antes y solo ve los eventos posteriores.</desc>
+  <!-- Línea de B -->
+  <line x1="400" y1="30" x2="400" y2="400" class="arq-guide"/>
+  <text x="400" y="22" class="arq-t arq-xs arq-strong" text-anchor="middle">B se suscribe</text>
+  <!-- Frío -->
+  <text x="20" y="54" class="arq-t arq-s arq-strong">flow { } · frío</text>
+  <text x="20" y="72" class="arq-t arq-xs arq-muted">una ejecución por suscriptor</text>
+  <text x="170" y="64" class="arq-t arq-s arq-strong">A</text>
+  <line x1="200" y1="60" x2="740" y2="60" class="arq-guide"/>
+  <circle cx="240" cy="60" r="11" class="arq-data"/><text x="240" y="64" class="arq-t arq-xs" text-anchor="middle">0</text>
+  <circle cx="300" cy="60" r="11" class="arq-data"/><text x="300" y="64" class="arq-t arq-xs" text-anchor="middle">1</text>
+  <circle cx="360" cy="60" r="11" class="arq-data"/><text x="360" y="64" class="arq-t arq-xs" text-anchor="middle">2</text>
+  <circle cx="420" cy="60" r="11" class="arq-data"/><text x="420" y="64" class="arq-t arq-xs" text-anchor="middle">3</text>
+  <text x="170" y="104" class="arq-t arq-s arq-strong">B</text>
+  <line x1="200" y1="100" x2="740" y2="100" class="arq-guide"/>
+  <circle cx="440" cy="100" r="11" class="arq-data"/><text x="440" y="104" class="arq-t arq-xs" text-anchor="middle">0</text>
+  <circle cx="500" cy="100" r="11" class="arq-data"/><text x="500" y="104" class="arq-t arq-xs" text-anchor="middle">1</text>
+  <circle cx="560" cy="100" r="11" class="arq-data"/><text x="560" y="104" class="arq-t arq-xs" text-anchor="middle">2</text>
+  <circle cx="620" cy="100" r="11" class="arq-data"/><text x="620" y="104" class="arq-t arq-xs" text-anchor="middle">3</text>
+  <text x="740" y="124" class="arq-t arq-xs" text-anchor="end">B empieza desde el principio, solo para él</text>
+  <line x1="20" y1="138" x2="740" y2="138" class="arq-guide"/>
+  <!-- StateFlow -->
+  <text x="20" y="166" class="arq-t arq-s arq-strong">StateFlow · caliente</text>
+  <text x="20" y="184" class="arq-t arq-xs arq-muted">siempre tiene un valor actual</text>
+  <text x="20" y="200" class="arq-t arq-xs arq-muted">B recibe el último al llegar</text>
+  <text x="170" y="164" class="arq-t arq-xs arq-muted">valor</text>
+  <rect x="200" y="152" width="80" height="18" rx="4" class="arq-box"/><text x="240" y="165" class="arq-t arq-code arq-xs" text-anchor="middle">0</text>
+  <rect x="280" y="152" width="70" height="18" rx="4" class="arq-box"/><text x="315" y="165" class="arq-t arq-code arq-xs" text-anchor="middle">1</text>
+  <rect x="350" y="152" width="110" height="18" rx="4" class="arq-box"/><text x="405" y="165" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">2</text>
+  <rect x="460" y="152" width="140" height="18" rx="4" class="arq-box"/><text x="530" y="165" class="arq-t arq-code arq-xs" text-anchor="middle">3</text>
+  <rect x="600" y="152" width="140" height="18" rx="4" class="arq-box"/><text x="670" y="165" class="arq-t arq-code arq-xs" text-anchor="middle">4</text>
+  <text x="170" y="204" class="arq-t arq-s arq-strong">A</text>
+  <line x1="200" y1="200" x2="740" y2="200" class="arq-guide"/>
+  <circle cx="210" cy="200" r="11" class="arq-ui"/><text x="210" y="204" class="arq-t arq-xs" text-anchor="middle">0</text>
+  <circle cx="280" cy="200" r="11" class="arq-ui"/><text x="280" y="204" class="arq-t arq-xs" text-anchor="middle">1</text>
+  <circle cx="350" cy="200" r="11" class="arq-ui"/><text x="350" y="204" class="arq-t arq-xs" text-anchor="middle">2</text>
+  <circle cx="460" cy="200" r="11" class="arq-ui"/><text x="460" y="204" class="arq-t arq-xs" text-anchor="middle">3</text>
+  <circle cx="600" cy="200" r="11" class="arq-ui"/><text x="600" y="204" class="arq-t arq-xs" text-anchor="middle">4</text>
+  <text x="170" y="244" class="arq-t arq-s arq-strong">B</text>
+  <line x1="200" y1="240" x2="740" y2="240" class="arq-guide"/>
+  <circle cx="400" cy="240" r="13" class="arq-ui" style="stroke-width:3"/><text x="400" y="244" class="arq-t arq-xs arq-strong" text-anchor="middle">2</text>
+  <circle cx="460" cy="240" r="11" class="arq-ui"/><text x="460" y="244" class="arq-t arq-xs" text-anchor="middle">3</text>
+  <circle cx="600" cy="240" r="11" class="arq-ui"/><text x="600" y="244" class="arq-t arq-xs" text-anchor="middle">4</text>
+  <text x="420" y="268" class="arq-t arq-xs">recibe el valor actual nada más llegar</text>
+  <line x1="20" y1="282" x2="740" y2="282" class="arq-guide"/>
+  <!-- SharedFlow -->
+  <text x="20" y="310" class="arq-t arq-s arq-strong">SharedFlow · caliente</text>
+  <text x="20" y="328" class="arq-t arq-xs arq-muted">replay = 0: eventos sueltos</text>
+  <text x="20" y="344" class="arq-t arq-xs arq-muted">B no ve lo que ya pasó</text>
+  <text x="170" y="348" class="arq-t arq-s arq-strong">A</text>
+  <line x1="200" y1="344" x2="740" y2="344" class="arq-guide"/>
+  <circle cx="280" cy="344" r="11" class="arq-dom"/><text x="280" y="348" class="arq-t arq-xs" text-anchor="middle">★</text>
+  <circle cx="350" cy="344" r="11" class="arq-dom"/><text x="350" y="348" class="arq-t arq-xs" text-anchor="middle">★</text>
+  <circle cx="460" cy="344" r="11" class="arq-dom"/><text x="460" y="348" class="arq-t arq-xs" text-anchor="middle">★</text>
+  <circle cx="600" cy="344" r="11" class="arq-dom"/><text x="600" y="348" class="arq-t arq-xs" text-anchor="middle">★</text>
+  <text x="170" y="388" class="arq-t arq-s arq-strong">B</text>
+  <line x1="200" y1="384" x2="740" y2="384" class="arq-guide"/>
+  <circle cx="460" cy="384" r="11" class="arq-dom"/><text x="460" y="388" class="arq-t arq-xs" text-anchor="middle">★</text>
+  <circle cx="600" cy="384" r="11" class="arq-dom"/><text x="600" y="388" class="arq-t arq-xs" text-anchor="middle">★</text>
+  <text x="300" y="388" class="arq-t arq-xs arq-muted" text-anchor="middle">(se los perdió)</text>
+  <text x="380" y="428" class="arq-t arq-s arq-strong" text-anchor="middle">Frío: cada uno ve su propia película. Caliente: todos ven el mismo directo.</text>
+</svg>
