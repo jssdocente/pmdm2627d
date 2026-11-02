@@ -1,0 +1,56 @@
+<svg class="arq-svg" viewBox="0 0 760 430" role="img" aria-labelledby="arq-s25-t arq-s25-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-s25-t">Dónde vive cada estado en la biblioteca</title>
+  <desc id="arq-s25-d">BibliotecaScreen guarda partidasHollow y partidasStardew, porque el texto del total necesita las dos. Pasa a cada FichaJuegoScreen sus partidas y recibe el evento onSumarPartida. Cada FichaJuegoScreen guarda su propio esFavorito, que no lee nadie más. Debajo, cada una contiene una FichaJuego y esta una FilaPartidas.</desc>
+  <defs>
+    <marker id="arq-s25-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-s25-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="170" y="16" width="420" height="96" rx="12" class="arq-ui"/>
+  <text x="380" y="38" class="arq-t arq-code arq-s arq-strong" text-anchor="middle">BibliotecaScreen</text>
+  <rect x="200" y="48" width="160" height="22" rx="11" class="arq-dom"/>
+  <text x="280.0" y="63" class="arq-t arq-code arq-xs" text-anchor="middle">partidasHollow = 3</text>
+  <rect x="400" y="48" width="170" height="22" rx="11" class="arq-dom"/>
+  <text x="485.0" y="63" class="arq-t arq-code arq-xs" text-anchor="middle">partidasStardew = 5</text>
+  <text x="380" y="98" class="arq-t arq-xs arq-strong" text-anchor="middle">Text: «Partidas en total: 8»  ← lee las dos</text>
+  <rect x="30" y="180" width="300" height="72" rx="12" class="arq-ui"/>
+  <text x="180" y="200" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">FichaJuegoScreen</text>
+  <text x="180" y="216" class="arq-t arq-xs arq-muted" text-anchor="middle">Hollow Knight</text>
+  <rect x="105" y="224" width="150" height="22" rx="11" class="arq-dom"/>
+  <text x="180.0" y="239" class="arq-t arq-code arq-xs" text-anchor="middle">esFavorito = true</text>
+  <rect x="90" y="296" width="180" height="36" rx="8" class="arq-box"/>
+  <text x="180.0" y="318.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">FichaJuego</text>
+  <rect x="100" y="370" width="160" height="32" rx="8" class="arq-box"/>
+  <text x="180.0" y="390.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">FilaPartidas</text>
+  <line x1="180" y1="252" x2="180" y2="294" class="arq-guide"/>
+  <line x1="180" y1="332" x2="180" y2="368" class="arq-guide"/>
+  <rect x="430" y="180" width="300" height="72" rx="12" class="arq-ui"/>
+  <text x="580" y="200" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">FichaJuegoScreen</text>
+  <text x="580" y="216" class="arq-t arq-xs arq-muted" text-anchor="middle">Stardew Valley</text>
+  <rect x="505" y="224" width="150" height="22" rx="11" class="arq-dom"/>
+  <text x="580.0" y="239" class="arq-t arq-code arq-xs" text-anchor="middle">esFavorito = false</text>
+  <rect x="490" y="296" width="180" height="36" rx="8" class="arq-box"/>
+  <text x="580.0" y="318.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">FichaJuego</text>
+  <rect x="500" y="370" width="160" height="32" rx="8" class="arq-box"/>
+  <text x="580.0" y="390.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">FilaPartidas</text>
+  <line x1="580" y1="252" x2="580" y2="294" class="arq-guide"/>
+  <line x1="580" y1="332" x2="580" y2="368" class="arq-guide"/>
+  <line x1="280" y1="112" x2="220" y2="176" class="arq-dep" marker-end="url(#arq-s25-a)"/>
+  <text x="258" y="150" class="arq-t arq-code arq-xs">partidas = 3</text>
+  <path d="M90,178 C90,140 140,116 186,108" class="arq-flow" marker-end="url(#arq-s25-f)"/>
+  <text x="20" y="150" class="arq-t arq-code arq-xs">onSumarPartida</text>
+  <line x1="480" y1="112" x2="540" y2="176" class="arq-dep" marker-end="url(#arq-s25-a)"/>
+  <text x="502" y="150" class="arq-t arq-code arq-xs" text-anchor="end">partidas = 5</text>
+  <path d="M670,178 C670,140 620,116 574,108" class="arq-flow" marker-end="url(#arq-s25-f)"/>
+  <text x="740" y="150" class="arq-t arq-code arq-xs" text-anchor="end">onSumarPartida</text>
+  <text x="380" y="270" class="arq-t arq-xs arq-strong" text-anchor="middle">el favorito se queda abajo:</text>
+  <text x="380" y="286" class="arq-t arq-xs" text-anchor="middle">no lo lee nadie más</text>
+  <line x1="20" y1="418" x2="56" y2="418" class="arq-dep" marker-end="url(#arq-s25-a)"/>
+  <text x="62" y="422" class="arq-t arq-xs">valor</text>
+  <line x1="110" y1="418" x2="146" y2="418" class="arq-flow" marker-end="url(#arq-s25-f)"/>
+  <text x="152" y="422" class="arq-t arq-xs">evento</text>
+  <line x1="210" y1="418" x2="246" y2="418" class="arq-guide"/>
+  <text x="252" y="422" class="arq-t arq-xs">contiene</text>
+  <rect x="320" y="407" width="90" height="22" rx="11" class="arq-dom"/>
+  <text x="365.0" y="422" class="arq-t arq-code arq-xs" text-anchor="middle">estado</text>
+  <text x="418" y="422" class="arq-t arq-xs">dónde vive cada estado</text>
+</svg>

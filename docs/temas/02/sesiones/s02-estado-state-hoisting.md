@@ -67,6 +67,11 @@ Pregunta clave para hoy: si `UI = f(estado)`, **¿qué es el estado de esta fich
 - **Recomposición** es volver a ejecutar una función composable para que la pantalla refleje el nuevo valor. Compose solo recompone si **se entera** del cambio. → [Actualización de funciones componibles](../../00-android/00-compose/21-composable-functions.md#actualizacion-de-funciones-componibles)
 - Una variable normal de Kotlin cambia en memoria, pero **no avisa a nadie**. → [Codelab 2 §2](../codelabs/02-contador-incremental.md#2-el-gran-error-del-principiante-en-compose)
 
+<figure class="arq-fig">
+--8<-- "docs/temas/02/sesiones/images/s2.02-estado.svg"
+<figcaption>El mismo toque en «+1»: con una variable normal la pantalla no se entera; con un estado de Compose, sí.</figcaption>
+</figure>
+
 !!! example "Manos a la obra: provoca el fallo"
 
     1. Crea `FilaPartidas(partidas: Int, onSumarPartida: () -> Unit)`: una `Row` con el texto «Partidas jugadas: $partidas», un `Spacer(Modifier.weight(1f))` y un `FilledTonalButton` con el texto «+1».
@@ -114,6 +119,11 @@ var esFavorito by remember { mutableStateOf(false) }
 - **`remember`** sobrevive a las recomposiciones, pero **no** a un cambio de configuración: al girar la pantalla, Android destruye y vuelve a crear la `Activity`. → [2.2 §4.1](../2.2-ciclo-vida-app.md#41-recomposicion-vs-ciclo-de-vida-del-sistema)
 - **`rememberSaveable`** guarda el valor en el `Bundle` del sistema y lo recupera al recrearse la `Activity`. → [2.2 §4.2](../2.2-ciclo-vida-app.md#42-remember-vs-remembersaveable)
 
+<figure class="arq-fig">
+--8<-- "docs/temas/02/sesiones/images/s2.02-saveable.svg"
+<figcaption>Al girar, la <code>Activity</code> se destruye y se crea otra: <code>remember</code> pierde el valor; <code>rememberSaveable</code> lo guarda y lo recupera.</figcaption>
+</figure>
+
 !!! example "Manos a la obra"
 
     1. Suma unas cuantas partidas, marca el favorito y **gira el emulador**. Todo vuelve a 0.
@@ -134,11 +144,10 @@ La solución es **elevar el estado** (*state hoisting*): → [2.3 §3](../2.3-pr
 - El contenedor **con estado** (*stateful*), que por convenio llamamos `…Screen`, guarda el estado y decide qué hacer con cada evento.
 - **El estado baja, los eventos suben.**
 
-```mermaid
-graph TD
-    S["FichaJuegoScreen<br>(rememberSaveable)"] -->|"esFavorito, partidas"| F["FichaJuego<br>(sin estado)"]
-    F -->|"onFavoritoClick, onSumarPartida"| S
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/02/sesiones/images/s2.02-hoisting.svg"
+<figcaption><code>FichaJuegoScreen</code> guarda el estado y se lo pasa a <code>FichaJuego</code>, que solo avisa de los toques. Como <code>FichaJuego</code> no guarda nada, la puedes pintar en una preview en cualquier estado.</figcaption>
+</figure>
 
 !!! example "Manos a la obra"
 
@@ -163,15 +172,10 @@ Nuevo requisito: una pantalla con **dos fichas** y, arriba, el **total de partid
 - El favorito no le interesa a nadie más: **se queda** en `FichaJuegoScreen`. Eleva el estado solo hasta donde haga falta.
 - `FichaJuego` no se toca: como no tiene estado, se reutiliza tal cual. → [UDF](../../00-android/00-compose/22-state-management.md#arquitectura-udf-unidirectional-data-flow)
 
-```mermaid
-graph TD
-    B["BibliotecaScreen<br>partidasHollow, partidasStardew"] -->|"partidas"| S1["FichaJuegoScreen (Hollow)<br>esFavorito"]
-    B -->|"partidas"| S2["FichaJuegoScreen (Stardew)<br>esFavorito"]
-    S1 -->|"onSumarPartida"| B
-    S2 -->|"onSumarPartida"| B
-    S1 --> F1["FichaJuego"]
-    S2 --> F2["FichaJuego"]
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/02/sesiones/images/s2.02-padre-comun.svg"
+<figcaption>Cada estado vive en el nodo más bajo que lo necesita: las partidas suben a <code>BibliotecaScreen</code> porque el total lee las dos; cada favorito se queda en su ficha.</figcaption>
+</figure>
 
 !!! example "Manos a la obra"
 
@@ -205,6 +209,11 @@ Compose no repinta toda la pantalla: solo vuelve a ejecutar las funciones que **
     3. Pulsa ahora el favorito. ¿Qué funciones aparecen?
 
     4. Quita los logs al terminar: son solo para el experimento.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/02/sesiones/images/s2.02-recomposicion.svg"
+<figcaption>Lo que deberías ver en Logcat al pulsar «+1» en Hollow Knight: solo se vuelven a ejecutar las funciones que leen las partidas de Hollow Knight.</figcaption>
+</figure>
 
 ---
 

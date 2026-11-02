@@ -1,0 +1,41 @@
+<svg class="arq-svg" viewBox="0 0 760 250" role="img" aria-labelledby="arq-s21-t arq-s21-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-s21-t">Una variable normal frente a un estado de Compose</title>
+  <desc id="arq-s21-d">Dos filas para el mismo toque en +1. Con var partidas = 0, la variable pasa a 1 en memoria, pero Compose no se entera y la pantalla sigue mostrando 0. Con by remember mutableIntStateOf, el cambio avisa a Compose, que vuelve a ejecutar FilaPartidas, y la pantalla muestra 1.</desc>
+  <defs>
+    <marker id="arq-s21-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-s21-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="30" class="arq-t arq-code arq-s arq-strong">var partidas = 0</text>
+  <rect x="20" y="40" width="100" height="48" rx="8" class="arq-ui"/>
+  <text x="70.0" y="60.0" class="arq-t arq-s arq-strong" text-anchor="middle">👆 «+1»</text>
+  <text x="70.0" y="76.0" class="arq-t arq-code arq-xs" text-anchor="middle">onClick</text>
+  <line x1="120" y1="64" x2="148" y2="64" class="arq-dep" marker-end="url(#arq-s21-a)"/>
+  <rect x="150" y="40" width="150" height="48" rx="8" class="arq-box"/>
+  <text x="225.0" y="60.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">partidas++</text>
+  <text x="225.0" y="76.0" class="arq-t arq-xs" text-anchor="middle">memoria: 0 → 1</text>
+  <line x1="300" y1="64" x2="328" y2="64" class="arq-guide"/>
+  <rect x="330" y="40" width="170" height="48" rx="8" class="arq-gray arq-dashed"/>
+  <text x="415.0" y="60.0" class="arq-t arq-xs arq-strong" text-anchor="middle">Compose no se entera</text>
+  <text x="415.0" y="76.0" class="arq-t arq-xs" text-anchor="middle">no hay recomposición</text>
+  <line x1="500" y1="64" x2="528" y2="64" class="arq-guide"/>
+  <rect x="530" y="40" width="210" height="48" rx="8" class="arq-warn"/>
+  <text x="635.0" y="60.0" class="arq-t arq-s arq-strong" text-anchor="middle">Partidas jugadas: 0</text>
+  <text x="635.0" y="76.0" class="arq-t arq-xs" text-anchor="middle">la pantalla no cambia</text>
+  <text x="20" y="130" class="arq-t arq-code arq-s arq-strong">by remember { mutableIntStateOf(0) }</text>
+  <rect x="20" y="140" width="100" height="48" rx="8" class="arq-ui"/>
+  <text x="70.0" y="160.0" class="arq-t arq-s arq-strong" text-anchor="middle">👆 «+1»</text>
+  <text x="70.0" y="176.0" class="arq-t arq-code arq-xs" text-anchor="middle">onClick</text>
+  <line x1="120" y1="164" x2="148" y2="164" class="arq-dep" marker-end="url(#arq-s21-a)"/>
+  <rect x="150" y="140" width="150" height="48" rx="8" class="arq-box"/>
+  <text x="225.0" y="160.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">partidas++</text>
+  <text x="225.0" y="176.0" class="arq-t arq-xs" text-anchor="middle">memoria: 0 → 1</text>
+  <line x1="300" y1="164" x2="328" y2="164" class="arq-dep" marker-end="url(#arq-s21-a)"/>
+  <rect x="330" y="140" width="170" height="48" rx="8" class="arq-dom"/>
+  <text x="415.0" y="160.0" class="arq-t arq-xs arq-strong" text-anchor="middle">Compose se entera</text>
+  <text x="415.0" y="176.0" class="arq-t arq-xs" text-anchor="middle">recompone FilaPartidas</text>
+  <line x1="500" y1="164" x2="528" y2="164" class="arq-dep" marker-end="url(#arq-s21-a)"/>
+  <rect x="530" y="140" width="210" height="48" rx="8" class="arq-data"/>
+  <text x="635.0" y="160.0" class="arq-t arq-s arq-strong" text-anchor="middle">Partidas jugadas: 1</text>
+  <text x="635.0" y="176.0" class="arq-t arq-xs" text-anchor="middle">la pantalla se actualiza</text>
+  <text x="380" y="236" class="arq-t arq-s arq-strong" text-anchor="middle">Compose solo vuelve a pintar si el valor es un estado observable (mutableStateOf) que él puede vigilar.</text>
+</svg>

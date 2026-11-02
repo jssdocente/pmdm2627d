@@ -1,0 +1,40 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="arq-s23-t arq-s23-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-s23-t">remember frente a rememberSaveable al girar la pantalla</title>
+  <desc id="arq-s23-d">La Activity número 1 tiene partidas igual a 3. Al girar el móvil, Android destruye la Activity y crea la número 2. Con remember, el valor se pierde y vuelve a 0. Con rememberSaveable, el valor se guarda en el Bundle del sistema antes de destruirla y se recupera en la nueva: sigue siendo 3.</desc>
+  <defs>
+    <marker id="arq-s23-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-s23-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="40" width="200" height="46" rx="8" class="arq-ui"/>
+  <text x="120.0" y="59.0" class="arq-t arq-s arq-strong" text-anchor="middle">Activity #1</text>
+  <text x="120.0" y="75.0" class="arq-t arq-xs" text-anchor="middle">en vertical</text>
+  <rect x="280" y="40" width="200" height="46" rx="8" class="arq-warn"/>
+  <text x="380.0" y="59.0" class="arq-t arq-s arq-strong" text-anchor="middle">🔄 giras el móvil</text>
+  <text x="380.0" y="75.0" class="arq-t arq-xs" text-anchor="middle">Android la destruye</text>
+  <rect x="540" y="40" width="200" height="46" rx="8" class="arq-ui"/>
+  <text x="640.0" y="59.0" class="arq-t arq-s arq-strong" text-anchor="middle">Activity #2</text>
+  <text x="640.0" y="75.0" class="arq-t arq-xs" text-anchor="middle">en horizontal, nueva</text>
+  <line x1="220" y1="63" x2="278" y2="63" class="arq-dep" marker-end="url(#arq-s23-a)"/>
+  <line x1="480" y1="63" x2="538" y2="63" class="arq-dep" marker-end="url(#arq-s23-a)"/>
+  <text x="20" y="122" class="arq-t arq-code arq-s arq-strong">remember</text>
+  <rect x="60" y="130" width="120" height="22" rx="11" class="arq-dom"/>
+  <text x="120.0" y="145" class="arq-t arq-code arq-xs" text-anchor="middle">partidas = 3</text>
+  <line x1="180" y1="141" x2="320" y2="141" class="arq-guide"/>
+  <text x="350" y="146" class="arq-t arq-h" text-anchor="middle">✕</text>
+  <line x1="380" y1="141" x2="598" y2="141" class="arq-guide" marker-end="url(#arq-s23-a)"/>
+  <rect x="600" y="126" width="140" height="30" rx="8" class="arq-warn"/>
+  <text x="670.0" y="145.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">partidas = 0</text>
+  <text x="670" y="174" class="arq-t arq-xs" text-anchor="middle">el valor se pierde con la Activity</text>
+  <text x="20" y="222" class="arq-t arq-code arq-s arq-strong">rememberSaveable</text>
+  <rect x="60" y="230" width="120" height="22" rx="11" class="arq-dom"/>
+  <text x="120.0" y="245" class="arq-t arq-code arq-xs" text-anchor="middle">partidas = 3</text>
+  <path d="M180,241 C230,241 250,286 300,286" class="arq-dep" marker-end="url(#arq-s23-a)"/>
+  <rect x="300" y="270" width="120" height="32" rx="8" class="arq-gray"/>
+  <text x="360.0" y="282.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">Bundle</text>
+  <text x="360.0" y="298.0" class="arq-t arq-code arq-xs" text-anchor="middle">partidas = 3</text>
+  <path d="M420,286 C470,286 520,241 598,241" class="arq-dep" marker-end="url(#arq-s23-a)"/>
+  <rect x="600" y="226" width="140" height="30" rx="8" class="arq-data"/>
+  <text x="670.0" y="245.0" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">partidas = 3</text>
+  <text x="670" y="274" class="arq-t arq-xs" text-anchor="middle">se guarda en el Bundle y se recupera</text>
+  <text x="380" y="322" class="arq-t arq-s arq-strong" text-anchor="middle">El modo oscuro, el idioma o el tamaño de letra también recrean la Activity.</text>
+</svg>
