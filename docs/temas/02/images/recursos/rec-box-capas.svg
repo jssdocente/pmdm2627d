@@ -1,0 +1,27 @@
+<svg class="arq-svg" viewBox="0 0 760 290" role="img" aria-labelledby="arq-rbx-t arq-rbx-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-rbx-t">Las capas de un Box</title>
+  <desc id="arq-rbx-d">Un Box dibuja sus hijos en el orden en que se escriben, cada uno encima del anterior. Primero el Image de la portada, que queda abajo; después el Text NUEVO alineado arriba a la derecha, que queda encima.</desc>
+  <defs>
+    <marker id="arq-rbx-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-rbx-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <polygon points="40,213.0 244.6,150 370,204.0 165.4,267.0" class="arq-ui"/>
+  <text x="205" y="212" class="arq-t arq-xs arq-strong" text-anchor="middle">1.º Image (portada)</text>
+  <polygon points="40,123.0 244.6,60 370,114.0 165.4,177.0" class="arq-gray arq-dashed"/>
+  <rect x="270" y="100" width="70" height="24" rx="8" class="arq-dom" style="transform:skewY(-14deg);transform-origin:305px 112px"/>
+  <text x="305" y="116" class="arq-t arq-xs arq-strong" text-anchor="middle">NUEVO</text>
+  <text x="170" y="124" class="arq-t arq-xs arq-strong" text-anchor="middle">2.º Text «NUEVO»</text>
+  <line x1="400" y1="80" x2="400" y2="230" class="arq-dep" marker-end="url(#arq-rbx-a)"/>
+  <text x="410" y="160" class="arq-t arq-xs">se dibuja</text>
+  <text x="410" y="176" class="arq-t arq-xs">de abajo</text>
+  <text x="410" y="192" class="arq-t arq-xs">arriba</text>
+  <rect x="486" y="60" width="264" height="150" rx="10" class="arq-box"/>
+  <text x="498" y="82" class="arq-t arq-code arq-xs">Box {</text>
+  <text x="498" y="100" class="arq-t arq-code arq-xs">    Image(…)   // 1.º: abajo</text>
+  <text x="498" y="118" class="arq-t arq-code arq-xs">    Text(</text>
+  <text x="498" y="136" class="arq-t arq-code arq-xs">        "NUEVO",</text>
+  <text x="498" y="154" class="arq-t arq-code arq-xs">        Modifier.align(TopEnd)</text>
+  <text x="498" y="172" class="arq-t arq-code arq-xs">    )          // 2.º: encima</text>
+  <text x="498" y="190" class="arq-t arq-code arq-xs">}</text>
+  <text x="380" y="280" class="arq-t arq-s arq-strong" text-anchor="middle">En un Box, lo último que escribes queda encima.</text>
+</svg>

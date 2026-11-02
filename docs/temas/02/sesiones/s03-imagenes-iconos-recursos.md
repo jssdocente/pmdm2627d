@@ -9,10 +9,30 @@ Esta sesión la trabajas **por tu cuenta**. Vas a cambiar en la ficha tres cosas
     - **Proyecto de clase:** FichaJuego, de `s2.03-inicio` a `s2.03-fin` (ver [Guía de clases](./index.md#el-proyecto-de-clase-fichajuego)).
     - **Necesitas:** el proyecto tal como acabó la [sesión 2.02](./s02-estado-state-hoisting.md), conexión a internet para descargar iconos y un emulador.
 
-<figure style="text-align: center;">
-  <img src="images/s2.03-fichajuego-fin.png" width="280" alt="Fichas con portadas ilustradas e iconos de valoración y favorito">
-  <figcaption>Lo que tendrás al terminar.</figcaption>
+<figure class="cfj-map-fig">
+<div class="cfj-map">
+<img src="images/s2.03-fichajuego-fin.png" class="off-glb" alt="Fichas con portadas ilustradas e iconos de valoración y favorito, con seis marcas numeradas">
+<span class="cfj-pin" style="left:50%;top:22.5%">1</span>
+<span class="cfj-pin" style="left:72%;top:16.3%">2</span>
+<span class="cfj-pin" style="left:47%;top:37.7%">3</span>
+<span class="cfj-pin" style="left:3%;top:42.2%">4</span>
+<span class="cfj-pin" style="left:95%;top:42.2%">5</span>
+<span class="cfj-pin" style="left:57%;top:48.3%">6</span>
+</div>
+<figcaption>Lo que tendrás al terminar, y qué hay detrás de cada parte.</figcaption>
 </figure>
+
+1. **Portada:** un `Image` que carga `R.drawable.img_portada_hollow` (bloque 3).
+
+2. **«NUEVO»:** un texto de `strings.xml`, encima de la portada gracias al `Box` (bloques 3 y 5).
+
+3. **«Metroidvania · 2017»:** un texto de `strings.xml` con dos parámetros (bloque 5).
+
+4. **Estrella:** un `Icon` decorativo, con el tinte del tema (bloque 4).
+
+5. **Corazón:** un `IconToggleButton` que alterna entre dos iconos (bloque 4).
+
+6. **«Partidas jugadas: 2»:** un texto de `strings.xml` con un número (bloque 5).
 
 ---
 
@@ -78,6 +98,11 @@ Abre `FichaJuego.kt` y localiza lo provisional:
 - Al compilar se genera la clase **`R`**, con un identificador para cada recurso: `R.drawable.img_portada_hollow`, `R.string.app_name`… → [La clase `R`](../2.3.2-imagenes-iconos-recursos.md#la-clase-r)
 - **Nombres:** solo minúsculas, números y guiones bajos. Prefijos habituales: `img_` para imágenes e `ic_` para iconos.
 
+<figure class="arq-fig">
+--8<-- "docs/temas/02/images/recursos/rec-res-r.svg"
+<figcaption>Cada fichero de <code>res/</code> se convierte en una constante de <code>R</code>, y el código usa esa constante, nunca la ruta del fichero.</figcaption>
+</figure>
+
 !!! example "Manos a la obra"
 
     1. Copia las dos portadas en `res/drawable/`. Desde el panel *Project*, cambia la vista a **Project** si no ves la carpeta.
@@ -93,6 +118,11 @@ Abre `FichaJuego.kt` y localiza lo provisional:
 - Un **mapa de bits** (`.jpg`, `.png`, `.webp`) guarda píxeles: es lo adecuado para fotos e ilustraciones con mucho detalle, pero pierde calidad si lo amplías.
 - Un **vector** (`.xml` de Android) guarda formas: pesa poco y se ve nítido a cualquier tamaño. Es lo adecuado para iconos y logotipos. → [2.3.2 §2](../2.3.2-imagenes-iconos-recursos.md#2-mapas-de-bits-y-vectores)
 - Los tamaños se dan en **`dp`**, no en píxeles, para que se vean igual en pantallas de distinta densidad. → [Densidades y `dp`](../2.3.2-imagenes-iconos-recursos.md#densidades-de-pantalla-y-dp)
+
+<figure class="arq-fig">
+--8<-- "docs/temas/02/images/recursos/rec-bitmap-vector.svg"
+<figcaption>Arriba, por qué los iconos van en vector. Abajo, por qué los tamaños se dan en <code>dp</code>.</figcaption>
+</figure>
 
 Las portadas son mapas de bits (ilustraciones con degradados). Los iconos del bloque 4 serán vectores.
 
@@ -121,9 +151,18 @@ Las portadas son mapas de bits (ilustraciones con degradados). Los iconos del bl
 
     3. Comprueba en la preview que la insignia «NUEVO» sigue **encima** de la imagen. ¿Por qué? Porque en un `Box` lo último que escribes se dibuja arriba.
 
-    4. Cambia `ContentScale.Crop` por `Fit` y luego por `FillBounds`. Compara en la preview y quédate con `Crop`. Puedes probarlo también en el playground de los apuntes.
+    4. Cambia `ContentScale.Crop` por `Fit` y luego por `FillBounds`. Compara en la preview y quédate con `Crop`. Puedes probarlo también en el playground que tienes debajo.
 
     5. Borra la función `iniciales`: ya no se usa.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/02/images/recursos/rec-box-capas.svg"
+<figcaption>La respuesta al paso 3: un <code>Box</code> apila a sus hijos en el orden en que los escribes.</figcaption>
+</figure>
+
+Prueba los distintos `contentScale` con una imagen de ejemplo:
+
+<div class="cpg" data-cpg="contentscale"></div>
 
 !!! warning "Gotcha"
     `@DrawableRes` no es obligatorio, pero hace que el IDE te avise si por error pasas un `R.string` donde se espera una imagen. Las dos son `Int` y, sin la anotación, compilaría.
@@ -135,6 +174,11 @@ Las portadas son mapas de bits (ilustraciones con degradados). Los iconos del bl
 - **`Icon`** pinta un dibujo de **un solo color** (el *tinte*) y por defecto mide 24 dp. Es para iconos de interfaz; `Image` es para imágenes a color. → [2.3.2 §4](../2.3.2-imagenes-iconos-recursos.md#4-iconos-con-icon)
 - Los iconos se descargan como **vector XML** desde [fonts.google.com/icons](https://fonts.google.com/icons) y se guardan en `res/drawable/`. → [Material Symbols](../2.3.2-imagenes-iconos-recursos.md#de-donde-sacar-los-iconos-material-symbols)
 - Si el icono se pulsa, va dentro de un **`IconButton`**. Si alterna entre dos estados (como el favorito), dentro de un **`IconToggleButton`**.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/02/images/recursos/rec-image-icon.svg"
+<figcaption><code>Icon</code> pinta todo con un único color: perfecto para iconos, inútil para una portada. El corazón cambia de icono, de tinte y de descripción según su estado.</figcaption>
+</figure>
 
 !!! example "Manos a la obra"
 
@@ -165,6 +209,11 @@ Las portadas son mapas de bits (ilustraciones con degradados). Los iconos del bl
 <string name="genero_anio">%1$s · %2$d</string>
 <string name="portada_de">Portada de %1$s</string>
 ```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/02/images/recursos/rec-idiomas.svg"
+<figcaption>El mismo código en un móvil en español y en otro en inglés: Android elige la carpeta <code>values</code> según el idioma.</figcaption>
+</figure>
 
 !!! example "Manos a la obra"
 

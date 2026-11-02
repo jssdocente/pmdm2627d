@@ -1,0 +1,141 @@
+<svg class="arq-svg" viewBox="0 0 760 400" role="img" aria-labelledby="arq-rbv-t arq-rbv-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-rbv-t">Mapa de bits frente a vector, y qué es un dp</title>
+  <desc id="arq-rbv-d">Arriba, la misma estrella ampliada: como mapa de bits se ven los píxeles cuadrados; como vector, los bordes siguen nítidos. Abajo, un icono de 24 dp en tres pantallas de distinta densidad: ocupa 24, 48 y 72 píxeles, pero en las tres se ve del mismo tamaño.</desc>
+  <defs>
+    <marker id="arq-rbv-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-rbv-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="150" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">Mapa de bits (.png, .jpg) ampliado</text>
+  <rect x="136" y="40" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="150" y="40" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="136" y="54" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="150" y="54" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="122" y="68" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="136" y="68" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="150" y="68" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="164" y="68" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="66" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="80" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="94" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="108" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="122" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="136" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="150" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="164" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="178" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="192" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="206" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="220" y="82" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="80" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="94" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="108" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="122" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="136" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="150" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="164" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="178" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="192" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="206" y="96" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="94" y="110" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="108" y="110" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="122" y="110" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="136" y="110" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="150" y="110" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="164" y="110" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="178" y="110" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="192" y="110" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="108" y="124" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="122" y="124" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="136" y="124" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="150" y="124" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="164" y="124" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="178" y="124" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="94" y="138" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="108" y="138" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="122" y="138" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="136" y="138" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="150" y="138" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="164" y="138" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="178" y="138" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="192" y="138" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="94" y="152" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="108" y="152" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="122" y="152" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="164" y="152" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="178" y="152" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="192" y="152" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="80" y="166" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="94" y="166" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="108" y="166" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="178" y="166" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="192" y="166" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="206" y="166" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="80" y="180" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="94" y="180" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="192" y="180" width="14" height="14" rx="0" class="arq-dom"/>
+  <rect x="206" y="180" width="14" height="14" rx="0" class="arq-dom"/>
+  <text x="150" y="224" class="arq-t arq-xs" text-anchor="middle">se ven los píxeles: pierde calidad al ampliar</text>
+  <text x="150" y="240" class="arq-t arq-xs arq-strong" text-anchor="middle">para fotos e ilustraciones</text>
+  <line x1="380" y1="20" x2="380" y2="248" class="arq-guide"/>
+  <text x="610" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">Vector (.xml de Android) ampliado</text>
+  <polygon points="610.0,40.0 630.0,96.5 689.9,98.0 642.3,134.5 659.4,192.0 610.0,158.0 560.6,192.0 577.7,134.5 530.1,98.0 590.0,96.5" class="arq-dom" style="stroke-width:2"/>
+  <text x="610" y="224" class="arq-t arq-xs" text-anchor="middle">formas, no píxeles: nítido a cualquier tamaño</text>
+  <text x="610" y="240" class="arq-t arq-xs arq-strong" text-anchor="middle">para iconos y logotipos</text>
+  <line x1="20" y1="262" x2="740" y2="262" class="arq-guide"/>
+  <text x="380" y="286" class="arq-t arq-s arq-strong" text-anchor="middle">Un icono de 24 dp en tres pantallas distintas</text>
+  <rect x="110" y="300" width="60" height="60" rx="2" class="arq-box"/>
+  <line x1="125.0" y1="300" x2="125.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="110" y1="315.0" x2="170" y2="315.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="140.0" y1="300" x2="140.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="110" y1="330.0" x2="170" y2="330.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="155.0" y1="300" x2="155.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="110" y1="345.0" x2="170" y2="345.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <polygon points="140.0,306.0 145.9,321.9 162.8,322.6 149.5,333.1 154.1,349.4 140.0,340.0 125.9,349.4 130.5,333.1 117.2,322.6 134.1,321.9" class="arq-dom" style="stroke-width:1.2"/>
+  <text x="184" y="322" class="arq-t arq-xs arq-strong">mdpi · ×1</text>
+  <text x="184" y="340" class="arq-t arq-code arq-xs">24 px</text>
+  <rect x="350" y="300" width="60" height="60" rx="2" class="arq-box"/>
+  <line x1="357.5" y1="300" x2="357.5" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="350" y1="307.5" x2="410" y2="307.5" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="365.0" y1="300" x2="365.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="350" y1="315.0" x2="410" y2="315.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="372.5" y1="300" x2="372.5" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="350" y1="322.5" x2="410" y2="322.5" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="380.0" y1="300" x2="380.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="350" y1="330.0" x2="410" y2="330.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="387.5" y1="300" x2="387.5" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="350" y1="337.5" x2="410" y2="337.5" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="395.0" y1="300" x2="395.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="350" y1="345.0" x2="410" y2="345.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="402.5" y1="300" x2="402.5" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="350" y1="352.5" x2="410" y2="352.5" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <polygon points="380.0,306.0 385.9,321.9 402.8,322.6 389.5,333.1 394.1,349.4 380.0,340.0 365.9,349.4 370.5,333.1 357.2,322.6 374.1,321.9" class="arq-dom" style="stroke-width:1.2"/>
+  <text x="424" y="322" class="arq-t arq-xs arq-strong">xhdpi · ×2</text>
+  <text x="424" y="340" class="arq-t arq-code arq-xs">48 px</text>
+  <rect x="590" y="300" width="60" height="60" rx="2" class="arq-box"/>
+  <line x1="595.0" y1="300" x2="595.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="305.0" x2="650" y2="305.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="600.0" y1="300" x2="600.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="310.0" x2="650" y2="310.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="605.0" y1="300" x2="605.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="315.0" x2="650" y2="315.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="610.0" y1="300" x2="610.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="320.0" x2="650" y2="320.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="615.0" y1="300" x2="615.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="325.0" x2="650" y2="325.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="620.0" y1="300" x2="620.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="330.0" x2="650" y2="330.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="625.0" y1="300" x2="625.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="335.0" x2="650" y2="335.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="630.0" y1="300" x2="630.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="340.0" x2="650" y2="340.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="635.0" y1="300" x2="635.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="345.0" x2="650" y2="345.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="640.0" y1="300" x2="640.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="350.0" x2="650" y2="350.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="645.0" y1="300" x2="645.0" y2="360" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <line x1="590" y1="355.0" x2="650" y2="355.0" class="arq-guide" style="stroke-dasharray:none;stroke-width:0.6"/>
+  <polygon points="620.0,306.0 625.9,321.9 642.8,322.6 629.5,333.1 634.1,349.4 620.0,340.0 605.9,349.4 610.5,333.1 597.2,322.6 614.1,321.9" class="arq-dom" style="stroke-width:1.2"/>
+  <text x="664" y="322" class="arq-t arq-xs arq-strong">xxhdpi · ×3</text>
+  <text x="664" y="340" class="arq-t arq-code arq-xs">72 px</text>
+  <text x="380" y="390" class="arq-t arq-xs" text-anchor="middle">Mismo tamaño en la mano; más píxeles en las pantallas más densas. Por eso los tamaños se dan en dp.</text>
+</svg>

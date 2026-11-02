@@ -1,0 +1,42 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="arq-rr-t arq-rr-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-rr-t">De la carpeta res a la clase R y al código</title>
+  <desc id="arq-rr-d">A la izquierda, la carpeta res con drawable, mipmap, values y values-en. Al compilar se genera la clase R, con una constante por recurso: R.drawable.img_portada_hollow, R.drawable.ic_star, R.mipmap.ic_launcher y R.string.partidas_jugadas. values-en no crea constantes nuevas: usa las mismas claves. A la derecha, el código usa esas constantes con painterResource y stringResource.</desc>
+  <defs>
+    <marker id="arq-rr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-rr-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="24" class="arq-t arq-code arq-s arq-strong">app/src/main/res/</text>
+  <text x="24" y="52" class="arq-t arq-code arq-xs arq-strong">📁 drawable/</text>
+  <text x="42" y="78" class="arq-t arq-code arq-xs">img_portada_hollow.jpg</text>
+  <text x="42" y="104" class="arq-t arq-code arq-xs">ic_star.xml</text>
+  <text x="24" y="130" class="arq-t arq-code arq-xs arq-strong">📁 mipmap-…/</text>
+  <text x="42" y="156" class="arq-t arq-code arq-xs">ic_launcher</text>
+  <text x="24" y="182" class="arq-t arq-code arq-xs arq-strong">📁 values/</text>
+  <text x="42" y="208" class="arq-t arq-code arq-xs">strings.xml</text>
+  <text x="24" y="234" class="arq-t arq-code arq-xs arq-strong">📁 values-en/</text>
+  <text x="42" y="260" class="arq-t arq-code arq-xs">strings.xml</text>
+  <text x="42" y="282" class="arq-t arq-xs arq-muted">(mismas claves)</text>
+  <line x1="212" y1="150" x2="236" y2="150" class="arq-dep" marker-end="url(#arq-rr-a)"/>
+  <text x="224" y="136" class="arq-t arq-xs arq-strong" text-anchor="middle">compilar</text>
+  <rect x="238" y="58" width="244" height="200" rx="12" class="arq-dom"/>
+  <text x="360" y="82" class="arq-t arq-s arq-strong" text-anchor="middle">clase R (generada)</text>
+  <text x="248" y="112" class="arq-t arq-code arq-xs">R.drawable.img_portada_hollow</text>
+  <text x="248" y="146" class="arq-t arq-code arq-xs">R.drawable.ic_star</text>
+  <text x="248" y="180" class="arq-t arq-code arq-xs">R.mipmap.ic_launcher</text>
+  <text x="248" y="214" class="arq-t arq-code arq-xs">R.string.partidas_jugadas</text>
+  <text x="360" y="250" class="arq-t arq-xs arq-muted" text-anchor="middle">un Int por recurso</text>
+  <line x1="482" y1="108" x2="500" y2="108" class="arq-dep" marker-end="url(#arq-rr-a)"/>
+  <rect x="502" y="88" width="254" height="40" rx="8" class="arq-ui"/>
+  <text x="510" y="104" class="arq-t arq-code arq-xs">painterResource(</text>
+  <text x="516" y="120" class="arq-t arq-code arq-xs arq-strong">R.drawable.img_portada_hollow)</text>
+  <line x1="482" y1="142" x2="500" y2="160" class="arq-dep" marker-end="url(#arq-rr-a)"/>
+  <rect x="502" y="140" width="254" height="40" rx="8" class="arq-ui"/>
+  <text x="510" y="156" class="arq-t arq-code arq-xs">painterResource(</text>
+  <text x="516" y="172" class="arq-t arq-code arq-xs arq-strong">R.drawable.ic_star)</text>
+  <line x1="482" y1="210" x2="500" y2="216" class="arq-dep" marker-end="url(#arq-rr-a)"/>
+  <rect x="502" y="196" width="254" height="40" rx="8" class="arq-ui"/>
+  <text x="510" y="212" class="arq-t arq-code arq-xs">stringResource(</text>
+  <text x="516" y="228" class="arq-t arq-code arq-xs arq-strong">R.string.partidas_jugadas, 3)</text>
+  <text x="629" y="256" class="arq-t arq-xs arq-muted" text-anchor="middle">(ic_launcher lo usa el Manifest)</text>
+  <text x="380" y="312" class="arq-t arq-s arq-strong" text-anchor="middle">Nombres de recurso: minúsculas, números y _ (img_…, ic_…). «Portada-Hollow.jpg» no compila.</text>
+</svg>

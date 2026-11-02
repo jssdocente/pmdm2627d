@@ -1,0 +1,37 @@
+<svg class="arq-svg" viewBox="0 0 760 310" role="img" aria-labelledby="arq-rim-t arq-rim-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-rim-t">Image frente a Icon</title>
+  <desc id="arq-rim-d">La portada dibujada con Image conserva sus colores. Si la misma portada se pasa a Icon, todo se pinta de un solo color, el tinte, y queda un rectángulo liso: Icon es para dibujos de un color. A la derecha, el corazón como IconToggleButton en sus dos estados: marcado, con ic_favorite, tinte error y la descripción Quitar de favoritos; sin marcar, con ic_favorite_border, tinte onSurfaceVariant y la descripción Marcar como favorito.</desc>
+  <defs>
+    <marker id="arq-rim-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-rim-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="100" y="24" class="arq-t arq-code arq-s arq-strong" text-anchor="middle">Image(…)</text>
+  <rect x="25" y="40" width="150" height="96" rx="10" class="arq-box" style="fill:#1b2a55;stroke:none"/>
+  <circle cx="137" cy="68" r="16" class="arq-box" style="fill:#f4f1e1;stroke:none"/>
+  <rect x="25" y="110" width="150" height="26" rx="0" class="arq-box" style="fill:#22325f;stroke:none"/>
+  <rect x="77" y="80" width="22" height="40" rx="4" class="arq-box" style="fill:#0d1430;stroke:none"/>
+  <circle cx="88" cy="78" r="11" class="arq-box" style="fill:#0d1430;stroke:none"/>
+  <text x="100" y="156" class="arq-t arq-xs" text-anchor="middle">conserva sus colores</text>
+  <text x="290" y="24" class="arq-t arq-code arq-s arq-strong" text-anchor="middle">Icon(…)</text>
+  <rect x="215" y="40" width="150" height="96" rx="10" class="arq-ui" style="fill:#6750A4;stroke:none"/>
+  <text x="290" y="156" class="arq-t arq-xs" text-anchor="middle">todo de un color: un bloque</text>
+  <text x="195" y="190" class="arq-t arq-s arq-strong" text-anchor="middle">Image: fotos e ilustraciones.</text>
+  <text x="195" y="210" class="arq-t arq-s" text-anchor="middle">Icon: dibujos de un solo color, que</text>
+  <text x="195" y="228" class="arq-t arq-s" text-anchor="middle">toman el tinte del tema (tint).</text>
+  <line x1="400" y1="20" x2="400" y2="300" class="arq-guide"/>
+  <text x="580" y="24" class="arq-t arq-s arq-strong" text-anchor="middle">IconToggleButton: el favorito</text>
+  <rect x="420" y="60" width="320" height="110" rx="12" class="arq-box"/>
+  <g transform="translate(436,84) scale(2.6)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" style="fill:#B3261E"/></g>
+  <text x="510" y="86" class="arq-t arq-code arq-xs arq-strong">checked = true</text>
+  <text x="510" y="106" class="arq-t arq-code arq-xs">ic_favorite</text>
+  <text x="510" y="126" class="arq-t arq-code arq-xs">tint = colorScheme.error</text>
+  <text x="510" y="146" class="arq-t arq-xs">contentDescription:</text>
+  <text x="510" y="162" class="arq-t arq-xs arq-strong">«Quitar de favoritos»</text>
+  <rect x="420" y="190" width="320" height="110" rx="12" class="arq-box"/>
+  <g transform="translate(436,214) scale(2.6)"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" style="fill:#79747E"/></g>
+  <text x="510" y="216" class="arq-t arq-code arq-xs arq-strong">checked = false</text>
+  <text x="510" y="236" class="arq-t arq-code arq-xs">ic_favorite_border</text>
+  <text x="510" y="256" class="arq-t arq-code arq-xs">tint = onSurfaceVariant</text>
+  <text x="510" y="276" class="arq-t arq-xs">contentDescription:</text>
+  <text x="510" y="292" class="arq-t arq-xs arq-strong">«Marcar como favorito»</text>
+</svg>

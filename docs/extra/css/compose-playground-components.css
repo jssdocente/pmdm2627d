@@ -2674,3 +2674,42 @@
   margin: 0;
   font-size: 0.7rem;
 }
+
+/* ---------- Captura anotada con marcas numeradas (sesión 2.03) */
+
+.md-typeset figure.cfj-map-fig {
+  display: block;
+  margin: 1.5em auto 0.5em;
+  text-align: center;
+}
+
+.md-typeset .cfj-map {
+  position: relative;
+  display: inline-block;
+  width: 280px;
+  max-width: 100%;
+}
+
+.md-typeset .cfj-map img {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+}
+
+.md-typeset .cfj-pin {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #e5484d;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  transform: translate(-50%, -50%);
+}
