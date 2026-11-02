@@ -1,0 +1,51 @@
+<svg class="arq-svg" viewBox="0 0 760 420" role="img" aria-labelledby="arq-res-t arq-res-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-res-t">Cómo resuelve Koin la petición de un ViewModel</title>
+  <desc id="arq-res-d">La pantalla pide un CatalogoViewModel. Koin lee su constructor, ve que necesita dos casos de uso, y estos un JuegoRepositorio. Busca cada tipo en las recetas de los módulos: JuegoRepositorio lo encuentra gracias a bind. Crea las piezas de abajo arriba: primero el repositorio, luego los casos de uso y por último el ViewModel, que entrega a la pantalla.</desc>
+  <defs>
+    <marker id="arq-res-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-res-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <!-- Petición -->
+  <rect x="20" y="16" width="300" height="40" rx="20" class="arq-ui"/>
+  <text x="170" y="41" class="arq-t arq-code arq-strong" text-anchor="middle">koinViewModel&lt;CatalogoViewModel&gt;()</text>
+  <text x="170" y="74" class="arq-t arq-xs arq-muted" text-anchor="middle">PantallaCatalogo pide su ViewModel</text>
+  <!-- Recetas -->
+  <rect x="20" y="96" width="300" height="250" rx="14" class="arq-gray"/>
+  <text x="170" y="122" class="arq-t arq-h" text-anchor="middle">Recetas (módulos)</text>
+  <text x="34" y="154" class="arq-t arq-code">viewModelOf(::CatalogoViewModel)</text>
+  <text x="34" y="184" class="arq-t arq-code">factoryOf(::ObtenerJuegosUseCase)</text>
+  <text x="34" y="210" class="arq-t arq-code">factoryOf(::AlternarFavoritoUseCase)</text>
+  <text x="34" y="240" class="arq-t arq-code">singleOf(::JuegoRepositorioEnMemoria)</text>
+  <text x="44" y="260" class="arq-t arq-code arq-strong">bind JuegoRepositorio::class</text>
+  <text x="34" y="296" class="arq-t arq-xs">Koin busca cada tipo que aparece en un</text>
+  <text x="34" y="312" class="arq-t arq-xs">constructor. Gracias a bind, «JuegoRepositorio»</text>
+  <text x="34" y="328" class="arq-t arq-xs">se resuelve con JuegoRepositorioEnMemoria.</text>
+  <!-- Grafo -->
+  <rect x="410" y="80" width="290" height="58" rx="12" class="arq-ui"/>
+  <text x="555" y="104" class="arq-t arq-code arq-strong" text-anchor="middle">CatalogoViewModel(</text>
+  <text x="555" y="124" class="arq-t arq-code" text-anchor="middle">obtenerJuegos, alternarFavorito)</text>
+  <rect x="360" y="196" width="180" height="58" rx="12" class="arq-dom"/>
+  <text x="450" y="220" class="arq-t arq-code arq-strong" text-anchor="middle">ObtenerJuegos</text>
+  <text x="450" y="240" class="arq-t arq-code arq-xs" text-anchor="middle">UseCase(repo)</text>
+  <rect x="560" y="196" width="180" height="58" rx="12" class="arq-dom"/>
+  <text x="650" y="220" class="arq-t arq-code arq-strong" text-anchor="middle">AlternarFavorito</text>
+  <text x="650" y="240" class="arq-t arq-code arq-xs" text-anchor="middle">UseCase(repo)</text>
+  <rect x="440" y="312" width="230" height="58" rx="12" class="arq-data"/>
+  <text x="555" y="336" class="arq-t arq-code arq-strong" text-anchor="middle">JuegoRepositorioEnMemoria</text>
+  <text x="555" y="356" class="arq-t arq-xs" text-anchor="middle">una sola instancia (single)</text>
+  <!-- Necesita -->
+  <line x1="510" y1="138" x2="470" y2="194" class="arq-dep" marker-end="url(#arq-res-a)"/>
+  <line x1="600" y1="138" x2="630" y2="194" class="arq-dep" marker-end="url(#arq-res-a)"/>
+  <line x1="460" y1="254" x2="520" y2="310" class="arq-dep" marker-end="url(#arq-res-a)"/>
+  <line x1="640" y1="254" x2="590" y2="310" class="arq-dep" marker-end="url(#arq-res-a)"/>
+  <text x="742" y="160" class="arq-t arq-xs" text-anchor="end">«necesita»</text>
+  <!-- Orden de creación -->
+  <circle cx="680" cy="341" r="13" class="arq-red"/><text x="680" y="346" class="arq-t arq-xs arq-on arq-strong" text-anchor="middle">1</text>
+  <circle cx="352" cy="225" r="13" class="arq-red"/><text x="352" y="230" class="arq-t arq-xs arq-on arq-strong" text-anchor="middle">2</text>
+  <circle cx="749" cy="225" r="11" class="arq-red"/><text x="749" y="230" class="arq-t arq-xs arq-on arq-strong" text-anchor="middle">3</text>
+  <circle cx="398" cy="109" r="13" class="arq-red"/><text x="398" y="114" class="arq-t arq-xs arq-on arq-strong" text-anchor="middle">4</text>
+  <path d="M320,36 C380,36 420,60 436,82" class="arq-flow" marker-end="url(#arq-res-b)"/>
+  <text x="555" y="58" class="arq-t arq-xs arq-strong" text-anchor="middle">⑤ Koin entrega el ViewModel a la pantalla</text>
+  <text x="380" y="398" class="arq-t arq-s arq-strong" text-anchor="middle">Koin crea de abajo arriba (1 → 4): primero lo que no necesita nada; al final, quien lo necesita todo.</text>
+  <text x="380" y="414" class="arq-t arq-xs arq-muted" text-anchor="middle">Nosotros no escribimos «el ViewModel necesita el caso de uso»: Koin lo deduce leyendo los constructores.</text>
+</svg>

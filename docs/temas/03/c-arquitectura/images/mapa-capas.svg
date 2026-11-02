@@ -1,0 +1,58 @@
+<svg class="arq-svg" viewBox="0 0 760 430" role="img" aria-labelledby="arq-mapa-t arq-mapa-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-mapa-t">Mapa de capas de la app y sus dependencias</title>
+  <desc id="arq-mapa-d">Tres capas: Presentación, Dominio y Datos. Las dependencias de Presentación y de Datos apuntan hacia el Dominio. Los datos viajan en sentido contrario, de Datos a Presentación.</desc>
+  <defs>
+    <marker id="arq-mapa-dep" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-mapa-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <!-- Leyenda -->
+  <line x1="24" y1="24" x2="64" y2="24" class="arq-dep" marker-end="url(#arq-mapa-dep)"/>
+  <text x="72" y="28" class="arq-t arq-s">dependencia (import): siempre hacia el dominio</text>
+  <line x1="424" y1="24" x2="464" y2="24" class="arq-flow" marker-end="url(#arq-mapa-flow)"/>
+  <text x="472" y="28" class="arq-t arq-s">camino de los datos al ejecutar</text>
+  <!-- Presentación -->
+  <rect x="20" y="52" width="200" height="290" rx="14" class="arq-ui"/>
+  <text x="120" y="80" class="arq-t arq-h" text-anchor="middle">Presentación</text>
+  <text x="120" y="98" class="arq-t arq-s arq-muted" text-anchor="middle">paquete ui</text>
+  <rect x="32" y="114" width="176" height="36" rx="8" class="arq-box"/>
+  <text x="120" y="137" class="arq-t arq-code" text-anchor="middle">PantallaCatalogo</text>
+  <rect x="32" y="160" width="176" height="36" rx="8" class="arq-box"/>
+  <text x="120" y="183" class="arq-t arq-code" text-anchor="middle">CatalogoViewModel</text>
+  <rect x="32" y="206" width="176" height="36" rx="8" class="arq-box"/>
+  <text x="120" y="229" class="arq-t arq-code" text-anchor="middle">CatalogoUiState</text>
+  <text x="120" y="310" class="arq-t arq-s arq-muted" text-anchor="middle">Android + Compose</text>
+  <text x="120" y="327" class="arq-t arq-s arq-muted" text-anchor="middle">«cómo se ve»</text>
+  <!-- Dominio -->
+  <rect x="280" y="52" width="200" height="290" rx="14" class="arq-dom"/>
+  <text x="380" y="80" class="arq-t arq-h" text-anchor="middle">Dominio</text>
+  <text x="380" y="98" class="arq-t arq-s arq-muted" text-anchor="middle">paquete domain</text>
+  <rect x="292" y="114" width="176" height="36" rx="8" class="arq-box"/>
+  <text x="380" y="137" class="arq-t arq-code" text-anchor="middle">Juego</text>
+  <rect x="292" y="160" width="176" height="44" rx="8" class="arq-box"/>
+  <text x="380" y="177" class="arq-t arq-xs arq-muted" text-anchor="middle">«interface»</text>
+  <text x="380" y="195" class="arq-t arq-code" text-anchor="middle">JuegoRepositorio</text>
+  <rect x="292" y="214" width="176" height="36" rx="8" class="arq-box"/>
+  <text x="380" y="237" class="arq-t arq-code" text-anchor="middle">ObtenerJuegosUseCase</text>
+  <text x="380" y="310" class="arq-t arq-s arq-strong" text-anchor="middle">Kotlin puro: sin Android,</text>
+  <text x="380" y="327" class="arq-t arq-s arq-strong" text-anchor="middle">sin Compose y sin datos</text>
+  <!-- Datos -->
+  <rect x="540" y="52" width="200" height="290" rx="14" class="arq-data"/>
+  <text x="640" y="80" class="arq-t arq-h" text-anchor="middle">Datos</text>
+  <text x="640" y="98" class="arq-t arq-s arq-muted" text-anchor="middle">paquete data</text>
+  <rect x="552" y="160" width="176" height="44" rx="8" class="arq-box"/>
+  <text x="640" y="178" class="arq-t arq-code" text-anchor="middle">JuegoRepositorio</text>
+  <text x="640" y="195" class="arq-t arq-code" text-anchor="middle">EnMemoria</text>
+  <rect x="552" y="214" width="176" height="36" rx="8" class="arq-box arq-dashed"/>
+  <text x="640" y="237" class="arq-t arq-s arq-muted" text-anchor="middle">en UT4: Room y API</text>
+  <text x="640" y="310" class="arq-t arq-s arq-muted" text-anchor="middle">Android, base de datos, red</text>
+  <text x="640" y="327" class="arq-t arq-s arq-muted" text-anchor="middle">«de dónde salen los datos»</text>
+  <!-- Dependencias: las dos apuntan al dominio -->
+  <line x1="208" y1="232" x2="290" y2="232" class="arq-dep" marker-end="url(#arq-mapa-dep)"/>
+  <text x="250" y="224" class="arq-t arq-xs" text-anchor="middle">usa</text>
+  <line x1="552" y1="182" x2="470" y2="182" class="arq-dep" marker-end="url(#arq-mapa-dep)"/>
+  <text x="640" y="146" class="arq-t arq-xs arq-strong" text-anchor="middle">implementa la interfaz</text>
+  <!-- Flujo de datos: de Datos a Presentación -->
+  <path d="M640,350 L640,372 L120,372 L120,350" class="arq-flow" marker-end="url(#arq-mapa-flow)"/>
+  <text x="380" y="398" class="arq-t arq-s" text-anchor="middle">Los datos viajan al revés: Datos → Dominio → Presentación</text>
+  <text x="380" y="416" class="arq-t arq-xs arq-muted" text-anchor="middle">(el repositorio emite un Flow&lt;List&lt;Juego&gt;&gt;; el caso de uso lo pasa; el ViewModel lo convierte en UiState)</text>
+</svg>

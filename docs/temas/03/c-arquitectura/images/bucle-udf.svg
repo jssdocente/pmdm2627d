@@ -1,0 +1,50 @@
+<svg class="arq-svg" viewBox="0 0 760 360" role="img" aria-labelledby="arq-udf-t arq-udf-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-udf-t">Flujo unidireccional de datos en el Ahorcado</title>
+  <desc id="arq-udf-d">El ViewModel expone el estado, AhorcadoUiState, que baja a la pantalla. La pantalla no lo modifica: cuando el usuario pulsa una letra, envía el evento onProbarLetra hacia arriba. El ViewModel calcula un estado nuevo con copy y la pantalla se recompone.</desc>
+  <defs>
+    <marker id="arq-udf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-udf-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <!-- ViewModel -->
+  <rect x="20" y="96" width="230" height="170" rx="14" class="arq-dom"/>
+  <text x="135" y="124" class="arq-t arq-h" text-anchor="middle">AhorcadoViewModel</text>
+  <text x="36" y="154" class="arq-t arq-code">_uiState: MutableStateFlow</text>
+  <text x="36" y="176" class="arq-t arq-code">val uiState: StateFlow</text>
+  <text x="36" y="206" class="arq-t arq-code">fun onProbarLetra(l) {</text>
+  <text x="36" y="226" class="arq-t arq-code">  _uiState.update {</text>
+  <text x="36" y="246" class="arq-t arq-code">    it.copy(…) } }</text>
+  <!-- Pantalla -->
+  <rect x="560" y="44" width="180" height="290" rx="22" class="arq-box"/>
+  <rect x="572" y="60" width="156" height="258" rx="12" class="arq-ui"/>
+  <text x="650" y="86" class="arq-t arq-s arq-strong" text-anchor="middle">AhorcadoScreen</text>
+  <text x="650" y="132" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:20px">K _ T L _ N</text>
+  <text x="650" y="160" class="arq-t arq-s" text-anchor="middle">Vidas: 5 / 6</text>
+  <rect x="586" y="186" width="28" height="28" rx="6" class="arq-key"/><text x="600" y="205" class="arq-t arq-s" text-anchor="middle">A</text>
+  <rect x="620" y="186" width="28" height="28" rx="6" class="arq-key"/><text x="634" y="205" class="arq-t arq-s" text-anchor="middle">E</text>
+  <rect x="654" y="186" width="28" height="28" rx="6" class="arq-key-on"/><text x="668" y="205" class="arq-t arq-s arq-on" text-anchor="middle">K</text>
+  <rect x="688" y="186" width="28" height="28" rx="6" class="arq-key"/><text x="702" y="205" class="arq-t arq-s" text-anchor="middle">O</text>
+  <rect x="586" y="222" width="28" height="28" rx="6" class="arq-key"/><text x="600" y="241" class="arq-t arq-s" text-anchor="middle">R</text>
+  <rect x="620" y="222" width="28" height="28" rx="6" class="arq-key"/><text x="634" y="241" class="arq-t arq-s" text-anchor="middle">S</text>
+  <rect x="654" y="222" width="28" height="28" rx="6" class="arq-key"/><text x="668" y="241" class="arq-t arq-s" text-anchor="middle">T</text>
+  <rect x="688" y="222" width="28" height="28" rx="6" class="arq-key"/><text x="702" y="241" class="arq-t arq-s" text-anchor="middle">U</text>
+  <text x="650" y="282" class="arq-t arq-xs arq-muted" text-anchor="middle">solo dibuja el estado</text>
+  <text x="650" y="298" class="arq-t arq-xs arq-muted" text-anchor="middle">y avisa de lo que pulsa</text>
+  <!-- Estado que baja -->
+  <path d="M250,130 C330,52 470,52 560,110" class="arq-dep" marker-end="url(#arq-udf-a)"/>
+  <text x="405" y="38" class="arq-t arq-s arq-strong" text-anchor="middle">① El estado baja: uiState (StateFlow)</text>
+  <rect x="290" y="98" width="230" height="104" rx="10" class="arq-box"/>
+  <text x="405" y="120" class="arq-t arq-s arq-strong" text-anchor="middle">AhorcadoUiState (inmutable)</text>
+  <text x="302" y="144" class="arq-t arq-code">palabraParaMostrar =</text>
+  <text x="302" y="160" class="arq-t arq-code">    "K _ T L _ N"</text>
+  <text x="302" y="178" class="arq-t arq-code">vidasRestantes = 5</text>
+  <text x="302" y="194" class="arq-t arq-code">juegoTerminado = false</text>
+  <!-- Evento que sube -->
+  <path d="M560,270 C470,330 330,330 250,245" class="arq-flow" marker-end="url(#arq-udf-b)"/>
+  <rect x="314" y="232" width="182" height="30" rx="15" class="arq-warn"/>
+  <text x="405" y="252" class="arq-t arq-code" text-anchor="middle">onProbarLetra('K')</text>
+  <text x="405" y="346" class="arq-t arq-s arq-strong" text-anchor="middle">② El evento sube: la pantalla avisa, no modifica nada</text>
+  <!-- Pasos internos -->
+  <text x="135" y="290" class="arq-t arq-xs arq-strong" text-anchor="middle">③ Calcula el estado nuevo</text>
+  <text x="135" y="306" class="arq-t arq-xs" text-anchor="middle">con copy(…) y lo emite</text>
+  <text x="650" y="352" class="arq-t arq-xs arq-strong" text-anchor="middle">④ Compose recompone</text>
+</svg>

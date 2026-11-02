@@ -17,6 +17,7 @@
  *   <div class="cpg" data-cpg="lazygrid"></div>   -> LazyVerticalGrid / LazyHorizontalGrid y GridCells (apuntes 3A.3)
  *   <div class="cpg" data-cpg="navigation"></div> -> pila de Navigation 3, pestañas y transiciones (apuntes 3B.1)
  *   <div class="cpg" data-cpg="adaptive"></div>   -> ventana redimensionable: clases de tamaño y navegación adaptativa (apuntes 3B.2)
+ *   <div class="cpg" data-cpg="koin"></div>       -> resolutor de Koin: single, factory, bind y errores (apuntes 3C.3)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -2217,6 +2218,260 @@
     requestAnimationFrame(function () { renderStage(); });
   }
 
+  // ---------------------------------------------- playground de Koin
+
+  var KOIN_DEPS = {
+    CatalogoViewModel: ["ObtenerJuegosUseCase", "AlternarFavoritoUseCase"],
+    DetalleViewModel: ["ObservarJuegoUseCase", "AlternarFavoritoUseCase"],
+    ObtenerJuegosUseCase: ["JuegoRepositorio"],
+    ObservarJuegoUseCase: ["JuegoRepositorio"],
+    AlternarFavoritoUseCase: ["JuegoRepositorio"],
+    JuegoRepositorio: []
+  };
+  var KOIN_LAYER = {
+    CatalogoViewModel: "ui", DetalleViewModel: "ui", ObtenerJuegosUseCase: "dom",
+    ObservarJuegoUseCase: "dom", AlternarFavoritoUseCase: "dom", JuegoRepositorio: "data"
+  };
+  var KOIN_USECASES = ["ObtenerJuegosUseCase", "ObservarJuegoUseCase", "AlternarFavoritoUseCase"];
+  var KOIN_GAMES = [{ id: 1, t: "Hollow Knight" }, { id: 2, t: "Celeste" }, { id: 7, t: "Zelda: TotK" }];
+
+  function koinPlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = {
+      decl: {
+        repo: "single", bind: true, CatalogoViewModel: true, DetalleViewModel: true,
+        ObtenerJuegosUseCase: "factory", ObservarJuegoUseCase: "factory", AlternarFavoritoUseCase: "factory"
+      },
+      theme: siteMode()
+    };
+    var rt;
+    var ui = shell(root, "Playground: el resolutor de Koin", "Cambia las recetas del módulo y usa la app: mira qué objetos crea Koin");
+
+    function resetRuntime() {
+      rt = { counters: {}, singles: {}, stack: [], log: [], error: null, hint: "" };
+    }
+
+    function log(msg) { rt.log.push(msg); if (rt.log.length > 9) rt.log.shift(); }
+    function implName(type) { return type === "JuegoRepositorio" ? "JuegoRepositorioEnMemoria" : type; }
+
+    // Crea (o reutiliza) un objeto del tipo pedido, resolviendo antes sus dependencias.
+    function get(type) {
+      var kind;
+      if (type === "JuegoRepositorio") {
+        if (state.decl.repo === "none") throw { type: type, why: "No hay ninguna receta para JuegoRepositorioEnMemoria." };
+        if (!state.decl.bind) throw { type: type, why: "Existe singleOf(::JuegoRepositorioEnMemoria), pero sin bind Koin no sabe que sirve para JuegoRepositorio." };
+        kind = state.decl.repo;
+      } else if (/ViewModel$/.test(type)) {
+        if (!state.decl[type]) throw { type: type, why: "Falta viewModelOf(::" + type + ") en el módulo." };
+        kind = "viewModel";
+      } else {
+        kind = state.decl[type];
+        if (kind === "none") throw { type: type, why: "Falta la receta de " + type + " en el módulo." };
+      }
+      if (kind === "single" && rt.singles[type]) {
+        log("reutiliza " + implName(type) + " #" + rt.singles[type].n + " (single)");
+        return rt.singles[type];
+      }
+      var deps = KOIN_DEPS[type].map(get);
+      rt.counters[type] = (rt.counters[type] || 0) + 1;
+      var obj = { type: type, n: rt.counters[type], deps: deps, kind: kind, favs: type === "JuegoRepositorio" ? {} : null };
+      if (kind === "single") rt.singles[type] = obj;
+      log("crea " + implName(type) + " #" + obj.n + " (" + kind + ")");
+      return obj;
+    }
+
+    function open(screen, id) {
+      rt.error = null;
+      var vmType = screen === "Catalogo" ? "CatalogoViewModel" : "DetalleViewModel";
+      log("— koinViewModel<" + vmType + ">()");
+      try {
+        rt.stack.push({ screen: screen, id: id, vm: get(vmType) });
+      } catch (e) {
+        if (!e.type) throw e;
+        rt.error = e;
+        log("💥 NoDefinitionFoundException: " + e.type);
+      }
+      draw();
+    }
+
+    function back() {
+      if (rt.error) { rt.error = null; draw(); return; }
+      if (rt.stack.length <= 1) return;
+      var e = rt.stack.pop();
+      log("— sales de " + e.screen + ": " + e.vm.type + " #" + e.vm.n + " → onCleared()");
+      draw();
+    }
+
+    function rotate() {
+      if (!rt.stack.length) return;
+      var top = rt.stack[rt.stack.length - 1];
+      log("— 🔄 giras el móvil: Activity nueva, pero koinViewModel devuelve el mismo " + top.vm.type + " #" + top.vm.n);
+      draw();
+    }
+
+    // El repositorio que usa un ViewModel a través de su caso de uso número i
+    function repoOf(vm, i) { return vm.deps[i].deps[0]; }
+
+    var phoneEl, graphEl, logEl;
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      var kinds = [{ value: "single", label: "single" }, { value: "factory", label: "factory" }, { value: "none", label: "sin declarar" }];
+      ui.controls.appendChild(segmented("datosModule · JuegoRepositorioEnMemoria", kinds, state.decl.repo, function (v) { state.decl.repo = v; restart(); }));
+      ui.controls.appendChild(yesNo("bind JuegoRepositorio::class", state.decl.bind, function (v) { state.decl.bind = v; restart(); }));
+      KOIN_USECASES.forEach(function (u) {
+        ui.controls.appendChild(segmented("dominioModule · " + u, kinds, state.decl[u], function (v) { state.decl[u] = v; restart(); }));
+      });
+      ["CatalogoViewModel", "DetalleViewModel"].forEach(function (vm) {
+        ui.controls.appendChild(yesNo("presentacionModule · viewModelOf(::" + vm + ")", state.decl[vm], function (v) { state.decl[vm] = v; restart(); }));
+      });
+      var r = h("button", { type: "button", text: "Reiniciar la app" });
+      r.addEventListener("click", restart);
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: " " }), r]));
+      ui.controls.appendChild(modeControl({ get mode() { return state.theme; }, set mode(v) { state.theme = v; } }, function () { renderStage(); }));
+    }
+
+    function restart() {
+      resetRuntime();
+      renderControls();
+      renderCode();
+      renderStage();
+      log("startKoin { modules(appModules) }");
+      open("Catalogo");
+    }
+
+    function renderStage() {
+      ui.stage.innerHTML = "";
+      phoneEl = applyScheme(h("div", { class: "cpc-phone" }), state.theme);
+      graphEl = h("div", { class: "cpc-koin-graph" });
+      logEl = h("pre", { class: "cpc-koin-log" });
+      var rot = h("button", { type: "button", text: "🔄 Girar el móvil" });
+      rot.addEventListener("click", rotate);
+      var bk = h("button", { type: "button", text: "◁ Atrás del sistema" });
+      bk.addEventListener("click", back);
+      ui.stage.appendChild(h("div", { class: "cpc-nav-layout" }, [
+        h("div", { class: "cpc-col" }, [phoneEl, h("div", { class: "cpg-seg" }, [rot, bk])]),
+        h("div", { class: "cpc-koin-side" }, [h("p", { class: "cpc-navstack-title", text: "Objetos vivos (cada flecha: «usa»)" }), graphEl,
+          h("p", { class: "cpc-navstack-title", text: "Registro de Koin" }), logEl])
+      ]));
+      draw();
+    }
+
+    function bar(title, backBtn) {
+      var kids = [];
+      if (backBtn) {
+        var b = h("button", { type: "button", class: "cpc-icon-btn", "aria-label": "Volver" }, [icon("arrowBack")]);
+        b.addEventListener("click", back);
+        kids.push(b);
+      } else kids.push(h("span", { class: "cpc-appbar-gap" }));
+      kids.push(h("span", { class: "cpc-appbar-title", text: title }));
+      return h("div", { class: "cpc-phone-bar cpc-bar-nav" }, kids);
+    }
+
+    function drawPhone() {
+      phoneEl.innerHTML = "";
+      if (rt.error) {
+        phoneEl.appendChild(h("div", { class: "cpc-nav-screen cpc-nav-crash" }, [
+          h("p", { class: "cpc-crash-title", text: "💥 La app se ha cerrado" }),
+          h("p", { class: "cpc-code-msg", text: "NoDefinitionFoundException: No definition found for type '" + rt.error.type + "'" }),
+          h("p", { text: rt.error.why }),
+          h("p", { class: "cpc-crash-hint", text: "Corrige el módulo o pulsa «Atrás del sistema»." })
+        ]));
+        return;
+      }
+      var top = rt.stack[rt.stack.length - 1];
+      if (!top) return;
+      if (top.screen === "Catalogo") {
+        var favs = repoOf(top.vm, 0).favs;
+        var list = h("div", { class: "cpc-list" });
+        KOIN_GAMES.forEach(function (g) {
+          var row = h("button", { type: "button", class: "cpc-nav-row" }, [
+            h("span", { class: "cpc-nav-row-title", text: (favs[g.id] ? "★ " : "") + g.t }),
+            h("span", { class: "cpc-nav-row-sub", text: "pulsa para ver el detalle" })
+          ]);
+          row.addEventListener("click", function () { open("Detalle", g.id); });
+          list.appendChild(row);
+        });
+        phoneEl.appendChild(h("div", { class: "cpc-nav-screen" }, [bar("Mis juegos"), list]));
+      } else {
+        var g = KOIN_GAMES.filter(function (x) { return x.id === top.id; })[0];
+        var seen = repoOf(top.vm, 0).favs[g.id];      // lo que lee ObservarJuego
+        var fav = h("button", { type: "button", class: "cpc-btn cpc-btn-tonal" }, [h("span", { text: seen ? "★ Quitar de favoritos" : "☆ Marcar como favorito" })]);
+        fav.addEventListener("click", function () {
+          var repo = repoOf(top.vm, 1);                 // donde escribe AlternarFavorito
+          repo.favs[g.id] = !repo.favs[g.id];
+          log("AlternarFavoritoUseCase #" + top.vm.deps[1].n + " escribe en JuegoRepositorioEnMemoria #" + repo.n);
+          draw();
+        });
+        phoneEl.appendChild(h("div", { class: "cpc-nav-screen" }, [bar(g.t, true), h("div", { class: "cpc-nav-body" }, [
+          h("p", { text: seen ? "★ Es uno de tus favoritos" : "No está en favoritos" }), fav
+        ])]));
+      }
+    }
+
+    function node(obj) {
+      var cls = { ui: "cpc-koin-ui", dom: "cpc-koin-dom", data: "cpc-koin-data" }[KOIN_LAYER[obj.type]];
+      var el = h("li", null, [h("span", { class: "cpc-koin-node " + cls + (obj.type === "JuegoRepositorio" ? " cpc-repo-" + Math.min(obj.n, 4) : ""), title: implName(obj.type) + " #" + obj.n }, [
+        h("code", { text: implName(obj.type).replace("UseCase", "UC").replace("JuegoRepositorioEnMemoria", "RepoEnMemoria") + " #" + obj.n }),
+        h("small", { text: obj.kind })
+      ])]);
+      if (obj.deps.length) {
+        var ul = h("ul");
+        obj.deps.forEach(function (d) { ul.appendChild(node(d)); });
+        el.appendChild(ul);
+      }
+      return el;
+    }
+
+    function draw() {
+      drawPhone();
+      graphEl.innerHTML = "";
+      var ul = h("ul", { class: "cpc-koin-tree" });
+      rt.stack.forEach(function (e) { ul.appendChild(node(e.vm)); });
+      graphEl.appendChild(ul);
+      logEl.textContent = rt.log.map(function (l) { return "[Koin] " + l; }).join("\n");
+      renderHint();
+    }
+
+    function renderHint() {
+      var repos = {};
+      rt.stack.forEach(function (e) {
+        (function walk(o) { if (o.type === "JuegoRepositorio") repos[o.n] = true; o.deps.forEach(walk); })(e.vm);
+      });
+      var nRepos = Object.keys(repos).length;
+      var hint;
+      if (rt.error) hint = "Koin no comprueba las recetas al compilar: el fallo aparece al pedir la pieza, cuando el usuario abre la pantalla. Para descubrirlo antes está el test con verify() del apartado 8.";
+      else if (nRepos > 1) hint = "Hay " + nRepos + " repositorios distintos (fíjate en su número y su color). Marca un favorito en el detalle: lo escribe un repositorio y lo lee otro, así que no se ve. Pon el repositorio en single.";
+      else if (state.decl.AlternarFavoritoUseCase === "single" || state.decl.ObtenerJuegosUseCase === "single" || state.decl.ObservarJuegoUseCase === "single") hint = "Un caso de uso en single también funciona, porque no guarda estado; pero no aporta nada y lo mantiene en memoria toda la vida de la app. Lo normal es factory.";
+      else hint = "Todo correcto: los casos de uso son nuevos en cada ViewModel (factory) y todos comparten el repositorio #1 (single). Abre un juego, márcalo como favorito y vuelve: el catálogo lo muestra con ★.";
+      ui.hint.textContent = hint;
+    }
+
+    function renderCode() {
+      var d = state.decl;
+      var lines = ["val datosModule = module {"];
+      if (d.repo === "none") lines.push("    // (sin receta para el repositorio)");
+      else lines.push("    " + d.repo + "Of(::JuegoRepositorioEnMemoria)" + (d.bind ? " bind JuegoRepositorio::class" : ""));
+      lines.push("}", "", "val dominioModule = module {");
+      KOIN_USECASES.forEach(function (u) {
+        lines.push(d[u] === "none" ? "    // (sin receta para " + u + ")" : "    " + d[u] + "Of(::" + u + ")");
+      });
+      lines.push("}", "", "val presentacionModule = module {");
+      ["CatalogoViewModel", "DetalleViewModel"].forEach(function (vm) {
+        lines.push(d[vm] ? "    viewModelOf(::" + vm + ")" : "    // (sin receta para " + vm + ")");
+      });
+      lines.push("}");
+      ui.code.set(lines.join("\n"));
+    }
+
+    resetRuntime();
+    renderControls();
+    renderCode();
+    renderStage();
+    log("startKoin { modules(appModules) }");
+    open("Catalogo");
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -2230,7 +2485,8 @@
     lazylist: lazyListPlayground,
     lazygrid: lazyGridPlayground,
     navigation: navPlayground,
-    adaptive: adaptivePlayground
+    adaptive: adaptivePlayground,
+    koin: koinPlayground
   };
 
   function init() {

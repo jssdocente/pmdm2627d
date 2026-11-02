@@ -1,0 +1,48 @@
+<svg class="arq-svg" viewBox="0 0 760 360" role="img" aria-labelledby="arq-ench-t arq-ench-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-ench-t">Sin inyección frente a con inyección de dependencias</title>
+  <desc id="arq-ench-d">Sin inyección, el caso de uso crea por dentro un JuegoRepositorioEnMemoria y no se puede cambiar sin tocar su código. Con inyección, el caso de uso solo declara que necesita un JuegoRepositorio, como una toma de corriente, y desde fuera se le puede enchufar el repositorio en memoria, uno lento, el de Room o uno falso para los tests.</desc>
+  <defs>
+    <marker id="arq-ench-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <!-- Sin inyección -->
+  <text x="185" y="28" class="arq-t arq-h" text-anchor="middle">❌ Sin inyección</text>
+  <rect x="30" y="48" width="310" height="150" rx="14" class="arq-dom"/>
+  <text x="185" y="76" class="arq-t arq-code arq-strong" text-anchor="middle">class ObtenerJuegosUseCase {</text>
+  <rect x="58" y="96" width="254" height="64" rx="10" class="arq-data"/>
+  <text x="185" y="122" class="arq-t arq-code" text-anchor="middle">val repo =</text>
+  <text x="185" y="142" class="arq-t arq-code" text-anchor="middle">JuegoRepositorioEnMemoria()</text>
+  <text x="185" y="186" class="arq-t arq-code arq-strong" text-anchor="middle">}</text>
+  <text x="185" y="230" class="arq-t arq-s arq-strong" text-anchor="middle">El repositorio va «soldado» por dentro.</text>
+  <text x="185" y="252" class="arq-t arq-s" text-anchor="middle">¿Datos falsos para un test? ¿Room en UT4?</text>
+  <text x="185" y="272" class="arq-t arq-s" text-anchor="middle">Hay que modificar el caso de uso.</text>
+  <text x="185" y="300" class="arq-t arq-s" text-anchor="middle">Y además el dominio importa la capa de</text>
+  <text x="185" y="320" class="arq-t arq-s" text-anchor="middle">datos: se rompe la regla de dependencia.</text>
+  <!-- Con inyección -->
+  <text x="565" y="28" class="arq-t arq-h" text-anchor="middle">✅ Con inyección</text>
+  <rect x="400" y="48" width="330" height="86" rx="14" class="arq-dom"/>
+  <text x="565" y="78" class="arq-t arq-code arq-strong" text-anchor="middle">class ObtenerJuegosUseCase(</text>
+  <text x="565" y="100" class="arq-t arq-code" text-anchor="middle">private val repo: JuegoRepositorio</text>
+  <text x="565" y="122" class="arq-t arq-code arq-strong" text-anchor="middle">)</text>
+  <!-- Toma -->
+  <rect x="505" y="134" width="120" height="34" rx="8" class="arq-box"/>
+  <circle cx="551" cy="151" r="5" class="arq-head"/>
+  <circle cx="579" cy="151" r="5" class="arq-head"/>
+  <text x="640" y="156" class="arq-t arq-xs arq-strong">toma: JuegoRepositorio</text>
+  <!-- Enchufes -->
+  <path d="M480,236 C480,200 540,196 548,170" class="arq-dep" marker-end="url(#arq-ench-a)"/>
+  <path d="M600,236 C600,210 590,196 582,170" class="arq-guide"/>
+  <rect x="410" y="238" width="150" height="44" rx="10" class="arq-data"/>
+  <text x="485" y="257" class="arq-t arq-code arq-strong" text-anchor="middle">…EnMemoria</text>
+  <text x="485" y="274" class="arq-t arq-xs" text-anchor="middle">enchufado ahora</text>
+  <rect x="570" y="238" width="150" height="44" rx="10" class="arq-box arq-dashed"/>
+  <text x="645" y="257" class="arq-t arq-code" text-anchor="middle">…Lento</text>
+  <text x="645" y="274" class="arq-t arq-xs arq-muted" text-anchor="middle">pruebas de carga (§6)</text>
+  <rect x="410" y="292" width="150" height="44" rx="10" class="arq-box arq-dashed"/>
+  <text x="485" y="311" class="arq-t arq-code" text-anchor="middle">…Room</text>
+  <text x="485" y="328" class="arq-t arq-xs arq-muted" text-anchor="middle">base de datos (UT4)</text>
+  <rect x="570" y="292" width="150" height="44" rx="10" class="arq-box arq-dashed"/>
+  <text x="645" y="311" class="arq-t arq-code" text-anchor="middle">…Fake</text>
+  <text x="645" y="328" class="arq-t arq-xs arq-muted" text-anchor="middle">tests (3C.4)</text>
+  <text x="404" y="196" class="arq-t arq-xs arq-muted">se puede enchufar</text>
+  <text x="404" y="210" class="arq-t arq-xs arq-muted">cualquiera de estos:</text>
+</svg>

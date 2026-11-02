@@ -1,0 +1,63 @@
+<svg class="arq-svg" viewBox="0 0 760 440" role="img" aria-labelledby="arq-amb-t arq-amb-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-amb-t">single, factory y viewModel en Koin</title>
+  <desc id="arq-amb-d">Con single, toda la app comparte una única instancia del repositorio. Con factory, cada vez que se pide un caso de uso se crea uno nuevo. Con viewModel, hay un ViewModel por pantalla que sobrevive al giro y se destruye al salir. Si el repositorio fuera factory, cada caso de uso tendría el suyo y un favorito marcado en uno no se vería en los demás.</desc>
+  <defs>
+    <marker id="arq-amb-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <!-- single -->
+  <text x="130" y="26" class="arq-t arq-h" text-anchor="middle">singleOf</text>
+  <text x="130" y="44" class="arq-t arq-xs arq-muted" text-anchor="middle">una instancia para toda la app</text>
+  <rect x="20" y="62" width="70" height="40" rx="8" class="arq-dom"/><text x="55" y="87" class="arq-t arq-xs" text-anchor="middle">Obtener…</text>
+  <rect x="95" y="62" width="70" height="40" rx="8" class="arq-dom"/><text x="130" y="87" class="arq-t arq-xs" text-anchor="middle">Observar…</text>
+  <rect x="170" y="62" width="70" height="40" rx="8" class="arq-dom"/><text x="205" y="87" class="arq-t arq-xs" text-anchor="middle">Alternar…</text>
+  <line x1="55" y1="102" x2="112" y2="168" class="arq-dep" marker-end="url(#arq-amb-a)"/>
+  <line x1="130" y1="102" x2="130" y2="168" class="arq-dep" marker-end="url(#arq-amb-a)"/>
+  <line x1="205" y1="102" x2="148" y2="168" class="arq-dep" marker-end="url(#arq-amb-a)"/>
+  <rect x="40" y="170" width="180" height="52" rx="10" class="arq-data"/>
+  <text x="130" y="192" class="arq-t arq-code arq-strong" text-anchor="middle">Repositorio #1</text>
+  <text x="130" y="211" class="arq-t arq-xs" text-anchor="middle">el mismo para todos</text>
+  <text x="130" y="250" class="arq-t arq-xs" text-anchor="middle">Para repositorios, bases de</text>
+  <text x="130" y="265" class="arq-t arq-xs" text-anchor="middle">datos y clientes HTTP</text>
+  <!-- factory -->
+  <text x="385" y="26" class="arq-t arq-h" text-anchor="middle">factoryOf</text>
+  <text x="385" y="44" class="arq-t arq-xs arq-muted" text-anchor="middle">una instancia nueva en cada petición</text>
+  <rect x="280" y="62" width="100" height="40" rx="8" class="arq-ui"/><text x="330" y="87" class="arq-t arq-xs" text-anchor="middle">CatalogoVM</text>
+  <rect x="390" y="62" width="100" height="40" rx="8" class="arq-ui"/><text x="440" y="87" class="arq-t arq-xs" text-anchor="middle">DetalleVM</text>
+  <line x1="330" y1="102" x2="330" y2="130" class="arq-dep" marker-end="url(#arq-amb-a)"/>
+  <line x1="440" y1="102" x2="440" y2="130" class="arq-dep" marker-end="url(#arq-amb-a)"/>
+  <rect x="280" y="132" width="100" height="44" rx="8" class="arq-dom"/>
+  <text x="330" y="151" class="arq-t arq-xs" text-anchor="middle">Alternar…</text>
+  <text x="330" y="168" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">#1</text>
+  <rect x="390" y="132" width="100" height="44" rx="8" class="arq-dom"/>
+  <text x="440" y="151" class="arq-t arq-xs" text-anchor="middle">Alternar…</text>
+  <text x="440" y="168" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">#2</text>
+  <text x="385" y="210" class="arq-t arq-xs" text-anchor="middle">Cada uno recibe el suyo.</text>
+  <text x="385" y="250" class="arq-t arq-xs" text-anchor="middle">Para casos de uso y clases</text>
+  <text x="385" y="265" class="arq-t arq-xs" text-anchor="middle">sin estado: crearlas es barato</text>
+  <!-- viewModel -->
+  <text x="630" y="26" class="arq-t arq-h" text-anchor="middle">viewModelOf</text>
+  <text x="630" y="44" class="arq-t arq-xs arq-muted" text-anchor="middle">uno por pantalla, con su ciclo de vida</text>
+  <rect x="530" y="62" width="200" height="34" rx="8" class="arq-bar-vm"/>
+  <text x="630" y="84" class="arq-t arq-xs arq-on arq-strong" text-anchor="middle">CatalogoViewModel #1</text>
+  <text x="530" y="116" class="arq-t arq-xs">abres</text>
+  <text x="626" y="116" class="arq-t arq-xs" text-anchor="middle">🔄 giras: sigue</text>
+  <text x="730" y="116" class="arq-t arq-xs" text-anchor="end">sales ✗</text>
+  <rect x="530" y="132" width="200" height="34" rx="8" class="arq-bar-vm"/>
+  <text x="630" y="154" class="arq-t arq-xs arq-on arq-strong" text-anchor="middle">CatalogoViewModel #2</text>
+  <text x="630" y="186" class="arq-t arq-xs" text-anchor="middle">al volver a entrar: uno nuevo</text>
+  <text x="630" y="250" class="arq-t arq-xs" text-anchor="middle">Para ViewModels: sobrevive al</text>
+  <text x="630" y="265" class="arq-t arq-xs" text-anchor="middle">giro y se destruye al salir</text>
+  <!-- Error -->
+  <rect x="20" y="290" width="720" height="136" rx="12" class="arq-warn"/>
+  <text x="36" y="314" class="arq-t arq-s arq-strong">⚠ ¿Qué pasa si el repositorio fuera factory?</text>
+  <rect x="40" y="330" width="130" height="40" rx="8" class="arq-dom"/><text x="105" y="355" class="arq-t arq-xs" text-anchor="middle">ObtenerJuegos…</text>
+  <rect x="190" y="330" width="130" height="40" rx="8" class="arq-dom"/><text x="255" y="355" class="arq-t arq-xs" text-anchor="middle">AlternarFavorito…</text>
+  <line x1="105" y1="370" x2="105" y2="382" class="arq-dep" marker-end="url(#arq-amb-a)"/>
+  <line x1="255" y1="370" x2="255" y2="382" class="arq-dep" marker-end="url(#arq-amb-a)"/>
+  <rect x="40" y="384" width="130" height="32" rx="8" class="arq-data"/><text x="105" y="405" class="arq-t arq-code arq-xs" text-anchor="middle">Repositorio #1</text>
+  <rect x="190" y="384" width="130" height="32" rx="8" class="arq-data"/><text x="255" y="405" class="arq-t arq-code arq-xs" text-anchor="middle">Repositorio #2 ★</text>
+  <text x="350" y="350" class="arq-t arq-s">Cada caso de uso tendría su propio repositorio.</text>
+  <text x="350" y="372" class="arq-t arq-s">AlternarFavorito marca el juego en el #2…</text>
+  <text x="350" y="394" class="arq-t arq-s">…pero el catálogo lee del #1: el favorito «se pierde».</text>
+  <text x="350" y="414" class="arq-t arq-xs arq-strong">El repositorio es la única fuente de verdad: debe ser single.</text>
+</svg>

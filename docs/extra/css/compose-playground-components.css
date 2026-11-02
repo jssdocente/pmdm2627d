@@ -1959,3 +1959,146 @@
   border-radius: 0.5rem;
   vertical-align: top;
 }
+
+/* ---------- Figuras SVG incrustadas (apuntes 3C): siguen el tema claro/oscuro de Material */
+
+.md-typeset figure.arq-fig {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+.md-typeset .arq-svg {
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+}
+
+.md-typeset .arq-t { fill: var(--md-default-fg-color); font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 14px; }
+.md-typeset .arq-h { font-size: 17px; font-weight: 700; }
+.md-typeset .arq-s { font-size: 12.5px; }
+.md-typeset .arq-xs { font-size: 11px; }
+.md-typeset .arq-code { font-family: "Roboto Mono", ui-monospace, monospace; font-size: 12.5px; white-space: pre; }
+.md-typeset .arq-muted { fill: var(--md-default-fg-color--light); }
+.md-typeset .arq-strong { font-weight: 700; }
+.md-typeset .arq-on { fill: #fff; }
+
+.md-typeset .arq-box { fill: var(--md-default-bg-color); stroke: var(--md-default-fg-color--lighter); stroke-width: 1.2; }
+.md-typeset .arq-dashed { stroke-dasharray: 5 4; }
+.md-typeset .arq-ui { fill: rgba(74, 125, 255, 0.13); stroke: #4a7dff; stroke-width: 1.5; }
+.md-typeset .arq-dom { fill: rgba(240, 160, 32, 0.15); stroke: #e09400; stroke-width: 1.5; }
+.md-typeset .arq-data { fill: rgba(46, 170, 110, 0.14); stroke: #2eaa6e; stroke-width: 1.5; }
+.md-typeset .arq-gray { fill: rgba(128, 128, 128, 0.18); stroke: rgba(128, 128, 128, 0.6); stroke-width: 1.2; }
+.md-typeset .arq-warn { fill: rgba(229, 72, 77, 0.10); stroke: #e5484d; stroke-width: 1.2; }
+
+.md-typeset .arq-dep { stroke: var(--md-default-fg-color); stroke-width: 2.4; fill: none; }
+.md-typeset .arq-head { fill: var(--md-default-fg-color); }
+.md-typeset .arq-flow { stroke: #e5484d; stroke-width: 2.2; stroke-dasharray: 7 5; fill: none; }
+.md-typeset .arq-head-flow { fill: #e5484d; }
+.md-typeset .arq-guide { stroke: var(--md-default-fg-color--lighter); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.md-typeset .arq-bar-act { fill: rgba(128, 128, 128, 0.45); }
+.md-typeset .arq-bar-vm { fill: #2eaa6e; }
+.md-typeset .arq-bar-lost { fill: rgba(229, 72, 77, 0.55); }
+.md-typeset .arq-red { fill: #e5484d; }
+.md-typeset .arq-key { fill: var(--md-default-bg-color); stroke: var(--md-default-fg-color--lighter); }
+.md-typeset .arq-key-on { fill: #4a7dff; stroke: #4a7dff; }
+
+/* ---------- Playground de Koin (apuntes 3C.3) */
+
+.md-typeset .cpc-koin-side {
+  flex: 1 1 14rem;
+  min-width: 0;
+  max-width: 30rem;
+}
+
+.md-typeset .cpc-koin-graph {
+  min-height: 6rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--cpg-border);
+  border-radius: 0.6rem;
+  background: var(--md-default-bg-color);
+}
+
+.md-typeset ul.cpc-koin-tree,
+.md-typeset ul.cpc-koin-tree ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  list-style: none;
+}
+
+.md-typeset ul.cpc-koin-tree {
+  padding-left: 0;
+}
+
+.md-typeset ul.cpc-koin-tree li {
+  position: relative;
+  margin: 0.25rem 0;
+}
+
+.md-typeset ul.cpc-koin-tree ul li::before {
+  content: "↳";
+  position: absolute;
+  left: -0.9rem;
+  top: 0.15rem;
+  color: var(--cpg-muted);
+}
+
+.md-typeset .cpc-koin-node {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.1rem 0.5rem;
+  border: 1.5px solid;
+  border-radius: 0.4rem;
+  font-size: 0.62rem;
+}
+
+.md-typeset .cpc-koin-node code {
+  padding: 0;
+  background: transparent;
+  font-size: 0.62rem;
+}
+
+.md-typeset .cpc-koin-node small {
+  color: var(--cpg-muted);
+}
+
+.md-typeset .cpc-koin-ui { border-color: #4a7dff; background: rgba(74, 125, 255, 0.12); }
+.md-typeset .cpc-koin-dom { border-color: #e09400; background: rgba(240, 160, 32, 0.14); }
+.md-typeset .cpc-koin-data { border-color: #2eaa6e; background: rgba(46, 170, 110, 0.16); }
+
+/* Cada instancia de repositorio con su color: si todos son del mismo color, se comparte */
+.md-typeset .cpc-koin-data.cpc-repo-2 { border-color: #e5484d; background: rgba(229, 72, 77, 0.16); }
+.md-typeset .cpc-koin-data.cpc-repo-3 { border-color: #8e4ec6; background: rgba(142, 78, 198, 0.16); }
+.md-typeset .cpc-koin-data.cpc-repo-4 { border-color: #0090a8; background: rgba(0, 144, 168, 0.16); }
+
+.md-typeset pre.cpc-koin-log {
+  max-height: 11rem;
+  margin: 0;
+  padding: 0.5rem 0.6rem;
+  overflow: auto;
+  border-radius: 0.6rem;
+  background: var(--md-code-bg-color);
+  color: var(--md-code-fg-color);
+  font-size: 0.58rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.md-typeset .cpc-code-msg {
+  font-family: "Roboto Mono", ui-monospace, monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+/* En las filas móvil + panel, la columna del móvil solo ocupa lo que mide el móvil */
+.md-typeset .cpc-nav-layout > .cpc-col {
+  width: auto;
+  flex: none;
+}
+
+.md-typeset .cpc-koin-node code {
+  white-space: nowrap;
+}

@@ -1,0 +1,44 @@
+<svg class="arq-svg" viewBox="0 0 760 350" role="img" aria-labelledby="arq-sc-t arq-sc-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-sc-t">Pantalla con estado y contenido sin estado</title>
+  <desc id="arq-sc-d">AhorcadoScreen obtiene el ViewModel y recoge su estado; después llama a AhorcadoContent pasándole el estado y unas lambdas. AhorcadoContent no conoce el ViewModel, así que también lo pueden usar una @Preview y un test de interfaz con estados inventados.</desc>
+  <defs>
+    <marker id="arq-sc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <!-- ViewModel -->
+  <rect x="40" y="20" width="250" height="52" rx="12" class="arq-dom"/>
+  <text x="165" y="51" class="arq-t arq-strong" text-anchor="middle">AhorcadoViewModel</text>
+  <line x1="165" y1="72" x2="165" y2="122" class="arq-dep" marker-end="url(#arq-sc-a)"/>
+  <text x="176" y="96" class="arq-t arq-xs">viewModel()</text>
+  <text x="176" y="110" class="arq-t arq-xs">collectAsStateWithLifecycle()</text>
+  <!-- Screen -->
+  <rect x="20" y="126" width="290" height="96" rx="12" class="arq-ui"/>
+  <text x="165" y="154" class="arq-t arq-h" text-anchor="middle">AhorcadoScreen</text>
+  <text x="165" y="176" class="arq-t arq-s arq-strong" text-anchor="middle">con estado (stateful)</text>
+  <text x="165" y="196" class="arq-t arq-xs" text-anchor="middle">conoce el ViewModel y el ciclo de vida;</text>
+  <text x="165" y="210" class="arq-t arq-xs" text-anchor="middle">no dibuja nada por sí misma</text>
+  <!-- Llamada -->
+  <line x1="310" y1="174" x2="440" y2="174" class="arq-dep" marker-end="url(#arq-sc-a)"/>
+  <text x="375" y="150" class="arq-t arq-code arq-xs" text-anchor="middle">state</text>
+  <text x="375" y="164" class="arq-t arq-xs" text-anchor="middle">+ lambdas</text>
+  <!-- Content -->
+  <rect x="444" y="126" width="296" height="96" rx="12" class="arq-data"/>
+  <text x="592" y="154" class="arq-t arq-h" text-anchor="middle">AhorcadoContent</text>
+  <text x="592" y="176" class="arq-t arq-s arq-strong" text-anchor="middle">sin estado (stateless)</text>
+  <text x="592" y="196" class="arq-t arq-xs" text-anchor="middle">recibe datos y lambdas: solo dibuja</text>
+  <text x="592" y="210" class="arq-t arq-xs" text-anchor="middle">y avisa de los eventos</text>
+  <!-- Otros usuarios del Content -->
+  <rect x="444" y="268" width="140" height="64" rx="10" class="arq-box"/>
+  <text x="514" y="292" class="arq-t arq-code arq-strong" text-anchor="middle">@Preview</text>
+  <text x="514" y="312" class="arq-t arq-xs" text-anchor="middle">estado inventado:</text>
+  <text x="514" y="325" class="arq-t arq-xs" text-anchor="middle">«partida ganada»</text>
+  <rect x="600" y="268" width="140" height="64" rx="10" class="arq-box"/>
+  <text x="670" y="292" class="arq-t arq-strong" text-anchor="middle">Test de UI</text>
+  <text x="670" y="312" class="arq-t arq-xs" text-anchor="middle">createComposeRule()</text>
+  <text x="670" y="325" class="arq-t arq-xs" text-anchor="middle">con estado de prueba</text>
+  <line x1="514" y1="268" x2="514" y2="226" class="arq-dep" marker-end="url(#arq-sc-a)"/>
+  <line x1="670" y1="268" x2="670" y2="226" class="arq-dep" marker-end="url(#arq-sc-a)"/>
+  <text x="165" y="262" class="arq-t arq-s" text-anchor="middle">En la app real, la pantalla se usa así:</text>
+  <text x="165" y="282" class="arq-t arq-s" text-anchor="middle">navegación → Screen → Content.</text>
+  <text x="165" y="310" class="arq-t arq-s arq-strong" text-anchor="middle">Content no depende de Android:</text>
+  <text x="165" y="328" class="arq-t arq-s arq-strong" text-anchor="middle">se puede ver y probar sin ViewModel.</text>
+</svg>
