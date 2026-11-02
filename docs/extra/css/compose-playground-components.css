@@ -853,7 +853,219 @@
   font-weight: 500;
 }
 
+/* ---------- listas dentro del móvil (TopAppBar y Snackbar) */
+
+.md-typeset .cpc-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 16px;
+}
+
+.md-typeset .cpc-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.md-typeset .cpc-list-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 56px;
+  padding: 0 4px 0 16px;
+  font-size: 16px;
+}
+
+.md-typeset .cpc-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+  font-weight: 500;
+}
+
+.md-typeset .cpc-grow {
+  flex: 1;
+}
+
+.md-typeset .cpc-empty {
+  margin: 24px 16px;
+  color: var(--m3-on-surface-variant);
+  text-align: center;
+}
+
+/* ---------- TopAppBar */
+
+.md-typeset .cpc-appbar {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background: var(--m3-surface);
+  color: var(--m3-on-surface);
+  transition: background-color 0.2s ease;
+}
+
+.md-typeset .cpc-appbar.cpc-scrolled {
+  background: var(--m3-surface-container);
+}
+
+.md-typeset .cpc-appbar.cpc-appbar-primary {
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+}
+
+.md-typeset .cpc-appbar .cpc-icon-btn,
+.md-typeset .cpg .cpc-appbar button.cpc-icon-btn {
+  color: inherit;
+}
+
+.md-typeset .cpc-appbar-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding: 0 4px;
+}
+
+.md-typeset .cpc-appbar-gap {
+  width: 12px;
+}
+
+.md-typeset .cpc-appbar-title {
+  flex: 1;
+  min-width: 0;
+  padding: 0 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 22px;
+  line-height: 28px;
+}
+
+.md-typeset .cpc-appbar-title.cpc-centered {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.md-typeset .cpc-appbar-actions {
+  display: flex;
+  margin-left: auto;
+}
+
+.md-typeset .cpc-appbar-big {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.md-typeset .cpc-appbar-big.cpc-large {
+  bottom: 28px;
+  font-size: 32px;
+  line-height: 40px;
+}
+
+/* ---------- Snackbar */
+
+.md-typeset .cpc-fab-static {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+}
+
+.md-typeset .cpc-snackbar {
+  position: absolute;
+  z-index: 2;
+  left: 12px;
+  right: 12px;
+  bottom: 84px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 48px;
+  padding: 0 4px 0 16px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--m3-inverse-surface);
+  color: var(--m3-inverse-on-surface);
+  box-shadow: 0 2px 6px 2px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3);
+  animation: cpc-snack-in 0.2s ease-out;
+}
+
+@keyframes cpc-snack-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.md-typeset .cpc-snack-text {
+  flex: 1;
+  padding: 14px 0;
+}
+
+.md-typeset .cpg button.cpc-snack-action {
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--m3-inverse-primary);
+  font: 500 14px/20px Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.md-typeset .cpg .cpc-snackbar button.cpc-snack-close {
+  color: var(--m3-inverse-on-surface);
+}
+
+/* Cuenta atrás de la duración: solo didáctica, una Snackbar real no la muestra */
+.md-typeset .cpc-snack-timer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--m3-inverse-primary);
+  transform-origin: left;
+  animation-name: cpc-snack-timer;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cpc-snack-timer {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .md-typeset .cpc-snackbar,
+  .md-typeset .cpc-appbar,
   .md-typeset .cpc-drawer,
   .md-typeset .cpc-sheet,
   .md-typeset .cpc-switch-thumb,

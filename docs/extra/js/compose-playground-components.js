@@ -11,6 +11,8 @@
  *   <div class="cpg" data-cpg="selection"></div>  -> Switch, Checkbox, RadioButton y Slider
  *   <div class="cpg" data-cpg="overlays"></div>   -> menús, AlertDialog y ModalBottomSheet
  *   <div class="cpg" data-cpg="drawer"></div>     -> ModalNavigationDrawer (apuntes 3A.1)
+ *   <div class="cpg" data-cpg="topappbar"></div>  -> variantes de TopAppBar y scrollBehavior (apuntes 3A.1)
+ *   <div class="cpg" data-cpg="snackbar"></div>   -> SnackbarHostState.showSnackbar (apuntes 3A.1)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -149,7 +151,8 @@
       surface: "#FEF7FF", onSurface: "#1D1B20", onSurfaceVariant: "#49454F",
       surfaceContainerLow: "#F7F2FA", surfaceContainer: "#F3EDF7", surfaceContainerHigh: "#ECE6F0",
       surfaceContainerHighest: "#E6E0E9", outline: "#79747E", outlineVariant: "#CAC4D0",
-      error: "#B3261E", onError: "#FFFFFF", scrim: "rgba(0, 0, 0, 0.32)"
+      error: "#B3261E", onError: "#FFFFFF", scrim: "rgba(0, 0, 0, 0.32)",
+      inverseSurface: "#322F35", inverseOnSurface: "#F5EFF7", inversePrimary: "#D0BCFF"
     },
     dark: {
       primary: "#D0BCFF", onPrimary: "#381E72", primaryContainer: "#4F378B", onPrimaryContainer: "#EADDFF",
@@ -157,7 +160,8 @@
       surface: "#141218", onSurface: "#E6E0E9", onSurfaceVariant: "#CAC4D0",
       surfaceContainerLow: "#1D1B20", surfaceContainer: "#211F26", surfaceContainerHigh: "#2B2930",
       surfaceContainerHighest: "#36343B", outline: "#938F99", outlineVariant: "#49454F",
-      error: "#F2B8B5", onError: "#601410", scrim: "rgba(0, 0, 0, 0.32)"
+      error: "#F2B8B5", onError: "#601410", scrim: "rgba(0, 0, 0, 0.32)",
+      inverseSurface: "#E6E0E9", inverseOnSurface: "#322F35", inversePrimary: "#6750A4"
     }
   };
 
@@ -192,6 +196,7 @@
     darkMode: "M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z",
     add: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z",
     menu: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z",
+    arrowBack: "M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z",
     home: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z",
     settings: "M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z",
     arrowDropDown: "M7 10l5 5 5-5z",
@@ -1021,6 +1026,289 @@
     render();
   }
 
+  // ------------------------------------------------- playground de TopAppBar
+
+  // Altura expandida de cada variante (dp ≈ px); todas se contraen a 64.
+  var APPBARS = {
+    TopAppBar: { h: 64, big: false, center: false },
+    CenterAlignedTopAppBar: { h: 64, big: false, center: true },
+    MediumTopAppBar: { h: 112, big: true, center: false },
+    LargeTopAppBar: { h: 152, big: true, center: false }
+  };
+  var SCROLL_BEHAVIORS = {
+    none: { label: "Sin scrollBehavior" },
+    pinned: { label: "pinned", code: "pinnedScrollBehavior()" },
+    enterAlways: { label: "enterAlways", code: "enterAlwaysScrollBehavior()" },
+    exitUntilCollapsed: { label: "exitUntilCollapsed", code: "exitUntilCollapsedScrollBehavior()" }
+  };
+
+  function topAppBarPlayground(root) {
+    var state = {
+      variant: "TopAppBar", title: "Biblioteca", nav: "menu", actions: 2,
+      colors: "default", behavior: "pinned", mode: siteMode()
+    };
+    var ui = shell(root, "Playground: TopAppBar", "Elige la variante y haz scroll en la lista del móvil", "cpc-stage-phone");
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(select("Variante", opts(Object.keys(APPBARS)), state.variant, function (v) {
+        state.variant = v;
+        if (!APPBARS[v].big && state.behavior === "exitUntilCollapsed") state.behavior = "pinned";
+        if (APPBARS[v].big && state.behavior === "pinned") state.behavior = "exitUntilCollapsed";
+        render();
+      }));
+      ui.controls.appendChild(textField("title", state.title, function (v) { state.title = v; renderStage(); renderCode(); }));
+      ui.controls.appendChild(segmented("navigationIcon", [
+        { value: "none", label: "Ninguno" }, { value: "menu", label: "Menú" }, { value: "back", label: "Atrás" }
+      ], state.nav, function (v) { state.nav = v; render(); }));
+      ui.controls.appendChild(segmented("actions (iconos a la derecha)", opts(["0", "1", "2"]), String(state.actions), function (v) {
+        state.actions = Number(v); render();
+      }));
+      ui.controls.appendChild(segmented("colors", [
+        { value: "default", label: "Por defecto" }, { value: "primary", label: "primaryContainer" }
+      ], state.colors, function (v) { state.colors = v; render(); }));
+      ui.controls.appendChild(select("scrollBehavior", Object.keys(SCROLL_BEHAVIORS).map(function (k) {
+        return { value: k, label: SCROLL_BEHAVIORS[k].label };
+      }), state.behavior, function (v) { state.behavior = v; render(); }));
+      ui.controls.appendChild(modeControl(state, render));
+    }
+
+    function renderStage() {
+      ui.stage.innerHTML = "";
+      var cfg = APPBARS[state.variant];
+      var phone = applyScheme(h("div", { class: "cpc-phone" }), state.mode);
+      var primary = state.colors === "primary";
+
+      var actions = h("span", { class: "cpc-appbar-actions" });
+      if (state.actions >= 1) actions.appendChild(h("button", { type: "button", class: "cpc-icon-btn", "aria-label": "Buscar" }, [icon("search")]));
+      if (state.actions >= 2) actions.appendChild(h("button", { type: "button", class: "cpc-icon-btn", "aria-label": "Más opciones" }, [icon("moreVert")]));
+      var smallTitle = h("span", { class: "cpc-appbar-title" + (cfg.center ? " cpc-centered" : ""), text: state.title });
+      var row = h("div", { class: "cpc-appbar-row" }, [
+        state.nav !== "none"
+          ? h("button", { type: "button", class: "cpc-icon-btn", "aria-label": state.nav === "menu" ? "Abrir menú lateral" : "Atrás" },
+            [icon(state.nav === "menu" ? "menu" : "arrowBack")])
+          : h("span", { class: "cpc-appbar-gap" }),
+        smallTitle, actions
+      ]);
+      var bigTitle = cfg.big ? h("div", { class: "cpc-appbar-big" + (state.variant === "LargeTopAppBar" ? " cpc-large" : ""), text: state.title }) : null;
+      var bar = h("div", { class: "cpc-appbar" + (primary ? " cpc-appbar-primary" : ""), style: { height: cfg.h + "px" } }, [row, bigTitle]);
+      if (cfg.big) smallTitle.style.opacity = "0";
+
+      var list = h("div", { class: "cpc-scroll" }, [h("div", { style: { height: cfg.h + "px" } })]);
+      ["Hollow Knight", "Celeste", "Hades", "Stardew Valley", "Ori", "Cuphead", "Dead Cells", "Outer Wilds", "Tunic", "Inside"].forEach(function (t) {
+        list.appendChild(h("div", { class: "cpc-list-row" }, [h("span", { class: "cpc-avatar", text: t.charAt(0) }), h("span", { text: t })]));
+      });
+      phone.appendChild(list);
+      phone.appendChild(bar);
+
+      var stateEl = stateLine("");
+      var offset = 0, lastY = 0;
+      function update() {
+        var y = list.scrollTop, dy = y - lastY;
+        lastY = y;
+        var height = cfg.h, frac = 0, scrolled = y > 0;
+        if (state.behavior === "exitUntilCollapsed" && cfg.big) {
+          height = Math.max(64, cfg.h - y);
+          frac = (cfg.h - height) / (cfg.h - 64);
+          scrolled = frac >= 1;
+        }
+        if (state.behavior === "enterAlways") {
+          offset = y <= 0 ? 0 : Math.max(-cfg.h, Math.min(0, offset - dy));
+        } else {
+          offset = 0;
+        }
+        bar.style.height = height + "px";
+        bar.style.transform = "translateY(" + offset + "px)";
+        bar.classList.toggle("cpc-scrolled", state.behavior !== "none" && scrolled && !primary);
+        if (cfg.big) {
+          // Como en Compose: un título se va en la primera mitad del colapso y el otro llega en la segunda
+          bigTitle.style.opacity = String(Math.max(0, 1 - frac * 2));
+          smallTitle.style.opacity = String(Math.max(0, frac * 2 - 1));
+        }
+        var txt = "scroll = " + Math.round(y) + " px";
+        if (state.behavior === "exitUntilCollapsed" && cfg.big) txt += "   collapsedFraction = " + frac.toFixed(2);
+        if (state.behavior === "enterAlways") txt += "   heightOffset = " + Math.round(offset) + " px";
+        if (state.behavior === "none") txt += "   (la barra no reacciona)";
+        stateEl.firstChild.textContent = txt;
+      }
+      list.addEventListener("scroll", update);
+      ui.stage.appendChild(h("div", { class: "cpc-col" }, [phone, stateEl]));
+      update();
+    }
+
+    function renderCode() {
+      var cfg = APPBARS[state.variant];
+      var b = SCROLL_BEHAVIORS[state.behavior];
+      var lines = [];
+      if (b.code) lines.push("val scrollBehavior = TopAppBarDefaults." + b.code, "");
+      lines.push("Scaffold(");
+      if (b.code) lines.push("    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),");
+      lines.push("    topBar = {", "        " + state.variant + "(", "            title = { Text(" + kstr(state.title) + ") },");
+      if (state.nav !== "none") {
+        var isMenu = state.nav === "menu";
+        lines.push("            navigationIcon = {",
+          "                IconButton(onClick = " + (isMenu ? "onMenuClick" : "onBack") + ") {",
+          "                    Icon(painterResource(R.drawable." + (isMenu ? "ic_menu" : "ic_arrow_back") + "), contentDescription = " +
+            kstr(isMenu ? "Abrir menú lateral" : "Atrás") + ")",
+          "                }", "            },");
+      }
+      if (state.actions > 0) {
+        lines.push("            actions = {");
+        lines.push("                IconButton(onClick = onBuscar) {",
+          "                    Icon(painterResource(R.drawable.ic_search), contentDescription = \"Buscar\")", "                }");
+        if (state.actions > 1) {
+          lines.push("                IconButton(onClick = { menuAbierto = true }) {",
+            "                    Icon(painterResource(R.drawable.ic_more_vert), contentDescription = \"Más opciones\")", "                }");
+        }
+        lines.push("            },");
+      }
+      if (state.colors === "primary") {
+        lines.push("            colors = TopAppBarDefaults.topAppBarColors(",
+          "                containerColor = MaterialTheme.colorScheme.primaryContainer,",
+          "                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer",
+          "            ),");
+      }
+      if (b.code) lines.push("            scrollBehavior = scrollBehavior");
+      else lines[lines.length - 1] = lines[lines.length - 1].replace(/,$/, "");
+      lines.push("        )", "    }", ") { innerPadding ->", "    LazyColumn(contentPadding = innerPadding) {",
+        "        items(juegos) { juego -> FilaJuego(juego) }", "    }", "}");
+      ui.code.set(lines.join("\n"));
+      var hints = {
+        none: "Sin scrollBehavior la barra no se entera del scroll: ni cambia de color ni se contrae.",
+        pinned: "pinned: la barra se queda fija y, en cuanto el contenido pasa por debajo, cambia al color surfaceContainer para separarse de él.",
+        enterAlways: "enterAlways: la barra se esconde al bajar y vuelve en cuanto subes un poco. Deja más sitio al contenido.",
+        exitUntilCollapsed: cfg.big
+          ? "exitUntilCollapsed: el título grande se encoge hasta la altura de una TopAppBar normal y el título pasa a la fila de iconos."
+          : "exitUntilCollapsed está pensado para MediumTopAppBar y LargeTopAppBar: una barra pequeña no tiene nada que contraer."
+      };
+      ui.hint.textContent = hints[state.behavior] + (b.code ? " Recuerda conectar Modifier.nestedScroll al Scaffold y @OptIn(ExperimentalMaterial3Api::class)." : "");
+    }
+
+    function render() { renderControls(); renderStage(); renderCode(); }
+    render();
+  }
+
+  // -------------------------------------------------- playground de Snackbar
+
+  var SNACK_DURATIONS = { Short: 4000, Long: 10000, Indefinite: 0 };
+  var SNACK_GAMES = ["Hollow Knight", "Celeste", "Hades", "Stardew Valley", "Tunic"];
+
+  function snackbarPlayground(root) {
+    var state = {
+      games: SNACK_GAMES.slice(), action: true, dismiss: false, duration: "Short", mode: siteMode(),
+      queue: [], current: null, last: ""
+    };
+    var timer = null;
+    var ui = shell(root, "Playground: Snackbar", "Borra juegos de la lista y deshaz el borrado desde el aviso", "cpc-stage-phone");
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(yesNo("actionLabel = \"Deshacer\"", state.action, function (v) { state.action = v; render(); }));
+      ui.controls.appendChild(yesNo("withDismissAction", state.dismiss, function (v) { state.dismiss = v; render(); }));
+      ui.controls.appendChild(segmented("duration (SnackbarDuration)", opts(Object.keys(SNACK_DURATIONS)), state.duration, function (v) {
+        state.duration = v; render();
+      }));
+      var reset = h("button", { type: "button", text: "Restaurar la lista" });
+      reset.addEventListener("click", function () {
+        clearTimeout(timer); state.games = SNACK_GAMES.slice(); state.queue = []; state.current = null; state.last = ""; renderStage();
+      });
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [reset]));
+      ui.controls.appendChild(modeControl(state, render));
+    }
+
+    function borrar(i) {
+      var game = state.games.splice(i, 1)[0];
+      state.queue.push({ game: game, index: i, action: state.action, dismiss: state.dismiss, duration: state.duration });
+      state.last = state.current ? "showSnackbar(…) espera en la cola: hay otro aviso en pantalla" : "";
+      if (!state.current) next(); else renderStage();
+    }
+
+    function next() {
+      state.current = state.queue.shift() || null;
+      renderStage();
+      var ms = state.current && SNACK_DURATIONS[state.current.duration];
+      if (ms) timer = setTimeout(function () { finish("Dismissed", "se agotó la duración"); }, ms);
+    }
+
+    function finish(result, why) {
+      clearTimeout(timer);
+      var c = state.current;
+      if (!c) return;
+      if (result === "ActionPerformed") state.games.splice(Math.min(c.index, state.games.length), 0, c.game);
+      state.last = "SnackbarResult." + result + " (" + why + ")" + (result === "ActionPerformed" ? " → juego restaurado" : "");
+      state.current = null;
+      renderStage();
+      if (state.queue.length) setTimeout(next, 250);
+    }
+
+    function renderStage() {
+      ui.stage.innerHTML = "";
+      var phone = applyScheme(h("div", { class: "cpc-phone" }), state.mode);
+      phone.appendChild(h("div", { class: "cpc-phone-bar" }, [h("span", { text: "Biblioteca" })]));
+      var list = h("div", { class: "cpc-list" });
+      if (!state.games.length) list.appendChild(h("p", { class: "cpc-empty", text: "No quedan juegos" }));
+      state.games.forEach(function (t, i) {
+        var del = h("button", { type: "button", class: "cpc-icon-btn", "aria-label": "Eliminar " + t }, [icon("delete")]);
+        del.addEventListener("click", function () { borrar(i); });
+        list.appendChild(h("div", { class: "cpc-list-row" }, [h("span", { class: "cpc-avatar", text: t.charAt(0) }), h("span", { class: "cpc-grow", text: t }), del]));
+      });
+      phone.appendChild(list);
+      phone.appendChild(h("span", { class: "cpc-fab-static", "aria-hidden": "true" }, [icon("add")]));
+
+      var c = state.current;
+      if (c) {
+        var parts = [h("span", { class: "cpc-snack-text", text: "«" + c.game + "» eliminado" })];
+        if (c.action) {
+          var undo = h("button", { type: "button", class: "cpc-snack-action", text: "Deshacer" });
+          undo.addEventListener("click", function () { finish("ActionPerformed", "pulsaste Deshacer"); });
+          parts.push(undo);
+        }
+        if (c.dismiss) {
+          var x = h("button", { type: "button", class: "cpc-icon-btn cpc-snack-close", "aria-label": "Cerrar aviso" }, [icon("close")]);
+          x.addEventListener("click", function () { finish("Dismissed", "pulsaste la X"); });
+          parts.push(x);
+        }
+        var ms = SNACK_DURATIONS[c.duration];
+        if (ms) {
+          var bar = h("span", { class: "cpc-snack-timer" });
+          bar.style.animationDuration = ms + "ms";
+          parts.push(bar);
+        }
+        phone.appendChild(h("div", { class: "cpc-snackbar", role: "status" }, parts));
+      }
+
+      var line = "en pantalla: " + (c ? "«" + c.game + "» (" + c.duration + ")" : "ninguno") + "   en cola: " + state.queue.length;
+      if (state.last) line += "\n← " + state.last;
+      ui.stage.appendChild(h("div", { class: "cpc-col" }, [phone, stateLine(line)]));
+    }
+
+    function renderCode() {
+      var args = ["            message = \"«${juego.titulo}» eliminado\""];
+      if (state.action) args.push("            actionLabel = \"Deshacer\"");
+      if (state.dismiss) args.push("            withDismissAction = true");
+      args.push("            duration = SnackbarDuration." + state.duration);
+      var lines = ["val snackbarHostState = remember { SnackbarHostState() }", "val scope = rememberCoroutineScope()", "",
+        "Scaffold(", "    snackbarHost = { SnackbarHost(hostState = snackbarHostState) }", ") { innerPadding ->",
+        "    // … en el onClick del icono de borrar de cada juego:", "    val posicion = juegos.indexOf(juego)", "    juegos.remove(juego)",
+        "    scope.launch {", "        val resultado = snackbarHostState.showSnackbar("];
+      lines.push(args.join(",\n"));
+      lines.push("        )");
+      if (state.action) {
+        lines.push("        if (resultado == SnackbarResult.ActionPerformed) {", "            juegos.add(posicion, juego)", "        }");
+      }
+      lines.push("    }", "}");
+      ui.code.set(lines.join("\n"));
+      var hint = "showSnackbar es una función suspend: la corrutina espera hasta que el aviso desaparece y entonces devuelve el resultado. ";
+      if (!state.action) hint += "Sin actionLabel no hay botón: el resultado siempre es Dismissed y no se puede deshacer.";
+      else if (state.duration === "Indefinite") hint += "Con Indefinite el aviso no se va solo: pon withDismissAction o una acción para que el usuario pueda cerrarlo.";
+      else hint += "Borra varios juegos seguidos: SnackbarHostState los pone en cola y los muestra de uno en uno.";
+      ui.hint.textContent = hint;
+    }
+
+    function render() { renderControls(); renderStage(); renderCode(); }
+    render();
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -1028,7 +1316,9 @@
     textfield: textFieldPlayground,
     selection: selectionPlayground,
     overlays: overlaysPlayground,
-    drawer: drawerPlayground
+    drawer: drawerPlayground,
+    topappbar: topAppBarPlayground,
+    snackbar: snackbarPlayground
   };
 
   function init() {
