@@ -1221,7 +1221,724 @@
   font-size: 0.65rem;
 }
 
+/* ---------- Navigation 3: mini app, pila y operaciones */
+
+.md-typeset .cpc-nav-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.md-typeset .cpc-nav-host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.md-typeset .cpc-nav-host.cpc-with-bar {
+  bottom: 80px;
+}
+
+.md-typeset .cpc-nav-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--m3-surface);
+}
+
+.md-typeset .cpc-nav-body {
+  padding: 8px 16px;
+}
+
+.md-typeset .cpc-nav-body p {
+  margin: 0 0 12px;
+}
+
+.md-typeset .cpg button.cpc-nav-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--m3-on-surface);
+  text-align: left;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.md-typeset .cpg button.cpc-nav-row:hover {
+  background: color-mix(in srgb, var(--m3-on-surface) 8%, transparent);
+}
+
+.md-typeset .cpc-nav-row-title {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.md-typeset .cpc-nav-row-sub {
+  color: var(--m3-on-surface-variant);
+  font-size: 13px;
+}
+
+.md-typeset .cpc-nav-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 16px;
+}
+
+.md-typeset .cpc-avatar.cpc-avatar-big {
+  width: 72px;
+  height: 72px;
+  font-size: 32px;
+}
+
+.md-typeset .cpc-vm-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--m3-secondary-container);
+  color: var(--m3-on-secondary-container);
+  font-size: 12px;
+}
+
+.md-typeset .cpc-vm-chip.cpc-vm-wrong {
+  background: color-mix(in srgb, var(--m3-error) 20%, transparent);
+  color: var(--m3-on-surface);
+}
+
+.md-typeset .cpc-vm-warn {
+  max-width: 16rem;
+  margin: 8px 0 0;
+  color: var(--m3-error);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.md-typeset .cpc-nav-crash {
+  justify-content: center;
+  padding: 24px;
+  background: var(--m3-surface-container-highest);
+  text-align: center;
+}
+
+.md-typeset .cpc-nav-crash p {
+  margin: 0 0 12px;
+}
+
+.md-typeset .cpc-crash-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--m3-error);
+}
+
+.md-typeset .cpc-crash-hint {
+  color: var(--m3-on-surface-variant);
+  font-size: 12px;
+}
+
+.md-typeset .cpc-launcher {
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: linear-gradient(160deg, var(--m3-primary-container), var(--m3-surface));
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .cpg button.cpc-launcher-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--m3-on-surface);
+  opacity: 1;
+  cursor: pointer;
+}
+
+.md-typeset .cpc-navbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  height: 80px;
+  background: var(--m3-surface-container);
+}
+
+.md-typeset .cpg button.cpc-navbar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--m3-on-surface-variant);
+  font: 500 12px/16px Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.md-typeset .cpc-navbar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 32px;
+  border-radius: 16px;
+}
+
+.md-typeset .cpg button.cpc-navbar-item.cpc-on {
+  color: var(--m3-on-surface);
+}
+
+.md-typeset .cpc-navbar-item.cpc-on .cpc-navbar-icon {
+  background: var(--m3-secondary-container);
+  color: var(--m3-on-secondary-container);
+}
+
+.md-typeset .cpg button.cpc-sysback {
+  font-size: 0.65rem;
+}
+
+.md-typeset .cpc-navstack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  min-width: 13rem;
+  max-width: 100%;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .cpc-navstack-col {
+  min-width: 12rem;
+  padding: 0.5rem;
+  border: 1px dashed var(--cpg-border);
+  border-radius: 0.6rem;
+  opacity: 0.7;
+}
+
+.md-typeset .cpc-navstack-col.cpc-on {
+  border-style: solid;
+  border-color: var(--m3-primary);
+  opacity: 1;
+}
+
+.md-typeset .cpc-navstack-title {
+  margin: 0 0 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--cpg-muted);
+}
+
+/* La pila se dibuja de abajo arriba: el último elemento queda en lo alto */
+.md-typeset .cpc-navstack-list {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.3rem;
+}
+
+.md-typeset .cpc-navstack-card {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.4rem;
+  background: var(--m3-surface-container-high);
+  color: var(--m3-on-surface);
+  font-size: 0.65rem;
+  animation: cpc-card-in 0.25s ease-out;
+}
+
+.md-typeset .cpc-navstack-card code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.62rem;
+}
+
+.md-typeset .cpc-navstack-card.cpc-top {
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.md-typeset .cpc-navstack-card.cpc-under {
+  outline: 1px dashed var(--m3-outline);
+}
+
+.md-typeset .cpc-navstack-index {
+  flex: none;
+  width: 1.2rem;
+  text-align: center;
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .cpc-navstack-badge {
+  margin-left: auto;
+  padding: 0 0.35rem;
+  border-radius: 0.5rem;
+  background: var(--m3-primary);
+  color: var(--m3-on-primary);
+  font-size: 0.55rem;
+  white-space: nowrap;
+}
+
+.md-typeset .cpc-navstack-empty {
+  padding: 0.4rem;
+  color: var(--m3-error);
+  font-size: 0.65rem;
+}
+
+@keyframes cpc-card-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.md-typeset .cpc-nav-ops {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.md-typeset .cpc-nav-ops button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.md-typeset .cpc-nav-ops button code {
+  font-size: 0.55rem;
+  background: transparent;
+  padding: 0;
+  white-space: normal;
+}
+
+.md-typeset .cpg .cpc-nav-ops button.cpc-danger {
+  border-color: var(--md-code-hl-string-color, #c62828);
+}
+
+/* Transiciones entre pantallas: entrada (enter) y salida (exit) al avanzar (push) o volver (pop) */
+.md-typeset [class*="cpc-nav-enter-"],
+.md-typeset [class*="cpc-nav-exit-"] {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.md-typeset .cpc-nav-exit-slide-pop,
+.md-typeset .cpc-nav-exit-vertical-pop { z-index: 2; }
+
+.md-typeset .cpc-nav-enter-slide-push { animation-name: cpc-from-right; }
+.md-typeset .cpc-nav-exit-slide-push { animation-name: cpc-to-left-third; }
+.md-typeset .cpc-nav-enter-slide-pop { animation-name: cpc-from-left-third; }
+.md-typeset .cpc-nav-exit-slide-pop { animation-name: cpc-to-right; }
+.md-typeset .cpc-nav-enter-fade-push,
+.md-typeset .cpc-nav-enter-fade-pop,
+.md-typeset .cpc-nav-enter-vertical-pop { animation-name: cpc-fade-in; }
+.md-typeset .cpc-nav-exit-fade-push,
+.md-typeset .cpc-nav-exit-fade-pop,
+.md-typeset .cpc-nav-exit-vertical-push { animation-name: cpc-fade-out; }
+.md-typeset .cpc-nav-enter-vertical-push { animation-name: cpc-from-bottom; }
+.md-typeset .cpc-nav-exit-vertical-pop { animation-name: cpc-to-bottom; }
+
+@keyframes cpc-from-right { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes cpc-to-left-third { from { transform: none; } to { transform: translateX(-33%); } }
+@keyframes cpc-from-left-third { from { transform: translateX(-33%); } to { transform: none; } }
+@keyframes cpc-to-right { from { transform: none; } to { transform: translateX(100%); } }
+@keyframes cpc-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cpc-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes cpc-from-bottom { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes cpc-to-bottom { from { transform: none; } to { transform: translateY(100%); } }
+
+/* ---------- Diseño adaptativo: ventana redimensionable (apuntes 3B.2) */
+
+/* Este playground necesita todo el ancho: controles arriba y ventana debajo */
+.md-typeset .cpg.cpc-pg-full .cpg-body {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.md-typeset .cpg.cpc-pg-full .cpg-panel {
+  border-right: none;
+  border-bottom: 1px solid var(--cpg-border);
+}
+
+.md-typeset .cpg.cpc-pg-full .cpg-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.2rem;
+}
+
+.md-typeset .cpg.cpc-pg-full .cpg-controls > .cpg-field:first-child {
+  flex-basis: 100%;
+}
+
+.md-typeset .cpc-inline-field {
+  flex: 1 1 10rem;
+}
+
+.md-typeset .cpc-stage-adapt {
+  display: block;
+  padding: 1rem;
+}
+
+.md-typeset .cpc-adapt-col {
+  align-items: stretch;
+  gap: 0.6rem;
+}
+
+.md-typeset .cpc-adapt-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.md-typeset .cpc-chip-info {
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--cpg-border);
+  border-radius: 1rem;
+  background: var(--md-default-bg-color);
+  font-size: 0.62rem;
+}
+
+.md-typeset .cpc-chip-info.cpc-strong {
+  border-color: var(--cpg-primary);
+  color: var(--cpg-primary);
+  font-weight: 700;
+}
+
+.md-typeset .cpc-ruler {
+  position: relative;
+  height: 2.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.md-typeset .cpc-ruler-seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0.3rem;
+  border-left: 1px solid var(--cpg-border);
+  background: var(--md-default-bg-color);
+  color: var(--cpg-muted);
+  font-size: 0.55rem;
+  line-height: 1.2;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.md-typeset .cpc-ruler-seg.cpc-on {
+  background: var(--cpg-primary);
+  color: var(--md-primary-bg-color);
+  font-weight: 700;
+}
+
+.md-typeset .cpc-ruler-marker {
+  position: absolute;
+  top: -0.3rem;
+  bottom: -0.3rem;
+  width: 3px;
+  margin-left: -1px;
+  background: #ff3d00;
+  border-radius: 2px;
+}
+
+.md-typeset .cpc-window-wrap {
+  position: relative;
+  margin: 0 auto;
+}
+
+.md-typeset .cpc-window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 3px solid #1d1b20;
+  border-radius: 18px;
+  background: var(--m3-surface-container);
+  color: var(--m3-on-surface);
+  font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  transform-origin: top left;
+}
+
+.md-typeset .cpc-window-main {
+  position: absolute;
+  inset: 0;
+}
+
+.md-typeset .cpc-window.cpc-has-bar .cpc-window-main {
+  bottom: 80px;
+}
+
+.md-typeset .cpc-window.cpc-has-rail .cpc-window-main {
+  left: 80px;
+}
+
+.md-typeset .cpc-suite-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  height: 80px;
+  background: var(--m3-surface-container);
+}
+
+.md-typeset .cpc-suite-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 80px;
+  padding-top: 44px;
+  background: var(--m3-surface-container);
+}
+
+.md-typeset .cpc-suite-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--m3-on-surface-variant);
+  font: 500 12px/16px Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.md-typeset .cpc-suite-rail .cpc-suite-item {
+  flex: none;
+}
+
+.md-typeset .cpc-suite-item.cpc-on .cpc-navbar-icon {
+  background: var(--m3-secondary-container);
+  color: var(--m3-on-secondary-container);
+}
+
+.md-typeset .cpc-pane {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: var(--m3-surface);
+}
+
+.md-typeset .cpc-panes {
+  display: flex;
+  gap: 24px;
+  height: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.md-typeset .cpc-panes > .cpc-pane {
+  border-radius: 24px;
+}
+
+.md-typeset .cpc-panes > .cpc-pane:first-child {
+  flex: 0 0 360px;
+}
+
+.md-typeset .cpc-panes > .cpc-pane:last-child {
+  flex: 1;
+}
+
+.md-typeset .cpc-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--m3-on-surface-variant);
+}
+
+.md-typeset .cpg button.cpc-nav-row.cpc-selected {
+  background: var(--m3-secondary-container);
+  color: var(--m3-on-secondary-container);
+}
+
+.md-typeset .cpc-nav-row.cpc-static {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 16px;
+}
+
+.md-typeset .cpc-adapt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.md-typeset .cpc-adapt-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.md-typeset .cpc-resize {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--cpg-primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+/* ---------- Figuras de la pila de navegación (apuntes 3B.1) */
+
+.md-typeset .cpc-navfig {
+  margin: 1.5em 0;
+}
+
+.md-typeset .cpc-navfig-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.6rem 0.4rem;
+}
+
+.md-typeset .cpc-navfig-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  width: 7.6rem;
+}
+
+.md-typeset .cpc-navfig-step > p {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+/* Las pantallas de la pila se apilan como cartas: las de abajo asoman por arriba a la izquierda */
+.md-typeset .cpc-navfig-stack {
+  position: relative;
+  width: 6.6rem;
+}
+
+.md-typeset .cpc-navfig-card {
+  position: absolute;
+  left: calc(var(--i) * 0.7rem);
+  top: calc(var(--i) * 0.7rem);
+  width: calc(100% - (var(--n) - 1) * 0.7rem);
+  border-radius: 0.6rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 0;
+}
+
+/* La carta de arriba va en el flujo y da la altura a la pila */
+.md-typeset .cpc-navfig-card:last-child {
+  position: relative;
+  left: auto;
+  top: auto;
+  margin-left: calc(var(--i) * 0.7rem);
+  margin-top: calc(var(--i) * 0.7rem);
+}
+
+.md-typeset .cpc-navfig-card img {
+  width: 100%;
+  margin: 0;
+}
+
+.md-typeset .cpc-navfig-card.cpc-under img {
+  filter: brightness(0.7);
+}
+
+.md-typeset .cpc-navfig-step code {
+  font-size: 0.6rem;
+  text-align: center;
+  white-space: normal;
+}
+
+.md-typeset .cpc-navfig-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  gap: 0.2rem;
+  max-width: 6.4rem;
+  color: var(--md-default-fg-color--light);
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.md-typeset .cpc-navfig-arrow code {
+  font-size: 0.58rem;
+  white-space: normal;
+}
+
+.md-typeset .cpc-navfig figcaption {
+  margin-top: 0.8rem;
+}
+
+.md-typeset .cpc-navfig-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.md-typeset .cpc-navfig-tab {
+  padding: 0.6rem;
+  border: 1px dashed var(--md-default-fg-color--lighter);
+  border-radius: 0.8rem;
+}
+
+.md-typeset .cpc-navfig-tab.cpc-on {
+  border-style: solid;
+  border-color: var(--md-primary-fg-color);
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .cpc-navfig-arrow {
+    flex-direction: row;
+    max-width: none;
+    width: 100%;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+  .md-typeset .cpc-navfig-arrow .cpc-arrow-glyph {
+    transform: rotate(90deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .md-typeset [class*="cpc-nav-enter-"],
+  .md-typeset [class*="cpc-nav-exit-"],
+  .md-typeset .cpc-navstack-card {
+    animation: none;
+  }
   .md-typeset .cpc-lazy-item.cpc-fresh {
     animation: none;
   }
@@ -1233,4 +1950,12 @@
   .md-typeset .cpc-tf-label {
     transition: none;
   }
+}
+
+/* Capturas de pantalla en las páginas: borde suave para separarlas del fondo */
+.md-typeset img.cpc-shot {
+  margin: 0.2rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.5rem;
+  vertical-align: top;
 }

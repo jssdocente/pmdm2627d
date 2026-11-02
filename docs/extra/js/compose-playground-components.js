@@ -15,6 +15,8 @@
  *   <div class="cpg" data-cpg="snackbar"></div>   -> SnackbarHostState.showSnackbar (apuntes 3A.1)
  *   <div class="cpg" data-cpg="lazylist"></div>   -> LazyColumn / LazyRow frente a Column, y key (apuntes 3A.3)
  *   <div class="cpg" data-cpg="lazygrid"></div>   -> LazyVerticalGrid / LazyHorizontalGrid y GridCells (apuntes 3A.3)
+ *   <div class="cpg" data-cpg="navigation"></div> -> pila de Navigation 3, pestañas y transiciones (apuntes 3B.1)
+ *   <div class="cpg" data-cpg="adaptive"></div>   -> ventana redimensionable: clases de tamaño y navegación adaptativa (apuntes 3B.2)
  *
  * Es una aproximación didáctica: imita el aspecto y el comportamiento de los
  * componentes, no los renderiza con Compose.
@@ -199,6 +201,7 @@
     add: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z",
     menu: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z",
     arrowBack: "M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z",
+    person: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z",
     home: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z",
     settings: "M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z",
     arrowDropDown: "M7 10l5 5 5-5z",
@@ -1599,6 +1602,621 @@
     render();
   }
 
+  // --------------------------------------------- playground de Navigation 3
+
+  var NAV_GAMES = {
+    1: { t: "Hollow Knight", p: "Switch" },
+    2: { t: "Celeste", p: "PC" },
+    7: { t: "Zelda: Tears of the Kingdom", p: "Switch" }
+  };
+  var NAV_ANIMS = {
+    slide: {
+      label: "Deslizar en horizontal",
+      fwd: "slideInHorizontally { it } togetherWith slideOutHorizontally { -it / 3 }",
+      back: "slideInHorizontally { -it / 3 } togetherWith slideOutHorizontally { it }"
+    },
+    fade: { label: "Fundido", fwd: "fadeIn() togetherWith fadeOut()", back: "fadeIn() togetherWith fadeOut()" },
+    vertical: {
+      label: "Deslizar en vertical",
+      fwd: "slideInVertically { it } togetherWith fadeOut()",
+      back: "fadeIn() togetherWith slideOutVertically { it }"
+    },
+    none: { label: "Sin animación", fwd: "EnterTransition.None togetherWith ExitTransition.None", back: "EnterTransition.None togetherWith ExitTransition.None" }
+  };
+  var NAV_OPS = [
+    { id: "detalle", label: "Ir al detalle 7", code: "pila.add(Detalle(juegoId = 7))" },
+    { id: "back", label: "Volver atrás", code: "pila.removeLastOrNull()" },
+    { id: "ajustes", label: "Ajustes sin duplicar", code: "if (pila.lastOrNull() != Ajustes) pila.add(Ajustes)" },
+    { id: "replace", label: "Sustituir la actual por Catalogo", code: "pila[pila.lastIndex] = Catalogo" },
+    { id: "root", label: "Volver al inicio", code: "while (pila.size > 1) pila.removeLastOrNull()" },
+    { id: "restart", label: "Empezar de cero", code: "pila.clear(); pila.add(Catalogo)" },
+    { id: "clear", label: "Solo pila.clear() 💥", code: "pila.clear()" }
+  ];
+
+  function navLabel(k) {
+    return k.type === "Detalle" ? "Detalle(juegoId = " + k.id + ")" : k.type;
+  }
+
+  function navPlayground(root) {
+    var state = {
+      mode: "pila", anim: "slide", theme: siteMode(), entryAjustes: true, vmDecorator: true,
+      stack: [], tabs: null, sel: "Inicio", closed: false, event: "", vmCounter: 0, sharedVm: null, uid: 0
+    };
+    var ui = shell(root, "Playground: Navigation 3", "Navega por la mini app y observa cómo cambia la pila", "cpc-stage-phone");
+    var host, stackPanel, stateEl, barEl;
+
+    function key(type, id) { state.uid += 1; return { type: type, id: id, uid: state.uid, vm: null }; }
+
+    function reset() {
+      state.stack = [key("Catalogo")];
+      state.tabs = { Inicio: [key("Catalogo")], Perfil: [key("Perfil")] };
+      state.sel = "Inicio"; state.closed = false; state.event = ""; state.vmCounter = 0; state.sharedVm = null;
+    }
+
+    function current() { return state.mode === "pila" ? state.stack : state.tabs[state.sel]; }
+
+    function vmFor(entry) {
+      if (entry.type !== "Detalle") return null;
+      if (state.vmDecorator) {
+        if (!entry.vm) { state.vmCounter += 1; entry.vm = { n: state.vmCounter, juegoId: entry.id }; }
+        return entry.vm;
+      }
+      if (!state.sharedVm) { state.vmCounter += 1; state.sharedVm = { n: state.vmCounter, juegoId: entry.id }; }
+      return state.sharedVm;
+    }
+
+    function cleared(removed) {
+      var msgs = [];
+      removed.forEach(function (e) { if (e.vm && state.vmDecorator) msgs.push("DetalleViewModel #" + e.vm.n + " destruido (onCleared)"); });
+      return msgs.length ? " · " + msgs.join(" · ") : "";
+    }
+
+    // ---------- operaciones sobre la pila
+
+    function go(dir, event) {
+      state.event = event;
+      showScreen(dir);
+      drawStack();
+      drawState();
+    }
+
+    function push(k, code) {
+      if (state.closed) return;
+      current().push(k);
+      go("push", code);
+    }
+
+    function back(code) {
+      if (state.closed) return;
+      var s = current();
+      if (state.mode === "tabs") {
+        if (s.length > 1) { var r = s.pop(); go("pop", (code || "volver()") + ": quita " + navLabel(r) + " de la pila de " + state.sel + cleared([r])); }
+        else if (state.sel !== "Inicio") { state.sel = "Inicio"; go("pop", "volver(): en la raíz de Perfil → seleccionada = Inicio (salir por Inicio)"); }
+        else { state.closed = true; go("pop", "volver() en la raíz de Inicio: el sistema cierra la app"); }
+        return;
+      }
+      if (s.length > 1) { var removed = s.pop(); go("pop", (code || "pila.removeLastOrNull()") + cleared([removed])); }
+      else if (s.length === 1) { state.closed = true; go("pop", "Solo queda una pantalla: NavDisplay deja pasar el gesto y el sistema cierra la app"); }
+    }
+
+    function op(id) {
+      var o = NAV_OPS.filter(function (x) { return x.id === id; })[0];
+      var s = state.stack;
+      if (state.closed && id !== "restart") return;
+      if (id === "detalle") push(key("Detalle", 7), o.code);
+      else if (id === "back") back(o.code);
+      else if (id === "ajustes") {
+        if (s.length && s[s.length - 1].type === "Ajustes") go("none", o.code + ": ya estás en Ajustes, no se añade otra");
+        else push(key("Ajustes"), o.code);
+      } else if (id === "replace") {
+        if (!s.length) return;
+        var old = s[s.length - 1];
+        s[s.length - 1] = key("Catalogo");
+        go("push", o.code + ": " + navLabel(old) + " desaparece y no se puede volver a ella" + cleared([old]));
+      } else if (id === "root") {
+        var rem = s.splice(1);
+        go(rem.length ? "pop" : "none", o.code + (rem.length === 1 ? ": se quita 1 pantalla" : rem.length ? ": se quitan " + rem.length + " pantallas" : ": ya estás en el inicio") + cleared(rem));
+      } else if (id === "restart") {
+        var all = s.splice(0);
+        state.closed = false;
+        s.push(key("Catalogo"));
+        go("none", o.code + ": los dos cambios se aplican a la vez y nunca se ve la pila vacía" + cleared(all));
+      } else if (id === "clear") {
+        var gone = s.splice(0);
+        go("none", o.code + " sin añadir nada después" + cleared(gone));
+      }
+    }
+
+    // ---------- pantallas de la mini app
+
+    function topBar(title, nav, actions) {
+      return h("div", { class: "cpc-phone-bar cpc-bar-nav" }, [
+        nav || h("span", { class: "cpc-appbar-gap" }),
+        h("span", { class: "cpc-appbar-title", text: title }),
+        actions || null
+      ]);
+    }
+
+    function backBtn() {
+      var b = h("button", { type: "button", class: "cpc-icon-btn", "aria-label": "Volver" }, [icon("arrowBack")]);
+      b.addEventListener("click", function () { back(state.mode === "pila" ? "onVolver → pila.removeLastOrNull()" : "onVolver → volver()"); });
+      return b;
+    }
+
+    function crash(msg) {
+      return h("div", { class: "cpc-nav-screen cpc-nav-crash" }, [
+        h("p", { class: "cpc-crash-title", text: "💥 La app se ha cerrado" }),
+        h("p", { text: msg }),
+        h("p", { class: "cpc-crash-hint", text: "Pulsa «Reiniciar la app» en los controles." })
+      ]);
+    }
+
+    function screenFor(entry) {
+      if (state.closed) {
+        var reopen = h("button", { type: "button", class: "cpc-launcher-app" }, [h("span", { class: "cpc-avatar", text: "J" }), h("span", { text: "Mis juegos" })]);
+        reopen.addEventListener("click", function () { reset(); showScreen("none"); drawStack(); drawState(); });
+        return h("div", { class: "cpc-nav-screen cpc-launcher" }, [h("p", { text: "Escritorio de Android" }), reopen]);
+      }
+      if (!entry) return crash("NavDisplay no tiene ninguna entrada que mostrar: la pila está vacía.");
+      if (entry.type === "Ajustes" && !state.entryAjustes) return crash("Has añadido Ajustes a la pila, pero el entryProvider no tiene entry<Ajustes>.");
+      var el;
+      if (entry.type === "Catalogo") {
+        var gear = h("button", { type: "button", class: "cpc-icon-btn", "aria-label": "Ajustes" }, [icon("settings")]);
+        gear.addEventListener("click", function () { push(key("Ajustes"), "onAjustesClick → " + (state.mode === "pila" ? "pila" : "pilaActual") + ".add(Ajustes)"); });
+        var list = h("div", { class: "cpc-list" });
+        Object.keys(NAV_GAMES).forEach(function (id) {
+          var row = h("button", { type: "button", class: "cpc-nav-row" }, [
+            h("span", { class: "cpc-nav-row-title", text: NAV_GAMES[id].t }), h("span", { class: "cpc-nav-row-sub", text: NAV_GAMES[id].p })
+          ]);
+          row.addEventListener("click", function () { push(key("Detalle", Number(id)), "onJuegoClick(" + id + ") → " + (state.mode === "pila" ? "pila" : "pilaActual") + ".add(Detalle(juegoId = " + id + "))"); });
+          list.appendChild(row);
+        });
+        el = h("div", { class: "cpc-nav-screen" }, [topBar("Mis juegos", null, gear), list]);
+      } else if (entry.type === "Detalle") {
+        var vm = vmFor(entry);
+        var shown = NAV_GAMES[vm.juegoId];
+        var wrong = vm.juegoId !== entry.id;
+        el = h("div", { class: "cpc-nav-screen" }, [
+          topBar(shown.t, backBtn()),
+          h("div", { class: "cpc-nav-body" }, [
+            h("p", { text: "Plataforma: " + shown.p }),
+            h("p", { class: "cpc-vm-chip" + (wrong ? " cpc-vm-wrong" : "") }, [
+              h("code", { text: "DetalleViewModel #" + vm.n }), " · juegoId = " + vm.juegoId
+            ]),
+            wrong ? h("p", { class: "cpc-vm-warn", text: "⚠ La clave es Detalle(juegoId = " + entry.id + "), pero el ViewModel compartido sigue con el juego " + vm.juegoId + "." }) : null
+          ])
+        ]);
+      } else if (entry.type === "Ajustes") {
+        el = h("div", { class: "cpc-nav-screen" }, [topBar("Ajustes", backBtn()), h("div", { class: "cpc-nav-body" }, [h("p", { text: "Aquí irán los ajustes" })])]);
+      } else {
+        var cuenta = h("button", { type: "button", class: "cpc-btn cpc-btn-tonal" }, [h("span", { text: "Ajustes de la cuenta" })]);
+        cuenta.addEventListener("click", function () { push(key("Ajustes"), "pilaActual.add(Ajustes) (en la pila de Perfil)"); });
+        el = h("div", { class: "cpc-nav-screen" }, [topBar("Perfil"), h("div", { class: "cpc-nav-body cpc-nav-profile" }, [
+          h("span", { class: "cpc-avatar cpc-avatar-big", text: "A" }), h("p", { class: "cpc-nav-row-title", text: "Ana García" }), cuenta
+        ])]);
+      }
+      return el;
+    }
+
+    // Muestra la pantalla de la cima con la animación elegida (dir: push, pop o none).
+    function showScreen(dir) {
+      var s = current();
+      var next = screenFor(s[s.length - 1]);
+      var prev = host.lastElementChild;
+      var anim = state.anim;
+      if (prev && dir !== "none" && anim !== "none") {
+        prev.classList.add("cpc-nav-exit-" + anim + "-" + dir);
+        next.classList.add("cpc-nav-enter-" + anim + "-" + dir);
+        host.appendChild(next);
+        setTimeout(function () { if (prev.parentNode) prev.parentNode.removeChild(prev); }, 320);
+      } else {
+        host.innerHTML = "";
+        host.appendChild(next);
+      }
+      if (barEl) drawBar();
+    }
+
+    function drawBar() {
+      barEl.innerHTML = "";
+      [["Inicio", "home"], ["Perfil", "person"]].forEach(function (t) {
+        var b = h("button", { type: "button", class: "cpc-navbar-item" + (state.sel === t[0] ? " cpc-on" : ""), "aria-pressed": String(state.sel === t[0]) }, [
+          h("span", { class: "cpc-navbar-icon" }, [icon(t[1])]), h("span", { text: t[0] })
+        ]);
+        b.addEventListener("click", function () {
+          if (state.closed || state.sel === t[0]) return;
+          state.sel = t[0];
+          go("none", "seleccionada = Pestana." + (t[0] === "Inicio" ? "Inicio" : "Usuario") + ": se muestra la pila de " + t[0] + " tal y como estaba");
+        });
+        barEl.appendChild(b);
+      });
+    }
+
+    function stackColumn(title, entries, active, under) {
+      var col = h("div", { class: "cpc-navstack-col" + (active ? " cpc-on" : "") }, [h("p", { class: "cpc-navstack-title", text: title })]);
+      var list = h("div", { class: "cpc-navstack-list" });
+      if (!entries.length) list.appendChild(h("div", { class: "cpc-navstack-empty", text: "(vacía)" }));
+      entries.forEach(function (e, i) {
+        var top = i === entries.length - 1;
+        var cls = "cpc-navstack-card" + (top && active && !state.closed ? " cpc-top" : "") + (under ? " cpc-under" : "");
+        var vmTxt = e.vm && state.vmDecorator ? " · vm #" + e.vm.n : "";
+        list.appendChild(h("div", { class: cls }, [
+          h("span", { class: "cpc-navstack-index", text: String(i) }),
+          h("code", { text: navLabel(e) + vmTxt }),
+          top && active && !state.closed ? h("span", { class: "cpc-navstack-badge", text: "en pantalla" }) : null
+        ]));
+      });
+      col.appendChild(list);
+      return col;
+    }
+
+    function drawStack() {
+      stackPanel.innerHTML = "";
+      if (state.mode === "pila") {
+        stackPanel.appendChild(stackColumn("pila (de abajo arriba)", state.stack, true));
+      } else {
+        stackPanel.appendChild(stackColumn("Pila de Inicio", state.tabs.Inicio, state.sel === "Inicio", state.sel !== "Inicio"));
+        stackPanel.appendChild(stackColumn("Pila de Perfil", state.tabs.Perfil, state.sel === "Perfil"));
+      }
+      if (!state.vmDecorator && state.sharedVm) {
+        stackPanel.appendChild(h("p", { class: "cpc-vm-warn", text: "Sin decorador: DetalleViewModel #" + state.sharedVm.n + " vive en la Activity y lo comparten todos los detalles." }));
+      }
+    }
+
+    function drawState() {
+      var txt;
+      if (state.mode === "pila") txt = "pila = [" + state.stack.map(navLabel).join(", ") + "]";
+      else txt = "seleccionada = " + state.sel + "   Inicio = [" + state.tabs.Inicio.map(navLabel).join(", ") + "]   Perfil = [" + state.tabs.Perfil.map(navLabel).join(", ") + "]";
+      if (state.event) txt += "\n← " + state.event;
+      stateEl.firstChild.textContent = txt;
+    }
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      ui.controls.appendChild(segmented("Modo", [{ value: "pila", label: "Una pila" }, { value: "tabs", label: "Una pila por pestaña" }], state.mode, function (v) {
+        state.mode = v; reset(); render();
+      }));
+      if (state.mode === "pila") {
+        var ops = h("div", { class: "cpc-nav-ops" });
+        NAV_OPS.forEach(function (o) {
+          var b = h("button", { type: "button", class: o.id === "clear" ? "cpc-danger" : "", title: o.code }, [h("span", { text: o.label }), h("code", { text: o.code })]);
+          b.addEventListener("click", function () { op(o.id); });
+          ops.appendChild(b);
+        });
+        ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Operaciones con la pila" }), ops]));
+        ui.controls.appendChild(yesNo("entry<Ajustes> en el entryProvider", state.entryAjustes, function (v) { state.entryAjustes = v; render(); }));
+      }
+      ui.controls.appendChild(yesNo("rememberViewModelStoreNavEntryDecorator()", state.vmDecorator, function (v) {
+        state.vmDecorator = v; state.sharedVm = null; state.vmCounter = 0;
+        state.stack.concat(state.tabs.Inicio, state.tabs.Perfil).forEach(function (e) { e.vm = null; });
+        render();
+      }));
+      ui.controls.appendChild(select("Transición (transitionSpec / popTransitionSpec)", Object.keys(NAV_ANIMS).map(function (k) {
+        return { value: k, label: NAV_ANIMS[k].label };
+      }), state.anim, function (v) { state.anim = v; renderCode(); }));
+      var r = h("button", { type: "button", text: "Reiniciar la app" });
+      r.addEventListener("click", function () { reset(); render(); });
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [r]));
+      ui.controls.appendChild(modeControl({ get mode() { return state.theme; }, set mode(v) { state.theme = v; } }, function () { render(); }));
+    }
+
+    function renderStage() {
+      ui.stage.innerHTML = "";
+      var phone = applyScheme(h("div", { class: "cpc-phone" }), state.theme);
+      host = h("div", { class: "cpc-nav-host" + (state.mode === "tabs" ? " cpc-with-bar" : "") });
+      phone.appendChild(host);
+      barEl = null;
+      if (state.mode === "tabs") { barEl = h("div", { class: "cpc-navbar" }); phone.appendChild(barEl); }
+      var sysBack = h("button", { type: "button", class: "cpc-sysback", "aria-label": "Botón atrás del sistema" }, [h("span", { text: "◁  Atrás del sistema" })]);
+      sysBack.addEventListener("click", function () { back(state.mode === "pila" ? "botón atrás → onBack → pila.removeLastOrNull()" : "botón atrás → onBack → volver()"); });
+      stackPanel = h("div", { class: "cpc-navstack" });
+      stateEl = stateLine("");
+      ui.stage.appendChild(h("div", { class: "cpc-col" }, [
+        h("div", { class: "cpc-nav-layout" }, [h("div", { class: "cpc-col" }, [phone, sysBack]), applyScheme(stackPanel, state.theme)]),
+        stateEl
+      ]));
+      showScreen("none");
+      drawStack();
+      drawState();
+    }
+
+    function renderCode() {
+      var a = NAV_ANIMS[state.anim];
+      var deco = ["        rememberSaveableStateHolderNavEntryDecorator()" + (state.vmDecorator ? "," : "")];
+      if (state.vmDecorator) deco.push("        rememberViewModelStoreNavEntryDecorator()");
+      else deco.push("        // ⚠ falta rememberViewModelStoreNavEntryDecorator()");
+      var lines;
+      if (state.mode === "pila") {
+        lines = ["val pila = rememberNavBackStack(Catalogo)", "", "NavDisplay(", "    backStack = pila,",
+          "    onBack = { pila.removeLastOrNull() },", "    entryDecorators = listOf("].concat(deco, ["    ),",
+          "    transitionSpec = { " + a.fwd + " },", "    popTransitionSpec = { " + a.back + " },",
+          "    entryProvider = entryProvider {",
+          "        entry<Catalogo> {", "            PantallaCatalogo(",
+          "                onJuegoClick = { id -> pila.add(Detalle(juegoId = id)) },",
+          "                onAjustesClick = { pila.add(Ajustes) }", "            )", "        }",
+          "        entry<Detalle> { clave ->",
+          "            val viewModel = viewModel { DetalleViewModel(juegoId = clave.juegoId) }",
+          "            PantallaDetalle(viewModel, onVolver = { pila.removeLastOrNull() })", "        }"]);
+        if (state.entryAjustes) lines.push("        entry<Ajustes> { PantallaAjustes(onVolver = { pila.removeLastOrNull() }) }");
+        else lines.push("        // ⚠ falta entry<Ajustes>: navegar a Ajustes cierra la app");
+        lines.push("    }", ")");
+      } else {
+        lines = ["var seleccionada by rememberSaveable { mutableStateOf(Pestana.Inicio) }",
+          "val pilas = Pestana.entries.associateWith { rememberNavBackStack(it.raiz) }",
+          "val pilaActual = pilas.getValue(seleccionada)", "",
+          "fun volver() {", "    if (pilaActual.size > 1) pilaActual.removeLastOrNull()   // dentro de la pestaña",
+          "    else seleccionada = Pestana.Inicio                      // salir por Inicio", "}", "",
+          "// Cada pila con SUS PROPIOS decoradores",
+          "val entradasPorPestana = pilas.mapValues { (_, pila) ->",
+          "    rememberDecoratedNavEntries(", "        backStack = pila,", "        entryDecorators = listOf("]
+          .concat(deco.map(function (l) { return "    " + l; }), ["        ),", "        entryProvider = proveedor", "    )", "}", "",
+            "// Inicio siempre debajo; encima, la pestaña seleccionada si es otra",
+            "val entradasVisibles =", "    if (seleccionada == Pestana.Inicio) entradasPorPestana.getValue(Pestana.Inicio)",
+            "    else entradasPorPestana.getValue(Pestana.Inicio) + entradasPorPestana.getValue(seleccionada)", "",
+            "NavDisplay(", "    entries = entradasVisibles,", "    onBack = ::volver,",
+            "    transitionSpec = { " + a.fwd + " },", "    popTransitionSpec = { " + a.back + " }", ")"]);
+      }
+      ui.code.set(lines.join("\n"));
+      var hint;
+      if (state.mode === "tabs") hint = "Entra en un detalle desde Inicio, cambia a Perfil y vuelve: Inicio sigue en el detalle. Desde la raíz de Perfil, el botón atrás te lleva a Inicio; desde la raíz de Inicio, cierra la app.";
+      else if (!state.vmDecorator) hint = "Sin el decorador, el ViewModel vive en la Activity: abre el juego 1, vuelve y abre el 7. Sigues viendo el 1, porque todos los detalles comparten el mismo DetalleViewModel.";
+      else if (!state.entryAjustes) hint = "Pulsa el engranaje: Ajustes entra en la pila, pero NavDisplay no sabe qué composable le corresponde y la app se cierra.";
+      else hint = "La pantalla visible es siempre la del último elemento de la pila: pantalla visible = f(pila). Prueba las operaciones de la tabla y el botón atrás del sistema.";
+      ui.hint.textContent = hint;
+    }
+
+    function render() { renderControls(); renderStage(); renderCode(); }
+    reset();
+    render();
+  }
+
+  // ------------------------------------------ playground de diseño adaptativo
+
+  var ADAPT_PRESETS = [
+    { label: "Móvil", w: 412, h: 915 },
+    { label: "Móvil en horizontal", w: 915, h: 412 },
+    { label: "Plegable abierto", w: 673, h: 841 },
+    { label: "Tablet en vertical", w: 800, h: 1280 },
+    { label: "Tablet en horizontal", w: 1280, h: 800 },
+    { label: "Escritorio", w: 1600, h: 900 }
+  ];
+  var ADAPT_GAMES = [
+    { id: 1, t: "Hollow Knight", p: "Switch" }, { id: 2, t: "Celeste", p: "PC" },
+    { id: 7, t: "Zelda: Tears of the Kingdom", p: "Switch" }, { id: 3, t: "Hades", p: "PC" },
+    { id: 4, t: "Stardew Valley", p: "Switch" }, { id: 5, t: "Tunic", p: "PC" }
+  ];
+
+  function widthClass(w) {
+    return w < 600 ? "Compact" : w < 840 ? "Medium" : w < 1200 ? "Expanded" : w < 1600 ? "Large" : "Extra-large";
+  }
+  function heightClass(hh) { return hh < 480 ? "Compact" : hh < 900 ? "Medium" : "Expanded"; }
+
+  function adaptivePlayground(root) {
+    root.classList.add("cpc-pg-full");
+    var state = { w: 412, h: 915, mode: "listdetail", stack: [], theme: siteMode() };
+    var ui = shell(root, "Playground: ventana redimensionable", "Cambia el tamaño de la ventana y mira cómo se adapta la app", "cpc-stage-adapt");
+    var info, ruler, frameWrap;
+
+    function reset() { state.stack = [{ type: "Catalogo" }]; }
+    reset();
+
+    function renderControls() {
+      ui.controls.innerHTML = "";
+      var presets = h("div", { class: "cpg-seg" });
+      ADAPT_PRESETS.forEach(function (p) {
+        var on = p.w === state.w && p.h === state.h;
+        var b = h("button", { type: "button", class: on ? "cpg-on" : "", "aria-pressed": String(on), text: p.label + " · " + p.w + "×" + p.h });
+        b.addEventListener("click", function () { state.w = p.w; state.h = p.h; render(); });
+        presets.appendChild(b);
+      });
+      ui.controls.appendChild(h("div", { class: "cpg-field" }, [h("span", { class: "cpg-label", text: "Dispositivo (tamaño de la ventana en dp)" }), presets]));
+      ["w", "h"].forEach(function (k) {
+        var id = nextId("adapt");
+        var r = h("input", { id: id, type: "range", min: k === "w" ? 320 : 320, max: k === "w" ? 1800 : 1300, step: 1, value: state[k] });
+        r.addEventListener("input", function () { state[k] = Number(r.value); renderStage(); renderCode(); syncPresets(); });
+        ui.controls.appendChild(h("div", { class: "cpg-field cpc-inline-field" }, [h("label", { for: id, text: k === "w" ? "Ancho" : "Alto" }), r]));
+      });
+      ui.controls.appendChild(segmented("Contenido de la sección Inicio", [
+        { value: "listdetail", label: "Lista-detalle (ListDetailSceneStrategy)" },
+        { value: "grid", label: "Lista o cuadrícula (clase de tamaño)" }
+      ], state.mode, function (v) { state.mode = v; reset(); render(); }));
+      ui.controls.appendChild(modeControl({ get mode() { return state.theme; }, set mode(v) { state.theme = v; } }, function () { render(); }));
+    }
+
+    function syncPresets() {
+      var bs = ui.controls.querySelectorAll(".cpg-field:first-child .cpg-seg button");
+      Array.prototype.forEach.call(bs, function (b, i) {
+        var on = ADAPT_PRESETS[i].w === state.w && ADAPT_PRESETS[i].h === state.h;
+        b.className = on ? "cpg-on" : "";
+        b.setAttribute("aria-pressed", String(on));
+      });
+      var ranges = ui.controls.querySelectorAll("input[type=range]");
+      ranges[0].value = state.w; ranges[1].value = state.h;
+    }
+
+    function useBar() { return widthClass(state.w) === "Compact" || heightClass(state.h) === "Compact"; }
+    function twoPanes() { return state.w >= 840; }
+
+    function appBar(title, back) {
+      return h("div", { class: "cpc-phone-bar cpc-bar-nav" }, [
+        back ? (function () {
+          var b = h("button", { type: "button", class: "cpc-icon-btn", "aria-label": "Volver" }, [icon("arrowBack")]);
+          b.addEventListener("click", function () { state.stack.pop(); renderStage(); renderCode(); });
+          return b;
+        })() : h("span", { class: "cpc-appbar-gap" }),
+        h("span", { class: "cpc-appbar-title", text: title })
+      ]);
+    }
+
+    function listPane(selected) {
+      var list = h("div", { class: "cpc-list" });
+      ADAPT_GAMES.forEach(function (g) {
+        var b = h("button", { type: "button", class: "cpc-nav-row" + (selected === g.id ? " cpc-selected" : "") }, [
+          h("span", { class: "cpc-nav-row-title", text: g.t }), h("span", { class: "cpc-nav-row-sub", text: g.p })
+        ]);
+        b.addEventListener("click", function () {
+          var last = state.stack[state.stack.length - 1];
+          if (last.type === "Detalle") state.stack[state.stack.length - 1] = { type: "Detalle", id: g.id };
+          else state.stack.push({ type: "Detalle", id: g.id });
+          renderStage(); renderCode();
+        });
+        list.appendChild(b);
+      });
+      return h("div", { class: "cpc-pane" }, [appBar("Mis juegos"), list]);
+    }
+
+    function detailPane(id, withBack) {
+      var g = ADAPT_GAMES.filter(function (x) { return x.id === id; })[0];
+      return h("div", { class: "cpc-pane" }, [appBar(g.t, withBack), h("div", { class: "cpc-nav-body" }, [h("p", { text: "Plataforma: " + g.p })])]);
+    }
+
+    function content() {
+      var last = state.stack[state.stack.length - 1];
+      if (state.mode === "grid") {
+        var ancha = state.w >= 600;
+        var body = h("div", { class: ancha ? "cpc-adapt-grid" : "cpc-list" });
+        ADAPT_GAMES.forEach(function (g, i) {
+          if (ancha) body.appendChild(h("div", { class: "cpc-adapt-card cpc-tone-" + ["primary", "secondary", "tertiary"][i % 3] }, [
+            h("strong", { text: g.t }), h("span", { text: g.p })]));
+          else body.appendChild(h("div", { class: "cpc-nav-row cpc-static" }, [h("span", { class: "cpc-nav-row-title", text: g.t }), h("span", { class: "cpc-nav-row-sub", text: g.p })]));
+        });
+        return h("div", { class: "cpc-pane" }, [appBar("Mis juegos"), body]);
+      }
+      if (twoPanes()) {
+        var sel = last.type === "Detalle" ? last.id : null;
+        return h("div", { class: "cpc-panes" }, [
+          listPane(sel),
+          sel ? detailPane(sel, false) : h("div", { class: "cpc-pane cpc-placeholder" }, [h("p", { text: "Elige un juego de la lista" })])
+        ]);
+      }
+      return last.type === "Detalle" ? detailPane(last.id, true) : listPane(null);
+    }
+
+    function navSuite() {
+      var items = [["Inicio", "home"], ["Favoritos", "favorite"], ["Perfil", "person"]].map(function (t, i) {
+        return h("span", { class: "cpc-navbar-item cpc-suite-item" + (i === 0 ? " cpc-on" : "") }, [
+          h("span", { class: "cpc-navbar-icon" }, [icon(t[1])]), h("span", { text: t[0] })]);
+      });
+      return h("div", { class: useBar() ? "cpc-suite-bar" : "cpc-suite-rail" }, items);
+    }
+
+    var handle, col, fixedScale = null;
+
+    // El escenario se crea una vez; drawWindow lo redibuja sin tocar el tirador (para no perder el arrastre).
+    function renderStage() {
+      ui.stage.innerHTML = "";
+      handle = h("span", { class: "cpc-resize", title: "Arrastra para cambiar el tamaño", "aria-hidden": "true" });
+      frameWrap = h("div", { class: "cpc-window-wrap" }, [handle]);
+      col = h("div", { class: "cpc-col cpc-adapt-col" }, [h("div"), h("div"), frameWrap]);
+      ui.stage.appendChild(col);
+      handle.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        var sx = e.clientX, sy = e.clientY, sw = state.w, sh = state.h;
+        fixedScale = currentScale();
+        handle.setPointerCapture(e.pointerId);
+        function move(ev) {
+          state.w = Math.round(Math.max(320, Math.min(1800, sw + (ev.clientX - sx) / fixedScale)));
+          state.h = Math.round(Math.max(320, Math.min(1300, sh + (ev.clientY - sy) / fixedScale)));
+          drawWindow(); renderCode(); syncPresets();
+        }
+        function up() {
+          handle.removeEventListener("pointermove", move);
+          handle.removeEventListener("pointerup", up);
+          fixedScale = null;
+          drawWindow();
+        }
+        handle.addEventListener("pointermove", move);
+        handle.addEventListener("pointerup", up);
+      });
+      drawWindow();
+    }
+
+    function currentScale() {
+      if (fixedScale) return fixedScale;
+      var avail = Math.max(260, (ui.stage.clientWidth || 700) - 32);
+      return Math.min(1, avail / state.w, 520 / state.h);
+    }
+
+    function drawWindow() {
+      if (!frameWrap) return;
+      var wc = widthClass(state.w), hc = heightClass(state.h);
+      var scale = currentScale();
+
+      // Regla de clases de ancho con la posición actual
+      var marks = [[0, "Compact"], [600, "Medium"], [840, "Expanded"], [1200, "Large"], [1600, "Extra-large"]];
+      var max = 1800;
+      ruler = h("div", { class: "cpc-ruler" });
+      marks.forEach(function (m, i) {
+        var end = i + 1 < marks.length ? marks[i + 1][0] : max;
+        ruler.appendChild(h("span", { class: "cpc-ruler-seg" + (m[1] === wc ? " cpc-on" : ""), style: { left: (m[0] / max * 100) + "%", width: ((end - m[0]) / max * 100) + "%" } }, [
+          h("span", { text: m[1] }), m[0] ? h("small", { text: m[0] + " dp" }) : null
+        ]));
+      });
+      ruler.appendChild(h("span", { class: "cpc-ruler-marker", style: { left: Math.min(100, state.w / max * 100) + "%" } }));
+
+      var twoP = state.mode === "listdetail" ? (twoPanes() ? "2 paneles" : "1 panel") : (state.w >= 600 ? "cuadrícula" : "lista");
+      info = h("div", { class: "cpc-adapt-info" }, [
+        h("span", { class: "cpc-chip-info", text: state.w + " × " + state.h + " dp" }),
+        h("span", { class: "cpc-chip-info", text: "ancho " + wc }),
+        h("span", { class: "cpc-chip-info", text: "alto " + hc }),
+        h("span", { class: "cpc-chip-info cpc-strong", text: useBar() ? "NavigationBar (abajo)" : "NavigationRail (lateral)" }),
+        h("span", { class: "cpc-chip-info cpc-strong", text: twoP }),
+        h("span", { class: "cpc-chip-info", text: "escala " + Math.round(scale * 100) + " %" })
+      ]);
+
+      var win = applyScheme(h("div", { class: "cpc-window" + (useBar() ? " cpc-has-bar" : " cpc-has-rail") }), state.theme);
+      win.style.width = state.w + "px";
+      win.style.height = state.h + "px";
+      win.style.transform = "scale(" + scale + ")";
+      win.appendChild(h("div", { class: "cpc-window-main" }, [content()]));
+      win.appendChild(navSuite());
+
+      col.replaceChild(info, col.children[0]);
+      col.replaceChild(ruler, col.children[1]);
+      var old = frameWrap.querySelector(".cpc-window");
+      if (old) frameWrap.replaceChild(win, old); else frameWrap.insertBefore(win, handle);
+      frameWrap.style.width = (state.w * scale) + "px";
+      frameWrap.style.height = (state.h * scale) + "px";
+    }
+
+    function renderCode() {
+      var lines;
+      if (state.mode === "listdetail") {
+        lines = ["// Ventana de " + state.w + " × " + state.h + " dp: ancho " + widthClass(state.w) + ", alto " + heightClass(state.h),
+          "NavigationSuiteScaffold(   // → " + (useBar() ? "NavigationBar: ancho o alto Compact" : "NavigationRail: ni el ancho ni el alto son Compact"),
+          "    navigationSuiteItems = { /* Inicio, Favoritos, Perfil */ }", ") {",
+          "    NavDisplay(", "        backStack = pila,   // " + JSON.stringify(state.stack.map(function (k) { return k.type === "Detalle" ? "Detalle(" + k.id + ")" : k.type; })).replace(/"/g, ""),
+          "        onBack = { pila.removeLastOrNull() },",
+          "        sceneStrategies = listOf(rememberListDetailSceneStrategy()),   // → " + (twoPanes() ? "2 paneles (ancho ≥ 840 dp)" : "1 panel (ancho < 840 dp)"),
+          "        entryProvider = entryProvider {",
+          "            entry<Catalogo>(metadata = ListDetailSceneStrategy.listPane(", "                detailPlaceholder = { Text(\"Elige un juego de la lista\") }",
+          "            )) { /* lista */ }",
+          "            entry<Detalle>(metadata = ListDetailSceneStrategy.detailPane()) { clave ->",
+          "                PantallaDetalle(clave.juegoId, mostrarVolver = !dosPaneles)   // " + (twoPanes() ? "sin flecha" : "con flecha"),
+          "            }", "        }", "    )", "}", "",
+          "val dosPaneles = currentWindowAdaptiveInfo().windowSizeClass",
+          "    .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)   // " + twoPanes()];
+      } else {
+        lines = ["val esAncha = currentWindowAdaptiveInfo().windowSizeClass",
+          "    .isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)   // " + (state.w >= 600) + " (" + state.w + " dp)", "",
+          "if (esAncha) {", "    LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 180.dp)) { /* tarjetas */ }" + (state.w >= 600 ? "   // ← ahora" : ""),
+          "} else {", "    LazyColumn { /* filas */ }" + (state.w < 600 ? "   // ← ahora" : ""), "}"];
+      }
+      ui.code.set(lines.join("\n"));
+      var hint;
+      if (state.mode === "grid") hint = "Con menos de 600 dp de ancho se ve una lista; desde 600 dp, una cuadrícula. Lo que cuenta es el ancho de la ventana, no si el dispositivo es un móvil o una tablet.";
+      else if (useBar() && twoPanes()) hint = "Móvil en horizontal: el alto es Compact, así que la barra sigue abajo, pero el ancho llega a Expanded y caben lista y detalle a la vez.";
+      else if (!twoPanes() && state.w >= 600) hint = "Ancho Medium (600-839 dp): ya hay barra lateral, pero la lista y el detalle siguen viéndose de uno en uno. Por eso la flecha «volver» se oculta a partir de 840 dp, no de 600.";
+      else if (twoPanes()) hint = "Ancho de 840 dp o más: lista y detalle juntos. Pulsa otro juego: el detalle se sustituye y la lista no se mueve.";
+      else hint = "Ancho Compact: barra inferior y una pantalla cada vez. Pulsa un juego para ir al detalle y la flecha para volver. Prueba a arrastrar la esquina de la ventana.";
+      ui.hint.textContent = hint;
+    }
+
+    function render() { renderControls(); renderStage(); renderCode(); }
+    render();
+    // El ancho del escenario solo se conoce cuando ya está en la página
+    requestAnimationFrame(function () { renderStage(); });
+  }
+
   // --------------------------------------------------------------- arranque
 
   var PLAYGROUNDS = {
@@ -1610,7 +2228,9 @@
     topappbar: topAppBarPlayground,
     snackbar: snackbarPlayground,
     lazylist: lazyListPlayground,
-    lazygrid: lazyGridPlayground
+    lazygrid: lazyGridPlayground,
+    navigation: navPlayground,
+    adaptive: adaptivePlayground
   };
 
   function init() {
