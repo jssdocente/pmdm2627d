@@ -1,0 +1,29 @@
+<svg class="arq-svg" viewBox="0 0 760 200" role="img" aria-labelledby="arq-r201-t arq-r201-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-r201-t">Las cuatro fases del juego de la limonada</title>
+  <desc id="arq-r201-d">El juego empieza en ARBOL. Al pulsar, calcula al azar entre 2 y 4 exprimidos y pasa a LIMON. En LIMON, cada pulsación resta un exprimido; cuando llegan a 0, pasa a VASO_LLENO. Al pulsar pasa a VASO_VACIO, y al pulsar otra vez vuelve a ARBOL.</desc>
+  <defs>
+    <marker id="arq-r201-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <rect x="20" y="62" width="150" height="46" rx="10" class="arq-ui" style="stroke-width:2"/>
+  <text x="95" y="90" class="arq-t arq-code arq-strong" text-anchor="middle">ARBOL</text>
+  <rect x="210" y="62" width="150" height="46" rx="10" class="arq-dom"/>
+  <text x="285" y="90" class="arq-t arq-code arq-strong" text-anchor="middle">LIMON</text>
+  <rect x="400" y="62" width="150" height="46" rx="10" class="arq-data"/>
+  <text x="475" y="90" class="arq-t arq-code arq-strong" text-anchor="middle">VASO_LLENO</text>
+  <rect x="590" y="62" width="150" height="46" rx="10" class="arq-box" style="stroke-width:2"/>
+  <text x="665" y="90" class="arq-t arq-code arq-strong" text-anchor="middle">VASO_VACIO</text>
+  <text x="95" y="54" class="arq-t arq-xs arq-muted" text-anchor="middle">inicio</text>
+  <line x1="170" y1="85" x2="206" y2="85" class="arq-dep" marker-end="url(#arq-r201-a)"/>
+  <text x="190" y="22" class="arq-t arq-xs arq-strong" text-anchor="middle">pulsar</text>
+  <text x="190" y="38" class="arq-t arq-code arq-xs" text-anchor="middle">exprimidos = (2..4).random()</text>
+  <line x1="360" y1="85" x2="396" y2="85" class="arq-dep" marker-end="url(#arq-r201-a)"/>
+  <text x="380" y="54" class="arq-t arq-code arq-xs" text-anchor="middle">exprimidos == 0</text>
+  <line x1="550" y1="85" x2="586" y2="85" class="arq-dep" marker-end="url(#arq-r201-a)"/>
+  <text x="570" y="54" class="arq-t arq-xs arq-strong" text-anchor="middle">pulsar (beber)</text>
+  <!-- Bucle en LIMON -->
+  <path d="M262,108 C262,146 318,146 318,112" class="arq-dep" style="fill:none" marker-end="url(#arq-r201-a)"/>
+  <text x="326" y="140" class="arq-t arq-xs">pulsar: exprimidos − 1</text>
+  <!-- Vuelta a ARBOL -->
+  <path d="M665,108 C665,186 95,186 95,112" class="arq-dep" style="fill:none" marker-end="url(#arq-r201-a)"/>
+  <text x="380" y="190" class="arq-t arq-xs arq-strong" text-anchor="middle">pulsar (volver a empezar)</text>
+</svg>

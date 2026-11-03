@@ -29,11 +29,14 @@ git switch -c mi-trabajo       # tu rama para trabajar
 
 Cada sesión corresponde a una clase de **2 horas**.
 
-| Sesión | Contenido | Apuntes | Proyecto |
-| :--- | :--- | :--- | :--- |
-| [**2.01** · Primer contacto con Compose](./s01-primer-contacto-compose.md) | Funciones composable, árbol de la composición, `MainActivity`, `@Preview`, `Column`, `Row`, `Box` y `Modifier` | [2.3](../2.3-primera-app.md), [2.3.1](../2.3.1-layouts-modificadores.md) | `s2.01-inicio` → `s2.01-fin` |
-| [**2.02** · Estado y *state hoisting*](./s02-estado-state-hoisting.md) | Estado y recomposición, `remember` y `rememberSaveable`, elevación del estado | [2.3 §3](../2.3-primera-app.md), [2.2 §4](../2.2-ciclo-vida-app.md), [Gestión del estado](../../00-android/00-compose/22-state-management.md) | `s2.02-inicio` → `s2.02-fin` |
-| [**2.03** · Imágenes, iconos y recursos](./s03-imagenes-iconos-recursos.md) · 📚 *estudio autónomo* | La portada real con `Image`, iconos, textos en `strings.xml` | [2.3.2](../2.3.2-imagenes-iconos-recursos.md) | `s2.03-inicio` → `s2.03-fin` |
+| Sesión | Contenido | Apuntes | Proyecto | Codelabs del laboratorio |
+| :--- | :--- | :--- | :--- | :--- |
+| [**2.01** · Primer contacto con Compose](./s01-primer-contacto-compose.md) | Funciones composable, árbol de la composición, `MainActivity`, `@Preview`, `Column`, `Row`, `Box` y `Modifier` | [2.3](../2.3-primera-app.md), [2.3.1](../2.3.1-layouts-modificadores.md) | `s2.01-inicio` → `s2.01-fin` | [2.01](../codelabs/01-tarjeta-presentacion.md) |
+| [**2.02** · Estado y *state hoisting*](./s02-estado-state-hoisting.md) | Estado y recomposición, `remember` y `rememberSaveable`, elevación del estado | [2.3 §3](../2.3-primera-app.md), [2.2 §4](../2.2-ciclo-vida-app.md), [Gestión del estado](../../00-android/00-compose/22-state-management.md) | `s2.02-inicio` → `s2.02-fin` | [2.02](../codelabs/02-contador-incremental.md) y [2.03](../codelabs/03-ciclo-vida-logcat.md) |
+| [**2.03** · Imágenes, iconos y recursos](./s03-imagenes-iconos-recursos.md) · 📚 *estudio autónomo* | La portada real con `Image`, iconos, textos en `strings.xml` | [2.3.2](../2.3.2-imagenes-iconos-recursos.md) | `s2.03-inicio` → `s2.03-fin` | [2.04](../codelabs/04-dado-interactivo.md) |
+
+!!! tip "El laboratorio, aparte"
+    Los codelabs de la última columna no se hacen en FichaJuego, sino en el [repositorio del laboratorio](../2.4-laboratorio-retos.md#1-el-repositorio-del-laboratorio), `pmdm2627-lab-ut2`, que tiene sus propios tags (`c2.01-inicio`, `c2.01-fin`…). Refuerzan lo visto en cada clase y se hacen por tu cuenta.
 
 !!! info "Sesiones de estudio autónomo"
     Las sesiones marcadas con 📚 no se dan en el aula: tienen su guía para que las sigas por tu cuenta, a tu ritmo, con el mismo formato que el resto.

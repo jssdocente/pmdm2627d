@@ -1,76 +1,73 @@
-# **Codelab 5: Semáforo Inteligente y Máquinas de Estados**
+# **Codelab 2.05: Semáforo y Máquinas de Estados**
 
-En este codelab aprenderás a modelar y representar visualmente una **máquina de estados finita** en Jetpack Compose a través de una aplicación práctica y didáctica: el **Semáforo Inteligente de Tráfico**.
+En los codelabs anteriores el estado era un número. En este último codelab de la unidad, el estado es **una fase entre varias posibles**, y de la fase depende toda la pantalla: qué luz se enciende, qué mensaje se lee, de qué color y qué hace cada botón. Modelarás esas fases con un **`enum class`** que sabe cuál es la siguiente, es decir, una pequeña **máquina de estados**, y dibujarás las luces con formas circulares.
 
-Aprenderás a estructurar estados discretos mediante un `enum class` de Kotlin, a controlar de manera reactiva la apariencia geométrica y lumínica de componentes visuales (color, brillo y opacidad mediante `alpha`), y a conectar botones de control que hacen transitar la aplicación por sus diferentes fases viales.
+!!! info "Punto de partida: tag `c2.05-inicio`"
+    Sigue en el repositorio del laboratorio, [pmdm2627-lab-ut2](https://github.com/jssdocente/pmdm2627-lab-ut2). Si terminaste el [Codelab 2.04](./04-dado-interactivo.md), continúa en tu rama. Si no, parte del tag:
+
+    ```bash
+    git checkout c2.05-inicio
+    git switch -c mi-lab-2.05
+    ```
+
+    `c2.05-inicio` es `c2.04-fin`: el menú con cuatro codelabs, incluido el lanzador de dados.
 
 ---
 
 ## 1. ¿Qué vas a construir?
 
-Construirás una interfaz interactiva que simula un semáforo de tráfico urbano real:
+Un semáforo con tres luces y un panel que explica la fase actual. **Avanzar fase** recorre el ciclo rojo → verde → ámbar → rojo; **Modo noche** deja el ámbar fijo y **Modo día** vuelve al rojo; **Reset** vuelve al rojo desde cualquier fase.
 
-1. **Chasis del semáforo:** Un contenedor vertical estilizado con fondo oscuro y bordes redondeados.
-2. **Tres ópticas circulares:** Luces en rojo, ámbar y verde que se encienden con brillo total (`alpha = 1.0f`) o se atenúan cuando están apagadas (`alpha = 0.2f`).
-3. **Panel informativo dinámico:** Muestra el texto explicativo de tráfico correspondiente a la luz activa.
-4. **Control secuencial de avance:** Un botón **"Avanzar Fase"** que progresa por el ciclo reglamentario:
-   $$\text{ROJO} \longrightarrow \text{VERDE} \longrightarrow \text{ÁMBAR} \longrightarrow \text{ROJO}$$
-5. **Modo Noche / Precaución:** Un conmutador que activa la fase especial de ámbar fijo.
-6. **Resistencia a giros:** La fase activa se almacena con `rememberSaveable`, manteniendo el estado intacto al rotar el dispositivo.
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap; margin: 1.8rem 0;" markdown="1">
 
-<div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 1.2rem; flex-wrap: wrap; margin: 1.8rem 0;" markdown="1">
+<figure style="margin: 0; text-align: center; max-width: 220px;" markdown="1">
 
-<figure style="margin: 0; text-align: center; max-width: 240px;" markdown="1">
+![Semáforo en rojo](./images/c2.05-rojo.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 210px;" }
 
-![Semáforo - Fase Roja: ¡Alto!](./images/Lab5.1.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 220px;" }
-
-<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 1:</strong> Fase Roja (detención obligatoria).</figcaption>
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 1:</strong> Fase inicial: rojo.</figcaption>
 </figure>
 
-<figure style="margin: 0; text-align: center; max-width: 240px;" markdown="1">
+<figure style="margin: 0; text-align: center; max-width: 220px;" markdown="1">
 
-![Semáforo - Fase Verde: Vía Libre](./images/Lab5.2.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 220px;" }
+![Semáforo en verde](./images/c2.05-verde.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 210px;" }
 
-<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 2:</strong> Fase Verde (paso permitido).</figcaption>
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 2:</strong> Tras pulsar «Avanzar fase».</figcaption>
 </figure>
 
-<figure style="margin: 0; text-align: center; max-width: 240px;" markdown="1">
+<figure style="margin: 0; text-align: center; max-width: 220px;" markdown="1">
 
-![Semáforo - Fase Ámbar: Precaución](./images/Lab5.3.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 220px;" }
+![Semáforo en modo noche](./images/c2.05-noche.png){ style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); width: 100%; max-width: 210px;" }
 
-<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 3:</strong> Fase Ámbar (precaución y transición).</figcaption>
+<figcaption style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--md-default-fg-color--light);"><strong>Figura 3:</strong> Modo noche.</figcaption>
 </figure>
 
 </div>
 
-```mermaid
-stateDiagram-v2
-    [*] --> ROJO: Inicio / Reset
-    ROJO --> VERDE: Pulsar 'Avanzar Fase'
-    VERDE --> AMBAR: Pulsar 'Avanzar Fase'
-    AMBAR --> ROJO: Pulsar 'Avanzar Fase'
+<figure class="arq-fig">
+--8<-- "docs/temas/02/codelabs/images/c2.05-estados.svg"
+<figcaption>Las cuatro fases y sus transiciones. El ciclo normal lo recorre <code>siguiente()</code>; el modo noche y el reset, los botones.</figcaption>
+</figure>
 
-    ROJO --> PRECAUCION: Conmutar 'Modo Noche'
-    VERDE --> PRECAUCION: Conmutar 'Modo Noche'
-    AMBAR --> PRECAUCION: Conmutar 'Modo Noche'
-    PRECAUCION --> ROJO: Desactivar 'Modo Noche'
-```
+Al terminar, serás capaz de:
 
-Al finalizar este codelab, serás capaz de:
-
-- Modelar estados discretos de UI mediante `enum class` de Kotlin y funciones de extensión.
-- Utilizar formas geométricas circulares con `Modifier.clip(CircleShape)`.
-- Alterar el color y la transparencia de un Composable de manera condicional usando `copy(alpha = ...)`.
-- Diseñar interfaces con `Column`, `Box` y alineaciones centralizadas.
-- Configurar vistas previas simultáneas con `@Preview` para cada una de las fases del semáforo.
+- Modelar un conjunto cerrado de estados con un `enum class` con propiedades.
+- Escribir las transiciones de la máquina de estados en el propio `enum`, con `when`.
+- Dibujar formas con `Box`, `clip(CircleShape)`, `background` y `border`.
+- Derivar toda una pantalla de **un único estado**.
+- Probar la lógica de transiciones con tests unitarios.
 
 ---
 
-## 2. Modelado de Dominio: El Estado del Semáforo
+## 2. Paso 1: El Modelo, `FaseSemaforo`
 
-En lugar de almacenar enteros mágicos o cadenas de texto sueltas (`"rojo"`, `"verde"`), modelamos las fases del semáforo con un `enum class` fuertemente tipado:
+En lugar de guardar textos sueltos (`"rojo"`, `"verde"`) o números mágicos (`0`, `1`, `2`), modelamos las fases con un `enum class`. Así es **imposible** tener una fase que no exista, y cada fase lleva consigo su título, su descripción y su color.
+
+Crea el paquete `codelabs.codelab05_semaforo` y el archivo `Semaforo.kt`. Empieza por el modelo:
 
 ```kotlin
+// ============================================================================
+// 1. MODELO: LAS FASES DEL SEMÁFORO Y SUS TRANSICIONES
+// ============================================================================
 enum class FaseSemaforo(
     val titulo: String,
     val descripcion: String,
@@ -97,7 +94,6 @@ enum class FaseSemaforo(
         colorActivo = Color(0xFFFFB300)
     );
 
-    // Función para obtener la siguiente fase en el ciclo de tráfico regular
     fun siguiente(): FaseSemaforo = when (this) {
         ROJO -> VERDE
         VERDE -> AMBAR
@@ -107,20 +103,21 @@ enum class FaseSemaforo(
 }
 ```
 
+Dos detalles de Kotlin:
+
+- Cuando un `enum` tiene funciones, la lista de valores termina con **punto y coma** (`;`).
+- `siguiente()` es la **tabla de transiciones** de la máquina de estados. El `when` cubre los cuatro valores sin `else`: si mañana añades una fase, el compilador te obligará a decidir cuál le sigue.
+
 ---
 
-## 3. Paso 1: Creación de la Óptica Circular (`LuzCircular`)
+## 3. Paso 2: Una Luz del Semáforo, `LuzCircular`
 
-Creamos el archivo `app/src/main/java/com/dam/pmdmlab/codelabs/codelab05_semaforo/SemaforoScreen.kt`.
-
-Cada luz del semáforo es un composable `LuzCircular` que recibe:
-
-- El color base de la luz (`Color`).
-- Un indicador booleano `estaEncendida: Boolean`.
-
-Si la luz está encendida, se dibuja con opacidad completa (`alpha = 1f`) y un borde sutil; si está apagada, se dibuja atenuada (`alpha = 0.18f`):
+Compose no tiene un componente «círculo»: se construye con un `Box` y modificadores. El **orden** de los modificadores importa: primero el tamaño, luego el recorte a círculo y después el fondo y el borde, que ya se pintan con forma circular.
 
 ```kotlin
+// ============================================================================
+// 2. UNA LUZ DEL SEMÁFORO: un Box recortado en círculo
+// ============================================================================
 @Composable
 fun LuzCircular(
     colorBase: Color,
@@ -143,302 +140,19 @@ fun LuzCircular(
 }
 ```
 
----
-
-## 4. Paso 2: Componente de Presentación (`SemaforoContent`)
-
-El componente de presentación organiza verticalmente:
-
-1. El encabezado de la pantalla.
-2. El **Chasis del semáforo:** Un `Card` alargado con color gris muy oscuro (`Color(0xFF212121)`), relleno interno y sombra, que contiene las tres luces (`ROJO`, `AMBAR`, `VERDE`).
-3. El **Panel de información vial:** Una tarjeta con el título y la descripción de la fase activa.
-4. La **Botonera de acciones:** Botón principal para avanzar de fase, botón para conmutar el modo noche y botón para reiniciar.
-
-```kotlin
-@Composable
-fun SemaforoContent(
-    faseActual: FaseSemaforo,
-    onAvanzarFase: () -> Unit,
-    onConmutarModoNoche: () -> Unit,
-    onReiniciar: () -> Unit,
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Semáforo Inteligente",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Chasis exterior del semáforo
-        Card(
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF263238)),
-            shape = MaterialTheme.shapes.large,
-            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Luz Roja
-                LuzCircular(
-                    colorBase = Color(0xFFE53935),
-                    estaEncendida = (faseActual == FaseSemaforo.ROJO)
-                )
-
-                // Luz Ámbar (se enciende en AMBAR y en PRECAUCION)
-                LuzCircular(
-                    colorBase = Color(0xFFFFB300),
-                    estaEncendida = (faseActual == FaseSemaforo.AMBAR || faseActual == FaseSemaforo.PRECAUCION)
-                )
-
-                // Luz Verde
-                LuzCircular(
-                    colorBase = Color(0xFF43A047),
-                    estaEncendida = (faseActual == FaseSemaforo.VERDE)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Panel de información de tráfico reactivo
-        Card(
-            modifier = Modifier.fillMaxWidth(0.9f),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = faseActual.titulo,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = faseActual.colorActivo
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = faseActual.descripcion,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Botones de acción
-        Button(
-            onClick = onAvanzarFase,
-            modifier = Modifier.fillMaxWidth(0.75f)
-        ) {
-            Text("Avanzar Fase")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(0.75f),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            OutlinedButton(onClick = onConmutarModoNoche) {
-                Text(if (faseActual == FaseSemaforo.PRECAUCION) "Modo Día" else "Modo Noche")
-            }
-            OutlinedButton(onClick = onReiniciar) {
-                Text("Reset")
-            }
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        OutlinedButton(onClick = onBack) {
-            Text("Volver al Menú")
-        }
-    }
-}
-```
+Una luz apagada es la misma luz con el color casi transparente (`copy(alpha = 0.18f)`).
 
 ---
 
-## 5. Paso 3: Vistas Previas de Todas las Fases con `@Preview`
+## 4. Paso 3: El Componente sin Estado, `SemaforoContent`
 
-Gracias al desacoplamiento Stateless, podemos diseñar una vista previa para cada uno de los estados posibles en IntelliJ IDEA:
+Toda la pantalla depende de **un solo valor**, `faseActual`: qué luz se enciende, el título y su color, la descripción y hasta el texto del botón de modo noche.
 
-```kotlin
-@Preview(name = "Fase 1: Rojo", showBackground = true)
-@Composable
-private fun SemaforoPreviewRojo() {
-    Surface {
-        SemaforoContent(
-            faseActual = FaseSemaforo.ROJO,
-            onAvanzarFase = {},
-            onConmutarModoNoche = {},
-            onReiniciar = {},
-            onBack = {}
-        )
-    }
-}
-
-@Preview(name = "Fase 2: Verde", showBackground = true)
-@Composable
-private fun SemaforoPreviewVerde() {
-    Surface {
-        SemaforoContent(
-            faseActual = FaseSemaforo.VERDE,
-            onAvanzarFase = {},
-            onConmutarModoNoche = {},
-            onReiniciar = {},
-            onBack = {}
-        )
-    }
-}
-
-@Preview(name = "Fase 3: Ámbar", showBackground = true)
-@Composable
-private fun SemaforoPreviewAmbar() {
-    Surface {
-        SemaforoContent(
-            faseActual = FaseSemaforo.AMBAR,
-            onAvanzarFase = {},
-            onConmutarModoNoche = {},
-            onReiniciar = {},
-            onBack = {}
-        )
-    }
-}
-
-@Preview(name = "Fase 4: Modo Noche", showBackground = true)
-@Composable
-private fun SemaforoPreviewNoche() {
-    Surface {
-        SemaforoContent(
-            faseActual = FaseSemaforo.PRECAUCION,
-            onAvanzarFase = {},
-            onConmutarModoNoche = {},
-            onReiniciar = {},
-            onBack = {}
-        )
-    }
-}
-```
-
----
-
-## 6. Paso 4: Contenedor con Estado (`SemaforoScreen`)
-
-Implementamos la pantalla contenedora que almacena la fase activa y conecta los eventos del usuario:
-
-??? example "Ver código completo: SemaforoScreen.kt"
+??? example "Ver código: `SemaforoContent`"
 
     ```kotlin
-    package com.dam.pmdmlab.codelabs.codelab05_semaforo
-
-    import androidx.compose.foundation.background
-    import androidx.compose.foundation.border
-    import androidx.compose.foundation.layout.Arrangement
-    import androidx.compose.foundation.layout.Box
-    import androidx.compose.foundation.layout.Column
-    import androidx.compose.foundation.layout.Row
-    import androidx.compose.foundation.layout.Spacer
-    import androidx.compose.foundation.layout.fillMaxSize
-    import androidx.compose.foundation.layout.fillMaxWidth
-    import androidx.compose.foundation.layout.height
-    import androidx.compose.foundation.layout.padding
-    import androidx.compose.foundation.layout.size
-    import androidx.compose.foundation.shape.CircleShape
-    import androidx.compose.material3.Button
-    import androidx.compose.material3.Card
-    import androidx.compose.material3.CardDefaults
-    import androidx.compose.material3.MaterialTheme
-    import androidx.compose.material3.OutlinedButton
-    import androidx.compose.material3.Surface
-    import androidx.compose.material3.Text
-    import androidx.compose.runtime.Composable
-    import androidx.compose.runtime.getValue
-    import androidx.compose.runtime.mutableStateOf
-    import androidx.compose.runtime.saveable.rememberSaveable
-    import androidx.compose.runtime.setValue
-    import androidx.compose.ui.Alignment
-    import androidx.compose.ui.Modifier
-    import androidx.compose.ui.draw.clip
-    import androidx.compose.ui.graphics.Color
-    import androidx.compose.ui.tooling.preview.Preview
-    import androidx.compose.ui.unit.dp
-
     // ============================================================================
-    // 1. MODELO DE DOMINIO: ESTADOS DEL SEMÁFORO
-    // ============================================================================
-    enum class FaseSemaforo(
-        val titulo: String,
-        val descripcion: String,
-        val colorActivo: Color
-    ) {
-        ROJO(
-            titulo = "¡ALTO!",
-            descripcion = "Detención obligatoria para todos los vehículos",
-            colorActivo = Color(0xFFE53935)
-        ),
-        AMBAR(
-            titulo = "PRECAUCIÓN",
-            descripcion = "Deténgase si es seguro hacerlo; cambio inminente a rojo",
-            colorActivo = Color(0xFFFFB300)
-        ),
-        VERDE(
-            titulo = "VÍA LIBRE",
-            descripcion = "Paso permitido respetando la prioridad peatonal",
-            colorActivo = Color(0xFF43A047)
-        ),
-        PRECAUCION(
-            titulo = "MODO NOCHE",
-            descripcion = "Cruce con máxima precaución y ceda el paso",
-            colorActivo = Color(0xFFFFB300)
-        );
-
-        fun siguiente(): FaseSemaforo = when (this) {
-            ROJO -> VERDE
-            VERDE -> AMBAR
-            AMBAR -> ROJO
-            PRECAUCION -> ROJO
-        }
-    }
-
-    // ============================================================================
-    // 2. SUB-COMPONENTE VISUAL: LUZ CIRCULAR
-    // ============================================================================
-    @Composable
-    fun LuzCircular(
-        colorBase: Color,
-        estaEncendida: Boolean,
-        modifier: Modifier = Modifier
-    ) {
-        val colorFinal = if (estaEncendida) colorBase else colorBase.copy(alpha = 0.18f)
-
-        Box(
-            modifier = modifier
-                .size(72.dp)
-                .clip(CircleShape)
-                .background(colorFinal)
-                .border(
-                    width = 3.dp,
-                    color = if (estaEncendida) Color.White.copy(alpha = 0.7f) else Color.Black.copy(alpha = 0.3f),
-                    shape = CircleShape
-                )
-        )
-    }
-
-    // ============================================================================
-    // 3. COMPONENTE DE PRESENTACIÓN (STATELESS CONTENT)
+    // 3. COMPONENTE SIN ESTADO
     // ============================================================================
     @Composable
     fun SemaforoContent(
@@ -446,7 +160,6 @@ Implementamos la pantalla contenedora que almacena la fase activa y conecta los 
         onAvanzarFase: () -> Unit,
         onConmutarModoNoche: () -> Unit,
         onReiniciar: () -> Unit,
-        onBack: () -> Unit,
         modifier: Modifier = Modifier
     ) {
         Column(
@@ -540,28 +253,33 @@ Implementamos la pantalla contenedora que almacena la fase activa y conecta los 
                     Text("Reset")
                 }
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            OutlinedButton(onClick = onBack) {
-                Text("Volver al Menú")
-            }
         }
     }
+    ```
 
+Fíjate en que el componente **no decide** cuál es la siguiente fase: solo avisa con `onAvanzarFase`. La regla vive en el modelo (`siguiente()`).
+
+---
+
+## 5. Paso 4: Una Vista Previa por Fase
+
+Con un `enum`, comprobar todos los estados es tan fácil como hacer una preview por valor. Para no escribir cuatro funciones casi iguales, puedes escribir una con un parámetro y anotarla con `@PreviewParameter`; aquí, por claridad, se escriben las cuatro:
+
+??? example "Ver código: cuatro vistas previas"
+
+    ```kotlin
     // ============================================================================
-    // 4. VISTAS PREVIAS (@PREVIEW) DE CADA FASE
+    // 4. VISTAS PREVIAS: una por fase
     // ============================================================================
     @Preview(name = "Fase: Rojo", showBackground = true)
     @Composable
     private fun SemaforoPreviewRojo() {
-        Surface {
+        LabUt2Theme {
             SemaforoContent(
                 faseActual = FaseSemaforo.ROJO,
                 onAvanzarFase = {},
                 onConmutarModoNoche = {},
-                onReiniciar = {},
-                onBack = {}
+                onReiniciar = {}
             )
         }
     }
@@ -569,13 +287,12 @@ Implementamos la pantalla contenedora que almacena la fase activa y conecta los 
     @Preview(name = "Fase: Verde", showBackground = true)
     @Composable
     private fun SemaforoPreviewVerde() {
-        Surface {
+        LabUt2Theme {
             SemaforoContent(
                 faseActual = FaseSemaforo.VERDE,
                 onAvanzarFase = {},
                 onConmutarModoNoche = {},
-                onReiniciar = {},
-                onBack = {}
+                onReiniciar = {}
             )
         }
     }
@@ -583,13 +300,12 @@ Implementamos la pantalla contenedora que almacena la fase activa y conecta los 
     @Preview(name = "Fase: Ámbar", showBackground = true)
     @Composable
     private fun SemaforoPreviewAmbar() {
-        Surface {
+        LabUt2Theme {
             SemaforoContent(
                 faseActual = FaseSemaforo.AMBAR,
                 onAvanzarFase = {},
                 onConmutarModoNoche = {},
-                onReiniciar = {},
-                onBack = {}
+                onReiniciar = {}
             )
         }
     }
@@ -597,25 +313,31 @@ Implementamos la pantalla contenedora que almacena la fase activa y conecta los 
     @Preview(name = "Fase: Modo Noche", showBackground = true)
     @Composable
     private fun SemaforoPreviewNoche() {
-        Surface {
+        LabUt2Theme {
             SemaforoContent(
                 faseActual = FaseSemaforo.PRECAUCION,
                 onAvanzarFase = {},
                 onConmutarModoNoche = {},
-                onReiniciar = {},
-                onBack = {}
+                onReiniciar = {}
             )
         }
     }
+    ```
 
+---
+
+## 6. Paso 5: La Pantalla con Estado
+
+Un único estado, de tipo `FaseSemaforo`. Como es un `enum`, `rememberSaveable` lo guarda sin más:
+
+??? example "Ver código: `SemaforoScreen`"
+
+    ```kotlin
     // ============================================================================
-    // 5. PANTALLA CONTENEDORA (STATEFUL SCREEN)
+    // 5. PANTALLA CON ESTADO: toda la pantalla depende de una sola variable
     // ============================================================================
     @Composable
-    fun SemaforoScreen(
-        onBack: () -> Unit,
-        modifier: Modifier = Modifier
-    ) {
+    fun SemaforoScreen(modifier: Modifier = Modifier) {
         var faseActual by rememberSaveable { mutableStateOf(FaseSemaforo.ROJO) }
 
         SemaforoContent(
@@ -633,19 +355,115 @@ Implementamos la pantalla contenedora que almacena la fase activa y conecta los 
             onReiniciar = {
                 faseActual = FaseSemaforo.ROJO
             },
-            onBack = onBack,
             modifier = modifier
         )
     }
     ```
 
+??? example "Ver los imports de `Semaforo.kt`"
+
+    ```kotlin
+    package com.pmdm.lab.ut2.codelabs.codelab05_semaforo
+
+    import androidx.compose.foundation.background
+    import androidx.compose.foundation.border
+    import androidx.compose.foundation.layout.Arrangement
+    import androidx.compose.foundation.layout.Box
+    import androidx.compose.foundation.layout.Column
+    import androidx.compose.foundation.layout.Row
+    import androidx.compose.foundation.layout.Spacer
+    import androidx.compose.foundation.layout.fillMaxSize
+    import androidx.compose.foundation.layout.fillMaxWidth
+    import androidx.compose.foundation.layout.height
+    import androidx.compose.foundation.layout.padding
+    import androidx.compose.foundation.layout.size
+    import androidx.compose.foundation.shape.CircleShape
+    import androidx.compose.material3.Button
+    import androidx.compose.material3.Card
+    import androidx.compose.material3.CardDefaults
+    import androidx.compose.material3.MaterialTheme
+    import androidx.compose.material3.OutlinedButton
+    import androidx.compose.material3.Text
+    import androidx.compose.runtime.Composable
+    import androidx.compose.runtime.getValue
+    import androidx.compose.runtime.mutableStateOf
+    import androidx.compose.runtime.saveable.rememberSaveable
+    import androidx.compose.runtime.setValue
+    import androidx.compose.ui.Alignment
+    import androidx.compose.ui.Modifier
+    import androidx.compose.ui.draw.clip
+    import androidx.compose.ui.graphics.Color
+    import androidx.compose.ui.tooling.preview.Preview
+    import androidx.compose.ui.unit.dp
+    import com.pmdm.lab.ut2.ui.theme.LabUt2Theme
+    ```
+
+Registra la pantalla en `LabApp.kt`, como siempre:
+
+```kotlin
+SEMAFORO("2.05 · Semáforo", "Máquina de estados con enum class")
+```
+
+```kotlin
+PantallaLab.SEMAFORO -> PantallaConVolver({ pantalla = PantallaLab.MENU }, modifier) {
+    SemaforoScreen()
+}
+```
+
 ---
 
-## 7. Resumen y Checklist de Calidad
+## 7. Paso 6: Tests de la Máquina de Estados
 
-En este codelab has aprendido:
+La lógica del semáforo está en `siguiente()`, una función de un `enum` que no sabe nada de Compose. Por eso se prueba en la JVM, sin emulador. Crea `app/src/test/java/com/pmdm/lab/ut2/codelabs/codelab05_semaforo/FaseSemaforoTest.kt`:
 
-- El modelado riguroso de máquinas de estados discretos con `enum class` y funciones de transición.
-- La creación de figuras geométricas puras con `Modifier.clip(CircleShape)` y `Modifier.border(...)`.
-- El dinamismo visual reactivo modulando la opacidad (`alpha`) de colores según el estado activo.
-- La organización de vistas previas exhaustivas para validar en IntelliJ IDEA todos los estados de la aplicación.
+```kotlin
+package com.pmdm.lab.ut2.codelabs.codelab05_semaforo
+
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class FaseSemaforoTest {
+    @Test
+    fun elCicloNormal_esRojoVerdeAmbarRojo() {
+        assertEquals(FaseSemaforo.VERDE, FaseSemaforo.ROJO.siguiente())
+        assertEquals(FaseSemaforo.AMBAR, FaseSemaforo.VERDE.siguiente())
+        assertEquals(FaseSemaforo.ROJO, FaseSemaforo.AMBAR.siguiente())
+    }
+
+    @Test
+    fun desdeElModoNoche_seVuelveARojo() {
+        assertEquals(FaseSemaforo.ROJO, FaseSemaforo.PRECAUCION.siguiente())
+    }
+}
+```
+
+```bash
+./gradlew test
+```
+
+Esta separación (la regla en el modelo, la pantalla solo la usa) es la misma idea que en la UT3 llevarás a un `ViewModel`.
+
+---
+
+## 8. Experimenta
+
+1. Añade una fase `INTERMITENTE` al `enum`. ¿Qué te pide el compilador y por qué?
+
+2. Haz que en `PRECAUCION` el ámbar se vea al 50 % (pista: `LuzCircular` ya recibe si está encendida; ¿qué tendrías que cambiar para que reciba un `alpha`?).
+
+3. Gira el móvil en cualquier fase: la fase se conserva, porque un `enum` cabe en el `Bundle`.
+
+!!! success "Solución: tag `c2.05-fin`"
+    Compara tu código con el tag [`c2.05-fin`](https://github.com/jssdocente/pmdm2627-lab-ut2/tree/c2.05-fin) (`git diff c2.05-fin`). Con este codelab terminas la parte guiada: los [retos autónomos](../2.4-laboratorio-retos.md#4-retos-autonomos) parten de aquí.
+
+---
+
+## 9. Resumen y Checklist
+
+- [ ] `FaseSemaforo` es un `enum class` con título, descripción y color, y la función `siguiente()`.
+- [ ] El `when` de `siguiente()` cubre todos los valores sin `else`.
+- [ ] `LuzCircular` dibuja un círculo con `size`, `clip(CircleShape)`, `background` y `border`, en ese orden.
+- [ ] `SemaforoContent` solo pinta y avisa; la regla de transición está en el modelo.
+- [ ] Hay una `@Preview` por fase.
+- [ ] La fase usa `rememberSaveable` y sobrevive al giro.
+- [ ] `FaseSemaforoTest` pasa con `./gradlew test`.

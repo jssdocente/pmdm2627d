@@ -1,0 +1,37 @@
+<svg class="arq-svg" viewBox="0 0 760 225" role="img" aria-labelledby="arq-c201c-t arq-c201c-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c201c-t">Column, Row y Box</title>
+  <desc id="arq-c201c-d">Tres paneles. Column apila tres elementos de arriba abajo. Row coloca tres elementos de izquierda a derecha. Box superpone dos capas: la primera queda al fondo y la segunda encima.</desc>
+  <defs>
+    <marker id="arq-c201c-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <!-- Column -->
+  <text x="130" y="28" class="arq-t arq-code arq-strong" text-anchor="middle">Column</text>
+  <rect x="20" y="40" width="220" height="152" rx="12" class="arq-box"/>
+  <rect x="70" y="56" width="140" height="32" rx="6" class="arq-ui"/>
+  <text x="140" y="77" class="arq-t arq-s arq-strong" text-anchor="middle">1</text>
+  <rect x="70" y="100" width="140" height="32" rx="6" class="arq-ui"/>
+  <text x="140" y="121" class="arq-t arq-s arq-strong" text-anchor="middle">2</text>
+  <rect x="70" y="144" width="140" height="32" rx="6" class="arq-ui"/>
+  <text x="140" y="165" class="arq-t arq-s arq-strong" text-anchor="middle">3</text>
+  <line x1="46" y1="58" x2="46" y2="174" class="arq-dep" marker-end="url(#arq-c201c-a)"/>
+  <text x="130" y="214" class="arq-t arq-xs arq-muted" text-anchor="middle">apila en vertical, de arriba abajo</text>
+  <!-- Row -->
+  <text x="380" y="28" class="arq-t arq-code arq-strong" text-anchor="middle">Row</text>
+  <rect x="270" y="40" width="220" height="152" rx="12" class="arq-box"/>
+  <rect x="292" y="62" width="50" height="80" rx="6" class="arq-ui"/>
+  <text x="317" y="107" class="arq-t arq-s arq-strong" text-anchor="middle">1</text>
+  <rect x="355" y="62" width="50" height="80" rx="6" class="arq-ui"/>
+  <text x="380" y="107" class="arq-t arq-s arq-strong" text-anchor="middle">2</text>
+  <rect x="418" y="62" width="50" height="80" rx="6" class="arq-ui"/>
+  <text x="443" y="107" class="arq-t arq-s arq-strong" text-anchor="middle">3</text>
+  <line x1="294" y1="168" x2="466" y2="168" class="arq-dep" marker-end="url(#arq-c201c-a)"/>
+  <text x="380" y="214" class="arq-t arq-xs arq-muted" text-anchor="middle">coloca en horizontal, de izquierda a derecha</text>
+  <!-- Box -->
+  <text x="630" y="28" class="arq-t arq-code arq-strong" text-anchor="middle">Box</text>
+  <rect x="520" y="40" width="220" height="152" rx="12" class="arq-box"/>
+  <rect x="540" y="58" width="140" height="96" rx="6" class="arq-gray"/>
+  <text x="552" y="78" class="arq-t arq-xs">1 · fondo</text>
+  <rect x="596" y="104" width="128" height="70" rx="6" class="arq-ui"/>
+  <text x="660" y="144" class="arq-t arq-xs arq-strong" text-anchor="middle">2 · encima</text>
+  <text x="630" y="214" class="arq-t arq-xs arq-muted" text-anchor="middle">superpone en capas: el primero, al fondo</text>
+</svg>

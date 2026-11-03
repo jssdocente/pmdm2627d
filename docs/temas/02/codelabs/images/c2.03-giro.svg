@@ -1,0 +1,39 @@
+<svg class="arq-svg" viewBox="0 0 760 290" role="img" aria-labelledby="arq-c203g-t arq-c203g-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c203g-t">Qué pasa con el estado al girar la pantalla</title>
+  <desc id="arq-c203g-d">Antes de girar, la Activity 1 tiene dos contadores a 5: uno con remember y otro con rememberSaveable. Al girar, la Activity 1 se destruye y se crea la Activity 2. El valor de remember vivía en la composición y se pierde: en la Activity 2 vale 0. El de rememberSaveable se guarda en el Bundle de la Activity y se restaura: en la Activity 2 sigue valiendo 5.</desc>
+  <defs>
+    <marker id="arq-c203g-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c203g-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="145" y="26" class="arq-t arq-s arq-strong" text-anchor="middle">Activity 1 · antes de girar</text>
+  <rect x="20" y="38" width="250" height="168" rx="14" class="arq-box" style="stroke-width:2"/>
+  <text x="34" y="60" class="arq-t arq-xs arq-muted">composición</text>
+  <rect x="35" y="76" width="220" height="30" rx="8" class="arq-warn"/>
+  <text x="145" y="96" class="arq-t arq-code arq-xs" text-anchor="middle">remember → cuenta = 5</text>
+  <rect x="35" y="150" width="220" height="30" rx="8" class="arq-ui"/>
+  <text x="145" y="170" class="arq-t arq-code arq-xs" text-anchor="middle">rememberSaveable → cuenta = 5</text>
+  <text x="615" y="26" class="arq-t arq-s arq-strong" text-anchor="middle">Activity 2 · después</text>
+  <rect x="490" y="38" width="250" height="168" rx="14" class="arq-box" style="stroke-width:2"/>
+  <text x="504" y="60" class="arq-t arq-xs arq-muted">composición nueva</text>
+  <rect x="505" y="76" width="220" height="30" rx="8" class="arq-warn"/>
+  <text x="615" y="96" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">remember → cuenta = 0</text>
+  <rect x="505" y="150" width="220" height="30" rx="8" class="arq-ui"/>
+  <text x="615" y="170" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">rememberSaveable → cuenta = 5</text>
+  <!-- Giro -->
+  <line x1="300" y1="40" x2="460" y2="40" class="arq-dep" marker-end="url(#arq-c203g-a)"/>
+  <text x="380" y="30" class="arq-t arq-xs arq-strong" text-anchor="middle">girar</text>
+  <text x="380" y="56" class="arq-t arq-code arq-xs" text-anchor="middle">onDestroy → onCreate</text>
+  <!-- remember: se pierde -->
+  <line x1="258" y1="91" x2="362" y2="91" class="arq-flow"/>
+  <text x="380" y="98" class="arq-t arq-strong arq-red" style="font-size:22px" text-anchor="middle">✕</text>
+  <text x="380" y="120" class="arq-t arq-xs" text-anchor="middle">se pierde con</text>
+  <text x="380" y="134" class="arq-t arq-xs" text-anchor="middle">la composición</text>
+  <!-- rememberSaveable: Bundle -->
+  <rect x="305" y="222" width="150" height="50" rx="10" class="arq-dom"/>
+  <text x="380" y="242" class="arq-t arq-xs arq-strong" text-anchor="middle">Bundle</text>
+  <text x="380" y="262" class="arq-t arq-code arq-xs" text-anchor="middle">cuenta = 5</text>
+  <path d="M255,172 C300,180 290,246 301,246" class="arq-dep" marker-end="url(#arq-c203g-a)"/>
+  <text x="270" y="228" class="arq-t arq-xs" text-anchor="end">se guarda</text>
+  <path d="M455,246 C480,246 470,180 501,170" class="arq-dep" marker-end="url(#arq-c203g-a)"/>
+  <text x="490" y="228" class="arq-t arq-xs">se restaura</text>
+</svg>

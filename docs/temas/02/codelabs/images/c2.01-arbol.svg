@@ -1,0 +1,37 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="arq-c201a-t arq-c201a-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c201a-t">El árbol de composición de la tarjeta y lo que pinta cada nodo</title>
+  <desc id="arq-c201a-d">A la izquierda, el árbol: MainActivity llama a setContent, que contiene un Scaffold, que contiene TarjetaPresentacion. Dentro hay una Card con una Column; la Column tiene dos Text, el nombre y la especialidad, y una Row con dos DatoTarjeta, Curso y Proyectos. A la derecha, la tarjeta dibujada con el contorno de la Card, de la Column y de la Row.</desc>
+  <!-- Árbol (izquierda) -->
+  <path d="M36,36 V64 H50 M54,76 V94 H68 M72,106 V124 H86 M90,136 V154 H104 M108,166 V184 H122 M108,184 V214 H122 M108,214 V244 H122 M126,256 V274 H140 M126,274 V304 H140" class="arq-guide" style="stroke-dasharray:none;fill:none"/>
+  <text x="30" y="30" class="arq-t arq-code arq-xs">MainActivity · setContent</text>
+  <text x="54" y="70" class="arq-t arq-code arq-xs">Scaffold</text>
+  <rect x="68" y="84" width="252" height="24" rx="6" class="arq-ui"/>
+  <text x="76" y="100" class="arq-t arq-code arq-xs arq-strong">TarjetaPresentacion(…)</text>
+  <text x="90" y="130" class="arq-t arq-code arq-xs">Card</text>
+  <text x="108" y="160" class="arq-t arq-code arq-xs">Column</text>
+  <text x="126" y="190" class="arq-t arq-code arq-xs">Text(nombre)</text>
+  <text x="126" y="220" class="arq-t arq-code arq-xs">Text(especialidad)</text>
+  <text x="126" y="250" class="arq-t arq-code arq-xs">Row</text>
+  <text x="144" y="280" class="arq-t arq-code arq-xs">DatoTarjeta("Curso")</text>
+  <text x="144" y="310" class="arq-t arq-code arq-xs">DatoTarjeta("Proyectos")</text>
+  <!-- Tarjeta dibujada (derecha) -->
+  <line x1="400" y1="16" x2="400" y2="316" class="arq-guide"/>
+  <text x="440" y="32" class="arq-t arq-code arq-xs arq-muted">Card</text>
+  <rect x="440" y="40" width="290" height="230" rx="14" class="arq-box" style="stroke-width:2"/>
+  <rect x="456" y="56" width="258" height="198" rx="8" class="arq-box arq-dashed"/>
+  <text x="462" y="70" class="arq-t arq-code arq-xs arq-muted">Column</text>
+  <text x="585" y="104" class="arq-t arq-h" text-anchor="middle">Carlos Estudiante</text>
+  <text x="585" y="126" class="arq-t arq-s arq-muted" text-anchor="middle">Desarrollador Multiplataforma</text>
+  <rect x="472" y="144" width="226" height="98" rx="8" class="arq-dom arq-dashed"/>
+  <text x="478" y="158" class="arq-t arq-code arq-xs">Row</text>
+  <text x="540" y="182" class="arq-t arq-xs arq-muted" text-anchor="middle">Curso</text>
+  <rect x="502" y="190" width="76" height="28" rx="6" class="arq-ui"/>
+  <text x="540" y="209" class="arq-t arq-s arq-strong" text-anchor="middle">2º DAM</text>
+  <text x="630" y="182" class="arq-t arq-xs arq-muted" text-anchor="middle">Proyectos</text>
+  <rect x="605" y="190" width="50" height="28" rx="6" class="arq-ui"/>
+  <text x="630" y="209" class="arq-t arq-s arq-strong" text-anchor="middle">3</text>
+  <text x="540" y="234" class="arq-t arq-xs arq-muted" text-anchor="middle">DatoTarjeta</text>
+  <text x="630" y="234" class="arq-t arq-xs arq-muted" text-anchor="middle">DatoTarjeta</text>
+  <text x="585" y="296" class="arq-t arq-xs arq-strong" text-anchor="middle">Todo esto lo pinta TarjetaPresentacion</text>
+  <text x="585" y="312" class="arq-t arq-xs arq-muted" text-anchor="middle">a partir de sus tres parámetros</text>
+</svg>

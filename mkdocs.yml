@@ -93,12 +93,12 @@ nav:
       - "2.3.1. Maquetación: Column, Row, Box y Modifier": temas/02/2.3.1-layouts-modificadores.md
       - "2.3.2. Imágenes, iconos y recursos": temas/02/2.3.2-imagenes-iconos-recursos.md
       - "2.4. Laboratorio de Prácticas y Codelabs":
-          - "Puesta en Marcha y Retos": temas/02/2.4-laboratorio-retos.md
-          - "Codelab 1: Ciclo de Vida y Logcat": temas/02/codelabs/01-ciclo-vida-logcat.md
-          - "Codelab 2: Contador y Recomposición": temas/02/codelabs/02-contador-incremental.md
-          - "Codelab 3: Tarjeta y Previews": temas/02/codelabs/03-tarjeta-presentacion.md
-          - "Codelab 4: Dado Interactivo": temas/02/codelabs/04-dado-interactivo.md
-          - "Codelab 5: Semáforo y Estados": temas/02/codelabs/05-semaforo-estados.md
+          - "Repositorio y Retos": temas/02/2.4-laboratorio-retos.md
+          - "Codelab 2.01: Tarjeta y Previews": temas/02/codelabs/01-tarjeta-presentacion.md
+          - "Codelab 2.02: Contador y Menú": temas/02/codelabs/02-contador-incremental.md
+          - "Codelab 2.03: Ciclo de Vida": temas/02/codelabs/03-ciclo-vida-logcat.md
+          - "Codelab 2.04: Dados y Recursos": temas/02/codelabs/04-dado-interactivo.md
+          - "Codelab 2.05: Semáforo y Estados": temas/02/codelabs/05-semaforo-estados.md
 
   - "UT3 - Interfaz de Usuario con Jetpack Compose":
       - "Inicio": temas/03/index.md

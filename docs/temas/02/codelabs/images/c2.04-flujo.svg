@@ -1,0 +1,32 @@
+<svg class="arq-svg" viewBox="0 0 760 170" role="img" aria-labelledby="arq-c204-t arq-c204-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c204-t">Del botón a la imagen del dado</title>
+  <desc id="arq-c204-d">Al pulsar Lanzar, el valor del estado pasa a ser un número aleatorio del 1 al 6, por ejemplo 4, y las tiradas suben a 3. Al recomponer, la función imagenDado traduce el valor en el recurso R.drawable.dado_4, y painterResource lo carga en el Image, que muestra la cara con cuatro puntos.</desc>
+  <defs>
+    <marker id="arq-c204-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c204-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="52" width="110" height="36" rx="18" class="arq-ui"/>
+  <text x="75" y="75" class="arq-t arq-s arq-strong" text-anchor="middle">¡Lanzar!</text>
+  <rect x="170" y="44" width="120" height="52" rx="10" class="arq-dom"/>
+  <text x="230" y="66" class="arq-t arq-code arq-xs" text-anchor="middle">valor = 4</text>
+  <text x="230" y="84" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">tiradas = 3</text>
+  <rect x="330" y="52" width="140" height="36" rx="8" class="arq-box"/>
+  <text x="400" y="75" class="arq-t arq-code arq-xs" text-anchor="middle">imagenDado(valor)</text>
+  <rect x="510" y="52" width="140" height="36" rx="8" class="arq-data"/>
+  <text x="580" y="75" class="arq-t arq-code arq-xs" text-anchor="middle">R.drawable.dado_4</text>
+  <text x="712" y="30" class="arq-t arq-code arq-xs" text-anchor="middle">Image</text>
+  <rect x="682" y="40" width="60" height="60" rx="10" class="arq-box" style="stroke-width:2.4"/>
+  <circle cx="698" cy="56" r="5.5" class="arq-head"/>
+  <circle cx="726" cy="56" r="5.5" class="arq-head"/>
+  <circle cx="698" cy="84" r="5.5" class="arq-head"/>
+  <circle cx="726" cy="84" r="5.5" class="arq-head"/>
+  <line x1="130" y1="70" x2="166" y2="70" class="arq-flow" marker-end="url(#arq-c204-f)"/>
+  <line x1="290" y1="70" x2="326" y2="70" class="arq-dep" marker-end="url(#arq-c204-a)"/>
+  <line x1="470" y1="70" x2="506" y2="70" class="arq-dep" marker-end="url(#arq-c204-a)"/>
+  <line x1="650" y1="70" x2="678" y2="70" class="arq-dep" marker-end="url(#arq-c204-a)"/>
+  <text x="150" y="118" class="arq-t arq-code arq-xs" text-anchor="middle">(1..6).random()</text>
+  <text x="310" y="118" class="arq-t arq-xs" text-anchor="middle">recompone</text>
+  <text x="490" y="118" class="arq-t arq-code arq-xs" text-anchor="middle">when (valor)</text>
+  <text x="666" y="118" class="arq-t arq-code arq-xs" text-anchor="middle">painterResource</text>
+  <text x="380" y="156" class="arq-t arq-s" text-anchor="middle">La imagen no se cambia a mano: se deriva del estado en cada recomposición.</text>
+</svg>

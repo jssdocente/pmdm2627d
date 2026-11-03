@@ -2,7 +2,16 @@
 
 En esta unidad consolidamos los cimientos del desarrollo nativo moderno en Android. Nos apoyamos en dos pilares fundamentales: el dominio exhaustivo de **Kotlin** como lenguaje de programación idiomático y la comprensión de la **arquitectura básica de Android** junto con los primeros pasos en **Jetpack Compose**.
 
-A lo largo de este tema construiremos y trabajaremos sobre un único proyecto modular de prácticas: **`pmdm-lab-ut02`**, donde resolveremos retos incrementales sin dispersar el trabajo en decenas de proyectos independientes.
+Las prácticas de Android de la unidad se hacen en un único proyecto que crece paso a paso, el **laboratorio de la UT2**: el repositorio **[pmdm2627-lab-ut2](https://github.com/jssdocente/pmdm2627-lab-ut2)**, con un tag de Git al inicio y al final de cada codelab. Las clases, por su parte, siguen el proyecto **FichaJuego** ([guía de clases](./sesiones/index.md)).
+
+```bash
+git clone https://github.com/jssdocente/pmdm2627-lab-ut2.git lab-ut2
+cd lab-ut2
+git checkout c2.01-inicio
+git switch -c mi-lab
+```
+
+Tienes todos los detalles, también para trabajar sin Git, en [2.4 Laboratorio](./2.4-laboratorio-retos.md#1-el-repositorio-del-laboratorio).
 
 ---
 
@@ -20,7 +29,7 @@ graph TD
     end
 
     subgraph B2 ["Bloque II: Introducción a Android y Compose"]
-        A1["2.1 Primeros Pasos y Proyecto pmdm-lab-ut02"] --> A2["2.2 Ciclo de Vida Moderno y Estados"]
+        A1["2.1 Primeros Pasos y Primer Proyecto"] --> A2["2.2 Ciclo de Vida Moderno y Estados"]
         A2 --> A3["2.3 Primera App y Metodología @Preview"]
         A3 --> A31["2.3.1 Maquetación: Column, Row, Box y Modifier"]
         A31 --> A32["2.3.2 Imágenes, iconos y recursos"]
@@ -71,8 +80,8 @@ En este bloque dejamos atrás las tecnologías imperativas antiguas (archivos XM
 
 ### Contenidos del Bloque
 
-1. **[2.1 Primeros pasos y Creación del Proyecto en IntelliJ IDEA (`pmdm-lab-ut02`)](./2.1-primeros-pasos.md):**  
-   Creación guiada paso a paso de un proyecto Android nativo con **Jetpack Compose en IntelliJ IDEA** (justificación pedagógica de por qué Android nativo puro sin KMP todavía), selección de plantillas modernas (`Empty Activity` con Compose frente al XML obsoleto), configuración de Gradle con Kotlin DSL y catálogo de versiones (`libs.versions.toml`), verificación de componibles, ejecución inicial y arquitectura de paquetes de aula.
+1. **[2.1 Primeros pasos y creación de un proyecto en IntelliJ IDEA](./2.1-primeros-pasos.md):**  
+   Creación guiada paso a paso de un proyecto Android nativo con **Jetpack Compose en IntelliJ IDEA** (justificación pedagógica de por qué Android nativo puro sin KMP todavía), selección de plantillas modernas (`Empty Activity` con Compose frente al XML obsoleto), configuración de Gradle con Kotlin DSL y catálogo de versiones (`libs.versions.toml`), verificación de componibles, ejecución inicial y cómo descargar el repositorio del laboratorio.
 
 2. **[2.2 Ciclo de vida de una aplicación Android](./2.2-ciclo-vida-app.md):**  
    Análisis de `ComponentActivity`, estados del ciclo de vida (`onCreate`, `onStart`, `onResume`, etc.), inspección con `Logcat` y cómo interactúa el ciclo de vida con Compose ante rotaciones de pantalla (`remember` vs `rememberSaveable`).
@@ -84,10 +93,15 @@ En este bloque dejamos atrás las tecnologías imperativas antiguas (archivos XM
     - **[2.3.2 Imágenes, iconos y recursos](./2.3.2-imagenes-iconos-recursos.md):** Carpeta `res` y clase `R`, mapas de bits frente a vectores, `Image` y `contentScale` (con playground), `Icon` y Material Symbols, y textos traducibles en `strings.xml`. Se complementa con el [Anexo A: Iconos de la app y gestión de recursos](../00-android/anexos/a-iconos-app-recursos.md).
 
 4. **[2.4 Laboratorio de Prácticas y Codelabs](./2.4-laboratorio-retos.md):**  
-   Proyecto unificado de laboratorio (`pmdm-lab-ut02`) con 5 Codelabs guiados paso a paso (Ciclo de Vida/Logcat, Contador Incremental, Tarjeta y Previews, Lanzador de Dados, Semáforo Inteligente) y banco de Retos Autónomos para evaluación:
+   El repositorio del laboratorio (`pmdm2627-lab-ut2`), con cinco codelabs guiados que construyen la misma app, cada uno sobre el anterior, y dos retos autónomos para evaluación:
 
-   - **[Reto Autónomo 1: Lemonade App](./2.4-laboratorio-retos.md#reto-autonomo-1-el-juego-de-la-limonada-lemonade-app-):** Máquina de 4 estados interactiva (árbol, exprimido de limón, vaso lleno y vaso vacío).
-   - **[Reto Autónomo 2: Marcador de Baloncesto](./2.4-laboratorio-retos.md#reto-autonomo-2-marcador-deportivo-de-baloncesto-score-tracker-):** Marcadores simultáneos de equipos con anotaciones (+3, +2, +1) y detección reactiva de líder.
+    - **[Codelab 2.01: Tarjeta de presentación y `@Preview`](./codelabs/01-tarjeta-presentacion.md)** · `c2.01-inicio` → `c2.01-fin`
+    - **[Codelab 2.02: El contador, el estado y el menú del laboratorio](./codelabs/02-contador-incremental.md)** · `c2.02-inicio` → `c2.02-fin`
+    - **[Codelab 2.03: Ciclo de vida, Logcat y `rememberSaveable`](./codelabs/03-ciclo-vida-logcat.md)** · `c2.03-inicio` → `c2.03-fin`
+    - **[Codelab 2.04: Lanzador de dados, imágenes y recursos](./codelabs/04-dado-interactivo.md)** · `c2.04-inicio` → `c2.04-fin`
+    - **[Codelab 2.05: Semáforo y máquinas de estados](./codelabs/05-semaforo-estados.md)** · `c2.05-inicio` → `c2.05-fin`
+    - **[Reto 2.01: El juego de la limonada](./2.4-laboratorio-retos.md#reto-201-el-juego-de-la-limonada):** máquina de cuatro estados con un contador aleatorio de exprimidos.
+    - **[Reto 2.02: Marcador de baloncesto](./2.4-laboratorio-retos.md#reto-202-marcador-de-baloncesto):** dos marcadores a la vez, con detección del líder del partido.
 
 ---
 
