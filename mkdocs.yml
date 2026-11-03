@@ -138,6 +138,8 @@ nav:
           - "Codelab 3.05 · Navigation 3": temas/03/codelabs/05-navegacion-navigation3.md
           - "Codelab 3.06 · Quiz con ViewModel": temas/03/codelabs/06-quiz-viewmodel.md
           - "Codelab 3.07 · Ficha de héroe y recursos": temas/03/codelabs/07-ficha-heroe-recursos.md
+  - "Evaluación":
+      - "Guía de estudio · 1ª evaluación": temas/evaluacion/1eval-guia-estudio.md
 
   # - "UT4 - Persistencia":
   #   - "Introducción": temas/04/4.0-persistencia.md

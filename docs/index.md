@@ -14,6 +14,9 @@ El segundo bloque trata sobre el desarrollo de videojuegos, para lo cual usaremo
 
 <!-- ### [Desarrollo de apps Android](./temas/00-android/index.md) -->
 
+!!! tip "Preparar la evaluación"
+    La [guía de estudio de la 1ª evaluación](./temas/evaluacion/1eval-guia-estudio.md) reúne lo que tienes que dominar de Kotlin y de Android, con enlaces directos a la teoría y a los ejercicios de cada concepto.
+
 
 ### Recursos
 
