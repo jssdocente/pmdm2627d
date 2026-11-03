@@ -1,0 +1,40 @@
+<svg class="arq-svg" viewBox="0 0 760 300" role="img" aria-labelledby="arq-c306u-t arq-c306u-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c306u-t">Flujo unidireccional entre QuizScreen y QuizViewModel</title>
+  <desc id="arq-c306u-d">QuizViewModel guarda el estado en _uiState, un MutableStateFlow privado, y lo publica como uiState, un StateFlow de solo lectura. QuizScreen lo observa con collectAsStateWithLifecycle y se lo pasa a QuizContent, que pinta la pregunta y las opciones. Cuando el usuario pulsa una opción, la pantalla no cambia nada: llama a elegirOpcion, siguiente o reiniciar del ViewModel, que calcula el estado nuevo con update y copy. El estado baja y los eventos suben.</desc>
+  <defs>
+    <marker id="arq-c306u-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c306u-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="30" width="250" height="230" rx="14" class="arq-ui"/>
+  <text x="145" y="54" class="arq-t arq-code arq-strong" text-anchor="middle">QuizScreen</text>
+  <rect x="38" y="70" width="214" height="172" rx="10" class="arq-box"/>
+  <text x="145" y="92" class="arq-t arq-code arq-xs" text-anchor="middle">QuizContent(uiState)</text>
+  <text x="54" y="118" class="arq-t arq-xs">Pregunta 2 de 5</text>
+  <text x="236" y="118" class="arq-t arq-xs arq-strong" text-anchor="end">10 puntos</text>
+  <rect x="54" y="132" width="182" height="22" rx="11" class="arq-gray"/>
+  <rect x="54" y="162" width="182" height="22" rx="11" class="arq-ui"/>
+  <text x="145" y="177" class="arq-t arq-xs" text-anchor="middle">LazyColumn</text>
+  <rect x="54" y="192" width="182" height="22" rx="11" class="arq-gray"/>
+  <text x="145" y="234" class="arq-t arq-xs arq-muted" text-anchor="middle">solo pinta y avisa</text>
+  <rect x="490" y="30" width="250" height="230" rx="14" class="arq-data"/>
+  <text x="615" y="54" class="arq-t arq-code arq-strong" text-anchor="middle">QuizViewModel</text>
+  <rect x="510" y="70" width="210" height="54" rx="10" class="arq-box"/>
+  <text x="615" y="92" class="arq-t arq-code arq-strong" text-anchor="middle">_uiState</text>
+  <text x="615" y="112" class="arq-t arq-xs" text-anchor="middle">MutableStateFlow · privado</text>
+  <line x1="615" y1="124" x2="615" y2="164" class="arq-dep" marker-end="url(#arq-c306u-a)"/>
+  <text x="625" y="150" class="arq-t arq-code arq-xs">asStateFlow()</text>
+  <rect x="510" y="168" width="210" height="54" rx="10" class="arq-box"/>
+  <text x="615" y="190" class="arq-t arq-code arq-strong" text-anchor="middle">uiState</text>
+  <text x="615" y="210" class="arq-t arq-xs" text-anchor="middle">StateFlow · solo lectura</text>
+  <text x="615" y="246" class="arq-t arq-xs arq-muted" text-anchor="middle">update { it.copy(…) }</text>
+  <line x1="506" y1="195" x2="274" y2="195" class="arq-dep" marker-end="url(#arq-c306u-a)"/>
+  <text x="390" y="186" class="arq-t arq-code arq-xs" text-anchor="middle">uiState</text>
+  <text x="390" y="214" class="arq-t arq-xs" text-anchor="middle">collectAsStateWithLifecycle()</text>
+  <line x1="270" y1="100" x2="486" y2="100" class="arq-flow" marker-end="url(#arq-c306u-f)"/>
+  <text x="378" y="90" class="arq-t arq-code arq-xs" text-anchor="middle">elegirOpcion(opcion)</text>
+  <text x="378" y="120" class="arq-t arq-xs" text-anchor="middle">siguiente() · reiniciar()</text>
+  <line x1="180" y1="284" x2="220" y2="284" class="arq-dep" marker-end="url(#arq-c306u-a)"/>
+  <text x="228" y="288" class="arq-t arq-xs">el estado baja</text>
+  <line x1="420" y1="284" x2="460" y2="284" class="arq-flow" marker-end="url(#arq-c306u-f)"/>
+  <text x="468" y="288" class="arq-t arq-xs">los eventos suben</text>
+</svg>

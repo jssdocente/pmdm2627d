@@ -332,6 +332,7 @@ En muchas apps, si estás en el detalle de la pestaña Biblioteca y vuelves a pu
 ## 🏠 Para casa
 
 - Termina los bloques 7 y 8 si no dio tiempo en clase.
+- Si no lo terminaste, completa el [Codelab 3.05 · Navigation 3](../codelabs/05-navegacion-navigation3.md): fíjate en cómo el «atrás» pasa de `NavDisplay` al menú del laboratorio.
 - Lee los [errores frecuentes de edge-to-edge](../b-navegacion/3b.2-diseno-adaptativo.md#8-errores-frecuentes) y el reto básico de [3B.2](../b-navegacion/3b.2-diseno-adaptativo.md#9-retos), el formulario edge-to-edge.
 - Decide si tu proyecto «Mi colección» necesita barra inferior: ¿qué secciones tendría?
 - Si faltaste a clase: `git checkout s3.04-fin` y repasa `navegacion/FichaJuegoApp.kt`, `EstadisticasScreen.kt` y `DetalleJuegoScreen.kt`.

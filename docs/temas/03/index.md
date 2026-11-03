@@ -63,7 +63,7 @@ Llevamos a tierra lo que vimos de forma conceptual en UT1: compartir el dominio,
 
 ### Laboratorio de prácticas
 
-- **[Laboratorio de retos de la UT3 (`pmdm-lab-ut03`)](./3.6-laboratorio-retos.md):** proyecto de prácticas con menú lateral, codelabs guiados de Material 3 y las interfaces completas de El Ahorcado, Wordle y Memory Match con ViewModel.
+- **[3.6 Laboratorio de prácticas y codelabs](./3.6-laboratorio-retos.md):** una app que crece codelab a codelab en el repositorio [pmdm2627-lab-ut3](https://github.com/jssdocente/pmdm2627-lab-ut3), con un tag por codelab: tema de Material 3, listas, `Scaffold`, formularios, Navigation 3, ViewModel y recursos. Termina con tres retos: El Ahorcado, Wordle y Memory.
 
 ---
 

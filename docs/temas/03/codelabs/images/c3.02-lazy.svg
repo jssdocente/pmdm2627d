@@ -1,0 +1,57 @@
+<svg class="arq-svg" viewBox="0 0 760 320" role="img" aria-labelledby="arq-c302-t arq-c302-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c302-t">LazyColumn solo compone lo que se ve, y key une cada tarjeta a su curso</title>
+  <desc id="arq-c302-d">La lista catalogoCursos tiene 12 cursos. En la pantalla solo caben cuatro, del 3 al 6: LazyColumn compone esas cuatro tarjetas y deja sin componer las demás hasta que se desplaza la lista. Con key igual a it.id, cada tarjeta queda unida a su curso: si se borra el curso 1, el estado de la tarjeta del curso 2, por ejemplo si está desplegada, se queda con el curso 2. Sin key, el estado iría por posición y saltaría a otra tarjeta.</desc>
+  <defs>
+    <marker id="arq-c302-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c302-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="110" y="26" class="arq-t arq-s arq-strong" text-anchor="middle">catalogoCursos · 12 cursos</text>
+  <rect x="30" y="36" width="160" height="18" rx="5" class="arq-gray"/>
+  <text x="110" y="49" class="arq-t arq-xs" text-anchor="middle">Curso id = 1</text>
+  <rect x="30" y="58" width="160" height="18" rx="5" class="arq-gray"/>
+  <text x="110" y="71" class="arq-t arq-xs" text-anchor="middle">Curso id = 2</text>
+  <rect x="30" y="80" width="160" height="18" rx="5" class="arq-data"/>
+  <text x="110" y="93" class="arq-t arq-xs" text-anchor="middle">Curso id = 3</text>
+  <rect x="30" y="102" width="160" height="18" rx="5" class="arq-data"/>
+  <text x="110" y="115" class="arq-t arq-xs" text-anchor="middle">Curso id = 4</text>
+  <rect x="30" y="124" width="160" height="18" rx="5" class="arq-data"/>
+  <text x="110" y="137" class="arq-t arq-xs" text-anchor="middle">Curso id = 5</text>
+  <rect x="30" y="146" width="160" height="18" rx="5" class="arq-data"/>
+  <text x="110" y="159" class="arq-t arq-xs" text-anchor="middle">Curso id = 6</text>
+  <rect x="30" y="168" width="160" height="18" rx="5" class="arq-gray"/>
+  <text x="110" y="181" class="arq-t arq-xs" text-anchor="middle">Curso id = 7</text>
+  <rect x="30" y="190" width="160" height="18" rx="5" class="arq-gray"/>
+  <text x="110" y="203" class="arq-t arq-xs" text-anchor="middle">Curso id = 8</text>
+  <rect x="30" y="212" width="160" height="18" rx="5" class="arq-gray"/>
+  <text x="110" y="225" class="arq-t arq-xs" text-anchor="middle">Curso id = 9</text>
+  <rect x="30" y="234" width="160" height="18" rx="5" class="arq-gray"/>
+  <text x="110" y="247" class="arq-t arq-xs" text-anchor="middle">Curso id = 10</text>
+  <rect x="30" y="256" width="160" height="18" rx="5" class="arq-gray"/>
+  <text x="110" y="269" class="arq-t arq-xs" text-anchor="middle">Curso id = 11</text>
+  <rect x="30" y="278" width="160" height="18" rx="5" class="arq-gray"/>
+  <text x="110" y="291" class="arq-t arq-xs" text-anchor="middle">Curso id = 12</text>
+  <text x="390" y="78" class="arq-t arq-xs arq-muted" text-anchor="middle">la pantalla</text>
+  <rect x="300" y="86" width="180" height="150" rx="16" class="arq-box" style="stroke-width:2"/>
+  <rect x="312" y="98" width="156" height="26" rx="7" class="arq-ui"/>
+  <text x="390" y="115" class="arq-t arq-code arq-xs" text-anchor="middle">TarjetaCurso(3)</text>
+  <line x1="190" y1="89" x2="308" y2="111" class="arq-guide"/>
+  <rect x="312" y="132" width="156" height="26" rx="7" class="arq-ui"/>
+  <text x="390" y="149" class="arq-t arq-code arq-xs" text-anchor="middle">TarjetaCurso(4)</text>
+  <line x1="190" y1="111" x2="308" y2="145" class="arq-guide"/>
+  <rect x="312" y="166" width="156" height="26" rx="7" class="arq-ui"/>
+  <text x="390" y="183" class="arq-t arq-code arq-xs" text-anchor="middle">TarjetaCurso(5)</text>
+  <line x1="190" y1="133" x2="308" y2="179" class="arq-guide"/>
+  <rect x="312" y="200" width="156" height="26" rx="7" class="arq-ui"/>
+  <text x="390" y="217" class="arq-t arq-code arq-xs" text-anchor="middle">TarjetaCurso(6)</text>
+  <line x1="190" y1="155" x2="308" y2="213" class="arq-guide"/>
+  <text x="390" y="262" class="arq-t arq-xs" text-anchor="middle">solo se componen las tarjetas</text>
+  <text x="390" y="278" class="arq-t arq-xs" text-anchor="middle">que se ven (y alguna más)</text>
+  <rect x="530" y="60" width="215" height="190" rx="14" class="arq-dom"/>
+  <text x="637" y="86" class="arq-t arq-code arq-strong" text-anchor="middle">key = { it.id }</text>
+  <text x="546" y="114" class="arq-t arq-xs">Cada tarjeta queda unida a SU curso.</text>
+  <text x="546" y="140" class="arq-t arq-xs">Si borras el curso 1, la tarjeta del 2</text>
+  <text x="546" y="156" class="arq-t arq-xs">sigue desplegada: su estado</text>
+  <text x="546" y="172" class="arq-t arq-xs">se mueve con el curso.</text>
+  <text x="546" y="200" class="arq-t arq-xs">Sin key, el estado va por posición</text>
+  <text x="546" y="216" class="arq-t arq-xs">y saltaría a otra tarjeta.</text>
+</svg>

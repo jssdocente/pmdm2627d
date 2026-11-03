@@ -1,0 +1,43 @@
+<svg class="arq-svg" viewBox="0 0 760 220" role="img" aria-labelledby="arq-c305-t arq-c305-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c305-t">Cómo cambia la pila de navegación</title>
+  <desc id="arq-c305-d">Al entrar, rememberNavBackStack crea la pila con una sola clave, ListaCursos. Al pulsar un curso se añade DetalleCurso de 7 encima. Con Siguiente curso se añade DetalleCurso de 8. Al pulsar atrás, removeLastOrNull quita la clave de arriba y vuelve a verse DetalleCurso de 7. NavDisplay siempre pinta la última clave de la pila.</desc>
+  <defs>
+    <marker id="arq-c305-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c305-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="102" y="28" class="arq-t arq-xs arq-strong" text-anchor="middle">1. Al entrar</text>
+  <text x="102" y="48" class="arq-t arq-code" text-anchor="middle">rememberNavBackStack</text>
+  <rect x="27" y="150" width="150" height="32" rx="7" class="arq-ui"/>
+  <text x="102" y="171" class="arq-t arq-code arq-xs" text-anchor="middle">ListaCursos</text>
+  <line x1="20" y1="188" x2="184" y2="188" class="arq-guide"/>
+  <text x="287" y="28" class="arq-t arq-xs arq-strong" text-anchor="middle">2. Pulsar un curso</text>
+  <text x="287" y="48" class="arq-t arq-code" text-anchor="middle">add(DetalleCurso(7))</text>
+  <rect x="212" y="150" width="150" height="32" rx="7" class="arq-gray"/>
+  <text x="287" y="171" class="arq-t arq-code arq-xs" text-anchor="middle">ListaCursos</text>
+  <rect x="212" y="112" width="150" height="32" rx="7" class="arq-ui"/>
+  <text x="287" y="133" class="arq-t arq-code arq-xs" text-anchor="middle">DetalleCurso(7)</text>
+  <line x1="205" y1="188" x2="369" y2="188" class="arq-guide"/>
+  <text x="472" y="28" class="arq-t arq-xs arq-strong" text-anchor="middle">3. Siguiente curso</text>
+  <text x="472" y="48" class="arq-t arq-code" text-anchor="middle">add(DetalleCurso(8))</text>
+  <rect x="397" y="150" width="150" height="32" rx="7" class="arq-gray"/>
+  <text x="472" y="171" class="arq-t arq-code arq-xs" text-anchor="middle">ListaCursos</text>
+  <rect x="397" y="112" width="150" height="32" rx="7" class="arq-gray"/>
+  <text x="472" y="133" class="arq-t arq-code arq-xs" text-anchor="middle">DetalleCurso(7)</text>
+  <rect x="397" y="74" width="150" height="32" rx="7" class="arq-ui"/>
+  <text x="472" y="95" class="arq-t arq-code arq-xs" text-anchor="middle">DetalleCurso(8)</text>
+  <line x1="390" y1="188" x2="554" y2="188" class="arq-guide"/>
+  <text x="657" y="28" class="arq-t arq-xs arq-strong" text-anchor="middle">4. Atrás</text>
+  <text x="657" y="48" class="arq-t arq-code" text-anchor="middle">removeLastOrNull()</text>
+  <rect x="582" y="150" width="150" height="32" rx="7" class="arq-gray"/>
+  <text x="657" y="171" class="arq-t arq-code arq-xs" text-anchor="middle">ListaCursos</text>
+  <rect x="582" y="112" width="150" height="32" rx="7" class="arq-ui"/>
+  <text x="657" y="133" class="arq-t arq-code arq-xs" text-anchor="middle">DetalleCurso(7)</text>
+  <line x1="575" y1="188" x2="739" y2="188" class="arq-guide"/>
+  <line x1="182" y1="152" x2="198" y2="152" class="arq-dep" marker-end="url(#arq-c305-a)"/>
+  <line x1="367" y1="152" x2="383" y2="152" class="arq-dep" marker-end="url(#arq-c305-a)"/>
+  <line x1="552" y1="152" x2="568" y2="152" class="arq-flow" marker-end="url(#arq-c305-f)"/>
+  <rect x="200" y="198" width="14" height="14" rx="3" class="arq-ui"/>
+  <text x="220" y="210" class="arq-t arq-xs">la que pinta NavDisplay (la última)</text>
+  <rect x="440" y="198" width="14" height="14" rx="3" class="arq-gray"/>
+  <text x="460" y="210" class="arq-t arq-xs">debajo, esperando a que vuelvas</text>
+</svg>

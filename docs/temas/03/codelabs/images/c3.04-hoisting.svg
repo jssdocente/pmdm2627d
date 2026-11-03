@@ -1,0 +1,46 @@
+<svg class="arq-svg" viewBox="0 0 760 360" role="img" aria-labelledby="arq-c304-t arq-c304-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c304-t">State hoisting en la calculadora de propinas</title>
+  <desc id="arq-c304-d">Arriba, PropinasScreen guarda tres estados con rememberSaveable: importeTexto, porcentaje y redondear. A partir de ellos calcula en cada recomposición tres valores derivados: hayError, propina y total. Se lo pasa todo como parámetros a PropinasContent, abajo, que pinta el campo de texto, el Slider, el Switch y la tarjeta con el total. Cada cambio sube con una lambda: el campo de texto llama a onImporteChange, y el Slider y el Switch hacen lo mismo con onPorcentajeChange y onRedondearChange.</desc>
+  <defs>
+    <marker id="arq-c304-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c304-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="170" y="16" width="570" height="104" rx="12" class="arq-ui"/>
+  <text x="455" y="36" class="arq-t arq-code arq-strong" text-anchor="middle">PropinasScreen  (con estado)</text>
+  <rect x="190" y="50" width="130" height="24" rx="12" class="arq-dom"/>
+  <text x="255" y="67" class="arq-t arq-code arq-xs" text-anchor="middle">importeTexto</text>
+  <rect x="330" y="50" width="110" height="24" rx="12" class="arq-dom"/>
+  <text x="385" y="67" class="arq-t arq-code arq-xs" text-anchor="middle">porcentaje</text>
+  <rect x="450" y="50" width="110" height="24" rx="12" class="arq-dom"/>
+  <text x="505" y="67" class="arq-t arq-code arq-xs" text-anchor="middle">redondear</text>
+  <text x="572" y="67" class="arq-t arq-xs arq-muted">rememberSaveable</text>
+  <rect x="190" y="84" width="90" height="24" rx="12" class="arq-data"/>
+  <text x="235" y="101" class="arq-t arq-code arq-xs" text-anchor="middle">hayError</text>
+  <rect x="290" y="84" width="90" height="24" rx="12" class="arq-data"/>
+  <text x="335" y="101" class="arq-t arq-code arq-xs" text-anchor="middle">propina</text>
+  <rect x="390" y="84" width="80" height="24" rx="12" class="arq-data"/>
+  <text x="430" y="101" class="arq-t arq-code arq-xs" text-anchor="middle">total</text>
+  <text x="482" y="101" class="arq-t arq-xs arq-muted">derivados: se recalculan solos</text>
+  <line x1="455" y1="120" x2="455" y2="196" class="arq-dep" marker-end="url(#arq-c304-a)"/>
+  <text x="465" y="162" class="arq-t arq-xs arq-strong">valores como parámetros</text>
+  <rect x="170" y="200" width="570" height="116" rx="14" class="arq-box" style="stroke-width:2"/>
+  <text x="186" y="220" class="arq-t arq-code arq-xs arq-muted">PropinasContent  (sin estado)</text>
+  <rect x="190" y="236" width="150" height="32" rx="6" class="arq-box"/>
+  <text x="202" y="257" class="arq-t arq-xs">42,50</text>
+  <text x="328" y="257" class="arq-t arq-xs" text-anchor="end">€</text>
+  <line x1="370" y1="252" x2="500" y2="252" class="arq-dep"/>
+  <circle cx="420" cy="252" r="8" class="arq-ui"/>
+  <rect x="530" y="240" width="44" height="24" rx="12" class="arq-box"/>
+  <circle cx="543" cy="252" r="7" class="arq-gray"/>
+  <rect x="610" y="230" width="110" height="44" rx="8" class="arq-ui"/>
+  <text x="665" y="248" class="arq-t arq-xs" text-anchor="middle">Total</text>
+  <text x="665" y="266" class="arq-t arq-xs arq-strong" text-anchor="middle">46,75 €</text>
+  <text x="265" y="294" class="arq-t arq-xs arq-muted" text-anchor="middle">OutlinedTextField</text>
+  <text x="435" y="294" class="arq-t arq-xs arq-muted" text-anchor="middle">Slider</text>
+  <text x="552" y="294" class="arq-t arq-xs arq-muted" text-anchor="middle">Switch</text>
+  <text x="665" y="294" class="arq-t arq-xs arq-muted" text-anchor="middle">Card</text>
+  <path d="M190,252 C130,252 130,62 186,62" class="arq-flow" marker-end="url(#arq-c304-f)"/>
+  <text x="10" y="150" class="arq-t arq-code arq-xs">onImporteChange</text>
+  <text x="10" y="168" class="arq-t arq-xs">(cada tecla)</text>
+  <text x="170" y="342" class="arq-t arq-xs">El Slider y el Switch avisan igual, con onPorcentajeChange y onRedondearChange.</text>
+</svg>

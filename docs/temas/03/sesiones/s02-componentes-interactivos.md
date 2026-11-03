@@ -343,7 +343,7 @@ Escribir el género a mano provoca que haya «Plataformas», «plataformas» y �
 ## 🏠 Para casa
 
 - Termina los bloques 7 y 8 si no dio tiempo en clase.
-- Codelabs del laboratorio: [Codelab 2 · Estado y TextField](../codelabs/02-estado-textfield.md) y [Codelab 4 · Scaffold y feedback](../codelabs/04-scaffold-feedback.md).
+- Codelabs del laboratorio: [Codelab 3.03 · Lista de tareas con `Scaffold`](../codelabs/03-tareas-scaffold.md) y [Codelab 3.04 · Calculadora de propinas](../codelabs/04-propinas-formulario.md).
 - Piensa qué datos pedirías para añadir un elemento a tu proyecto «Mi colección» y qué validación necesita cada uno.
 - Si faltaste a clase: `git checkout s3.02-fin` y repasa `FormularioNuevoJuego.kt` y `BibliotecaScreen.kt`.
 

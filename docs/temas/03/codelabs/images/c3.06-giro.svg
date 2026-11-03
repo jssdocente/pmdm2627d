@@ -1,0 +1,35 @@
+<svg class="arq-svg" viewBox="0 0 760 290" role="img" aria-labelledby="arq-c306g-t arq-c306g-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c306g-t">El ViewModel sobrevive al giro de pantalla</title>
+  <desc id="arq-c306g-d">Antes de girar, la Activity 1 tendría los puntos, 20, guardados con remember y la pantalla del quiz, que pide su ViewModel con viewModel(). Al girar, la Activity 1 se destruye y se crea la Activity 2. Si los puntos estuvieran en remember, se perderían con la composición y volverían a 0. El QuizViewModel no vive dentro de la Activity, sino aparte: cuando la Activity 2 llama a viewModel() recibe el mismo objeto, con la pregunta 2 y los 20 puntos intactos.</desc>
+  <defs>
+    <marker id="arq-c306g-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c306g-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="145" y="26" class="arq-t arq-s arq-strong" text-anchor="middle">Activity 1 · antes de girar</text>
+  <rect x="20" y="38" width="250" height="118" rx="14" class="arq-box" style="stroke-width:2"/>
+  <rect x="35" y="56" width="220" height="30" rx="8" class="arq-warn"/>
+  <text x="145" y="76" class="arq-t arq-code arq-xs" text-anchor="middle">remember → puntos = 20</text>
+  <rect x="35" y="106" width="220" height="30" rx="8" class="arq-ui"/>
+  <text x="145" y="126" class="arq-t arq-code arq-xs" text-anchor="middle">QuizScreen · viewModel()</text>
+  <text x="615" y="26" class="arq-t arq-s arq-strong" text-anchor="middle">Activity 2 · después</text>
+  <rect x="490" y="38" width="250" height="118" rx="14" class="arq-box" style="stroke-width:2"/>
+  <rect x="505" y="56" width="220" height="30" rx="8" class="arq-warn"/>
+  <text x="615" y="76" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">remember → puntos = 0</text>
+  <rect x="505" y="106" width="220" height="30" rx="8" class="arq-ui"/>
+  <text x="615" y="126" class="arq-t arq-code arq-xs" text-anchor="middle">QuizScreen · viewModel()</text>
+  <line x1="300" y1="40" x2="460" y2="40" class="arq-dep" marker-end="url(#arq-c306g-a)"/>
+  <text x="380" y="30" class="arq-t arq-xs arq-strong" text-anchor="middle">girar</text>
+  <text x="380" y="58" class="arq-t arq-code arq-xs" text-anchor="middle">onDestroy → onCreate</text>
+  <line x1="258" y1="71" x2="362" y2="71" class="arq-flow"/>
+  <text x="380" y="78" class="arq-t arq-strong arq-red" style="font-size:22px" text-anchor="middle">✕</text>
+  <text x="380" y="98" class="arq-t arq-xs" text-anchor="middle">se pierde con</text>
+  <text x="380" y="112" class="arq-t arq-xs" text-anchor="middle">la composición</text>
+  <rect x="270" y="196" width="220" height="70" rx="12" class="arq-data"/>
+  <text x="380" y="220" class="arq-t arq-code arq-strong" text-anchor="middle">QuizViewModel</text>
+  <text x="380" y="242" class="arq-t arq-xs" text-anchor="middle">pregunta 2 · 20 puntos</text>
+  <text x="380" y="258" class="arq-t arq-xs arq-muted" text-anchor="middle">vive fuera de la Activity</text>
+  <path d="M145,136 C145,200 200,231 266,231" class="arq-dep" marker-end="url(#arq-c306g-a)"/>
+  <text x="140" y="196" class="arq-t arq-xs" text-anchor="end">lo crea</text>
+  <path d="M615,136 C615,200 560,231 494,231" class="arq-dep" marker-end="url(#arq-c306g-a)"/>
+  <text x="620" y="196" class="arq-t arq-xs">recibe el mismo</text>
+</svg>

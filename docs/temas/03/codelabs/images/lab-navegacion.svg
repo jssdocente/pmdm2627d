@@ -1,0 +1,58 @@
+<svg class="arq-svg" viewBox="0 0 760 390" role="img" aria-labelledby="arq-lab3-t arq-lab3-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-lab3-t">La navegación del laboratorio de la UT3</title>
+  <desc id="arq-lab3-d">MainActivity crea un Scaffold y le pasa a LabApp el innerPadding y consumeWindowInsets. LabApp guarda con rememberSaveable qué pantalla se ve, y un when elige qué pintar: el menú, una de las siete pantallas de los codelabs o uno de los tres retos. El menú avisa con onAbrir de la pantalla elegida, y el botón Menú o el botón atrás del sistema vuelven a poner pantalla igual a MENU.</desc>
+  <defs>
+    <marker id="arq-lab3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-lab3-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="200" y="12" width="360" height="30" rx="8" class="arq-box"/>
+  <text x="380" y="32" class="arq-t arq-code arq-xs" text-anchor="middle">MainActivity · Scaffold { innerPadding }</text>
+  <line x1="380" y1="42" x2="380" y2="66" class="arq-dep" marker-end="url(#arq-lab3-a)"/>
+  <rect x="240" y="70" width="280" height="56" rx="10" class="arq-ui"/>
+  <text x="380" y="92" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">LabApp</text>
+  <rect x="262" y="100" width="236" height="20" rx="10" class="arq-dom"/>
+  <text x="380" y="114" class="arq-t arq-code arq-xs" text-anchor="middle">pantalla = MENU</text>
+  <line x1="380" y1="126" x2="380" y2="150" class="arq-dep" marker-end="url(#arq-lab3-a)"/>
+  <rect x="310" y="154" width="140" height="28" rx="8" class="arq-box"/>
+  <text x="380" y="173" class="arq-t arq-code arq-xs" text-anchor="middle">when (pantalla)</text>
+  <line x1="380" y1="182" x2="380" y2="204" class="arq-dep" marker-end="url(#arq-lab3-a)"/>
+  <rect x="6" y="208" width="748" height="168" rx="12" class="arq-box arq-dashed"/>
+  <rect x="14" y="216" width="180" height="44" rx="8" class="arq-dom"/>
+  <text x="104" y="233" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">MENU</text>
+  <text x="104" y="251" class="arq-t arq-xs arq-strong" text-anchor="middle">LabMenuScreen</text>
+  <rect x="198" y="216" width="180" height="44" rx="8" class="arq-box"/>
+  <text x="288" y="233" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">TEMA · 3.01</text>
+  <text x="288" y="251" class="arq-t arq-xs arq-strong" text-anchor="middle">TemaScreen</text>
+  <rect x="382" y="216" width="180" height="44" rx="8" class="arq-box"/>
+  <text x="472" y="233" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">CATALOGO · 3.02</text>
+  <text x="472" y="251" class="arq-t arq-xs arq-strong" text-anchor="middle">CatalogoScreen</text>
+  <rect x="566" y="216" width="180" height="44" rx="8" class="arq-box"/>
+  <text x="656" y="233" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">TAREAS · 3.03</text>
+  <text x="656" y="251" class="arq-t arq-xs arq-strong" text-anchor="middle">TareasScreen</text>
+  <rect x="14" y="270" width="180" height="44" rx="8" class="arq-box"/>
+  <text x="104" y="287" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">PROPINAS · 3.04</text>
+  <text x="104" y="305" class="arq-t arq-xs arq-strong" text-anchor="middle">PropinasScreen</text>
+  <rect x="198" y="270" width="180" height="44" rx="8" class="arq-box"/>
+  <text x="288" y="287" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">NAVEGACION · 3.05</text>
+  <text x="288" y="305" class="arq-t arq-xs arq-strong" text-anchor="middle">CursosApp</text>
+  <rect x="382" y="270" width="180" height="44" rx="8" class="arq-box"/>
+  <text x="472" y="287" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">QUIZ · 3.06</text>
+  <text x="472" y="305" class="arq-t arq-xs arq-strong" text-anchor="middle">QuizScreen</text>
+  <rect x="566" y="270" width="180" height="44" rx="8" class="arq-box"/>
+  <text x="656" y="287" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">HEROE · 3.07</text>
+  <text x="656" y="305" class="arq-t arq-xs arq-strong" text-anchor="middle">HeroeScreen</text>
+  <rect x="14" y="324" width="180" height="44" rx="8" class="arq-gray"/>
+  <text x="104" y="341" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">AHORCADO · reto</text>
+  <text x="104" y="359" class="arq-t arq-xs arq-strong" text-anchor="middle">AhorcadoScreen</text>
+  <rect x="198" y="324" width="180" height="44" rx="8" class="arq-gray"/>
+  <text x="288" y="341" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">WORDLE · reto</text>
+  <text x="288" y="359" class="arq-t arq-xs arq-strong" text-anchor="middle">WordleScreen</text>
+  <rect x="382" y="324" width="180" height="44" rx="8" class="arq-gray"/>
+  <text x="472" y="341" class="arq-t arq-code arq-xs arq-muted" text-anchor="middle">MEMORY · reto</text>
+  <text x="472" y="359" class="arq-t arq-xs arq-strong" text-anchor="middle">MemoryScreen</text>
+  <path d="M60,214 C60,130 150,98 236,98" class="arq-flow" marker-end="url(#arq-lab3-f)"/>
+  <text x="98" y="150" class="arq-t arq-code arq-xs arq-strong">onAbrir(pantalla)</text>
+  <path d="M700,214 C700,130 610,98 524,98" class="arq-flow" marker-end="url(#arq-lab3-f)"/>
+  <text x="664" y="150" class="arq-t arq-xs arq-strong" text-anchor="end">← Menú o «atrás»</text>
+  <text x="664" y="166" class="arq-t arq-code arq-xs" text-anchor="end">pantalla = MENU</text>
+</svg>

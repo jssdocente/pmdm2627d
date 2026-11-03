@@ -18,6 +18,8 @@ _bck/
 .projects/*-clase/
 # Laboratorio de la UT2: repositorio Git propio (jssdocente/pmdm2627-lab-ut2)
 .projects/ut2-lab/
+# Laboratorio de la UT3: repositorio Git propio (jssdocente/pmdm2627-lab-ut3)
+.projects/ut3-lab/
 
 # Documentación interna del profesor: no se sube (el repositorio es público)
 .profesor/
