@@ -33,6 +33,7 @@ nav:
               - "Flujos Asíncronos (Flow y StateFlow)": temas/00-android/00-kotlin/52-flows.md
               - "Anexo: La Magia de los DSLs": temas/00-android/00-kotlin/61-dsl-en-kotlin.md
           - "Actividades":
+              - "🎯 Practica Kotlin (test)": temas/evaluacion/practica-kotlin.md
               - "Laboratorio de Kotlin": temas/00-android/00-kotlin/ejercicios/index.md
               - "1. Fundamentos e Inmutabilidad": temas/00-android/00-kotlin/ejercicios/01-fundamentos-inmutabilidad.md
               - "2. Funciones, Lambdas y Ahorcado": temas/00-android/00-kotlin/ejercicios/02-funciones-lambdas-nullsafety.md
@@ -142,6 +143,7 @@ nav:
           - "Codelab 3.07 · Ficha de héroe y recursos": temas/03/codelabs/07-ficha-heroe-recursos.md
   - "Evaluación":
       - "Guía de estudio · 1ª evaluación": temas/evaluacion/1eval-guia-estudio.md
+      - "🎯 Practica Kotlin (test)": temas/evaluacion/practica-kotlin.md
 
   # - "UT4 - Persistencia":
   #   - "Introducción": temas/04/4.0-persistencia.md
@@ -256,6 +258,12 @@ extra_css:
 extra_javascript:
   - extra/js/compose-playground.js
   - extra/js/compose-playground-components.js
+
+hooks:
+  - quiz/hook_mkdocs.py
+
+watch:
+  - quiz
 
 plugins:
   - search
