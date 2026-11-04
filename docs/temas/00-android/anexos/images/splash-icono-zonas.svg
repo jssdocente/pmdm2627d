@@ -1,0 +1,25 @@
+<svg class="arq-svg" viewBox="0 0 760 356" role="img" aria-labelledby="arq-szi-t arq-szi-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-szi-t">Tamaño del icono en la pantalla de inicio</title>
+  <desc id="arq-szi-d">Dos lienzos cuadrados. Sin color de fondo para el icono, el lienzo mide 288 dp y solo se ve un círculo central de 192 dp. Con color de fondo para el icono, el lienzo mide 240 dp y el círculo visible, 160 dp. Lo que quede fuera del círculo se recorta: el logotipo debe caber en los dos tercios centrales.</desc>
+  <defs>
+    <marker id="arq-szi-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-szi-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="60" y="40" width="216.0" height="216.0" rx="4" class="arq-box" style="stroke-dasharray:5 4"/>
+  <circle cx="168.0" cy="148.0" r="72.0" class="arq-gray"/>
+  <circle cx="168.0" cy="148.0" r="44.64" class="arq-data"/>
+  <text x="168.0" y="153.0" class="arq-t arq-s arq-strong" text-anchor="middle">logo</text>
+  <text x="168.0" y="248.0" class="arq-t arq-xs arq-muted" text-anchor="middle">lienzo 288 dp</text>
+  <text x="168.0" y="70.0" class="arq-t arq-xs" text-anchor="middle">visible: Ø 192 dp</text>
+  <text x="168.0" y="280.0" class="arq-t arq-s arq-strong" text-anchor="middle">Sin fondo de icono</text>
+  <text x="168.0" y="298.0" class="arq-t arq-code arq-xs" text-anchor="middle">solo …AnimatedIcon</text>
+  <rect x="440" y="40" width="180.0" height="180.0" rx="4" class="arq-box" style="stroke-dasharray:5 4"/>
+  <circle cx="530.0" cy="130.0" r="60.0" class="arq-ui"/>
+  <circle cx="530.0" cy="130.0" r="37.2" class="arq-data"/>
+  <text x="530.0" y="135.0" class="arq-t arq-s arq-strong" text-anchor="middle">logo</text>
+  <text x="530.0" y="212.0" class="arq-t arq-xs arq-muted" text-anchor="middle">lienzo 240 dp</text>
+  <text x="530.0" y="64.0" class="arq-t arq-xs" text-anchor="middle">visible: Ø 160 dp</text>
+  <text x="530.0" y="244.0" class="arq-t arq-s arq-strong" text-anchor="middle">Con fondo de icono</text>
+  <text x="530.0" y="262.0" class="arq-t arq-code arq-xs" text-anchor="middle">+ …IconBackgroundColor</text>
+  <text x="380" y="344" class="arq-t arq-s arq-strong" text-anchor="middle">Todo lo que quede fuera del círculo se recorta: el logotipo, en los 2/3 centrales.</text>
+</svg>

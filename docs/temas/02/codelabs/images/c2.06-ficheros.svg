@@ -1,0 +1,39 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="arq-c206f-t arq-c206f-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c206f-t">Los ficheros que toca este codelab</title>
+  <desc id="arq-c206f-d">Cinco ficheros. En recursos: drawable/ic_launcher_foreground.xml y values/ic_launcher_background.xml forman el icono (paso 1); values/colors.xml y values-night/colors.xml el color de fondo, y values/themes.xml el tema Theme.LabUt2.Splash (paso 3). Fuera de res: libs.versions.toml y build.gradle.kts añaden la biblioteca (paso 2), AndroidManifest.xml asigna el tema a la Activity (paso 4) y MainActivity.kt llama a installSplashScreen (paso 5). El icono se reutiliza dentro del tema de la pantalla de inicio.</desc>
+  <defs>
+    <marker id="arq-c206f-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c206f-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="24" class="arq-t arq-code arq-s arq-strong">app/src/main/res/</text>
+  <rect x="20" y="36" width="350" height="46" rx="8" class="arq-data"/>
+  <text x="32" y="55" class="arq-t arq-code arq-xs arq-strong">drawable/ic_launcher_foreground.xml</text>
+  <text x="32" y="72" class="arq-t arq-xs">el dibujo del icono (capa delantera)</text>
+  <text x="360" y="55" class="arq-t arq-xs arq-muted" text-anchor="end">paso 1</text>
+  <rect x="20" y="90" width="350" height="46" rx="8" class="arq-data"/>
+  <text x="32" y="109" class="arq-t arq-code arq-xs arq-strong">values/ic_launcher_background.xml</text>
+  <text x="32" y="126" class="arq-t arq-xs">el color de fondo del icono</text>
+  <text x="360" y="109" class="arq-t arq-xs arq-muted" text-anchor="end">paso 1</text>
+  <rect x="20" y="160" width="350" height="46" rx="8" class="arq-dom"/>
+  <text x="32" y="179" class="arq-t arq-code arq-xs arq-strong">values/colors.xml  +  values-night/</text>
+  <text x="32" y="196" class="arq-t arq-xs">fondo_splash: claro y oscuro</text>
+  <text x="360" y="179" class="arq-t arq-xs arq-muted" text-anchor="end">paso 3</text>
+  <rect x="20" y="214" width="350" height="46" rx="8" class="arq-dom"/>
+  <text x="32" y="233" class="arq-t arq-code arq-xs arq-strong">values/themes.xml</text>
+  <text x="32" y="250" class="arq-t arq-xs">Theme.LabUt2.Splash (reutiliza el icono)</text>
+  <text x="360" y="233" class="arq-t arq-xs arq-muted" text-anchor="end">paso 3</text>
+  <text x="400" y="24" class="arq-t arq-s arq-strong">Fuera de res/</text>
+  <rect x="400" y="36" width="340" height="46" rx="8" class="arq-box"/>
+  <text x="412" y="55" class="arq-t arq-code arq-xs arq-strong">libs.versions.toml</text>
+  <text x="412" y="72" class="arq-t arq-xs">y build.gradle.kts: la biblioteca core-splashscreen</text>
+  <text x="730" y="55" class="arq-t arq-xs arq-muted" text-anchor="end">paso 2</text>
+  <rect x="400" y="160" width="340" height="46" rx="8" class="arq-ui"/>
+  <text x="412" y="179" class="arq-t arq-code arq-xs arq-strong">AndroidManifest.xml</text>
+  <text x="412" y="196" class="arq-t arq-xs">la Activity arranca con Theme.LabUt2.Splash</text>
+  <text x="730" y="179" class="arq-t arq-xs arq-muted" text-anchor="end">paso 4</text>
+  <rect x="400" y="214" width="340" height="46" rx="8" class="arq-ui"/>
+  <text x="412" y="233" class="arq-t arq-code arq-xs arq-strong">MainActivity.kt</text>
+  <text x="412" y="250" class="arq-t arq-xs">installSplashScreen()</text>
+  <text x="730" y="233" class="arq-t arq-xs arq-muted" text-anchor="end">paso 5</text>
+  <text x="380" y="300" class="arq-t arq-s arq-strong" text-anchor="middle">Ni una línea de Compose: todo pasa antes de setContent.</text>
+</svg>

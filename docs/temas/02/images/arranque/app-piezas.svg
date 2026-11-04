@@ -1,0 +1,32 @@
+<svg class="arq-svg" viewBox="0 0 760 340" role="img" aria-labelledby="arq-apz-t arq-apz-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-apz-t">Proceso, Application, Activity y la función LabApp</title>
+  <desc id="arq-apz-d">El proceso de la app contiene un único objeto Application, que se crea primero y es opcional, y la MainActivity. Dentro de la Activity, setContent dibuja el tema de Compose, que contiene la función composable raíz LabApp. LabApp no es una clase: es una función.</desc>
+  <defs>
+    <marker id="arq-apz-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-apz-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="10" y="10" width="740" height="320" rx="14" class="arq-box"/>
+  <text x="30" y="38" class="arq-t arq-h">Proceso de la app</text>
+  <text x="30" y="58" class="arq-t arq-s arq-muted">lo crea Android al abrir la app; vive hasta que el sistema lo cierra</text>
+  <rect x="30" y="78" width="200" height="92" rx="10" class="arq-data"/>
+  <text x="130" y="106" class="arq-t arq-code arq-strong" text-anchor="middle">Application</text>
+  <text x="130" y="128" class="arq-t arq-s" text-anchor="middle">un objeto por proceso</text>
+  <text x="130" y="148" class="arq-t arq-s" text-anchor="middle">se crea el primero</text>
+  <text x="30" y="200" class="arq-t arq-s">Opcional. Si creas la tuya,</text>
+  <text x="30" y="218" class="arq-t arq-s">es para arrancar cosas</text>
+  <text x="30" y="236" class="arq-t arq-s">globales una sola vez</text>
+  <text x="30" y="254" class="arq-t arq-s">(Koin, Firebase…).</text>
+  <text x="30" y="290" class="arq-t arq-s arq-strong">No «envuelve» a la Activity:</text>
+  <text x="30" y="308" class="arq-t arq-s arq-strong">conviven en el mismo proceso.</text>
+  <rect x="256" y="78" width="474" height="236" rx="10" class="arq-dom"/>
+  <text x="276" y="104" class="arq-t arq-code arq-strong">MainActivity</text>
+  <text x="276" y="124" class="arq-t arq-s arq-muted">la ventana; se destruye y se recrea (p. ej., al girar)</text>
+  <rect x="276" y="138" width="434" height="160" rx="10" class="arq-box"/>
+  <text x="294" y="162" class="arq-t arq-code">setContent {</text>
+  <rect x="310" y="174" width="384" height="108" rx="8" class="arq-ui"/>
+  <text x="326" y="196" class="arq-t arq-code">LabUt2Theme {</text>
+  <text x="682" y="196" class="arq-t arq-s arq-muted" text-anchor="end">tema de Compose</text>
+  <rect x="340" y="208" width="324" height="58" rx="8" class="arq-data"/>
+  <text x="502" y="232" class="arq-t arq-code arq-strong" text-anchor="middle">LabApp()</text>
+  <text x="502" y="252" class="arq-t arq-s" text-anchor="middle">función @Composable raíz, no una clase</text>
+</svg>

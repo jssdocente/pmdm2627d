@@ -77,6 +77,7 @@ nav:
           - "Glosario de Patrones": temas/00-android/02-arquitectura/05-glosario-patrones.md
       - "Anexos":
           - "A. Iconos de la app y gestión de recursos": temas/00-android/anexos/a-iconos-app-recursos.md
+          - "B. Pantalla de inicio (splash)": temas/00-android/anexos/b-pantalla-inicio-splash.md
   - "UT1 - Visión General y Entorno de desarrollo": temas/01/index.md
   # - "Proyecto Intermodular":
   #    - "Requisitos": temas/proyectos/proyecto-intermodular/requisitos-pmdm.md
@@ -99,6 +100,7 @@ nav:
           - "Codelab 2.03: Ciclo de Vida": temas/02/codelabs/03-ciclo-vida-logcat.md
           - "Codelab 2.04: Dados y Recursos": temas/02/codelabs/04-dado-interactivo.md
           - "Codelab 2.05: Semáforo y Estados": temas/02/codelabs/05-semaforo-estados.md
+          - "Codelab 2.06: Icono y Pantalla de Inicio": temas/02/codelabs/06-icono-pantalla-inicio.md
 
   - "UT3 - Interfaz de Usuario con Jetpack Compose":
       - "Inicio": temas/03/index.md

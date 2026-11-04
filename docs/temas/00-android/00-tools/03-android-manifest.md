@@ -36,14 +36,14 @@ Este bloque define las propiedades de alto nivel de toda tu aplicación. Es como
     android:supportsRtl="true"
     android:usesCleartextTraffic="false">
     
-    <!-- Componentes aquí inside... -->
+    <!-- Aquí van los componentes: <activity>, <service>... -->
 </application>
 ```
 
 ### Elementos clave explicados:
 
--   **`android:name`**: (Opcional) Referencia a una clase Java/Kotlin que hereda de `Application`. Es el primer código que se ejecuta al abrir la app, ideal para inicializar librerías globales (como bases de datos o inyección de dependencias).
--   **`android:theme`**: Define la "estética" por defecto. Referencia a un fichero de estilos (normalmente en `res/values/themes.xml`). Aquí se decide si usas **Material Design 3**, los colores principales de tu marca, o si tu app soporta modo oscuro de forma nativa.
+-   **`android:name`**: (Opcional) Referencia a una clase Kotlin que hereda de `Application`. Android crea un único objeto de esa clase por proceso y ejecuta su `onCreate()` antes que el de cualquier Activity: es el sitio para inicializar librerías globales (como bases de datos o inyección de dependencias). Si no pones este atributo, Android usa una `Application` genérica. Cómo encaja con la Activity: [2.2 §1](../../02/2.2-ciclo-vida-app.md#proceso-application-y-activity-quien-es-quien).
+-   **`android:theme`**: El **tema XML** de la ventana, definido en `res/values/themes.xml`. Lo aplica el sistema antes de que se ejecute tu código: fondo inicial, barras del sistema y pantalla de inicio. En una app Compose, los colores de Material 3 y el modo oscuro **no** se deciden aquí, sino en el tema de Compose (`ui/theme/Theme.kt`). La diferencia entre los dos temas está en [2.1 §3.3](../../02/2.1-primeros-pasos.md#33-el-tema-xml-de-la-ventana). También se puede poner en una `<activity>` concreta, como hace la [pantalla de inicio](../anexos/b-pantalla-inicio-splash.md).
 -   **`android:usesCleartextTraffic`**: Si se pone en `false` (recomendado), Android bloqueará todas las peticiones HTTP no seguras, obligándote a usar **HTTPS**. Es vital para la seguridad actual.
 
 ---

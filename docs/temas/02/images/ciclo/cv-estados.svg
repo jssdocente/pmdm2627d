@@ -1,0 +1,46 @@
+<svg class="arq-svg" viewBox="0 0 760 410" role="img" aria-labelledby="arq-cve-t arq-cve-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-cve-t">Estados y métodos del ciclo de vida de una Activity</title>
+  <desc id="arq-cve-d">Cuatro escalones de abajo arriba: no existe, creada, iniciada (visible) y reanudada (en primer plano y con foco). Para subir, Android llama a onCreate, onStart y onResume; para bajar, a onPause, onStop y onDestroy. Al abrir la app sube los tres escalones. Un diálogo encima provoca onPause. Home u otra app, onPause y onStop. Atrás o girar la pantalla bajan hasta onDestroy. Con la Activity parada, el sistema puede eliminar el proceso sin llamar a onDestroy.</desc>
+  <defs>
+    <marker id="arq-cve-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-cve-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="320" width="150" height="50" rx="10" class="arq-gray"/>
+  <text x="95" y="342" class="arq-t arq-s arq-strong" text-anchor="middle">No existe</text>
+  <text x="95" y="360" class="arq-t arq-xs arq-muted" text-anchor="middle">(o destruida)</text>
+  <rect x="210" y="240" width="150" height="50" rx="10" class="arq-box"/>
+  <text x="285" y="262" class="arq-t arq-s arq-strong" text-anchor="middle">Creada</text>
+  <text x="285" y="280" class="arq-t arq-xs arq-muted" text-anchor="middle">existe en memoria</text>
+  <rect x="400" y="160" width="150" height="50" rx="10" class="arq-box"/>
+  <text x="475" y="182" class="arq-t arq-s arq-strong" text-anchor="middle">Iniciada</text>
+  <text x="475" y="200" class="arq-t arq-xs arq-muted" text-anchor="middle">visible</text>
+  <rect x="590" y="80" width="150" height="50" rx="10" class="arq-ui"/>
+  <text x="665" y="102" class="arq-t arq-s arq-strong" text-anchor="middle">Reanudada</text>
+  <text x="665" y="120" class="arq-t arq-xs arq-muted" text-anchor="middle">primer plano y foco</text>
+  <path d="M60,320 L60,265 L208,265" class="arq-dep" marker-end="url(#arq-cve-a)" style="stroke-width:1.8"/>
+  <text x="135.0" y="258" class="arq-t arq-code arq-xs" text-anchor="middle">onCreate()</text>
+  <path d="M250,290 L250,345 L172,345" class="arq-flow" marker-end="url(#arq-cve-f)"/>
+  <text x="256" y="362" class="arq-t arq-code arq-xs">onDestroy()</text>
+  <path d="M250,240 L250,185 L398,185" class="arq-dep" marker-end="url(#arq-cve-a)" style="stroke-width:1.8"/>
+  <text x="325.0" y="178" class="arq-t arq-code arq-xs" text-anchor="middle">onStart()</text>
+  <path d="M440,210 L440,265 L362,265" class="arq-flow" marker-end="url(#arq-cve-f)"/>
+  <text x="446" y="282" class="arq-t arq-code arq-xs">onStop()</text>
+  <path d="M440,160 L440,105 L588,105" class="arq-dep" marker-end="url(#arq-cve-a)" style="stroke-width:1.8"/>
+  <text x="515.0" y="98" class="arq-t arq-code arq-xs" text-anchor="middle">onResume()</text>
+  <path d="M630,130 L630,185 L552,185" class="arq-flow" marker-end="url(#arq-cve-f)"/>
+  <text x="636" y="202" class="arq-t arq-code arq-xs">onPause()</text>
+  <path d="M210,284 L120,284 L120,318" class="arq-flow" marker-end="url(#arq-cve-f)" style="stroke-dasharray:2 4"/>
+  <text x="20" y="398" class="arq-t arq-xs arq-strong">Con la app parada, el sistema puede eliminar el proceso sin llamar a onDestroy().</text>
+  <text x="126" y="302" class="arq-t arq-xs">proceso eliminado</text>
+  <rect x="20" y="20" width="356" height="148" rx="10" class="arq-box"/>
+  <text x="36" y="44" class="arq-t arq-s arq-strong">Qué lo provoca</text>
+  <text x="36" y="70" class="arq-t arq-xs"><tspan class="arq-strong">Abrir la app:</tspan> sube los tres escalones.</text>
+  <text x="36" y="92" class="arq-t arq-xs"><tspan class="arq-strong">Un diálogo encima:</tspan> onPause().</text>
+  <text x="36" y="114" class="arq-t arq-xs"><tspan class="arq-strong">Home u otra app:</tspan> onPause() y onStop().</text>
+  <text x="36" y="136" class="arq-t arq-xs"><tspan class="arq-strong">Volver a la app:</tspan> onRestart(), onStart(), onResume().</text>
+  <text x="36" y="158" class="arq-t arq-xs"><tspan class="arq-strong">Atrás o girar la pantalla:</tspan> baja hasta onDestroy().</text>
+  <line x1="590" y1="322" x2="614" y2="322" class="arq-flow"/>
+  <text x="622" y="326" class="arq-t arq-xs">bajar: liberar</text>
+  <line x1="590" y1="346" x2="614" y2="346" class="arq-dep"/>
+  <text x="622" y="350" class="arq-t arq-xs">subir: preparar</text>
+</svg>

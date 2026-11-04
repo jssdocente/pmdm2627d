@@ -1,0 +1,28 @@
+<svg class="arq-svg" viewBox="0 0 760 290" role="img" aria-labelledby="arq-sba-t arq-sba-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-sba-t">Pantalla de inicio: el enfoque antiguo frente al actual</title>
+  <desc id="arq-sba-d">Arriba, el enfoque antiguo: desde Android 12 el sistema muestra su pantalla de inicio, después la app muestra su propia pantalla Compose con el logotipo y un delay de 2 segundos, y luego navega a Login o Home. El usuario ve dos pantallas de inicio y espera aunque no haga falta. Abajo, el enfoque actual: solo la pantalla de inicio del sistema, que se mantiene con setKeepOnScreenCondition mientras el ViewModel comprueba la sesión, y después se abre directamente Login o Home.</desc>
+  <defs>
+    <marker id="arq-sba-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-sba-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-s arq-strong">Antes: una pantalla propia con delay</text>
+  <rect x="20" y="40" width="200" height="46" rx="8" class="arq-dom"/>
+  <text x="120" y="60" class="arq-t arq-s" text-anchor="middle">splash del sistema</text>
+  <text x="120" y="76" class="arq-t arq-xs arq-muted" text-anchor="middle">(Android 12+)</text>
+  <rect x="226" y="40" width="300" height="46" rx="8" class="arq-warn"/>
+  <text x="376" y="60" class="arq-t arq-code arq-xs" text-anchor="middle">SplashScreen() en Compose</text>
+  <text x="376" y="78" class="arq-t arq-code arq-xs" text-anchor="middle">logo + delay(2000)</text>
+  <rect x="532" y="40" width="208" height="46" rx="8" class="arq-ui"/>
+  <text x="636" y="67" class="arq-t arq-s arq-strong" text-anchor="middle">Login / Home</text>
+  <text x="376" y="106" class="arq-t arq-s" text-anchor="middle">dos pantallas de inicio seguidas y 2 s de espera fija</text>
+  <line x1="20" y1="130" x2="740" y2="130" class="arq-guide"/>
+  <text x="20" y="158" class="arq-t arq-s arq-strong">Ahora: la del sistema, mientras haga falta</text>
+  <rect x="20" y="172" width="330" height="46" rx="8" class="arq-dom"/>
+  <text x="185" y="192" class="arq-t arq-s" text-anchor="middle">splash del sistema</text>
+  <text x="185" y="209" class="arq-t arq-code arq-xs" text-anchor="middle">setKeepOnScreenCondition { cargando }</text>
+  <rect x="356" y="172" width="384" height="46" rx="8" class="arq-ui"/>
+  <text x="548" y="199" class="arq-t arq-s arq-strong" text-anchor="middle">Login o Home, directamente</text>
+  <rect x="20" y="232" width="330" height="10" rx="3" class="arq-bar-vm"/>
+  <text x="185" y="262" class="arq-t arq-s" text-anchor="middle">el ViewModel comprueba la sesión</text>
+  <text x="185" y="280" class="arq-t arq-xs arq-muted" text-anchor="middle">(normalmente, unos milisegundos)</text>
+</svg>

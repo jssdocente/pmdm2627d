@@ -1,6 +1,6 @@
 # **Codelab 2.05: Semáforo y Máquinas de Estados**
 
-En los codelabs anteriores el estado era un número. En este último codelab de la unidad, el estado es **una fase entre varias posibles**, y de la fase depende toda la pantalla: qué luz se enciende, qué mensaje se lee, de qué color y qué hace cada botón. Modelarás esas fases con un **`enum class`** que sabe cuál es la siguiente, es decir, una pequeña **máquina de estados**, y dibujarás las luces con formas circulares.
+En los codelabs anteriores el estado era un número. En este codelab, el estado es **una fase entre varias posibles**, y de la fase depende toda la pantalla: qué luz se enciende, qué mensaje se lee, de qué color y qué hace cada botón. Modelarás esas fases con un **`enum class`** que sabe cuál es la siguiente, es decir, una pequeña **máquina de estados**, y dibujarás las luces con formas circulares.
 
 !!! info "Punto de partida: tag `c2.05-inicio`"
     Sigue en el repositorio del laboratorio, [pmdm2627-lab-ut2](https://github.com/jssdocente/pmdm2627-lab-ut2). Si terminaste el [Codelab 2.04](./04-dado-interactivo.md), continúa en tu rama. Si no, parte del tag:
@@ -454,7 +454,7 @@ Esta separación (la regla en el modelo, la pantalla solo la usa) es la misma id
 3. Gira el móvil en cualquier fase: la fase se conserva, porque un `enum` cabe en el `Bundle`.
 
 !!! success "Solución: tag `c2.05-fin`"
-    Compara tu código con el tag [`c2.05-fin`](https://github.com/jssdocente/pmdm2627-lab-ut2/tree/c2.05-fin) (`git diff c2.05-fin`). Con este codelab terminas la parte guiada: los [retos autónomos](../2.4-laboratorio-retos.md#4-retos-autonomos) parten de aquí.
+    Compara tu código con el tag [`c2.05-fin`](https://github.com/jssdocente/pmdm2627-lab-ut2/tree/c2.05-fin) (`git diff c2.05-fin`). Los [retos autónomos](../2.4-laboratorio-retos.md#4-retos-autonomos) parten de aquí. El último codelab, el [2.06](./06-icono-pantalla-inicio.md), da al laboratorio su icono y su pantalla de inicio.
 
 ---
 

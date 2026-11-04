@@ -1,0 +1,39 @@
+<svg class="arq-svg" viewBox="0 0 760 300" role="img" aria-labelledby="arq-aar-t arq-aar-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-aar-t">Qué pasa al pulsar el icono de la app</title>
+  <desc id="arq-aar-d">Arranque en frío: el usuario pulsa el icono; el sistema muestra al momento una ventana con el tema XML de la app, que desde Android 12 es la pantalla de inicio con el icono. Mientras tanto crea el proceso, ejecuta Application.onCreate si existe, y la MainActivity pasa por onCreate, donde se llama a setContent, onStart y onResume. Cuando Compose pinta el primer fotograma, la pantalla de inicio desaparece y se ve la interfaz. Si el proceso seguía vivo, Android se salta la creación del proceso y Application.onCreate.</desc>
+  <defs>
+    <marker id="arq-aar-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-aar-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-s arq-strong">Arranque en frío: el proceso no existía</text>
+  <rect x="20" y="40" width="580" height="34" rx="8" class="arq-dom"/>
+  <text x="310" y="62" class="arq-t arq-s" text-anchor="middle">Ventana con el tema XML (desde Android 12: pantalla de inicio)</text>
+  <rect x="606" y="40" width="134" height="34" rx="8" class="arq-ui"/>
+  <text x="673" y="62" class="arq-t arq-s arq-strong" text-anchor="middle">Tu interfaz</text>
+  <line x1="20" y1="120" x2="745" y2="120" class="arq-dep" marker-end="url(#arq-aar-a)"/>
+  <circle cx="40" cy="120" r="6" class="arq-key-on"/>
+  <text x="40" y="148" class="arq-t arq-s" text-anchor="middle">pulsa el</text>
+  <text x="40" y="165" class="arq-t arq-s" text-anchor="middle">icono</text>
+  <circle cx="150" cy="120" r="6" class="arq-key-on"/>
+  <text x="150" y="148" class="arq-t arq-s" text-anchor="middle">se crea</text>
+  <text x="150" y="165" class="arq-t arq-s" text-anchor="middle">el proceso</text>
+  <circle cx="270" cy="120" r="6" class="arq-key-on"/>
+  <text x="270" y="148" class="arq-t arq-code arq-xs" text-anchor="middle">Application</text>
+  <text x="270" y="165" class="arq-t arq-code arq-xs" text-anchor="middle">.onCreate()</text>
+  <text x="270" y="186" class="arq-t arq-xs arq-muted" text-anchor="middle">(si existe)</text>
+  <circle cx="400" cy="120" r="6" class="arq-key-on"/>
+  <text x="400" y="148" class="arq-t arq-code arq-xs" text-anchor="middle">MainActivity</text>
+  <text x="400" y="165" class="arq-t arq-code arq-xs" text-anchor="middle">.onCreate()</text>
+  <text x="400" y="186" class="arq-t arq-xs arq-muted" text-anchor="middle">setContent { … }</text>
+  <circle cx="515" cy="120" r="6" class="arq-key-on"/>
+  <text x="515" y="148" class="arq-t arq-code arq-xs" text-anchor="middle">onStart()</text>
+  <text x="515" y="165" class="arq-t arq-code arq-xs" text-anchor="middle">onResume()</text>
+  <circle cx="603" cy="120" r="6" class="arq-key-on"/>
+  <text x="603" y="148" class="arq-t arq-s" text-anchor="middle">primer</text>
+  <text x="603" y="165" class="arq-t arq-s" text-anchor="middle">fotograma</text>
+  <text x="603" y="186" class="arq-t arq-xs arq-muted" text-anchor="middle">la pantalla de inicio se va</text>
+  <line x1="603" y1="84" x2="603" y2="112" class="arq-guide"/>
+  <text x="20" y="222" class="arq-t arq-s arq-strong">Si el proceso seguía vivo (arranque templado o en caliente)</text>
+  <text x="20" y="242" class="arq-t arq-s">Android se salta los dos primeros pasos y Application.onCreate(): solo se crea (o se reanuda) la Activity.</text>
+  <text x="20" y="276" class="arq-t arq-s arq-muted">Por eso lo que pones en Application se ejecuta una vez por proceso, y lo de onCreate de la Activity, cada vez que se crea.</text>
+</svg>

@@ -255,6 +255,9 @@ Los *Vector Drawables* de Android no admiten todo lo que permite SVG. Suelen dar
 - [ ] El icono de Google Play es de 512 × 512 px, cuadrado y sin máscara.
 - [ ] No queda en el proyecto el icono de ejemplo del asistente (el robot verde sobre fondo con cuadrícula).
 
+!!! tip "El icono también es la pantalla de inicio"
+    Desde Android 12, el sistema muestra la capa delantera del icono en la pantalla de inicio de la app. Cómo personalizarla está en el [Anexo B. Pantalla de inicio (splash)](./b-pantalla-inicio-splash.md).
+
 ---
 
 ## 6. Para saber más
@@ -263,4 +266,6 @@ Los *Vector Drawables* de Android no admiten todo lo que permite SVG. Suelen dar
 - [Crear iconos de app con Image Asset Studio](https://developer.android.com/studio/write/create-app-icons?hl=es-419)
 - [Agregar gráficos vectoriales multidensidad (Vector Asset Studio)](https://developer.android.com/studio/write/vector-asset-studio?hl=es-419)
 - [Administrar los recursos de la app con Resource Manager](https://developer.android.com/studio/write/resource-manager?hl=es-419)
+- [Anexo B. Pantalla de inicio (splash)](./b-pantalla-inicio-splash.md)
+- [Codelab 2.06: Icono y pantalla de inicio](../../02/codelabs/06-icono-pantalla-inicio.md), para practicar *Image Asset Studio* en el laboratorio
 - [Requisitos de recursos gráficos de Google Play](https://support.google.com/googleplay/android-developer/answer/9866151?hl=es)

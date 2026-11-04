@@ -1,0 +1,49 @@
+<svg class="arq-svg" viewBox="0 0 760 360" role="img" aria-labelledby="arq-c206r-t arq-c206r-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c206r-t">Lo que cambia en el laboratorio</title>
+  <desc id="arq-c206r-d">Tres pantallas del móvil. En el lanzador, el laboratorio tiene un icono propio: un matraz blanco sobre fondo morado, recortado con la forma que elige el móvil. Al abrirlo, la pantalla de inicio muestra ese matraz en el centro sobre un fondo morado. Cuando Compose pinta el primer fotograma, aparece el menú del laboratorio de siempre.</desc>
+  <defs>
+    <marker id="arq-c206r-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c206r-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="10" width="170" height="300" rx="22" class="arq-box"/>
+  <rect x="30" y="22" width="150" height="276" rx="12" class="arq-gray" style="fill-opacity:.35"/>
+  <text x="105" y="334" class="arq-t arq-s arq-strong" text-anchor="middle">1. El icono en el lanzador</text>
+  <circle cx="72" cy="70" r="24" class="" style="fill:#6650A4"/>
+  <path d="M19.8,18.4L14,10.67V6.5l1.35,-1.69C15.61,4.48 15.38,4 14.96,4H9.04C8.62,4 8.39,4.48 8.65,4.81L10,6.5v4.17L4.2,18.4C3.71,19.06 4.18,20 5,20h14C19.82,20 20.29,19.06 19.8,18.4z" transform="translate(58.0,56.0) scale(1.167)" style="fill:#fff"/>
+  <text x="72" y="112" class="arq-t arq-xs arq-strong" text-anchor="middle">Lab UT2</text>
+  <circle cx="138" cy="70" r="24" class="arq-gray"/>
+  <circle cx="72" cy="150" r="24" class="arq-gray"/>
+  <circle cx="138" cy="150" r="24" class="arq-gray"/>
+  <rect x="295" y="10" width="170" height="300" rx="22" class="arq-box"/>
+  <rect x="305" y="22" width="150" height="276" rx="12" class="arq-gray" style="fill-opacity:.35"/>
+  <text x="380" y="334" class="arq-t arq-s arq-strong" text-anchor="middle">2. La pantalla de inicio</text>
+  <rect x="305" y="22" width="150" height="276" rx="12" class="" style="fill:#6650A4"/>
+  <path d="M19.8,18.4L14,10.67V6.5l1.35,-1.69C15.61,4.48 15.38,4 14.96,4H9.04C8.62,4 8.39,4.48 8.65,4.81L10,6.5v4.17L4.2,18.4C3.71,19.06 4.18,20 5,20h14C19.82,20 20.29,19.06 19.8,18.4z" transform="translate(354.0,134.0) scale(2.167)" style="fill:#fff"/>
+  <text x="380" y="240" class="arq-t arq-code arq-xs" text-anchor="middle" style="fill:#fff">fondo_splash</text>
+  <text x="380" y="256" class="arq-t arq-xs" text-anchor="middle" style="fill:#fff">+ el mismo matraz</text>
+  <rect x="570" y="10" width="170" height="300" rx="22" class="arq-box"/>
+  <rect x="580" y="22" width="150" height="276" rx="12" class="arq-gray" style="fill-opacity:.35"/>
+  <text x="655" y="334" class="arq-t arq-s arq-strong" text-anchor="middle">3. El menú del laboratorio</text>
+  <rect x="580" y="22" width="150" height="276" rx="12" class="arq-box"/>
+  <text x="655" y="48" class="arq-t arq-s arq-strong" text-anchor="middle">Lab UT2</text>
+  <rect x="592" y="62" width="126" height="36" rx="8" class="arq-ui"/>
+  <rect x="602" y="74" width="60" height="6" rx="3" class="arq-gray"/>
+  <rect x="602" y="86" width="90" height="5" rx="3" class="arq-gray"/>
+  <rect x="592" y="106" width="126" height="36" rx="8" class="arq-ui"/>
+  <rect x="602" y="118" width="60" height="6" rx="3" class="arq-gray"/>
+  <rect x="602" y="130" width="90" height="5" rx="3" class="arq-gray"/>
+  <rect x="592" y="150" width="126" height="36" rx="8" class="arq-ui"/>
+  <rect x="602" y="162" width="60" height="6" rx="3" class="arq-gray"/>
+  <rect x="602" y="174" width="90" height="5" rx="3" class="arq-gray"/>
+  <rect x="592" y="194" width="126" height="36" rx="8" class="arq-ui"/>
+  <rect x="602" y="206" width="60" height="6" rx="3" class="arq-gray"/>
+  <rect x="602" y="218" width="90" height="5" rx="3" class="arq-gray"/>
+  <rect x="592" y="238" width="126" height="36" rx="8" class="arq-ui"/>
+  <rect x="602" y="250" width="60" height="6" rx="3" class="arq-gray"/>
+  <rect x="602" y="262" width="90" height="5" rx="3" class="arq-gray"/>
+  <line x1="194" y1="160" x2="288" y2="160" class="arq-dep" marker-end="url(#arq-c206r-a)"/>
+  <text x="241" y="150" class="arq-t arq-xs" text-anchor="middle">pulsar</text>
+  <line x1="469" y1="160" x2="563" y2="160" class="arq-dep" marker-end="url(#arq-c206r-a)"/>
+  <text x="516" y="150" class="arq-t arq-xs" text-anchor="middle">primer</text>
+  <text x="516" y="178" class="arq-t arq-xs" text-anchor="middle">fotograma</text>
+</svg>

@@ -93,13 +93,14 @@ En este bloque dejamos atrás las tecnologías imperativas antiguas (archivos XM
     - **[2.3.2 Imágenes, iconos y recursos](./2.3.2-imagenes-iconos-recursos.md):** Carpeta `res` y clase `R`, mapas de bits frente a vectores, `Image` y `contentScale` (con playground), `Icon` y Material Symbols, y textos traducibles en `strings.xml`. Se complementa con el [Anexo A: Iconos de la app y gestión de recursos](../00-android/anexos/a-iconos-app-recursos.md).
 
 4. **[2.4 Laboratorio de Prácticas y Codelabs](./2.4-laboratorio-retos.md):**  
-   El repositorio del laboratorio (`pmdm2627-lab-ut2`), con cinco codelabs guiados que construyen la misma app, cada uno sobre el anterior, y dos retos autónomos para evaluación:
+   El repositorio del laboratorio (`pmdm2627-lab-ut2`), con seis codelabs guiados que construyen la misma app, cada uno sobre el anterior, y dos retos autónomos para evaluación:
 
     - **[Codelab 2.01: Tarjeta de presentación y `@Preview`](./codelabs/01-tarjeta-presentacion.md)** · `c2.01-inicio` → `c2.01-fin`
     - **[Codelab 2.02: El contador, el estado y el menú del laboratorio](./codelabs/02-contador-incremental.md)** · `c2.02-inicio` → `c2.02-fin`
     - **[Codelab 2.03: Ciclo de vida, Logcat y `rememberSaveable`](./codelabs/03-ciclo-vida-logcat.md)** · `c2.03-inicio` → `c2.03-fin`
     - **[Codelab 2.04: Lanzador de dados, imágenes y recursos](./codelabs/04-dado-interactivo.md)** · `c2.04-inicio` → `c2.04-fin`
     - **[Codelab 2.05: Semáforo y máquinas de estados](./codelabs/05-semaforo-estados.md)** · `c2.05-inicio` → `c2.05-fin`
+    - **[Codelab 2.06: Icono y pantalla de inicio](./codelabs/06-icono-pantalla-inicio.md)** · `c2.06-inicio` → `c2.06-fin`
     - **[Reto 2.01: El juego de la limonada](./2.4-laboratorio-retos.md#reto-201-el-juego-de-la-limonada):** máquina de cuatro estados con un contador aleatorio de exprimidos.
     - **[Reto 2.02: Marcador de baloncesto](./2.4-laboratorio-retos.md#reto-202-marcador-de-baloncesto):** dos marcadores a la vez, con detección del líder del partido.
 
