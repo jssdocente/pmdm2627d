@@ -23,3 +23,6 @@ _bck/
 
 # Documentación interna del profesor: no se sube (el repositorio es público)
 .profesor/
+
+# Caché de Python (hook de MkDocs del banco de preguntas)
+__pycache__/
