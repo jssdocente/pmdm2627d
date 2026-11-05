@@ -482,7 +482,7 @@ Añade la pantalla al menú (`HEROE` en `PantallaLab` y su rama en el `when`).
     ```
 
 !!! success "Solución: tag `c3.07-fin`"
-    Compara tu código con el tag [`c3.07-fin`](https://github.com/jssdocente/pmdm2627-lab-ut3/tree/c3.07-fin) (`git diff c3.07-fin`). Con este codelab termina la parte guiada del laboratorio: sigue con los [retos de la UT3](../3.6-laboratorio-retos.md#4-retos-autonomos).
+    Compara tu código con el tag [`c3.07-fin`](https://github.com/jssdocente/pmdm2627-lab-ut3/tree/c3.07-fin) (`git diff c3.07-fin`). El siguiente codelab, el [3.08](./08-temporizador-pomodoro.md), añade tareas con tiempo y animaciones; los [retos autónomos](../3.6-laboratorio-retos.md#4-retos-autonomos) también parten del laboratorio terminado.
 
 ---
 

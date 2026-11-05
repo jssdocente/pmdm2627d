@@ -421,4 +421,4 @@ Añade un botón «Eliminar juego» al final del detalle. Al pulsarlo, el juego 
 
 ## ➡️ Próxima sesión
 
-**3.06 · ViewModel y UiState (II):** un ViewModel para cada pantalla, asociado a su entrada de la pila, y los datos compartidos en un repositorio. Lectura previa: [3B.1 §8 Un ViewModel para cada pantalla](../b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla).
+**3.06 · Tiempo y ciclo de vida:** un cronómetro en el ViewModel: corrutinas que se pueden parar con `Job`, esperas que bloquean los botones y una pausa automática al salir de la app. Lectura previa: [Corrutinas §1 y §4.2](../../00-android/00-kotlin/51-corrutinas.md#1-la-analogia-del-camarero-por-que-bloquear-un-hilo-es-fatal).

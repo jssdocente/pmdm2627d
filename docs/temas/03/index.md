@@ -30,7 +30,7 @@ Cómo construir pantallas atractivas y coherentes con el sistema de diseño de G
 - **[3A.1 Material Design 3, Theming, Providers y Scaffold](./a-diseno/3a.1-material-design-3-scaffold.md):** esquemas de color claro y oscuro, tipografía, `CompositionLocalProvider`, estructura de pantalla con `Scaffold`, barras superiores, `Snackbar` y menú lateral.
 - **[3A.2 Componentes interactivos, formularios y diálogos](./a-diseno/3a.2-componentes-interactivos.md):** botones, campos de texto con validación, `Switch`, `Checkbox`, `Slider`, menús desplegables y diálogos.
 - **[3A.3 Listas y cuadrículas eficientes](./a-diseno/3a.3-listas-cuadriculas.md):** `LazyColumn`, `LazyRow`, `LazyVerticalGrid` y claves (`key`).
-- **3A.4 Animaciones y microinteracciones** *(en preparación)*: `animate*AsState`, `AnimatedVisibility`, `AnimatedContent`, *pull-to-refresh*, deslizar para borrar y cargas tipo *shimmer*.
+- **[3A.4 Animaciones que siguen al estado](./a-diseno/3a.4-animaciones.md):** `animate*AsState`, `graphicsLayer`, `animateContentSize`, `Crossfade` y `AnimatedVisibility`.
 
 ### 3B · Navegación y diseño adaptativo
 

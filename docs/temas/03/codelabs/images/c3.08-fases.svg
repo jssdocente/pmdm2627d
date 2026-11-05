@@ -1,0 +1,31 @@
+<svg class="arq-svg" viewBox="0 0 760 260" role="img" aria-labelledby="arq-c308-t arq-c308-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-c308-t">Las fases del temporizador Pomodoro</title>
+  <desc id="arq-c308-d">Parado, al iniciar pasa a contando. Al llegar a cero entra en cambiando de fase, con los botones bloqueados durante dos segundos. Después pasa a la siguiente fase y sigue contando. Pausar vuelve a parado; salir de la app para la corrutina pero mantiene enMarcha, y al volver sigue contando.</desc>
+  <defs>
+    <marker id="arq-c308-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-c308-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="70" width="150" height="64" rx="12" class="arq-box"/>
+  <text x="95.0" y="96" class="arq-t arq-s arq-strong" text-anchor="middle">Parado</text>
+  <text x="95.0" y="116" class="arq-t arq-code arq-xs" text-anchor="middle">enMarcha = false</text>
+  <rect x="290" y="70" width="170" height="64" rx="12" class="arq-ui"/>
+  <text x="375.0" y="96" class="arq-t arq-s arq-strong" text-anchor="middle">Contando</text>
+  <text x="375.0" y="116" class="arq-t arq-code arq-xs" text-anchor="middle">enMarcha = true</text>
+  <rect x="580" y="70" width="160" height="64" rx="12" class="arq-dom"/>
+  <text x="660.0" y="96" class="arq-t arq-s arq-strong" text-anchor="middle">Cambiando de fase</text>
+  <text x="660.0" y="116" class="arq-t arq-code arq-xs" text-anchor="middle">botones bloqueados</text>
+  <line x1="170" y1="92" x2="288" y2="92" class="arq-dep" marker-end="url(#arq-c308-a)"/>
+  <text x="229" y="84" class="arq-t arq-code arq-xs" text-anchor="middle">onIniciar()</text>
+  <line x1="288" y1="118" x2="172" y2="118" class="arq-dep" marker-end="url(#arq-c308-a)"/>
+  <text x="229" y="136" class="arq-t arq-code arq-xs" text-anchor="middle">onPausar()</text>
+  <line x1="460" y1="92" x2="578" y2="92" class="arq-dep" marker-end="url(#arq-c308-a)"/>
+  <text x="519" y="84" class="arq-t arq-xs" text-anchor="middle">llega a 0</text>
+  <line x1="578" y1="118" x2="462" y2="118" class="arq-dep" marker-end="url(#arq-c308-a)"/>
+  <text x="519" y="136" class="arq-t arq-code arq-xs" text-anchor="middle">delay(2 s)</text>
+  <line x1="375" y1="134" x2="375" y2="168" class="arq-flow" marker-end="url(#arq-c308-f)"/>
+  <rect x="240" y="170" width="270" height="44" rx="10" class="arq-gray"/>
+  <text x="375" y="189" class="arq-t arq-xs arq-strong" text-anchor="middle">Fuera de la app: Job cancelado</text>
+  <text x="375" y="206" class="arq-t arq-code arq-xs" text-anchor="middle">enMarcha sigue a true</text>
+  <text x="380" y="28" class="arq-t arq-s arq-strong" text-anchor="middle">Una corrutina, y un solo estado que dice en qué punto está</text>
+  <text x="380" y="244" class="arq-t arq-xs" text-anchor="middle">Al volver a primer plano, si enMarcha es true, se lanza otra corrutina y sigue donde iba.</text>
+</svg>

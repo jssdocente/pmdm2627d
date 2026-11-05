@@ -1,0 +1,34 @@
+<svg class="arq-svg" viewBox="0 0 760 250" role="img" aria-labelledby="arq-an1-t arq-an1-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-an1-t">La animación sigue al estado</title>
+  <desc id="arq-an1-d">De izquierda a derecha: el estado, esFavorito igual a true, lo decide un evento. animateFloatAsState recibe el valor de destino, 1,25, y produce valores intermedios, 1,0, 1,08, 1,17 y 1,25, uno por fotograma. graphicsLayer dibuja cada valor. Si el estado vuelve a false, la animación se dirige de vuelta a 1,0 desde donde esté. La animación no guarda nada: el dato está en el estado.</desc>
+  <defs>
+    <marker id="arq-an1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-an1-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="40" width="170" height="84" rx="10" class="arq-data"/>
+  <text x="105" y="66" class="arq-t arq-s arq-strong" text-anchor="middle">Estado</text>
+  <text x="105" y="88" class="arq-t arq-code arq-xs" text-anchor="middle">esFavorito = true</text>
+  <text x="105" y="108" class="arq-t arq-xs arq-muted" text-anchor="middle">el único dato que se guarda</text>
+  <line x1="190" y1="82" x2="226" y2="82" class="arq-dep" marker-end="url(#arq-an1-a)"/>
+  <rect x="228" y="40" width="190" height="84" rx="10" class="arq-ui"/>
+  <text x="323" y="66" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle">animateFloatAsState</text>
+  <text x="323" y="88" class="arq-t arq-code arq-xs" text-anchor="middle">destino: 1.25f</text>
+  <text x="323" y="108" class="arq-t arq-xs arq-muted" text-anchor="middle">calcula los pasos</text>
+  <line x1="418" y1="82" x2="454" y2="82" class="arq-dep" marker-end="url(#arq-an1-a)"/>
+  <rect x="460" y="52" width="60" height="28" rx="6" class="arq-box"/>
+  <text x="490" y="71" class="arq-t arq-code arq-xs" text-anchor="middle">1.00</text>
+  <circle cx="490" cy="106" r="8" class="arq-red" style="fill-opacity:.75"/>
+  <rect x="530" y="52" width="60" height="28" rx="6" class="arq-box"/>
+  <text x="560" y="71" class="arq-t arq-code arq-xs" text-anchor="middle">1.08</text>
+  <circle cx="560" cy="106" r="10" class="arq-red" style="fill-opacity:.75"/>
+  <rect x="600" y="52" width="60" height="28" rx="6" class="arq-box"/>
+  <text x="630" y="71" class="arq-t arq-code arq-xs" text-anchor="middle">1.17</text>
+  <circle cx="630" cy="106" r="12" class="arq-red" style="fill-opacity:.75"/>
+  <rect x="670" y="52" width="60" height="28" rx="6" class="arq-box"/>
+  <text x="700" y="71" class="arq-t arq-code arq-xs" text-anchor="middle">1.25</text>
+  <circle cx="700" cy="106" r="14" class="arq-red" style="fill-opacity:.75"/>
+  <text x="600" y="140" class="arq-t arq-xs arq-muted" text-anchor="middle">un valor por fotograma: graphicsLayer lo dibuja</text>
+  <path d="M105,124 L105,186 L323,186 L323,126" class="arq-flow" marker-end="url(#arq-an1-f)"/>
+  <text x="214" y="204" class="arq-t arq-xs" text-anchor="middle">si el estado cambia, cambia el destino</text>
+  <text x="380" y="238" class="arq-t arq-s arq-strong" text-anchor="middle">Quita la animación y la app funciona igual; quita el estado y deja de saber qué pintar.</text>
+</svg>

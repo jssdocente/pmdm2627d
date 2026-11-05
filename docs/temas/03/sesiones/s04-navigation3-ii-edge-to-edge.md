@@ -1,11 +1,11 @@
 # **Sesión 3.04 · Navigation 3 (II) y edge-to-edge**
 
-FichaJuego estrena una **barra de navegación inferior** con dos pestañas, Biblioteca y Estadísticas, y cada una **recuerda dónde estaba**. Después aprovechamos toda la pantalla: el detalle dibuja la portada **bajo la barra de estado**.
+FichaJuego estrena una **barra de navegación inferior** con dos pestañas, Biblioteca y Estadísticas, y cada una **recuerda dónde estaba**. Después aprovechamos toda la pantalla: el detalle dibuja la portada **bajo la barra de estado**. Y terminamos con un detalle que se nota: el favorito se **anima** siguiendo a su estado.
 
 !!! abstract "Ficha de la sesión"
 
     - **Duración:** 2 h.
-    - **Apuntes de referencia:** [3B.1 §6 y §10 Navigation 3](../b-navegacion/3b.1-navigation3.md#10-barra-de-navegacion-inferior-con-una-pila-por-pestana) y [3B.2 §2 Edge-to-edge](../b-navegacion/3b.2-diseno-adaptativo.md#2-edge-to-edge-aprovechar-toda-la-pantalla).
+    - **Apuntes de referencia:** [3B.1 §6 y §10 Navigation 3](../b-navegacion/3b.1-navigation3.md#10-barra-de-navegacion-inferior-con-una-pila-por-pestana) y [3B.2 §2 Edge-to-edge](../b-navegacion/3b.2-diseno-adaptativo.md#2-edge-to-edge-aprovechar-toda-la-pantalla) y [3A.4 Animaciones](../a-diseno/3a.4-animaciones.md).
     - **Proyecto de clase:** FichaJuego, de `s3.04-inicio` a `s3.04-fin` (ver [Guía de clases](./index.md#el-proyecto-de-clase-continua-fichajuego)).
     - **Necesitas:** el proyecto con la [sesión 3.03](./s03-navigation3-i.md) terminada (o el tag `s3.04-inicio`) y un emulador.
 
@@ -28,6 +28,7 @@ Al terminar la clase sabrás:
 - Mantener **una pila por pestaña** y aplicar el patrón **«salir por inicio»** al volver atrás.
 - Explicar qué son los **insets** y evitar el contenido tapado o los huecos dobles.
 - Dibujar contenido **edge-to-edge**, apartando solo lo que no debe quedar tapado.
+- Animar un valor con `animate*AsState` y `graphicsLayer`, de forma que la animación **siga al estado** sin guardarlo.
 
 ---
 
@@ -55,9 +56,10 @@ Al terminar la clase sabrás:
 | 4 | 20 | Una pila por pestaña | [3B.1 §10](../b-navegacion/3b.1-navigation3.md#10-barra-de-navegacion-inferior-con-una-pila-por-pestana) |
 | 5 | 15 | Insets: el contenido tapado y el doble hueco | [3B.2 §2.2-2.3](../b-navegacion/3b.2-diseno-adaptativo.md#22-insets-las-zonas-que-no-debes-tapar) |
 | 6 | 15 | La portada bajo la barra de estado | [3B.2 §2.4](../b-navegacion/3b.2-diseno-adaptativo.md#24-sin-scaffold-modificadores-de-insets) |
-| 7 ⏩ | 10 | Animaciones de transición | [3B.1 §11](../b-navegacion/3b.1-navigation3.md#11-animaciones-de-transicion) |
-| 8 ⏩ | 15 | Reto: pulsar la pestaña activa vuelve a su raíz | [3B.1 §7](../b-navegacion/3b.1-navigation3.md#7-operaciones-habituales-con-la-pila) |
-| 9 | 5 | Comprobación rápida y cierre | — |
+| 7 | 25 | Animaciones que siguen al estado | [3A.4 §1-2](../a-diseno/3a.4-animaciones.md#1-animar-un-valor-animateasstate) |
+| 8 | 5 | Comprobación rápida y cierre | — |
+| 🏠 | — | Para casa: animaciones de transición | [3B.1 §11](../b-navegacion/3b.1-navigation3.md#11-animaciones-de-transicion) |
+| 🏠 | — | Para casa: pulsar la pestaña activa vuelve a su raíz | [3B.1 §7](../b-navegacion/3b.1-navigation3.md#7-operaciones-habituales-con-la-pila) |
 | | **120** | | |
 
 ---
@@ -242,7 +244,52 @@ graph LR
 
 ---
 
-## 7 ⏩ · Animaciones de transición (10 min)
+## 7 · Animaciones que siguen al estado (25 min)
+
+- En Compose, una animación **no guarda nada**: el estado dice a dónde hay que llegar y Compose calcula los pasos intermedios. → [3A.4](../a-diseno/3a.4-animaciones.md)
+- `animateFloatAsState` y `animateColorAsState` reciben el valor de **destino** y devuelven el valor de cada fotograma. → [3A.4 §1](../a-diseno/3a.4-animaciones.md#1-animar-un-valor-animateasstate)
+- `graphicsLayer` transforma el dibujo ya hecho, sin mover a los vecinos. → [3A.4 §2](../a-diseno/3a.4-animaciones.md#2-transformar-el-dibujo-graphicslayer)
+
+<figure class="arq-fig">
+--8<-- "docs/temas/03/a-diseno/images/an-sigue-estado.svg"
+<figcaption>El estado decide el destino y la animación calcula cómo llegar.</figcaption>
+</figure>
+
+!!! example "Manos a la obra"
+
+    1. En `ui/ficha/FichaJuego.kt`, dentro de `FilaValoracion`, calcula dos valores animados justo antes del `IconToggleButton`:
+
+        ```kotlin
+        val escala by animateFloatAsState(
+            targetValue = if (esFavorito) 1.25f else 1f,
+            animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+            label = "escalaFavorito"
+        )
+        val color by animateColorAsState(
+            targetValue = if (esFavorito) MaterialTheme.colorScheme.error
+            else MaterialTheme.colorScheme.onSurfaceVariant,
+            label = "colorFavorito"
+        )
+        ```
+
+    2. En el `Icon` del favorito, usa `tint = color` y añade:
+
+        ```kotlin
+        modifier = Modifier.graphicsLayer {
+            scaleX = escala
+            scaleY = escala
+        }
+        ```
+
+    3. Ejecuta y pulsa el corazón varias veces, **también a medio camino**: la animación cambia de destino sin saltos.
+
+    4. Fíjate en que la nota, a la izquierda, no se mueve: `graphicsLayer` no vuelve a colocar a los vecinos.
+
+    5. Responde: ¿dónde se guarda si un juego es favorito? En `esFavorito`, igual que antes. Si borras la animación, la app funciona igual.
+
+---
+
+## ⏩ Para casa: animaciones de transición
 
 `NavDisplay` trae una animación predefinida, pero puedes cambiarla con `transitionSpec` (avanzar), `popTransitionSpec` (volver) y `predictivePopTransitionSpec` (gesto atrás). Prueba a que el detalle entre deslizándose desde la derecha. → [3B.1 §11](../b-navegacion/3b.1-navigation3.md#11-animaciones-de-transicion)
 
@@ -278,7 +325,7 @@ graph LR
 
 ---
 
-## 8 ⏩ · Reto: pulsar la pestaña activa vuelve a su raíz (15 min)
+## ⏩ Para casa: pulsar la pestaña activa vuelve a su raíz
 
 En muchas apps, si estás en el detalle de la pestaña Biblioteca y vuelves a pulsar **Biblioteca** en la barra, regresas a la lista. Implementa ese comportamiento sin romper el resto. → [3B.1 §7](../b-navegacion/3b.1-navigation3.md#7-operaciones-habituales-con-la-pila)
 
@@ -327,15 +374,21 @@ En muchas apps, si estás en el detalle de la pestaña Biblioteca y vuelves a pu
     ??? success "Respuesta"
         La imagen puede quedar debajo de la barra de estado; la flecha no, porque hay que poder verla y pulsarla. Edge-to-edge consiste en apartar solo lo que no debe quedar tapado.
 
+5. Quitas `animateFloatAsState` del favorito. ¿Deja de funcionar algo?
+
+    ??? success "Respuesta"
+        No: el corazón sigue cambiando, pero de golpe. El dato está en `esFavorito`; la animación solo decide cómo se llega al nuevo dibujo.
+
 ---
 
 ## 🏠 Para casa
 
-- Termina los bloques 7 y 8 si no dio tiempo en clase.
+- Haz las dos propuestas de arriba: las animaciones de transición y el reto de la pestaña activa.
+- Lee [3A.4 Animaciones que siguen al estado](../a-diseno/3a.4-animaciones.md) y prueba su reto básico.
 - Si no lo terminaste, completa el [Codelab 3.05 · Navigation 3](../codelabs/05-navegacion-navigation3.md): fíjate en cómo el «atrás» pasa de `NavDisplay` al menú del laboratorio.
 - Lee los [errores frecuentes de edge-to-edge](../b-navegacion/3b.2-diseno-adaptativo.md#8-errores-frecuentes) y el reto básico de [3B.2](../b-navegacion/3b.2-diseno-adaptativo.md#9-retos), el formulario edge-to-edge.
 - Decide si tu proyecto «Mi colección» necesita barra inferior: ¿qué secciones tendría?
-- Si faltaste a clase: `git checkout s3.04-fin` y repasa `navegacion/FichaJuegoApp.kt`, `EstadisticasScreen.kt` y `DetalleJuegoScreen.kt`.
+- Si faltaste a clase: `git checkout s3.04-fin` y repasa `navegacion/FichaJuegoApp.kt`, `EstadisticasScreen.kt`, `DetalleJuegoScreen.kt` y `FilaValoracion` en `ui/ficha/FichaJuego.kt`.
 
 ---
 

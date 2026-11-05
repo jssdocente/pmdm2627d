@@ -113,11 +113,13 @@ nav:
           - "Sesión 3.03 · Navigation 3 (I)": temas/03/sesiones/s03-navigation3-i.md
           - "Sesión 3.04 · Navigation 3 (II) y edge-to-edge": temas/03/sesiones/s04-navigation3-ii-edge-to-edge.md
           - "Sesión 3.05 · ViewModel y UiState (I)": temas/03/sesiones/s05-viewmodel-uistate-i.md
-          - "Sesión 3.06 · ViewModel y UiState (II)": temas/03/sesiones/s06-viewmodel-uistate-ii.md
+          - "Sesión 3.06 · Tiempo y ciclo de vida": temas/03/sesiones/s06-tiempo-ciclo-vida.md
+          - "Sesión 3.07 · ViewModel y UiState (II)": temas/03/sesiones/s07-viewmodel-uistate-ii.md
       - "3A · Diseño de interfaces con Material 3":
           - "3A.1. Material Design 3, Providers y Scaffold": temas/03/a-diseno/3a.1-material-design-3-scaffold.md
           - "3A.2. Componentes interactivos y diálogos": temas/03/a-diseno/3a.2-componentes-interactivos.md
           - "3A.3. Listas y cuadrículas (Lazy)": temas/03/a-diseno/3a.3-listas-cuadriculas.md
+          - "3A.4. Animaciones que siguen al estado": temas/03/a-diseno/3a.4-animaciones.md
       - "3B · Navegación y diseño adaptativo":
           - "3B.1. Navegación con Navigation 3": temas/03/b-navegacion/3b.1-navigation3.md
           - "3B.2. Diseño adaptativo y edge-to-edge": temas/03/b-navegacion/3b.2-diseno-adaptativo.md
@@ -142,10 +144,12 @@ nav:
           - "Codelab 3.05 · Navigation 3": temas/03/codelabs/05-navegacion-navigation3.md
           - "Codelab 3.06 · Quiz con ViewModel": temas/03/codelabs/06-quiz-viewmodel.md
           - "Codelab 3.07 · Ficha de héroe y recursos": temas/03/codelabs/07-ficha-heroe-recursos.md
+          - "Codelab 3.08 · Temporizador Pomodoro": temas/03/codelabs/08-temporizador-pomodoro.md
   - "Evaluación":
-      - "Guía de estudio · 1ª evaluación": temas/evaluacion/1eval-guia-estudio.md
-      - "🎯 Practica Kotlin (test)": temas/evaluacion/practica-kotlin.md
-      - "🧪 Practica Kotlin (código y TDD)": temas/evaluacion/practica-codigo.md
+      - "1ª Evaluación":
+          - "Guía de estudio": temas/evaluacion/1eval-guia-estudio.md
+          - "🎯 Practica Kotlin (test)": temas/evaluacion/practica-kotlin.md
+          - "🧪 Practica Kotlin (código y TDD)": temas/evaluacion/practica-codigo.md
 
   # - "UT4 - Persistencia":
   #   - "Introducción": temas/04/4.0-persistencia.md

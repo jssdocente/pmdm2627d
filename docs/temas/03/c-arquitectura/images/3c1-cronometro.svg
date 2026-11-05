@@ -1,0 +1,41 @@
+<svg class="arq-svg" viewBox="0 0 760 300" role="img" aria-labelledby="arq-cro-t arq-cro-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-cro-t">El estado enMarcha y la corrutina del cronómetro</title>
+  <desc id="arq-cro-d">Línea de tiempo con cuatro eventos: empezar, salir con el botón de inicio, volver y pausar. El estado enMarcha es verdadero desde empezar hasta pausar, también mientras la app está fuera. La corrutina del Job cuenta desde empezar hasta salir, y se lanza otra al volver, hasta pausar. Los segundos solo avanzan mientras hay una corrutina. Por eso al volver se sabe si hay que continuar.</desc>
+  <defs>
+    <marker id="arq-cro-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-cro-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <line x1="170" y1="62" x2="170" y2="232" class="arq-guide"/>
+  <text x="170" y="28" class="arq-t arq-xs arq-strong" text-anchor="middle">Empezar</text>
+  <text x="170" y="46" class="arq-t arq-code arq-xs" text-anchor="middle">onEmpezar()</text>
+  <line x1="330" y1="62" x2="330" y2="232" class="arq-guide"/>
+  <text x="330" y="28" class="arq-t arq-xs arq-strong" text-anchor="middle">Botón de inicio</text>
+  <text x="330" y="46" class="arq-t arq-code arq-xs" text-anchor="middle">onSalirDeLaApp()</text>
+  <line x1="500" y1="62" x2="500" y2="232" class="arq-guide"/>
+  <text x="500" y="28" class="arq-t arq-xs arq-strong" text-anchor="middle">Volver</text>
+  <text x="500" y="46" class="arq-t arq-code arq-xs" text-anchor="middle">onVolverALaApp()</text>
+  <line x1="690" y1="62" x2="690" y2="232" class="arq-guide"/>
+  <text x="690" y="28" class="arq-t arq-xs arq-strong" text-anchor="middle">Pausar</text>
+  <text x="690" y="46" class="arq-t arq-code arq-xs" text-anchor="middle">onPausar()</text>
+  <text x="20" y="92" class="arq-t arq-code arq-xs arq-strong">enMarcha</text>
+  <text x="20" y="108" class="arq-t arq-xs arq-muted">en el UiState</text>
+  <rect x="170" y="78" width="520" height="26" rx="6" class="arq-data"/>
+  <text x="430" y="96" class="arq-t arq-xs arq-strong" text-anchor="middle">true (también con la app fuera)</text>
+  <text x="20" y="160" class="arq-t arq-code arq-xs arq-strong">Job</text>
+  <text x="20" y="176" class="arq-t arq-xs arq-muted">la corrutina</text>
+  <rect x="170" y="146" width="160" height="26" rx="6" class="arq-ui"/>
+  <text x="250" y="164" class="arq-t arq-xs arq-strong" text-anchor="middle">cuenta</text>
+  <rect x="330" y="146" width="170" height="26" rx="6" class="arq-gray"/>
+  <text x="415" y="164" class="arq-t arq-xs arq-muted" text-anchor="middle">cancelada</text>
+  <rect x="500" y="146" width="190" height="26" rx="6" class="arq-ui"/>
+  <text x="595" y="164" class="arq-t arq-xs arq-strong" text-anchor="middle">otra corrutina cuenta</text>
+  <text x="20" y="222" class="arq-t arq-code arq-xs arq-strong">segundos</text>
+  <text x="170" y="222" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle" style="paint-order:stroke">0</text>
+  <text x="330" y="222" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle" style="paint-order:stroke">12</text>
+  <text x="500" y="222" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle" style="paint-order:stroke">12</text>
+  <text x="690" y="222" class="arq-t arq-code arq-xs arq-strong" text-anchor="middle" style="paint-order:stroke">20</text>
+  <line x1="182" y1="218" x2="318" y2="218" class="arq-dep" marker-end="url(#arq-cro-a)" style="stroke-width:1.4"/>
+  <line x1="344" y1="218" x2="486" y2="218" class="arq-guide"/>
+  <line x1="516" y1="218" x2="676" y2="218" class="arq-dep" marker-end="url(#arq-cro-a)" style="stroke-width:1.4"/>
+  <text x="380" y="270" class="arq-t arq-s arq-strong" text-anchor="middle">El Job es la herramienta; el UiState, lo que se recuerda. Al volver, enMarcha dice si hay que continuar.</text>
+</svg>

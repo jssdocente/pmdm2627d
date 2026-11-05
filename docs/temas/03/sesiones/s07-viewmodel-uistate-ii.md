@@ -1,4 +1,4 @@
-# **Sesión 3.06 · ViewModel y UiState (II)**
+# **Sesión 3.07 · ViewModel y UiState (II)**
 
 En la sesión anterior metimos todos los datos y toda la lógica en un único ViewModel. Funciona, pero con cada pantalla nueva ese ViewModel crecería sin parar. Hoy damos el paso que hacen las apps reales: **los datos van a un repositorio** compartido y **cada pantalla tiene su propio ViewModel**, que nace y muere con su entrada de la pila.
 
@@ -6,13 +6,13 @@ En la sesión anterior metimos todos los datos y toda la lógica en un único Vi
 
     - **Duración:** 2 h.
     - **Apuntes de referencia:** [3B.1 §8 Un ViewModel para cada pantalla](../b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla) y [3C.2 §8-9 ViewModel que reciben sus dependencias](../c-arquitectura/3c.2-clean-architecture.md#8-paso-5-viewmodel-que-reciben-sus-dependencias).
-    - **Proyecto de clase:** FichaJuego, de `s3.06-inicio` a `s3.06-fin` (ver [Guía de clases](./index.md#el-proyecto-de-clase-continua-fichajuego)).
-    - **Necesitas:** el proyecto con la [sesión 3.05](./s05-viewmodel-uistate-i.md) terminada (o el tag `s3.06-inicio`) y un emulador.
+    - **Proyecto de clase:** FichaJuego, de `s3.07-inicio` a `s3.07-fin` (ver [Guía de clases](./index.md#el-proyecto-de-clase-continua-fichajuego)).
+    - **Necesitas:** el proyecto con la [sesión 3.06](./s06-tiempo-ciclo-vida.md) terminada (o el tag `s3.07-inicio`) y un emulador.
 
 <figure style="text-align: center;">
   <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-    <img src="images/s3.06-detalle.png" width="230" alt="Detalle de Tunic con tres partidas jugadas, sumadas desde el propio detalle">
-    <img src="images/s3.06-biblioteca.png" width="230" alt="Biblioteca con Tunic en primer lugar y tres partidas en total">
+    <img src="images/s3.07-detalle.png" width="230" alt="Detalle de Hollow Knight con su propio cronómetro, ahora en el ViewModel del detalle">
+    <img src="images/s3.07-biblioteca.png" width="230" alt="Biblioteca con Tunic en primer lugar y tres partidas en total">
   </div>
   <figcaption>Lo que tendrás al terminar la clase: las partidas sumadas en el detalle aparecen al momento en la biblioteca, aunque cada pantalla tiene su propio ViewModel.</figcaption>
 </figure>
@@ -33,9 +33,9 @@ Al terminar la clase sabrás:
 
 ## ✅ Antes de empezar
 
-1. Sitúate en el punto de partida: `git checkout s3.06-inicio` (es el mismo código que `s3.05-fin`).
+1. Sitúate en el punto de partida: `git checkout s3.07-inicio` (es el mismo código que `s3.06-fin`).
 
-2. Ejecuta los tests con `./gradlew test` y comprueba que pasan los de `FichaJuegoViewModelTest`.
+2. Ejecuta los tests con `./gradlew test` y comprueba que pasan los de `FichaJuegoViewModelTest` y `CronometroTest`.
 
 ---
 
@@ -48,10 +48,10 @@ Al terminar la clase sabrás:
 | 2 | 10 | Una sola instancia para toda la app | [3C.2 §9](../c-arquitectura/3c.2-clean-architecture.md#9-paso-6-quien-crea-y-conecta-las-piezas) |
 | 3 | 20 | El ViewModel de la biblioteca: estado derivado | [3C.2 §8.1](../c-arquitectura/3c.2-clean-architecture.md#81-el-catalogo) |
 | 4 | 10 | Un ViewModel por entrada de la pila | [3B.1 §8](../b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla) |
-| 5 | 15 | El ViewModel del detalle, con argumento | [3C.2 §8.2](../c-arquitectura/3c.2-clean-architecture.md#82-el-detalle) |
+| 5 | 25 | El ViewModel del detalle, con argumento y cronómetro | [3C.2 §8.2](../c-arquitectura/3c.2-clean-architecture.md#82-el-detalle) |
 | 6 | 15 | El ViewModel de las estadísticas | — |
-| 7 ⏩ | 10 | Experimento: olvidar el decorador | [3B.1 §8](../b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla) |
-| 8 ⏩ | 15 | Test de un ViewModel con `stateIn` | [3C.4 §4](../c-arquitectura/3c.4-testing.md#4-probar-los-viewmodel) |
+| 7 ⏩ | 5 | Experimento: olvidar el decorador | [3B.1 §8](../b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla) |
+| 8 ⏩ | 10 | Test de un ViewModel con `stateIn` | [3C.4 §4](../c-arquitectura/3c.4-testing.md#4-probar-los-viewmodel) |
 | 9 | 5 | Comprobación rápida y cierre | — |
 | | **120** | | |
 
@@ -199,7 +199,7 @@ Crear las piezas a mano funciona, pero cuando haya muchas será tedioso. Eso es 
         - `WhileSubscribed(5_000)`: deja de escuchar 5 segundos después de que la pantalla deje de observarlo, pero no durante una rotación, que dura menos.
         - `initialValue`: el estado mientras llega el primer valor. Usamos los datos actuales del repositorio para no pintar una lista vacía ni un instante.
 
-    3. Borra `FichaJuegoViewModel.kt` y `FichaJuegoUiState.kt`. El proyecto dejará de compilar en `FichaJuegoApp`: lo arreglamos en el bloque siguiente.
+    3. Borra `FichaJuegoViewModel.kt` y `FichaJuegoUiState.kt`. El proyecto dejará de compilar en `FichaJuegoApp`: lo arreglamos en los bloques siguientes. El cronómetro vuelve en el bloque 5; si lo necesitas, su código sigue en el tag `s3.06-fin`.
 
 ---
 
@@ -244,7 +244,7 @@ Crear las piezas a mano funciona, pero cuando haya muchas será tedioso. Eso es 
 
 ---
 
-## 5 · El ViewModel del detalle, con argumento (15 min)
+## 5 · El ViewModel del detalle, con argumento y cronómetro (25 min)
 
 - El detalle necesita saber **qué juego** mostrar: el id llega en la clave de la pila y se pasa al **constructor** del ViewModel. → [3C.2 §8.2](../c-arquitectura/3c.2-clean-architecture.md#82-el-detalle)
 - Gracias al decorador, cada `DetalleJuego` de la pila tiene **su propia instancia**.
@@ -256,7 +256,8 @@ Crear las piezas a mano funciona, pero cuando haya muchas será tedioso. Eso es 
         ```kotlin
         data class DetalleUiState(
             val juego: Juego? = null,
-            val partidas: Int = 0
+            val partidas: Int = 0,
+            val cronometro: Cronometro = Cronometro()
         )
 
         class DetalleViewModel(
@@ -264,11 +265,15 @@ Crear las piezas a mano funciona, pero cuando haya muchas será tedioso. Eso es 
             private val repositorio: JuegoRepositorio
         ) : ViewModel() {
 
+            // El cronómetro es de esta pantalla, no un dato compartido: no va en el repositorio
+            private val _cronometro = MutableStateFlow(Cronometro())
+
             val uiState: StateFlow<DetalleUiState> =
-                combine(repositorio.juegos, repositorio.partidas) { juegos, partidas ->
+                combine(repositorio.juegos, repositorio.partidas, _cronometro) { juegos, partidas, cronometro ->
                     DetalleUiState(
                         juego = juegos.find { it.id == juegoId },
-                        partidas = partidas[juegoId] ?: 0
+                        partidas = partidas[juegoId] ?: 0,
+                        cronometro = cronometro
                     )
                 }.stateIn(
                     scope = viewModelScope,
@@ -285,24 +290,38 @@ Crear las piezas a mano funciona, pero cuando haya muchas será tedioso. Eso es 
 
         El evento ya no necesita el id: el ViewModel sabe de qué juego es. Y el valor inicial vuelve a salir del repositorio: con `DetalleUiState()`, el primer instante se vería «Juego no encontrado».
 
-    2. En `entry<DetalleJuego>`, créalo con el id de la clave:
+    2. Mueve aquí el cronómetro de la [sesión 3.06](./s06-tiempo-ciclo-vida.md) (`Cronometro`, el `Job` y sus eventos), que ya no cabía en un ViewModel global. Cambia dos cosas: cada detalle tiene su propio cronómetro, así que `Cronometro` **ya no necesita `juegoId`**, y los cambios se hacen con `_cronometro.update { … }`. Quita también `juegoId` y `otroJuegoEnCurso` de `TarjetaCronometro`. El código completo está en el [tag `s3.07-fin`](https://github.com/jssdocente/pmdm2627-fichajuego/blob/s3.07-fin/app/src/main/java/com/pmdm/fichajuego/ui/detalle/DetalleViewModel.kt).
+
+    3. En `entry<DetalleJuego>`, créalo con el id de la clave. El efecto del ciclo de vida se muda también aquí desde el principio de `FichaJuegoApp`:
 
         ```kotlin
         entry<DetalleJuego> { clave ->
             val viewModel = viewModel { DetalleViewModel(clave.juegoId, repositorio) }
             val estado by viewModel.uiState.collectAsStateWithLifecycle()
+            LifecycleResumeEffect(viewModel) {
+                viewModel.onVolverALaApp()
+                onPauseOrDispose { viewModel.onSalirDeLaApp() }
+            }
             DetalleJuegoScreen(
                 juego = estado.juego,
                 partidas = estado.partidas,
+                cronometro = estado.cronometro,
                 onSumarPartida = viewModel::onSumarPartida,
+                onEmpezar = viewModel::onEmpezar,
+                onPausar = viewModel::onPausar,
+                onTerminar = viewModel::onTerminar,
                 onVolver = ::volver
             )
         }
         ```
 
-    3. Prueba: abre un juego, súmale tres partidas desde el detalle y vuelve. La biblioteca muestra las tres, aunque son ViewModels distintos: **los dos observan el mismo repositorio**.
+    4. Prueba: abre un juego, súmale tres partidas desde el detalle y vuelve. La biblioteca muestra las tres, aunque son ViewModels distintos: **los dos observan el mismo repositorio**.
 
-    4. Abre Hollow Knight, vuelve y abre Stardew Valley: cada detalle muestra su juego.
+    5. Abre Hollow Knight, vuelve y abre Stardew Valley: cada detalle muestra su juego.
+
+    6. Empieza a jugar a uno y pulsa atrás: **el cronómetro se ha parado**. Al sacar la entrada de la pila se destruye su ViewModel y `viewModelScope` cancela la corrutina.
+
+    7. Mueve `CronometroTest` a `ui/detalle/DetalleViewModelTest` ([tag `s3.07-fin`](https://github.com/jssdocente/pmdm2627-fichajuego/blob/s3.07-fin/app/src/test/java/com/pmdm/fichajuego/ui/detalle/DetalleViewModelTest.kt)). Como `uiState` usa `WhileSubscribed`, ahora el test necesita un suscriptor: lo verás en el bloque 8.
 
 ---
 
@@ -347,7 +366,7 @@ Los cálculos de `EstadisticasScreen` se mudan a su ViewModel. La pantalla se qu
 
 ---
 
-## 7 ⏩ · Experimento: olvidar el decorador (10 min)
+## 7 ⏩ · Experimento: olvidar el decorador (5 min)
 
 !!! example "Manos a la obra"
 
@@ -361,17 +380,15 @@ Sin el decorador, los ViewModel se guardan en la Activity: `viewModel { }` encue
 
 ---
 
-## 8 ⏩ · Test de un ViewModel con `stateIn` (15 min)
+## 8 ⏩ · Test de un ViewModel con `stateIn` (10 min)
 
 Los ViewModel de hoy usan `viewModelScope`, que trabaja en el hilo principal de Android. En un test local no existe, así que hace falta algo de preparación. → [3C.4 §4.1](../c-arquitectura/3c.4-testing.md#41-el-problema-del-hilo-principal)
 
 !!! example "Manos a la obra"
 
-    1. Añade `kotlinx-coroutines-test` como `testImplementation`. → [3C.4 §2](../c-arquitectura/3c.4-testing.md#2-configurar-el-proyecto)
+    1. Ya tienes `kotlinx-coroutines-test` y la regla `MainDispatcherRule` de la [sesión 3.06](./s06-tiempo-ciclo-vida.md).
 
-    2. Copia la regla `MainDispatcherRule` de los apuntes en `app/src/test/java/com/pmdm/fichajuego/`.
-
-    3. Escribe el test en `ui/EstadisticasViewModelTest.kt`:
+    2. Escribe el test en `ui/EstadisticasViewModelTest.kt`:
 
         ```kotlin
         class EstadisticasViewModelTest {
@@ -397,7 +414,7 @@ Los ViewModel de hoy usan `viewModelScope`, que trabaja en el hilo principal de 
         }
         ```
 
-    4. Comenta la línea del `backgroundScope.launch` y vuelve a ejecutarlo: falla con `expected:<3> but was:<0>`. Con `WhileSubscribed`, si nadie observa el flujo, el estado se queda en el valor inicial. → [3C.4 §4.2](../c-arquitectura/3c.4-testing.md#42-activar-un-stateflow-creado-con-statein)
+    3. Comenta la línea del `backgroundScope.launch` y vuelve a ejecutarlo: falla con `expected:<3> but was:<0>`. Con `WhileSubscribed`, si nadie observa el flujo, el estado se queda en el valor inicial. → [3C.4 §4.2](../c-arquitectura/3c.4-testing.md#42-activar-un-stateflow-creado-con-statein)
 
 ---
 
@@ -431,7 +448,7 @@ Los ViewModel de hoy usan `viewModelScope`, que trabaja en el hilo principal de 
 - Retos del laboratorio: [El Ahorcado y Wordle](../3.6-laboratorio-retos.md#4-retos-autonomos), dos juegos completos con `UiState` y ViewModel.
 - Lee [3C.2](../c-arquitectura/3c.2-clean-architecture.md) hasta el §9: verás estas mismas piezas con un contrato de repositorio y casos de uso.
 - Aplica a tu proyecto «Mi colección» lo que hemos hecho hoy: un repositorio y un ViewModel por pantalla.
-- Si faltaste a clase: `git checkout s3.06-fin` y repasa `data/JuegoRepositorio.kt`, `FichaJuegoApplication.kt`, los tres ViewModel y `navegacion/FichaJuegoApp.kt`.
+- Si faltaste a clase: `git checkout s3.07-fin` y repasa `data/JuegoRepositorio.kt`, `FichaJuegoApplication.kt`, los tres ViewModel y `navegacion/FichaJuegoApp.kt`.
 
 ---
 
