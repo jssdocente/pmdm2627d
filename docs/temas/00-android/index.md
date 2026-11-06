@@ -1,56 +1,40 @@
 # Desarrollo de Aplicaciones Android con Kotlin y Jetpack Compose
 
-En este bloque formativo abordaremos el desarrollo de aplicaciones móviles nativas modernas para Android, utilizando **Kotlin** como lenguaje oficial y **Jetpack Compose** como motor declarativo de interfaz de usuario, complementado con las recomendaciones de arquitectura de Google (**Clean Architecture**, **UDF**, **Inyección de Dependencias con Koin** y **Kotlin Multiplatform**).
+Este bloque es la **referencia del módulo**: reúne lo que necesitas sobre Kotlin, las herramientas, Jetpack Compose y la arquitectura de una app. Las unidades de trabajo ([UT2](../02/index.md) y [UT3](../03/index.md)) marcan el orden en clase y enlazan aquí cuando hace falta profundizar en un concepto.
+
+No hace falta leerlo de principio a fin. Búscalo cuando lo necesites.
 
 ---
 
-## Enlaces de Interés y Entornos
+## Qué necesito
 
-- [Página de descarga de Android Studio](https://developer.android.com/studio?hl=es-419)
-- [Kotlin Playground oficial](https://play.kotlinlang.org/)
-- [Android Developers: Guía de Arquitectura de apps](https://developer.android.com/topic/architecture?hl=es-419)
+| Si necesitas… | Ve a | Qué incluye |
+| :--- | :--- | :--- |
+| **Aprender o repasar Kotlin** | [El lenguaje Kotlin](./00-kotlin/index.md) | Apuntes, [codelab](./00-kotlin/codelabs/index.md), [laboratorio](./00-kotlin/ejercicios/index.md), [tests](./00-kotlin/testing/index.md) y prácticas online: [🎯 tipo test](../evaluacion/practica-kotlin.md) y [🧪 código y TDD](../evaluacion/practica-codigo.md) |
+| **Preparar el entorno** | [IntelliJ IDEA](./00-ide-intellij/index.md) y [herramientas del proyecto](./00-tools/index.md) | El IDE, Gradle, `build.gradle`, compatibilidad de versiones, Manifest y terminal |
+| **Entender un concepto de Compose** | [Jetpack Compose](./00-compose/index.md) | [Funciones componibles](./00-compose/21-composable-functions.md), [estado](./00-compose/22-state-management.md), [listas](./00-compose/23-listas-cuadriculas.md), [Material Design](./00-compose/25-material-design.md), [previews](./00-compose/26-preview-diseno-mock.md), [`CompositionLocal`](./00-compose/27-compositionlocal-contexto-efectos.md) y [glosario](./00-compose/99-glosario-android.md) |
+| **Organizar una app** | [Arquitectura y KMP](./02-arquitectura/index.md) | [Guía de Google](./02-arquitectura/01-guia-arquitectura-google.md), [Clean Architecture](./02-arquitectura/02-clean-architecture.md), [Koin](./02-arquitectura/03-inyeccion-dependencias-koin.md), [KMP](./02-arquitectura/04-ecosistema-kmp-multiplataforma.md), [testing](./02-arquitectura/06-testing-android-kmp.md) y [glosario de patrones](./02-arquitectura/05-glosario-patrones.md) |
+| **Resolver una tarea concreta** | Anexos | [Iconos de la app y recursos](./anexos/a-iconos-app-recursos.md) y [pantalla de inicio](./anexos/b-pantalla-inicio-splash.md) |
 
----
-
-## Estructura del Bloque Android
-
-1. **[Fundamentos del Lenguaje Kotlin](./00-kotlin/index.md)**
-
-    - Sintaxis básica, tipado estático, inmutabilidad y nulos seguros (*null safety*).
-    - Colecciones (listas impacientes vs `Sequence` perezosas).
-    - Programación asíncrona: Corrutinas, `suspend`, `Job`, `CoroutineScope` y mitigación del infierno de callbacks.
-    - [Anexo: La Magia de los DSLs en Kotlin](./00-kotlin/61-dsl-en-kotlin.md).
-
-2. **[Jetpack Compose: Desarrollo Declarativo](./00-compose/index.md)**
-
-    - [Funciones Componibles y Modificadores](./00-compose/21-composable-functions.md)
-    - [Gestión del Estado y Flujo Unidireccional (UDF)](./00-compose/22-state-management.md)
-    - [Listas y Cuadrículas Perezosas (LazyLayouts)](./00-compose/23-listas-cuadriculas.md)
-    - [Navegación Fuertemente Tipada (Type-Safe Navigation)](./00-compose/24-navegacion-rutas.md)
-    - [Material Design 3 y Theming](./00-compose/25-material-design.md)
-    - [Diseño Ágil con @Preview y Datos Mock](./00-compose/26-preview-diseno-mock.md)
-    - [Contexto, CompositionLocal y Efectos Secundarios](./00-compose/27-compositionlocal-contexto-efectos.md)
-
-3. **[Arquitectura de Software y KMP](./02-arquitectura/index.md)**
-
-    - [Guía Oficial de Arquitectura de Google (UI, Domain, Data)](./02-arquitectura/01-guia-arquitectura-google.md)
-    - [Clean Architecture en Android](./02-arquitectura/02-clean-architecture.md)
-    - [Inyección de Dependencias con Koin](./02-arquitectura/03-inyeccion-dependencias-koin.md)
-    - [Ecosistema Multiplataforma (KMP y CMP)](./02-arquitectura/04-ecosistema-kmp-multiplataforma.md)
-    - [Glosario y Patrones Clave (ViewModel, Repository, UseCase)](./02-arquitectura/05-glosario-patrones.md)
-    - [Testing en Android y KMP](./02-arquitectura/06-testing-android-kmp.md)
-
-4. **[Entorno de Desarrollo y Herramientas](./00-ide-intellij/index.md)**
-
-    - Configuración de Android Studio, IntelliJ IDEA, Gradle y emuladores.
+!!! info "¿Cómo se navega entre pantallas?"
+    En clase usamos **Navigation 3**, explicado en [3B.1](../03/b-navegacion/3b.1-navigation3.md). La página de [navegación con rutas](./00-compose/24-navegacion-rutas.md) de este bloque trata Navigation Compose, la versión anterior, que te encontrarás en muchos proyectos existentes.
 
 ---
 
-## Codelabs y Recursos Oficiales
+## Qué recomienda Google y qué elegimos nosotros
 
-- [Unidad 1: Mi primera app para Android (Codelabs básicos)](https://developer.android.com/courses/android-basics-compose/unit-1?hl=es-419)
-- [Unidad 2: Construir interfaz de usuario con Jetpack Compose](https://developer.android.com/courses/android-basics-compose/unit-2?hl=es-419)
-- [Unidad 3: Arquitectura, colecciones y listas en Compose](https://developer.android.com/courses/android-basics-compose/unit-3?hl=es-419)
-- [Unidad 4: Navegación y arquitectura de apps (ViewModel y StateFlow)](https://developer.android.com/courses/android-basics-compose/unit-4?hl=es-419)
-- [Unidad 5: Obtención de datos de Internet y llamadas REST](https://developer.android.com/courses/android-basics-compose/unit-5?hl=es-419)
-- [Unidad 6: Persistencia de datos local con Room](https://developer.android.com/courses/android-basics-compose/unit-6?hl=es-419)
+Conviene no mezclarlo, porque no todo lo que usamos es una recomendación oficial:
+
+- **Recomendaciones de Google:** Kotlin, Jetpack Compose, la separación en capas y el flujo unidireccional de datos, recogidos en su [guía de arquitectura](https://developer.android.com/topic/architecture?hl=es-419).
+
+- **Elecciones del módulo:** organizar el código con **Clean Architecture**, inyectar dependencias con **Koin** en lugar de Hilt, que es la opción de Google, y compartir código con **Kotlin Multiplatform**. Los apuntes de [Koin](./02-arquitectura/03-inyeccion-dependencias-koin.md#por-que-koin-frente-a-hilt) explican por qué.
+
+---
+
+## Para probar y consultar
+
+- [Kotlin Playground](https://play.kotlinlang.org/): ejecuta código Kotlin en el navegador, sin instalar nada.
+
+- [Guía de arquitectura de apps de Android](https://developer.android.com/topic/architecture?hl=es-419): la referencia oficial de Google.
+
+Tienes más documentación y cursos en los [recursos de la portada](../../index.md#recursos).
