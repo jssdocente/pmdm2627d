@@ -1,0 +1,55 @@
+<svg class="arq-svg" viewBox="0 0 760 300" role="img" aria-labelledby="arq-fpp-t arq-fpp-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-fpp-t">Pull frente a Push</title>
+  <desc id="arq-fpp-d">El mismo dato cambia dos veces: de 3 a 4 y de 4 a 5. Con Pull, la pantalla pregunta cada cierto tiempo y muestra el valor antiguo hasta la siguiente pregunta. Con Push, la fuente emite cada cambio y la pantalla se actualiza en ese mismo instante.</desc>
+  <defs>
+    <marker id="arq-fpp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-fpp-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <line x1="300" y1="36" x2="300" y2="258" class="arq-guide"/>
+  <line x1="540" y1="36" x2="540" y2="258" class="arq-guide"/>
+  <text x="20" y="48" class="arq-t arq-xs arq-strong">dato en la fuente</text>
+  <rect x="171" y="30" width="128" height="26" rx="3" class="arq-data"/>
+  <text x="235.0" y="48" class="arq-t arq-xs arq-strong" text-anchor="middle">3</text>
+  <rect x="301" y="30" width="238" height="26" rx="3" class="arq-data"/>
+  <text x="420.0" y="48" class="arq-t arq-xs arq-strong" text-anchor="middle">4</text>
+  <rect x="541" y="30" width="198" height="26" rx="3" class="arq-data"/>
+  <text x="640.0" y="48" class="arq-t arq-xs arq-strong" text-anchor="middle">5</text>
+  <text x="20" y="84" class="arq-t arq-s arq-strong">Pull: la pantalla pregunta cada cierto tiempo</text>
+  <circle cx="200" cy="106" r="9" class="arq-gray"/>
+  <text x="200" y="110" class="arq-t arq-xs arq-strong" text-anchor="middle">?</text>
+  <line x1="200" y1="115" x2="200" y2="122" class="arq-dep"/>
+  <circle cx="400" cy="106" r="9" class="arq-gray"/>
+  <text x="400" y="110" class="arq-t arq-xs arq-strong" text-anchor="middle">?</text>
+  <line x1="400" y1="115" x2="400" y2="122" class="arq-dep"/>
+  <circle cx="600" cy="106" r="9" class="arq-gray"/>
+  <text x="600" y="110" class="arq-t arq-xs arq-strong" text-anchor="middle">?</text>
+  <line x1="600" y1="115" x2="600" y2="122" class="arq-dep"/>
+  <text x="20" y="140" class="arq-t arq-xs arq-muted">la pantalla</text>
+  <rect x="171" y="122" width="128" height="26" rx="3" class="arq-ui"/>
+  <text x="235.0" y="140" class="arq-t arq-xs arq-strong" text-anchor="middle">3</text>
+  <rect x="301" y="122" width="98" height="26" rx="3" class="arq-bar-lost"/>
+  <text x="350.0" y="140" class="arq-t arq-xs arq-strong" text-anchor="middle">3</text>
+  <rect x="401" y="122" width="138" height="26" rx="3" class="arq-ui"/>
+  <text x="470.0" y="140" class="arq-t arq-xs arq-strong" text-anchor="middle">4</text>
+  <rect x="541" y="122" width="58" height="26" rx="3" class="arq-bar-lost"/>
+  <text x="570.0" y="140" class="arq-t arq-xs arq-strong" text-anchor="middle">4</text>
+  <rect x="601" y="122" width="138" height="26" rx="3" class="arq-ui"/>
+  <text x="670.0" y="140" class="arq-t arq-xs arq-strong" text-anchor="middle">5</text>
+  <text x="350" y="166" class="arq-t arq-xs arq-strong" text-anchor="middle" style="fill:#e5484d">dato antiguo</text>
+  <text x="545" y="166" class="arq-t arq-xs arq-strong" style="fill:#e5484d">dato antiguo</text>
+  <text x="200" y="166" class="arq-t arq-xs arq-muted" text-anchor="middle">pregunta en balde</text>
+  <text x="20" y="196" class="arq-t arq-s arq-strong">Push: cada cambio llega solo a la pantalla</text>
+  <text x="20" y="240" class="arq-t arq-xs arq-muted">la pantalla</text>
+  <line x1="300" y1="204" x2="300" y2="221" class="arq-dep" marker-end="url(#arq-fpp-a)"/>
+  <line x1="540" y1="204" x2="540" y2="221" class="arq-dep" marker-end="url(#arq-fpp-a)"/>
+  <rect x="171" y="222" width="128" height="26" rx="3" class="arq-ui"/>
+  <text x="235.0" y="240" class="arq-t arq-xs arq-strong" text-anchor="middle">3</text>
+  <rect x="301" y="222" width="238" height="26" rx="3" class="arq-ui"/>
+  <text x="420.0" y="240" class="arq-t arq-xs arq-strong" text-anchor="middle">4</text>
+  <rect x="541" y="222" width="198" height="26" rx="3" class="arq-ui"/>
+  <text x="640.0" y="240" class="arq-t arq-xs arq-strong" text-anchor="middle">5</text>
+  <text x="308" y="214" class="arq-t arq-xs arq-muted">emite</text>
+  <text x="548" y="214" class="arq-t arq-xs arq-muted">emite</text>
+  <line x1="170" y1="272" x2="745" y2="272" class="arq-dep" marker-end="url(#arq-fpp-a)"/>
+  <text x="170" y="290" class="arq-t arq-xs arq-muted">tiempo</text>
+</svg>

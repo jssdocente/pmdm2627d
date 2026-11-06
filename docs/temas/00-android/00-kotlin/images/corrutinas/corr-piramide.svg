@@ -1,0 +1,37 @@
+<svg class="arq-svg" viewBox="0 0 760 420" role="img" aria-labelledby="arq-cpi-t arq-cpi-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-cpi-t">La pirámide de la perdición</title>
+  <desc id="arq-cpi-d">El código de tres llamadas encadenadas con callbacks. Cada paso está dentro del onSuccess del anterior: tres cajas anidadas de colores que se desplazan a la derecha. La línea que interesa, actualizarUI, queda en el centro con 24 espacios de sangría, y los onError aparecen en orden inverso: paso 3, paso 2, paso 1.</desc>
+  <defs>
+    <marker id="arq-cpi-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-cpi-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="22.0" y="24" width="518.0" height="368" rx="6" class="arq-ui"/>
+  <rect x="82.0" y="70" width="450.0" height="253" rx="6" class="arq-dom"/>
+  <rect x="142.0" y="116" width="382.0" height="138" rx="6" class="arq-data"/>
+  <rect x="204.0" y="163" width="162.0" height="21" rx="3" class="arq-gray"/>
+  <text x="30.0" y="40" class="arq-t arq-code">login(usuario, clave, object : LoginCallback {</text>
+  <text x="60.0" y="63" class="arq-t arq-code">override fun onSuccess(token: String) {</text>
+  <text x="90.0" y="86" class="arq-t arq-code">getProfile(token, object : ProfileCallback {</text>
+  <text x="120.0" y="109" class="arq-t arq-code">override fun onSuccess(perfil: Perfil) {</text>
+  <text x="150.0" y="132" class="arq-t arq-code">getFriends(perfil.id, object : FriendsCallback {</text>
+  <text x="180.0" y="155" class="arq-t arq-code">override fun onSuccess(amigos: List&lt;Amigo&gt;) {</text>
+  <text x="210.0" y="178" class="arq-t arq-code arq-strong">actualizarUI(amigos)</text>
+  <text x="180.0" y="201" class="arq-t arq-code">}</text>
+  <text x="180.0" y="224" class="arq-t arq-code">override fun onError(e: Exception) { … }</text>
+  <text x="150.0" y="247" class="arq-t arq-code">})</text>
+  <text x="120.0" y="270" class="arq-t arq-code">}</text>
+  <text x="120.0" y="293" class="arq-t arq-code">override fun onError(e: Exception) { … }</text>
+  <text x="90.0" y="316" class="arq-t arq-code">})</text>
+  <text x="60.0" y="339" class="arq-t arq-code">}</text>
+  <text x="60.0" y="362" class="arq-t arq-code">override fun onError(e: Exception) { … }</text>
+  <text x="30.0" y="385" class="arq-t arq-code">})</text>
+  <text x="552" y="40" class="arq-t arq-xs arq-strong">Paso 1: login</text>
+  <text x="552" y="86" class="arq-t arq-xs arq-strong">Paso 2: dentro del paso 1</text>
+  <text x="552" y="132" class="arq-t arq-xs arq-strong">Paso 3: dentro del paso 2</text>
+  <text x="552" y="172" class="arq-t arq-xs arq-strong">Lo que queríamos hacer:</text>
+  <text x="552" y="187" class="arq-t arq-xs">una línea, en el centro del código</text>
+  <text x="552" y="224" class="arq-t arq-xs arq-strong" style="fill:#e5484d">✗ error del paso 3</text>
+  <text x="552" y="293" class="arq-t arq-xs arq-strong" style="fill:#e5484d">✗ error del paso 2</text>
+  <text x="552" y="362" class="arq-t arq-xs arq-strong" style="fill:#e5484d">✗ error del paso 1</text>
+  <text x="552" y="385" class="arq-t arq-xs">Los errores salen al revés: 3, 2, 1</text>
+</svg>

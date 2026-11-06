@@ -59,19 +59,10 @@ Imagina una hoja de cálculo con dos celdas numéricas (`A1 = 50`, `B1 = 100`) y
 | **Sincronización de UI** | Propensa a errores por olvido de llamadas de refresco. | Siempre sincronizada de forma automática y consistente. |
 | **Analogía cotidiana** | Salir a la calle a ver si el cartero ha dejado una carta. | Recibir una notificación instantánea en la pantalla del móvil. |
 
-```mermaid
-flowchart TD
-    subgraph Pull["Enfoque Tradicional: Pull / Imperativo"]
-        direction TB
-        UI1["Interfaz de Usuario"] -->|"¿Hay datos nuevos? (Pregunta manual)"| DB1["Base de Datos / Repositorio"]
-        DB1 -.->|"Devuelve lista fija"| UI1
-    end
-
-    subgraph Push["Enfoque Moderno: Push / Reactivo"]
-        direction TB
-        DB2["Fuente de Datos Reactiva (Room / Flow)"] -->|"Empuja nueva emisión automáticamente"| UI2["Interfaz / Compose (Observador pasivo)"]
-    end
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-pull-push.svg"
+<figcaption>El mismo dato cambia dos veces. Con Pull, la pantalla muestra un valor antiguo hasta su siguiente pregunta; con Push, se entera en el mismo instante.</figcaption>
+</figure>
 
 ### Los 4 Pilares del Paradigma Reactivo
 
@@ -360,11 +351,10 @@ Ahora que ya conoces tanto la creación básica de flujos fríos (`flow { }`) co
 
 Para apreciar el valor real de **`StateFlow`** y la arquitectura reactiva, analizaremos cómo evoluciona la solución a través de **3 niveles de madurez**:
 
-```mermaid
-flowchart TD
-    N1["Nivel 1: Control Manual con Jobs<br/>(Cada corredor gestiona su corrutina y cancela a los rivales a mano)"] --> N2["Nivel 2: Concurrencia Estructurada con CoroutineScope<br/>(Lista de corredores; el Scope padre cancela a todos en cascada)"]
-    N2 --> N3["Nivel 3: Arquitectura Reactiva con StateFlow (Estilo Compose)<br/>(data class Corredor + EstadoCarrera como Fuente Única de Verdad)"]
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/flows/flow-carrera-niveles.svg"
+<figcaption>Los corredores son los mismos en los tres niveles. Lo que cambia es quién controla la carrera: cada corredor, el <i>scope</i> padre o un único estado que todos observan.</figcaption>
+</figure>
 
 ---
 

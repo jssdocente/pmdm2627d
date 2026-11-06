@@ -1,0 +1,46 @@
+<svg class="arq-svg" viewBox="0 0 760 290" role="img" aria-labelledby="arq-csb-t arq-csb-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-csb-t">Código secuencial en el hilo principal</title>
+  <desc id="arq-csb-d">Cuatro líneas de código a la izquierda y, a la derecha, el hilo principal ocupado durante tres segundos, una barra por cada llamada de red. Mientras dura, la pantalla está congelada y el toque del usuario se ignora.</desc>
+  <defs>
+    <marker id="arq-csb-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-csb-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="24" class="arq-t arq-xs arq-strong">el código</text>
+  <text x="535" y="24" class="arq-t arq-xs arq-strong" text-anchor="middle">qué hace el hilo principal</text>
+  <line x1="330" y1="32" x2="330" y2="246" class="arq-guide"/>
+  <text x="20" y="58" class="arq-t arq-code">val token = login(usuario, clave)</text>
+  <rect x="331" y="42.0" width="108" height="24" rx="4" class="arq-ui"/>
+  <text x="385.0" y="58" class="arq-t arq-xs" text-anchor="middle">espera a la red</text>
+  <text x="20" y="94" class="arq-t arq-code">val perfil = getProfile(token)</text>
+  <rect x="441" y="78.0" width="108" height="24" rx="4" class="arq-dom"/>
+  <text x="495.0" y="94" class="arq-t arq-xs" text-anchor="middle">espera a la red</text>
+  <text x="20" y="130" class="arq-t arq-code">val amigos = getFriends(perfil.id)</text>
+  <rect x="551" y="114.0" width="108" height="24" rx="4" class="arq-data"/>
+  <text x="605.0" y="130" class="arq-t arq-xs" text-anchor="middle">espera a la red</text>
+  <text x="20" y="166" class="arq-t arq-code">actualizarUI(amigos)</text>
+  <rect x="661" y="150.0" width="28" height="24" rx="4" class="arq-gray"/>
+  <text x="696" y="166" class="arq-t arq-xs">pinta</text>
+  <line x1="20" y1="186" x2="740" y2="186" class="arq-guide"/>
+  <text x="20" y="216" class="arq-t arq-xs arq-strong">la pantalla</text>
+  <rect x="250" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="266" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="282" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="298" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="314" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="330" y="204" width="358" height="18" rx="3" class="arq-bar-lost"/>
+  <text x="509.0" y="217" class="arq-t arq-xs arq-strong" text-anchor="middle">congelada: no pinta ni responde</text>
+  <rect x="692" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="708" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="724" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <text x="495.0" y="240" class="arq-t arq-xs arq-strong" text-anchor="middle">👆 toque ignorado</text>
+  <line x1="240" y1="258" x2="745" y2="258" class="arq-dep" marker-end="url(#arq-csb-a)"/>
+  <line x1="330" y1="254" x2="330" y2="262" class="arq-dep"/>
+  <text x="330" y="275" class="arq-t arq-xs arq-muted" text-anchor="middle">0 s</text>
+  <line x1="440" y1="254" x2="440" y2="262" class="arq-dep"/>
+  <text x="440" y="275" class="arq-t arq-xs arq-muted" text-anchor="middle">1 s</text>
+  <line x1="550" y1="254" x2="550" y2="262" class="arq-dep"/>
+  <text x="550" y="275" class="arq-t arq-xs arq-muted" text-anchor="middle">2 s</text>
+  <line x1="660" y1="254" x2="660" y2="262" class="arq-dep"/>
+  <text x="660" y="275" class="arq-t arq-xs arq-muted" text-anchor="middle">3 s</text>
+  <text x="240" y="275" class="arq-t arq-xs arq-muted">tiempo</text>
+</svg>

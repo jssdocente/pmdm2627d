@@ -1,0 +1,64 @@
+<svg class="arq-svg" viewBox="0 0 760 312" role="img" aria-labelledby="arq-fcn-t arq-fcn-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-fcn-t">Los tres niveles de la carrera: quién controla</title>
+  <desc id="arq-fcn-d">Tres paneles con los mismos corredores. Nivel 1: el ganador cancela a cada rival con su Job. Nivel 2: los corredores son hijos de carreraScope y al cancelarlo se cancelan todos en cascada. Nivel 3: los corredores actualizan un único StateFlow con el estado de la carrera y el marcador lo observa con collect.</desc>
+  <defs>
+    <marker id="arq-fcn-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-fcn-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="10" y="10" width="236" height="292" rx="8" class="arq-box"/>
+  <rect x="262" y="10" width="236" height="292" rx="8" class="arq-box"/>
+  <rect x="514" y="10" width="236" height="292" rx="8" class="arq-box"/>
+  <text x="24" y="34" class="arq-t arq-s arq-strong">Nivel 1</text>
+  <text x="24" y="52" class="arq-t arq-xs arq-muted">Un Job por corredor</text>
+  <rect x="94" y="84" width="68" height="28" rx="5" class="arq-data"/>
+  <text x="128.0" y="102" class="arq-t arq-xs" text-anchor="middle">🦔 Sonic</text>
+  <text x="128" y="76" class="arq-t arq-xs arq-strong" text-anchor="middle">🏆 ganador</text>
+  <rect x="24" y="190" width="68" height="28" rx="5" class="arq-gray"/>
+  <text x="58.0" y="208" class="arq-t arq-xs" text-anchor="middle">🍄 Mario</text>
+  <rect x="164" y="190" width="68" height="28" rx="5" class="arq-gray"/>
+  <text x="198.0" y="208" class="arq-t arq-xs" text-anchor="middle">⚡ Flash</text>
+  <line x1="110" y1="113" x2="62" y2="188" class="arq-flow" marker-end="url(#arq-fcn-f)"/>
+  <line x1="146" y1="113" x2="194" y2="188" class="arq-flow" marker-end="url(#arq-fcn-f)"/>
+  <text x="24" y="150" class="arq-t arq-code" style="font-size:11px">cancel()</text>
+  <text x="176" y="150" class="arq-t arq-code" style="font-size:11px">cancel()</text>
+  <text x="24" y="254" class="arq-t arq-xs arq-strong">Control: repartido a mano</text>
+  <text x="24" y="270" class="arq-t arq-xs">Cada variable job hay que cuidarla.</text>
+  <text x="24" y="286" class="arq-t arq-xs">Con 20 corredores, 20 variables.</text>
+  <text x="276" y="34" class="arq-t arq-s arq-strong">Nivel 2</text>
+  <text x="276" y="52" class="arq-t arq-xs arq-muted">Un scope padre</text>
+  <rect x="310" y="70" width="140" height="34" rx="6" class="arq-ui"/>
+  <text x="330" y="92" class="arq-t arq-code" style="font-size:11.5px">carreraScope</text>
+  <rect x="276" y="190" width="68" height="28" rx="5" class="arq-gray"/>
+  <text x="310.0" y="208" class="arq-t arq-xs" text-anchor="middle">🍄 Mario</text>
+  <rect x="346" y="190" width="68" height="28" rx="5" class="arq-data"/>
+  <text x="380.0" y="208" class="arq-t arq-xs" text-anchor="middle">🦔 Sonic</text>
+  <rect x="416" y="190" width="68" height="28" rx="5" class="arq-gray"/>
+  <text x="450.0" y="208" class="arq-t arq-xs" text-anchor="middle">⚡ Flash</text>
+  <line x1="338" y1="105" x2="312" y2="188" class="arq-flow" marker-end="url(#arq-fcn-f)"/>
+  <line x1="422" y1="105" x2="448" y2="188" class="arq-flow" marker-end="url(#arq-fcn-f)"/>
+  <line x1="392" y1="188" x2="392" y2="106" class="arq-flow" marker-end="url(#arq-fcn-f)"/>
+  <text x="334" y="160" class="arq-t arq-code" style="font-size:11px">cancel()</text>
+  <text x="276" y="254" class="arq-t arq-xs arq-strong">Control: en el padre</text>
+  <text x="276" y="270" class="arq-t arq-xs">El ganador cancela el scope</text>
+  <text x="276" y="286" class="arq-t arq-xs">y este cancela a todos sus hijos.</text>
+  <text x="528" y="34" class="arq-t arq-s arq-strong">Nivel 3</text>
+  <text x="528" y="52" class="arq-t arq-xs arq-muted">Un estado observable</text>
+  <rect x="528" y="62" width="68" height="28" rx="5" class="arq-gray"/>
+  <text x="562.0" y="80" class="arq-t arq-xs" text-anchor="middle">🍄 Mario</text>
+  <rect x="598" y="62" width="68" height="28" rx="5" class="arq-gray"/>
+  <text x="632.0" y="80" class="arq-t arq-xs" text-anchor="middle">🦔 Sonic</text>
+  <rect x="668" y="62" width="68" height="28" rx="5" class="arq-gray"/>
+  <text x="702.0" y="80" class="arq-t arq-xs" text-anchor="middle">⚡ Flash</text>
+  <line x1="632" y1="92" x2="632" y2="124" class="arq-dep" marker-end="url(#arq-fcn-a)"/>
+  <text x="640" y="113" class="arq-t arq-code" style="font-size:11px">update</text>
+  <rect x="538" y="126" width="188" height="44" rx="6" class="arq-data"/>
+  <text x="550" y="146" class="arq-t arq-code" style="font-size:11.5px">StateFlow&lt;</text>
+  <text x="550" y="162" class="arq-t arq-code" style="font-size:11.5px">  EstadoCarrera&gt;</text>
+  <line x1="632" y1="171" x2="632" y2="203" class="arq-dep" marker-end="url(#arq-fcn-a)"/>
+  <text x="640" y="192" class="arq-t arq-code" style="font-size:11px">collect</text>
+  <rect x="558" y="205" width="148" height="32" rx="6" class="arq-ui"/>
+  <text x="632" y="226" class="arq-t arq-xs" text-anchor="middle">Marcador (pantalla)</text>
+  <text x="528" y="254" class="arq-t arq-xs arq-strong">Control: en el estado</text>
+  <text x="528" y="270" class="arq-t arq-xs">Los corredores no se conocen:</text>
+  <text x="528" y="286" class="arq-t arq-xs">todos miran el mismo dato.</text>
+</svg>

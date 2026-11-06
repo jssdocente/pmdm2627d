@@ -1042,35 +1042,10 @@ Para modelar la simulación con arquitectura reactiva profesional:
 ??? info "📊 Ver Modelo Mental del Reto (Arquitectura Reactiva Concurrente)"
     Analiza cómo interactúan los productores concurrentes de datos con el estado centralizado y la capa de presentación:
 
-    ```mermaid
-    flowchart TD
-        subgraph CorrutinasConcurrentes ["3 Corrutinas Concurrentes (launch)"]
-            Nave1["Nave 1: Halcón Milenario<br/>(Avanza 5-15 AL)"]
-            Nave2["Nave 2: USS Enterprise<br/>(Avanza 5-15 AL)"]
-            Nave3["Nave 3: Arwing<br/>(Avanza 5-15 AL)"]
-        end
-        
-        subgraph GestionEstado ["Gestión Centralizada (ViewModel Fake)"]
-            EstadoCarrera["<b>MutableStateFlow&lt;Map&lt;String, Int&gt;&gt;</b><br/>Posiciones Actuales (0-50 AL)"]
-            BusEventos["<b>MutableSharedFlow&lt;String&gt;</b><br/>Eventos Efímeros (Turbos/Averías)"]
-        end
-        
-        subgraph CapaPresentacion ["Capa de Presentación (Simulador Compose)"]
-            UIRender["<b>collect { posiciones -&gt; ... }</b><br/>Renderiza las 3 pistas en consola"]
-            UIEventos["<b>collect { evento -&gt; ... }</b><br/>Muestra alertas puntuales (Toast/SnackBar)"]
-        end
-
-        Nave1 -->|Actualiza posición| EstadoCarrera
-        Nave2 -->|Actualiza posición| EstadoCarrera
-        Nave3 -->|Actualiza posición| EstadoCarrera
-        
-        Nave1 -.->|Si avance &gt;= 11| BusEventos
-        Nave2 -.->|Si avance &gt;= 11| BusEventos
-        Nave3 -.->|Si avance &gt;= 11| BusEventos
-        
-        EstadoCarrera -->|Emite nuevo estado| UIRender
-        BusEventos -->|Emite evento puntual| UIEventos
-    ```
+    <figure class="arq-fig">
+    --8<-- "docs/temas/00-android/00-kotlin/images/flows/reto-naves-flujos.svg"
+    <figcaption>Las naves producen datos por dos vías: las posiciones se conservan en un <code>StateFlow</code> y los turbos pasan por un <code>SharedFlow</code> como avisos de un solo uso.</figcaption>
+    </figure>
 
 ??? question "🧠 Preguntas de Reflexión Previa (Aprender a Pensar)"
     Antes de examinar la solución o las pistas, reflexiona sobre estos principios de arquitectura asíncrona:

@@ -1,0 +1,83 @@
+<svg class="arq-svg" viewBox="0 0 760 350" role="img" aria-labelledby="arq-cst-t arq-cst-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-cst-t">Qué ocurre al ejecutar el código con suspend</title>
+  <desc id="arq-cst-d">Las mismas cuatro líneas y la misma escala de tiempo que el código bloqueante. Cada llamada ocupa el hilo un instante y la corrutina queda suspendida mientras la red trabaja. El hilo principal sigue pintando fotogramas y atiende el toque del usuario. Cuando llega cada respuesta, la corrutina se reanuda en la línea siguiente.</desc>
+  <defs>
+    <marker id="arq-cst-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-cst-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="24" class="arq-t arq-xs arq-strong">el código</text>
+  <text x="535" y="24" class="arq-t arq-xs arq-strong" text-anchor="middle">qué hace la corrutina</text>
+  <line x1="330" y1="32" x2="330" y2="296" class="arq-guide"/>
+  <line x1="440" y1="32" x2="440" y2="296" class="arq-guide"/>
+  <line x1="550" y1="32" x2="550" y2="296" class="arq-guide"/>
+  <line x1="660" y1="32" x2="660" y2="296" class="arq-guide"/>
+  <text x="20" y="58" class="arq-t arq-code">val token = login(usuario, clave)</text>
+  <rect x="331" y="42.0" width="8" height="24" rx="2" class="arq-ui" style="fill:#4a7dff"/>
+  <rect x="341" y="42.0" width="97" height="24" rx="4" class="arq-ui arq-dashed" style="fill:none"/>
+  <text x="389.5" y="58" class="arq-t arq-xs" text-anchor="middle">suspendida</text>
+  <text x="20" y="94" class="arq-t arq-code">val perfil = getProfile(token)</text>
+  <rect x="441" y="78.0" width="8" height="24" rx="2" class="arq-dom" style="fill:#e09400"/>
+  <rect x="451" y="78.0" width="97" height="24" rx="4" class="arq-dom arq-dashed" style="fill:none"/>
+  <text x="499.5" y="94" class="arq-t arq-xs" text-anchor="middle">suspendida</text>
+  <text x="20" y="130" class="arq-t arq-code">val amigos = getFriends(perfil.id)</text>
+  <rect x="551" y="114.0" width="8" height="24" rx="2" class="arq-data" style="fill:#2eaa6e"/>
+  <rect x="561" y="114.0" width="97" height="24" rx="4" class="arq-data arq-dashed" style="fill:none"/>
+  <text x="609.5" y="130" class="arq-t arq-xs" text-anchor="middle">suspendida</text>
+  <text x="20" y="166" class="arq-t arq-code">actualizarUI(amigos)</text>
+  <rect x="661" y="150.0" width="28" height="24" rx="4" class="arq-gray"/>
+  <text x="696" y="166" class="arq-t arq-xs">pinta</text>
+  <line x1="20" y1="186" x2="740" y2="186" class="arq-guide"/>
+  <text x="20" y="216" class="arq-t arq-xs arq-strong">hilo principal</text>
+  <rect x="250" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="266" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="282" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="298" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="314" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="346" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="362" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="378" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="394" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="410" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="426" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="458" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="474" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="490" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="506" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="522" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="570" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="586" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="602" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="618" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="634" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="698" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="714" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="730" y="204" width="12" height="18" rx="2" class="arq-gray"/>
+  <rect x="331" y="204" width="8" height="18" rx="2" class="arq-ui" style="fill:#4a7dff"/>
+  <rect x="441" y="204" width="8" height="18" rx="2" class="arq-dom" style="fill:#e09400"/>
+  <rect x="551" y="204" width="8" height="18" rx="2" class="arq-data" style="fill:#2eaa6e"/>
+  <rect x="661" y="204" width="28" height="18" rx="2" class="arq-gray"/>
+  <text x="495.0" y="240" class="arq-t arq-xs arq-strong" text-anchor="middle">👆 toque atendido</text>
+  <text x="20" y="272" class="arq-t arq-xs arq-strong">la red</text>
+  <rect x="341" y="258" width="97" height="20" rx="4" class="arq-ui"/>
+  <text x="389.5" y="272" class="arq-t arq-xs" text-anchor="middle">login</text>
+  <rect x="451" y="258" width="97" height="20" rx="4" class="arq-dom"/>
+  <text x="499.5" y="272" class="arq-t arq-xs" text-anchor="middle">perfil</text>
+  <rect x="561" y="258" width="97" height="20" rx="4" class="arq-data"/>
+  <text x="609.5" y="272" class="arq-t arq-xs" text-anchor="middle">amigos</text>
+  <line x1="240" y1="298" x2="745" y2="298" class="arq-dep" marker-end="url(#arq-cst-a)"/>
+  <line x1="330" y1="294" x2="330" y2="302" class="arq-dep"/>
+  <text x="330" y="315" class="arq-t arq-xs arq-muted" text-anchor="middle">0 s</text>
+  <line x1="440" y1="294" x2="440" y2="302" class="arq-dep"/>
+  <text x="440" y="315" class="arq-t arq-xs arq-muted" text-anchor="middle">1 s</text>
+  <line x1="550" y1="294" x2="550" y2="302" class="arq-dep"/>
+  <text x="550" y="315" class="arq-t arq-xs arq-muted" text-anchor="middle">2 s</text>
+  <line x1="660" y1="294" x2="660" y2="302" class="arq-dep"/>
+  <text x="660" y="315" class="arq-t arq-xs arq-muted" text-anchor="middle">3 s</text>
+  <text x="240" y="315" class="arq-t arq-xs arq-muted">tiempo</text>
+  <rect x="20" y="328" width="8" height="12" rx="2" class="arq-ui" style="fill:#4a7dff"/>
+  <text x="33" y="338" class="arq-t arq-xs">la corrutina usa el hilo un instante</text>
+  <rect x="265" y="328" width="22" height="12" rx="2" class="arq-ui arq-dashed" style="fill:none"/>
+  <text x="292" y="338" class="arq-t arq-xs">suspendida: no ocupa ningún hilo</text>
+  <rect x="520" y="328" width="12" height="12" rx="2" class="arq-gray"/>
+  <text x="537" y="338" class="arq-t arq-xs">fotograma pintado</text>
+</svg>

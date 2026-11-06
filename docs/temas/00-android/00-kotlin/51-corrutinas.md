@@ -63,116 +63,211 @@ A menudo se confunden, pero su coste en recursos es drásticamente distinto:
 
 ## 3. Funciones de Suspensión (`suspend fun`)
 
-El bloque de construcción fundamental de las corrutinas es la palabra clave **`suspend`**.
+El bloque de construcción fundamental de las corrutinas es la palabra clave **`suspend`**. Para entender qué problema resuelve, vamos a programar **la misma tarea varias veces**, y cada intento nacerá del fallo del anterior.
 
-Para entender por qué las funciones de suspensión supusieron una auténtica revolución en el desarrollo móvil y en la industria del software, es imprescindible recordar cómo se programaban las tareas asíncronas antes de su llegada.
+La tarea es corriente en cualquier app que inicia sesión:
 
-### 3.1. ¿De Dónde Venimos? El Infierno de los Callbacks (*Callback Hell*)
+1. Autenticar al usuario (`login`), que devuelve un `token`.
 
-En Java tradicional, JavaScript o en las primeras versiones de Android, una función que tardaba tiempo no podía devolver un valor directamente ni bloquear el hilo principal. La solución estándar era el uso de **callbacks** (o escuchadores/*listeners*): le pasabas a la función un objeto con métodos para que te avisara cuando la tarea terminase (`onSuccess` y `onError`).
+2. Con ese `token`, descargar su perfil (`getProfile`).
 
-El problema surgía cuando tenías que ejecutar **varias operaciones asíncronas encadenadas y dependientes**:
+3. Con el `id` del perfil, descargar su lista de amigos (`getFriends`).
 
-1. Autenticar al usuario con credenciales (`login`).
+4. Con la lista, actualizar la pantalla (`actualizarUI`).
 
-2. Con el `token` obtenido, descargar su perfil (`getProfile`).
+Cada paso necesita el resultado del anterior, y los tres primeros van por la red: supongamos que tardan un segundo cada uno.
 
-3. Con el `id` del perfil, descargar su lista de amigos o compras (`getFriends`).
+### 3.1. Primer intento: código secuencial
 
-4. Con los datos finales, actualizar la interfaz de usuario.
-
-En código tradicional, esto se traducía en la temida **Pirámide de la Perdición (*Pyramid of Doom*)**:
+Es lo primero que escribiría cualquiera, porque es como razonamos: una línea detrás de otra, y cada una espera a la anterior.
 
 ```kotlin
-// ❌ EL INFIERNO DE LOS CALLBACKS (Código tradicional complejo y frágil)
-authService.login(usuario, clave, object : AuthCallback {
+val token = login(usuario, clave)
+val perfil = getProfile(token)
+val amigos = getFriends(perfil.id)
+actualizarUI(amigos)
+```
+
+Se lee perfectamente. El problema es **dónde se queda esperando**: cada llamada retiene el hilo hasta que llega la respuesta. Si este código se ejecuta en el hilo principal, es el camarero del apartado 1 plantado en la cocina durante tres segundos.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-secuencial-bloquea.svg"
+<figcaption>Mientras las tres llamadas esperan a la red, el hilo principal no puede hacer nada más: la pantalla se congela y los toques se ignoran.</figcaption>
+</figure>
+
+!!! info "Android ni siquiera te deja intentarlo"
+
+    Si una llamada hace una petición de red bloqueante en el hilo principal, Android lanza `NetworkOnMainThreadException`. El sistema te obliga a sacar ese trabajo de ahí.
+
+### 3.2. Segundo intento: llevarlo a otro hilo
+
+Si el problema es ocupar el hilo principal, la idea natural es abrir otro hilo para esperar. Es como **contratar a un segundo camarero** solo para quedarse en la cocina.
+
+```kotlin
+fun cargarAmigos(): List<Amigo> {
+    Thread {
+        val token = login(usuario, clave)
+        val perfil = getProfile(token)
+        val amigos = getFriends(perfil.id)
+        actualizarUI(amigos) // ❌ No estamos en el hilo principal
+        // ¿Cómo le entrego «amigos» a quien me llamó?
+    }.start()
+
+    return ??? // ❌ Aquí el hilo acaba de arrancar: aún no hay amigos
+}
+```
+
+La pantalla ya no se congela, pero aparecen dos problemas nuevos:
+
+- **No puedes devolver el resultado.** `start()` retorna de inmediato, así que `cargarAmigos()` llega a su `return` cuando el otro hilo apenas ha empezado.
+
+- **No puedes tocar la interfaz desde ahí.** La interfaz debe actualizarse desde el hilo principal. Hay que encontrar la forma de volver a él con el resultado.
+
+Las dos cosas se resuelven con lo mismo: que quien hace el trabajo **nos avise cuando termine**.
+
+### 3.3. Tercer intento: un callback
+
+Un **callback** (o *listener*) es un objeto o una función que le entregas a una operación para que te llame cuando acabe. Es el mismo mecanismo que un `onClick`. La función ya no devuelve el resultado: lo pasa a `onSuccess` más adelante.
+
+```kotlin
+interface LoginCallback {
+    fun onSuccess(token: String)
+    fun onError(e: Exception)
+}
+
+println("Antes")
+login(usuario, clave, object : LoginCallback {
     override fun onSuccess(token: String) {
-        userService.getProfile(token, object : ProfileCallback {
-            override fun onSuccess(perfil: UserProfile) {
-                friendsService.getFriends(perfil.id, object : FriendsCallback {
-                    override fun onSuccess(amigos: List<Friend>) {
-                        actualizarUI(amigos) // ¡Por fin! 4 niveles de indentación
+        println("Token: $token")
+    }
+    override fun onError(e: Exception) { /* ... */ }
+})
+println("Después")
+```
+
+`login` se encarga de esperar en otro hilo y de avisarnos en el hilo principal. El camarero deja la comanda y vuelve a la sala, así que la pantalla sigue viva. Pero fíjate en qué orden se imprime todo:
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-callback-orden.svg"
+<figcaption><code>login()</code> solo pone la petición en marcha y retorna. El código de <code>onSuccess</code> se ejecuta más tarde, cuando llega la respuesta.</figcaption>
+</figure>
+
+Este es el cambio de mentalidad importante: **el código ya no se ejecuta en el orden en que está escrito**. Y tiene una consecuencia directa: todo lo que necesite el `token` **tiene que escribirse dentro de `onSuccess`**, porque en ningún otro sitio se sabe que ya existe.
+
+### 3.4. Encadenar callbacks: la Pirámide de la Perdición
+
+Con un solo callback todavía se puede leer. Pero nuestra tarea tiene tres pasos, y el segundo necesita el `token`: debe ir dentro del `onSuccess` del primero. El tercero, dentro del `onSuccess` del segundo. Cada paso añade un nivel más:
+
+```kotlin
+login(usuario, clave, object : LoginCallback {
+    override fun onSuccess(token: String) {
+        getProfile(token, object : ProfileCallback {
+            override fun onSuccess(perfil: Perfil) {
+                getFriends(perfil.id, object : FriendsCallback {
+                    override fun onSuccess(amigos: List<Amigo>) {
+                        actualizarUI(amigos)
                     }
                     override fun onError(e: Exception) {
-                        mostrarErrorAmigos(e) // Manejo de error Nivel 3
+                        mostrarError(e)
                     }
                 })
             }
             override fun onError(e: Exception) {
-                mostrarErrorPerfil(e) // Manejo de error Nivel 2
+                mostrarError(e)
             }
         })
     }
     override fun onError(e: Exception) {
-        mostrarErrorLogin(e) // Manejo de error Nivel 1
+        mostrarError(e)
     }
 })
 ```
 
-#### Los 3 Graves Problemas de los Callbacks:
+Si giras la cabeza, la sangría dibuja una pirámide tumbada. De ahí el nombre: **Pirámide de la Perdición** (*Pyramid of Doom*), o **infierno de los callbacks** (*callback hell*).
 
-1. **Legibilidad destructiva:** El código se desplaza horizontalmente hacia la derecha de forma descontrolada (*Pyramid of Doom*), haciendo imposible seguir el flujo lógico natural.
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-piramide.svg"
+<figcaption>Cada color es un paso de la tarea, metido dentro del anterior. Lo que queríamos hacer queda en el centro, y los errores salen en orden inverso al de los pasos.</figcaption>
+</figure>
 
-2. **Fragmentación del manejo de errores:** No se puede usar un bloque `try-catch` estándar. Cada llamada anidada necesita su propio manejador de fallos (`onError`), duplicando código defensivo en cada nivel.
+No es solo una cuestión de estética. La pirámide causa tres problemas reales:
 
-3. **Fugas de memoria (*Memory Leaks*) y falta de cancelación:** Si el usuario rota la pantalla o pulsa el botón "Atrás" mientras las peticiones 2 o 3 están en vuelo, los callbacks anidados siguen vivos en segundo plano. Cuando intentan actualizar la interfaz de una pantalla destruida, provocan el colapso de la aplicación (`NullPointerException` o `IllegalStateException`).
+1. **Cuesta seguir el flujo.** Tres pasos que se piensan en línea recta se leen hacia dentro, y cada error queda lejos del paso al que corresponde.
 
-```mermaid
-flowchart TD
-    subgraph Hell["El Infierno de los Callbacks (Callback Hell / Pyramid of Doom)"]
-        direction TB
-        C1["1. authService.login(user, pass)"] -->|"onSuccess(token)"| C2["2. userService.getProfile(token)"]
-        C1 -.->|"onError"| E1["Tratar Error Login"]
-        C2 -->|"onSuccess(perfil)"| C3["3. friendsService.getFriends(id)"]
-        C2 -.->|"onError"| E2["Tratar Error Perfil"]
-        C3 -->|"onSuccess(amigos)"| C4["4. actualizarUI(amigos)"]
-        C3 -.->|"onError"| E3["Tratar Error Amigos"]
-    end
+2. **Los errores se dispersan.** Cada nivel necesita su `onError`. Y `try-catch` no sirve de nada, porque cuando el fallo ocurre ese bloque ya ha terminado:
 
-    subgraph Suspend["La Solución con suspend: Flujo Secuencial Directo"]
-        direction TB
-        S1["val token = authService.login(user, pass)"]
-        S2["val perfil = userService.getProfile(token)"]
-        S3["val amigos = friendsService.getFriends(perfil.id)"]
-        S4["actualizarUI(amigos)"]
-        
-        S1 --> S2 --> S3 --> S4
-        S4 -.->|"Cualquier fallo se captura aquí"| Catch["catch (e: Exception) { mostrarError(e) }"]
-    end
-```
+    ```kotlin
+    try {
+        login(usuario, clave, callback) // Retorna enseguida: aquí no ha fallado nada
+    } catch (e: Exception) {
+        // Si el servidor falla un segundo después, este catch ya no existe
+    }
+    ```
 
-### 3.2. La Solución con `suspend`: Código Asíncrono con Sintaxis Secuencial
+3. **No hay una forma sencilla de cancelar.** Si el usuario sale de la pantalla mientras el paso 2 está en marcha, nada detiene la cadena: los pasos siguen ejecutándose y el callback intenta actualizar una pantalla que ya no existe. Eso gasta red y batería, retiene memoria (*memory leak*) y puede cerrar la app.
 
-Una función marcada con la palabra clave **`suspend`** puede pausar su ejecución (*suspenderse*) y reanudarse más tarde **sin bloquear el hilo en el que se ejecuta** y **sin requerir callbacks anidados**.
+### 3.5. La solución: `suspend`
 
-Mira exactamente el mismo caso anterior reescrito con funciones `suspend`:
+Una función marcada con **`suspend`** puede pausar su ejecución (*suspenderse*) y reanudarse más tarde **sin bloquear el hilo** y **sin que escribas ningún callback**. Solo cambia su declaración:
 
 ```kotlin
-// ✅ CON CORRUTINAS Y FUNCIONES SUSPEND (Limpio, secuencial y seguro)
+suspend fun login(usuario: String, clave: String): String { /* ... */ }
+suspend fun getProfile(token: String): Perfil { /* ... */ }
+suspend fun getFriends(id: Int): List<Amigo> { /* ... */ }
+```
+
+Vuelven a **devolver su resultado con normalidad**. Y la tarea queda así (cómo se lanza una corrutina desde la interfaz lo verás en el apartado 4):
+
+```kotlin
 try {
-    val token = authService.login(usuario, clave)         // 1. Pausa y reanuda
-    val perfil = userService.getProfile(token)            // 2. Pausa y reanuda
-    val amigos = friendsService.getFriends(perfil.id)     // 3. Pausa y reanuda
-    actualizarUI(amigos)                                  // 4. Se ejecuta al terminar
+    val token = login(usuario, clave)
+    val perfil = getProfile(token)
+    val amigos = getFriends(perfil.id)
+    actualizarUI(amigos)
 } catch (e: Exception) {
-    mostrarError(e) // ¡Un único bloque centralizado para todos los errores!
+    mostrarError(e)
 }
 ```
 
-#### ¿Qué ocurre por debajo? (La magia de la Suspensión)
-Cuando el hilo principal llega a `authService.login()`, la corrutina **se suspende** (guarda su estado en memoria). El hilo principal queda inmediatamente libre para seguir respondiendo a los toques del usuario y pintar la pantalla a 60 fps. 
+Compáralo con el primer intento del apartado 3.1: **son las mismas cuatro líneas**. Volvemos a escribir como razonamos, y `try-catch` vuelve a funcionar.
 
-Cuando la respuesta HTTP llega del servidor, el motor de corrutinas "despierta" a la corrutina y reanuda la ejecución en la línea siguiente exactamente donde se quedó. Para el programador, el código se lee de arriba abajo como si fuera síncrono.
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-piramide-vs-suspend.svg"
+<figcaption>Cada banda une un paso de la pirámide (aquí escrita con lambdas para abreviar) con su línea equivalente. Los tres <code>onError</code> se convierten en un solo <code>catch</code>.</figcaption>
+</figure>
 
-### 3.3. Comparativa: Callbacks Tradicionales vs. Funciones `suspend`
+La diferencia con el apartado 3.1 no se ve en el código, sino **en lo que hace el hilo** mientras tanto. Compara esta figura con la de 3.1: mismas líneas y mismos tres segundos.
 
-| Característica | Callbacks Tradicionales (Java / JS) | Funciones `suspend` (Kotlin Coroutines) |
-| :--- | :--- | :--- |
-| **Estructura del código** | Anidada en pirámide (*Pyramid of Doom*). | Lineal y secuencial de arriba abajo. |
-| **Manejo de excepciones** | Métodos `onError` manuales y dispersos en cada capa. | Bloques `try-catch` estándar y centralizados. |
-| **Cancelación** | Manual, complejísima y con alto riesgo de fugas de memoria (*leaks*). | Automática en cascada gracias a la **Concurrencia Estructurada**. |
-| **Retorno de datos** | No pueden retornar valores (métodos `void` / `Unit`). | Devuelven tipos de datos directos (`String`, `User`, `List<T>`). |
-| **Tareas en paralelo** | Requiere semáforos, contadores o `CountDownLatch`. | Trivial con `async { }` y `.await()`. |
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/corrutinas/corr-suspension-tiempo.svg"
+<figcaption>Cada llamada ocupa el hilo un instante y la corrutina se aparta mientras la red trabaja. El hilo principal sigue pintando y atendiendo toques.</figcaption>
+</figure>
+
+### 3.6. ¿Qué ocurre por debajo?
+
+Volvamos al camarero, que apunta en qué punto se quedó y vuelve a la sala. Eso mismo hace la corrutina:
+
+1. Al llegar a `login()`, la corrutina **se suspende**: guarda en memoria en qué línea va y el valor de sus variables.
+
+2. El hilo principal queda **libre** para seguir pintando y atendiendo toques.
+
+3. Cuando llega la respuesta, la corrutina **se reanuda** en ese punto, con el resultado ya asignado a `token`, y pasa a la línea siguiente.
+
+¿Te suena? «Cuando termines, continúa por aquí» es justo lo que hacía un callback. **El callback no ha desaparecido: lo genera el compilador por ti**. Al ver `suspend`, Kotlin transforma el código para que el resto de la función sea lo que se ejecuta al volver. Tú escribes líneas seguidas y él se encarga de trocearlas.
+
+!!! warning "`suspend` no hace que algo deje de bloquear por arte de magia"
+
+    `suspend` permite pausar la función, pero solo se libera el hilo si lo que hay dentro también suspende, como `delay` o las funciones de librerías preparadas para corrutinas. Un `Thread.sleep` dentro de una función `suspend` **sigue bloqueando el hilo**. Para el trabajo bloqueante está `withContext`, que verás en el [apartado 5](#5-despachadores-en-android-dispatchers).
+
+### 3.7. Resumen de los enfoques
+
+| Característica | Secuencial bloqueante | Callbacks | Funciones `suspend` |
+| :--- | :--- | :--- | :--- |
+| **¿Congela la pantalla?** | Sí, en el hilo principal. | No. | No. |
+| **Estructura del código** | Lineal, de arriba abajo. | Anidada en pirámide. | Lineal, de arriba abajo. |
+| **Resultado** | Se devuelve con `return`. | Llega como parámetro de `onSuccess`. | Se devuelve con `return`. |
+| **Errores** | `try-catch` normal. | Un `onError` en cada nivel. | `try-catch` normal. |
+| **Cancelación** | No aplica: el hilo está ocupado hasta que acaba. | Manual y propensa a fugas de memoria. | Automática con su `CoroutineScope` (apartados 4 y 6). |
 
 ### Ejemplo Práctico: Declaración de una Función `suspend`
 

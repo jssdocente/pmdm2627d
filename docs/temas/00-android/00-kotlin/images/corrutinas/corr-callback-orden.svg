@@ -1,0 +1,55 @@
+<svg class="arq-svg" viewBox="0 0 760 352" role="img" aria-labelledby="arq-cco-t arq-cco-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-cco-t">Con un callback, el orden de lectura no es el de ejecución</title>
+  <desc id="arq-cco-d">Un código con println Antes, una llamada a login con un callback y println Después. Se ejecuta primero Antes, luego login, luego Después y al final, cuando responde la red, el println del token dentro de onSuccess. La línea de tiempo muestra que login retorna enseguida y que el hilo principal queda libre mientras tanto.</desc>
+  <defs>
+    <marker id="arq-cco-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-cco-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="22" class="arq-t arq-xs arq-strong">Los números indican el orden en que se ejecuta cada línea</text>
+  <rect x="44" y="51" width="376" height="132" rx="6" class="arq-ui"/>
+  <text x="52.0" y="44" class="arq-t arq-code">println("Antes")</text>
+  <circle cx="26" cy="40" r="9" class="arq-gray"/>
+  <text x="26" y="44" class="arq-t arq-xs arq-strong" text-anchor="middle">1</text>
+  <text x="52.0" y="66" class="arq-t arq-code">login(usuario, clave, object : LoginCallback {</text>
+  <circle cx="26" cy="62" r="9" class="arq-gray"/>
+  <text x="26" y="66" class="arq-t arq-xs arq-strong" text-anchor="middle">2</text>
+  <text x="82.0" y="88" class="arq-t arq-code">override fun onSuccess(token: String) {</text>
+  <text x="112.0" y="110" class="arq-t arq-code">println("Token: $token")</text>
+  <circle cx="26" cy="106" r="9" class="arq-warn"/>
+  <text x="26" y="110" class="arq-t arq-xs arq-strong" text-anchor="middle">4</text>
+  <text x="82.0" y="132" class="arq-t arq-code">}</text>
+  <text x="82.0" y="154" class="arq-t arq-code">override fun onError(e: Exception) { … }</text>
+  <text x="52.0" y="176" class="arq-t arq-code">})</text>
+  <text x="52.0" y="206" class="arq-t arq-code">println("Después")</text>
+  <circle cx="26" cy="202" r="9" class="arq-warn"/>
+  <text x="26" y="206" class="arq-t arq-xs arq-strong" text-anchor="middle">3</text>
+  <rect x="450" y="30" width="290" height="106" rx="6" class="arq-box"/>
+  <text x="462" y="50" class="arq-t arq-xs arq-strong">Salida en consola</text>
+  <text x="462" y="74" class="arq-t arq-code">Antes</text>
+  <text x="462" y="94" class="arq-t arq-code arq-strong">Después</text>
+  <text x="462" y="114" class="arq-t arq-code arq-strong">Token: a1b2c3</text>
+  <text x="450" y="160" class="arq-t arq-xs">«Después» sale antes que el token,</text>
+  <text x="450" y="176" class="arq-t arq-xs">aunque esté escrito más abajo.</text>
+  <line x1="20" y1="216" x2="740" y2="216" class="arq-guide"/>
+  <text x="20" y="240" class="arq-t arq-xs arq-strong">Lo mismo en el tiempo</text>
+  <text x="20" y="280" class="arq-t arq-xs arq-muted">hilo principal</text>
+  <text x="20" y="338" class="arq-t arq-xs arq-muted">la red</text>
+  <rect x="130" y="262" width="36" height="26" rx="4" class="arq-gray"/>
+  <text x="148" y="280" class="arq-t arq-xs arq-strong" text-anchor="middle">1</text>
+  <rect x="170" y="262" width="36" height="26" rx="4" class="arq-gray"/>
+  <text x="188" y="280" class="arq-t arq-xs arq-strong" text-anchor="middle">2</text>
+  <rect x="210" y="262" width="36" height="26" rx="4" class="arq-gray"/>
+  <text x="228" y="280" class="arq-t arq-xs arq-strong" text-anchor="middle">3</text>
+  <rect x="250" y="262" width="360" height="26" rx="4" class="arq-box arq-dashed"/>
+  <text x="430" y="280" class="arq-t arq-xs" text-anchor="middle">libre: sigue pintando y atendiendo toques</text>
+  <rect x="614" y="262" width="36" height="26" rx="4" class="arq-warn"/>
+  <text x="632" y="280" class="arq-t arq-xs arq-strong" text-anchor="middle">4</text>
+  <rect x="654" y="262" width="86" height="26" rx="4" class="arq-box arq-dashed"/>
+  <text x="697" y="280" class="arq-t arq-xs" text-anchor="middle">libre</text>
+  <rect x="188" y="320" width="444" height="26" rx="4" class="arq-ui"/>
+  <text x="410" y="338" class="arq-t arq-xs" text-anchor="middle">el servidor procesa el login</text>
+  <line x1="188" y1="289" x2="188" y2="319" class="arq-dep" marker-end="url(#arq-cco-a)"/>
+  <line x1="632" y1="319" x2="632" y2="289" class="arq-dep" marker-end="url(#arq-cco-a)"/>
+  <text x="198" y="309" class="arq-t arq-xs arq-muted">login() retorna ya: aún no hay token</text>
+  <text x="622" y="309" class="arq-t arq-xs arq-muted" text-anchor="end">llama a onSuccess</text>
+</svg>

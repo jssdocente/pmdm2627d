@@ -1,0 +1,38 @@
+<svg class="arq-svg" viewBox="0 0 760 312" role="img" aria-labelledby="arq-cpv-t arq-cpv-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-cpv-t">La misma tarea con callbacks y con suspend</title>
+  <desc id="arq-cpv-d">A la izquierda la pirámide, con cada paso más sangrado y tres sitios para los errores. A la derecha el código con suspend, en línea recta. Cada banda de color une un paso con su línea equivalente y los tres onError confluyen en un único catch.</desc>
+  <defs>
+    <marker id="arq-cpv-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-cpv-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="24" class="arq-t arq-h">Con callbacks</text>
+  <text x="452" y="24" class="arq-t arq-h">Con suspend</text>
+  <text x="460" y="56" class="arq-t arq-code" style="font-size:11.5px">try {</text>
+  <rect x="14.0" y="70" width="731.0" height="24" rx="4" class="arq-ui"/>
+  <text x="20.0" y="86" class="arq-t arq-code" style="font-size:11.5px">login(usuario, clave, onSuccess = { token -&gt;</text>
+  <text x="487.6" y="86" class="arq-t arq-code" style="font-size:11.5px">val token = login(usuario, clave)</text>
+  <rect x="41.6" y="100" width="703.4" height="24" rx="4" class="arq-dom"/>
+  <text x="47.6" y="116" class="arq-t arq-code" style="font-size:11.5px">getProfile(token, onSuccess = { perfil -&gt;</text>
+  <text x="487.6" y="116" class="arq-t arq-code" style="font-size:11.5px">val perfil = getProfile(token)</text>
+  <rect x="69.2" y="130" width="675.8" height="24" rx="4" class="arq-data"/>
+  <text x="75.2" y="146" class="arq-t arq-code" style="font-size:11.5px">getFriends(perfil.id, onSuccess = { amigos -&gt;</text>
+  <text x="487.6" y="146" class="arq-t arq-code" style="font-size:11.5px">val amigos = getFriends(perfil.id)</text>
+  <rect x="96.80000000000001" y="160" width="648.2" height="24" rx="4" class="arq-gray"/>
+  <text x="102.80000000000001" y="176" class="arq-t arq-code" style="font-size:11.5px">actualizarUI(amigos)</text>
+  <text x="487.6" y="176" class="arq-t arq-code" style="font-size:11.5px">actualizarUI(amigos)</text>
+  <rect x="69.2" y="190" width="338.8" height="24" rx="4" class="arq-warn"/>
+  <text x="75.2" y="206" class="arq-t arq-code" style="font-size:11.5px">}, onError = { mostrarError(it) })</text>
+  <path d="M408,190 C430.0,190 430.0,196.0 452,196.0 L452,220.0 C430.0,220.0 430.0,214 408,214 z" class="arq-warn" style="stroke:none"/>
+  <rect x="41.6" y="220" width="366.4" height="24" rx="4" class="arq-warn"/>
+  <text x="47.6" y="236" class="arq-t arq-code" style="font-size:11.5px">}, onError = { mostrarError(it) })</text>
+  <path d="M408,220 C430.0,220 430.0,220.0 452,220.0 L452,244.0 C430.0,244.0 430.0,244 408,244 z" class="arq-warn" style="stroke:none"/>
+  <rect x="14.0" y="250" width="394.0" height="24" rx="4" class="arq-warn"/>
+  <text x="20.0" y="266" class="arq-t arq-code" style="font-size:11.5px">}, onError = { mostrarError(it) })</text>
+  <path d="M408,250 C430.0,250 430.0,244.0 452,244.0 L452,268.0 C430.0,268.0 430.0,274 408,274 z" class="arq-warn" style="stroke:none"/>
+  <rect x="452" y="190" width="293" height="84" rx="4" class="arq-warn"/>
+  <text x="460" y="206" class="arq-t arq-code" style="font-size:11.5px">} catch (e: Exception) {</text>
+  <text x="487.6" y="236" class="arq-t arq-code" style="font-size:11.5px">mostrarError(e)</text>
+  <text x="460" y="266" class="arq-t arq-code" style="font-size:11.5px">}</text>
+  <text x="20" y="304" class="arq-t arq-xs arq-strong">Cada paso, un nivel más · 3 sitios para tratar errores</text>
+  <text x="452" y="304" class="arq-t arq-xs arq-strong">Sin anidar · 1 solo sitio para tratar errores</text>
+</svg>

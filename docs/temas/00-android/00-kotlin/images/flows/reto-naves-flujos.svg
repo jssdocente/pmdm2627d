@@ -1,0 +1,47 @@
+<svg class="arq-svg" viewBox="0 0 760 320" role="img" aria-labelledby="arq-frn-t arq-frn-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-frn-t">Modelo mental del reto de las naves</title>
+  <desc id="arq-frn-d">Tres corrutinas de naves llaman a moverNave. Cada avance actualiza un StateFlow que conserva las posiciones actuales; si el avance es de 11 o más, emiten además un aviso a un SharedFlow, que pasa y se pierde si nadie escucha. Dos corrutinas con collect consumen cada flujo: una dibuja las pistas y otra muestra el aviso.</desc>
+  <defs>
+    <marker id="arq-frn-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-frn-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="95" y="22" class="arq-t arq-xs arq-strong" text-anchor="middle">Productores</text>
+  <text x="395" y="22" class="arq-t arq-xs arq-strong" text-anchor="middle">Flujos en CarreraManager</text>
+  <text x="670" y="22" class="arq-t arq-xs arq-strong" text-anchor="middle">Observadores</text>
+  <rect x="20" y="36" width="150" height="262" rx="8" class="arq-box arq-dashed"/>
+  <text x="32" y="58" class="arq-t arq-code" style="font-size:11.5px">naves.map {</text>
+  <text x="32" y="74" class="arq-t arq-code" style="font-size:11.5px">  launch { }</text>
+  <text x="32" y="90" class="arq-t arq-code" style="font-size:11.5px">}</text>
+  <rect x="36" y="108" width="118" height="42" rx="6" class="arq-gray"/>
+  <text x="95" y="134" class="arq-t arq-xs arq-strong" text-anchor="middle">Halcón</text>
+  <rect x="36" y="166" width="118" height="42" rx="6" class="arq-gray"/>
+  <text x="95" y="192" class="arq-t arq-xs arq-strong" text-anchor="middle">Enterprise</text>
+  <rect x="36" y="224" width="118" height="42" rx="6" class="arq-gray"/>
+  <text x="95" y="250" class="arq-t arq-xs arq-strong" text-anchor="middle">Arwing</text>
+  <rect x="280" y="36" width="230" height="122" rx="8" class="arq-data"/>
+  <text x="292" y="58" class="arq-t arq-code" style="font-size:13px;font-weight:700">StateFlow</text>
+  <text x="292" y="78" class="arq-t arq-xs">Conserva siempre el último valor</text>
+  <text x="300" y="102" class="arq-t arq-code" style="font-size:11.5px">Halcón     = 32 AL</text>
+  <text x="300" y="119" class="arq-t arq-code" style="font-size:11.5px">Enterprise = 28 AL</text>
+  <text x="300" y="136" class="arq-t arq-code" style="font-size:11.5px">Arwing     = 41 AL</text>
+  <rect x="280" y="176" width="230" height="122" rx="8" class="arq-dom"/>
+  <text x="292" y="198" class="arq-t arq-code" style="font-size:13px;font-weight:700">SharedFlow</text>
+  <text x="292" y="218" class="arq-t arq-xs">El aviso pasa y no se guarda:</text>
+  <text x="292" y="234" class="arq-t arq-xs">si nadie escucha, se pierde</text>
+  <rect x="296" y="248" width="198" height="32" rx="6" class="arq-box arq-dashed"/>
+  <text x="395" y="268" class="arq-t arq-xs" text-anchor="middle">⚡ ¡Turbo de Arwing! (+12 AL)</text>
+  <line x1="171" y1="97" x2="278" y2="97" class="arq-dep" marker-end="url(#arq-frn-a)"/>
+  <text x="224" y="88" class="arq-t arq-xs" text-anchor="middle">cada avance</text>
+  <line x1="171" y1="237" x2="278" y2="237" class="arq-dep arq-dashed" marker-end="url(#arq-frn-a)"/>
+  <text x="224" y="228" class="arq-t arq-xs" text-anchor="middle">avance ≥ 11</text>
+  <rect x="600" y="62" width="140" height="70" rx="8" class="arq-ui"/>
+  <text x="612" y="84" class="arq-t arq-code" style="font-size:11.5px">collect { }</text>
+  <text x="612" y="104" class="arq-t arq-xs">Dibuja las pistas</text>
+  <text x="612" y="120" class="arq-t arq-xs">con las posiciones</text>
+  <rect x="600" y="202" width="140" height="70" rx="8" class="arq-ui"/>
+  <text x="612" y="224" class="arq-t arq-code" style="font-size:11.5px">collect { }</text>
+  <text x="612" y="244" class="arq-t arq-xs">Muestra el aviso</text>
+  <text x="612" y="260" class="arq-t arq-xs">una sola vez</text>
+  <line x1="511" y1="97" x2="598" y2="97" class="arq-dep" marker-end="url(#arq-frn-a)"/>
+  <line x1="511" y1="237" x2="598" y2="237" class="arq-dep" marker-end="url(#arq-frn-a)"/>
+</svg>
