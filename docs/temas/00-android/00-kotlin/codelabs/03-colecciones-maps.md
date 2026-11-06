@@ -39,29 +39,60 @@ val sinAna = conLuis - "Ana"          // {Luis=22}
 
 ## 2. Tu tarea
 
-1. **`nombresCompletadas`:** los nombres de las descargas completadas.
+Todo se hace en `Estadisticas.kt`. Los ejemplos usan esta lista, la misma de los tests:
 
-2. **`lasMasGrandes(descargas, n)`:** los nombres de las `n` que más ocupan, de mayor a menor.
+| `id` | `nombre` | `tamanoMb` | `estado` |
+| :--- | :--- | :--- | :--- |
+| 1 | `mapa.zip` | 300 | `Completada("/mapa.zip")` |
+| 2 | `musica.zip` | 120 | `Descargando(40)` |
+| 3 | `video.zip` | 900 | `Completada("/video.zip")` |
+| 4 | `texturas.zip` | 500 | `Pendiente` |
+| 5 | `voces.zip` | 80 | `Fallida("sin red")` |
 
-3. **`porId`:** un mapa para buscar cada descarga por su id.
+La función `nombreEstado(estado)` ya está hecha: devuelve `"Pendiente"`, `"Descargando"`, `"Completada"` o `"Fallida"`. Úsala como clave en los mapas.
 
-4. **`agruparPorEstado`:** usa la función `nombreEstado`, que ya está hecha, como clave.
+### 2.1. De lista a lista
 
-5. **`contarPorEstado`:** cuántas descargas hay en cada estado.
+Las dos reciben la lista `descargas`, y `lasMasGrandes` también el número `n`:
 
-6. **`megasPorEstado`:** cuántos MB suma cada estado.
-
-7. **`cambiarEstado(mapa, id, nuevo)`:** devuelve un mapa nuevo con esa descarga cambiada. Si el id no existe, devuelve el mismo mapa.
-
-8. **`quitar(mapa, id)`:** devuelve un mapa nuevo sin esa descarga.
+| Función | Qué devuelve | Resultado con la lista de ejemplo |
+| :--- | :--- | :--- |
+| `nombresCompletadas`{ style="white-space: nowrap" } | Los nombres de las descargas en estado `Completada`, en el mismo orden | `["mapa.zip", "video.zip"]` |
+| `lasMasGrandes`{ style="white-space: nowrap" } | Los nombres de las `n` que más ocupan, de mayor a menor | Con `n = 2`: `["video.zip", "texturas.zip"]` |
 
 ??? tip "Pista: `lasMasGrandes`"
 
     Encadena tres operaciones: `sortedByDescending`, `take` y `map`.
 
+### 2.2. De lista a mapa
+
+Las cuatro reciben la lista `descargas` y devuelven un mapa:
+
+| Función | Clave | Valor | Resultado con la lista de ejemplo |
+| :--- | :--- | :--- | :--- |
+| `porId`{ style="white-space: nowrap" } | El `id` | La descarga | 5 entradas; la clave `3` da la descarga de `video.zip` |
+| `agruparPorEstado`{ style="white-space: nowrap" } | El nombre del estado | La lista de descargas en ese estado | 4 claves; `"Completada"` da las descargas de `mapa.zip` y `video.zip` |
+| `contarPorEstado`{ style="white-space: nowrap" } | El nombre del estado | Cuántas hay en ese estado | `{Completada=2, Descargando=1, Pendiente=1, Fallida=1}` |
+| `megasPorEstado`{ style="white-space: nowrap" } | El nombre del estado | La suma de sus `tamanoMb` | `{Completada=1200, Descargando=120, Pendiente=500, Fallida=80}` |
+
 ??? tip "Pista: `megasPorEstado`"
 
     Reutiliza `agruparPorEstado`. En `mapValues`, la lambda recibe cada entrada: puedes separarla con `{ (clave, lista) -> ... }` y sumar con `sumOf`.
+
+### 2.3. «Cambiar» un mapa sin modificarlo
+
+Estas dos funciones reciben un mapa como el de `porId` y **devuelven otro**. El original debe quedar igual.
+
+```kotlin
+fun cambiarEstado(mapa: Map<Int, Descarga>, id: Int, nuevo: EstadoDescarga): Map<Int, Descarga>
+fun quitar(mapa: Map<Int, Descarga>, id: Int): Map<Int, Descarga>
+```
+
+| Llamada | Qué devuelve |
+| :--- | :--- |
+| `cambiarEstado(mapa, 4, Descargando(10))` | Un mapa nuevo en el que la descarga 4 tiene el estado `Descargando(10)` y lo demás no cambia |
+| `cambiarEstado(mapa, 99, Pendiente)` | El id 99 no existe: **el mismo mapa** que recibió |
+| `quitar(mapa, 1)` | Un mapa nuevo con 4 entradas, sin la descarga 1 |
 
 ??? tip "Pista: `cambiarEstado`"
 

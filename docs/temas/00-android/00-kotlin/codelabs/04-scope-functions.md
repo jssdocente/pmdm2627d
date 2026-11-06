@@ -26,23 +26,77 @@ Dos preguntas bastan para elegir: **cómo te refieres al objeto** dentro del blo
 
 ## 2. Tu tarea
 
-1. **`crearPeticion(url)` con `apply`:** una `Peticion` con esa `url`, 3 reintentos y la cabecera `Accept` con el valor `*/*`.
+Todo se hace en `Peticiones.kt`. En cada función se indica cuál debes usar.
 
-2. **`nombreDesdeUrl(url)` con `let`:** lo que hay tras la última barra, o `"sin-nombre"` si la url es `null` o termina en barra.
+### 2.1. `crearPeticion`, con `apply`
 
-3. **`registrar(descarga, log)` con `also`:** añade `"Añadida: nombre"` al registro y devuelve la misma descarga.
+```kotlin
+fun crearPeticion(url: String): Peticion
+```
 
-4. **`tamanoLegible(descarga)` con `run`:** `"2 GB"` a partir de 1024 MB, con división entera, o `"300 MB"`.
+Crea una `Peticion` y deja configuradas sus tres propiedades:
 
-5. **`resumen(descargas)` con `with`:** `"3 descargas, 900 MB"`.
+| Propiedad | Valor |
+| :--- | :--- |
+| `url` | La que recibe la función |
+| `reintentos` | `3` |
+| `cabeceras` | Una entrada con la clave `"Accept"` y el valor `"*/*"` |
 
-??? tip "Pista: `crearPeticion`"
+??? tip "Pista"
 
     Dentro de `apply`, el parámetro `url` tapa a la propiedad con el mismo nombre. Escribe `this.url = url`.
 
-??? tip "Pista: `nombreDesdeUrl`"
+### 2.2. `nombreDesdeUrl`, con `let`
+
+```kotlin
+fun nombreDesdeUrl(url: String?): String
+```
+
+Devuelve lo que hay tras la última barra. Si no hay nada que extraer, devuelve `"sin-nombre"`:
+
+| `url` | Devuelve |
+| :--- | :--- |
+| `"https://x.es/juegos/a.zip"` | `"a.zip"` |
+| `null` | `"sin-nombre"` |
+| `"https://x.es/"` (acaba en barra) | `"sin-nombre"` |
+
+??? tip "Pista"
 
     `substringAfterLast('/')` devuelve una cadena vacía si la url termina en barra. `takeIf { it.isNotBlank() }` convierte ese caso en `null`, y `?:` hace el resto.
+
+### 2.3. `registrar`, con `also`
+
+```kotlin
+fun registrar(descarga: Descarga, log: MutableList<String>): Descarga
+```
+
+Hace dos cosas:
+
+- **Anota:** añade a `log` el texto `Añadida:` seguido del nombre. Para `a.zip`, la entrada es `"Añadida: a.zip"`.
+
+- **Devuelve:** la misma descarga que recibió, no una copia.
+
+### 2.4. `tamanoLegible`, con `run`
+
+```kotlin
+fun tamanoLegible(descarga: Descarga): String
+```
+
+Por debajo de 1024 MB lo expresa en MB. A partir de 1024 MB lo expresa en GB, con división entera:
+
+| `tamanoMb` | Devuelve |
+| :--- | :--- |
+| 300 | `"300 MB"` |
+| 1024 | `"1 GB"` |
+| 2100 | `"2 GB"` |
+
+### 2.5. `resumen`, con `with`
+
+```kotlin
+fun resumen(descargas: List<Descarga>): String
+```
+
+Devuelve el número de descargas y la suma de sus megas. Para dos descargas de 300 y 600 MB, devuelve `"2 descargas, 900 MB"`.
 
 ---
 

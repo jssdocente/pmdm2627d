@@ -30,25 +30,60 @@ fun longitud(respuesta: Respuesta): Int = when (respuesta) {
 
 ## 2. Tu tarea
 
-1. **`describir(estado)`:** devuelve `"En cola"`, `"Descargando 40 %"`, `"Guardada en /ruta"` o `"Error: motivo"`.
+Todo se hace en `Estados.kt`. Tienes tres funciones por completar.
 
-2. **`estado.estaTerminada()`:** una función de extensión que es cierta en `Completada` y `Fallida`.
+### 2.1. `describir`
 
-3. **`avanzar(estado, incremento, ruta)`:** calcula el estado siguiente:
+```kotlin
+fun describir(estado: EstadoDescarga): String
+```
 
-    - `Pendiente` pasa a `Descargando(incremento)`.
+Devuelve el texto que vería el usuario. Hay un texto distinto para cada estado:
 
-    - `Descargando` suma el incremento y, al llegar a 100 o más, pasa a `Completada(ruta)`.
+| Si `estado` es... | Devuelve | Ejemplo de resultado |
+| :--- | :--- | :--- |
+| `Pendiente` | El texto fijo `En cola` | `"En cola"` |
+| `Descargando(progreso)` | `Descargando`, el progreso y `%` | `Descargando(40)` → `"Descargando 40 %"` |
+| `Completada(ruta)` | `Guardada en` y la ruta | `Completada("/a.zip")` → `"Guardada en /a.zip"` |
+| `Fallida(motivo)` | `Error:` y el motivo | `Fallida("sin red")` → `"Error: sin red"` |
 
-    - Una descarga terminada no cambia.
+### 2.2. `estaTerminada`
 
-??? tip "Pista: `estaTerminada`"
+```kotlin
+fun EstadoDescarga.estaTerminada(): Boolean
+```
+
+Es una función de extensión: se llama como `estado.estaTerminada()`, y dentro `this` es el estado. Indica si la descarga ya no va a avanzar más:
+
+| Si el estado es... | Devuelve |
+| :--- | :--- |
+| `Pendiente` | `false` |
+| `Descargando` | `false` |
+| `Completada` | `true` |
+| `Fallida` | `true` |
+
+??? tip "Pista"
 
     No necesitas `when`: basta con comprobar `this is ...` con cada uno de los dos subtipos y unirlos con `||`.
 
-??? tip "Pista: `avanzar`"
+### 2.3. `avanzar`
 
-    Escribe `when` con una rama por caso. En la rama de `Descargando`, calcula primero el nuevo progreso en un `val` y decide después qué estado devolver. Puedes juntar dos casos en una rama separándolos con una coma.
+```kotlin
+fun avanzar(estado: EstadoDescarga, incremento: Int, ruta: String): EstadoDescarga
+```
+
+Calcula el estado siguiente cuando llegan más datos. `incremento` son los puntos que se suman al progreso, y `ruta` es dónde se guardará el fichero si la descarga termina:
+
+| Si `estado` es... | Condición | Devuelve | Ejemplo |
+| :--- | :--- | :--- | :--- |
+| `Pendiente` | Siempre | `Descargando` con el incremento | `avanzar(Pendiente, 10, "/a")` → `Descargando(10)` |
+| `Descargando` | Progreso + incremento es menor que 100 | `Descargando` con la suma | `avanzar(Descargando(30), 20, "/a")` → `Descargando(50)` |
+| `Descargando` | Progreso + incremento es 100 o más | `Completada(ruta)` | `avanzar(Descargando(90), 50, "/a")` → `Completada("/a")` |
+| `Completada` o `Fallida` | Siempre | El mismo estado, sin cambios | `avanzar(Fallida("x"), 10, "/a")` → `Fallida("x")` |
+
+??? tip "Pista"
+
+    Escribe `when` con una rama por estado. En la rama de `Descargando`, calcula primero la suma en un `val` y decide después qué devolver. Puedes juntar dos casos en una rama separándolos con una coma.
 
 ---
 

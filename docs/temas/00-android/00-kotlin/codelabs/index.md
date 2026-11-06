@@ -39,7 +39,7 @@ Todos los pasos siguen el mismo ciclo:
 
 1. Abre el paquete del paso en `src/main/kotlin`, por ejemplo `paso1_sellados`.
 
-2. Sustituye cada `TODO("Pendiente de implementar")` por tu código. El comentario de la función dice qué debe hacer.
+2. Sustituye cada `TODO("Pendiente de implementar")` por tu código. La página del paso indica qué debe devolver cada función en cada caso, con ejemplos.
 
 3. En `src/test/kotlin`, haz clic derecho sobre el paquete del paso y elige **Run 'Tests in ...'**.
 

@@ -28,23 +28,80 @@ try {
 
 ## 2. Tu tarea
 
-Usa `servidor.descargar(nombre)` directamente: `ServidorFalso` falla con los nombres que le indiques.
+Todo se hace en `Seguridad.kt`. En este paso se llama directamente a `servidor.descargar(nombre)`, sin pedir permiso antes. Los tests usan un `ServidorFalso` configurado para fallar con `roto.zip`, y cada llamada tarda un segundo:
 
-1. **`descargaSegura`:** devuelve `Completada(ruta)` o `Fallida(mensaje)`, y deja pasar la cancelación.
+| Llamada | Qué ocurre |
+| :--- | :--- |
+| `servidor.descargar("a.zip")` | Devuelve `"/descargas/a.zip"` |
+| `servidor.descargar("roto.zip")` | Lanza `IOException("No se pudo descargar roto.zip")` |
 
-2. **`descargaConLimite`:** si tarda más de `limiteMs`, devuelve `Fallida("Tiempo agotado")`. Usa `withTimeoutOrNull`.
+### 2.1. `descargaSegura`
 
-3. **`conReintentos(veces, bloque)`:** una función **genérica** que reintenta hasta `veces`. Si la última falla, deja salir la excepción. La cancelación no se reintenta.
+```kotlin
+suspend fun descargaSegura(servidor: Servidor, nombre: String): EstadoDescarga
+```
 
-4. **`iniciarCancelable`:** lanza con `launch`. Avisa con `Descargando(0)` y luego con `Completada(ruta)`. Si la cancelan, avisa con `Fallida("Cancelada")` y vuelve a lanzar la excepción.
+Convierte el resultado de la descarga en un estado:
 
-??? tip "Pista: `descargaConLimite`"
+| Qué ocurre | Qué hace | Ejemplo |
+| :--- | :--- | :--- |
+| La descarga va bien | Devuelve `Completada(ruta)` | `"a.zip"` → `Completada("/descargas/a.zip")` |
+| Salta una excepción | Devuelve `Fallida(mensaje de la excepción)` | `"roto.zip"` → `Fallida("No se pudo descargar roto.zip")` |
+| Cancelan la corrutina | Vuelve a lanzar la `CancellationException` | No devuelve ningún estado |
+
+### 2.2. `descargaConLimite`
+
+```kotlin
+suspend fun descargaConLimite(servidor: Servidor, nombre: String, limiteMs: Long): EstadoDescarga
+```
+
+Pone un tiempo máximo a la descarga, que tarda un segundo:
+
+| `limiteMs` | Qué ocurre | Devuelve |
+| :--- | :--- | :--- |
+| `2000` | Le da tiempo | `Completada("/descargas/a")` |
+| `500` | No le da tiempo | `Fallida("Tiempo agotado")` |
+
+??? tip "Pista"
 
     `withTimeoutOrNull` devuelve el resultado del bloque, o `null` si se acaba el tiempo. Combínalo con `?:`.
 
-??? tip "Pista: `conReintentos`"
+### 2.3. `conReintentos`
+
+```kotlin
+suspend fun <T> conReintentos(veces: Int, bloque: suspend () -> T): T
+```
+
+Ejecuta `bloque` hasta un máximo de `veces` intentos, y es **genérica**: sirve para cualquier tipo de resultado. Con `veces = 3`:
+
+| Qué ocurre | Intentos | Resultado |
+| :--- | :--- | :--- |
+| El primero falla y el segundo va bien | 2 | Devuelve el valor del segundo, sin hacer un tercero |
+| Fallan los tres | 3 | Deja salir la excepción del último |
+| Lanza `CancellationException` | 1 | Deja salir la excepción, sin reintentar |
+
+??? tip "Pista"
 
     Usa `repeat(veces - 1)` con un `try` que hace `return bloque()` y un `catch` vacío para los fallos. Fuera del `repeat`, un último `return bloque()` sin `try` deja salir la excepción.
+
+### 2.4. `iniciarCancelable`
+
+```kotlin
+fun CoroutineScope.iniciarCancelable(
+    servidor: Servidor,
+    nombre: String,
+    alCambiar: (EstadoDescarga) -> Unit,
+): Job
+```
+
+Lanza la descarga con `launch`, devuelve su `Job` y avisa de cada cambio llamando a `alCambiar`. Estos son los avisos, en orden:
+
+| Qué ocurre | Avisos que recibe `alCambiar` |
+| :--- | :--- |
+| La descarga termina | `Descargando(0)` y luego `Completada("/descargas/a")` |
+| Cancelan el `Job` a mitad | `Descargando(0)` y luego `Fallida("Cancelada")` |
+
+Tras avisar de la cancelación, vuelve a lanzar la `CancellationException` para que la corrutina termine como cancelada.
 
 ---
 

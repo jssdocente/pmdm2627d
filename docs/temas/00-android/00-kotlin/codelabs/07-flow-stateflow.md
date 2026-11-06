@@ -38,29 +38,62 @@ fun sumar() {
 
 ## 2. Tu tarea
 
-**En `Flujos.kt`:**
+### 2.1. `progreso` (en `Flujos.kt`)
 
-1. **`progreso(pasos, retardoMs)`:** en cada paso espera y emite el porcentaje. Con 4 pasos emite 25, 50, 75 y 100.
+```kotlin
+fun progreso(pasos: Int, retardoMs: Long): Flow<Int>
+```
 
-2. **`flujo.comoEstados(ruta)`:** convierte cada porcentaje en `Descargando`, o en `Completada(ruta)` al llegar a 100.
+Crea un flujo que, en cada uno de los `pasos`, primero espera `retardoMs` y después emite el porcentaje. El porcentaje es `paso * 100 / pasos`, con `paso` de 1 a `pasos`:
 
-**En `GestorDescargas.kt`:**
+| Llamada | Emite | Tiempo total |
+| :--- | :--- | :--- |
+| `progreso(4, 100)` | 25, 50, 75 y 100 | 400 ms |
+| `progreso(2, 100)` | 50 y 100 | 200 ms |
 
-3. **`agregar(descarga)`:** la añade al mapa con su id como clave.
+### 2.2. `comoEstados` (en `Flujos.kt`)
 
-4. **`cambiarEstado(id, nuevo)`:** como en el paso 3, pero dentro de `update`. Si el id no existe, no cambia nada.
+```kotlin
+fun Flow<Int>.comoEstados(ruta: String): Flow<EstadoDescarga>
+```
 
-5. **`iniciar(id)`:** lanza en `scope` una corrutina que recoge el progreso convertido en estados y llama a `cambiarEstado` con cada valor. Devuelve el `Job`.
+Transforma cada porcentaje en un estado:
 
-6. **`activas()`:** un flujo con el número de descargas en estado `Descargando`, derivado de `descargas`.
+| Porcentaje recibido | Estado emitido | Ejemplo con `ruta = "/a"` |
+| :--- | :--- | :--- |
+| Menos de 100 | `Descargando(porcentaje)` | `50` → `Descargando(50)` |
+| 100 o más | `Completada(ruta)` | `100` → `Completada("/a")` |
+
+### 2.3. `GestorDescargas` (en `GestorDescargas.kt`)
+
+La clase ya tiene sus propiedades: `scope` para lanzar corrutinas, `pasos` y `retardoMs` para el progreso, y el estado `_descargas`, un mapa cuya clave es el id de cada descarga. Completa estos cuatro métodos:
+
+| Método | Qué hace | Si el id no existe |
+| :--- | :--- | :--- |
+| `agregar(descarga)` | Añade la descarga al mapa, con su `id` como clave | No aplica |
+| `cambiarEstado(id, nuevo)` | Sustituye el estado de esa descarga | No cambia nada |
+| `iniciar(id)` | Lanza su descarga y devuelve el `Job` | Devuelve `Job().apply { complete() }`, un `Job` ya terminado |
+| `activas()` | Devuelve un flujo con cuántas están en estado `Descargando` | No aplica |
+
+**`agregar` y `cambiarEstado`** deben escribir con `_descargas.update { }`. La operación sobre el mapa es la misma que en el paso 3.
 
 ??? tip "Pista: `cambiarEstado`"
 
     Dentro de `update`, si no encuentras el id, devuelve el mapa sin cambios con `?: return@update mapa`.
 
-??? tip "Pista: `iniciar`"
+**`iniciar(id)`** sigue estos pasos:
 
-    Primero busca la descarga, para conocer su nombre: la ruta es `"/descargas/nombre"`. Si no existe, el comentario de la función te da el `Job` que debes devolver. Después encadena `progreso(pasos, retardoMs).comoEstados(...).collect { ... }` dentro de `scope.launch`.
+1. Busca la descarga en `_descargas.value`. Si no existe, devuelve el `Job` terminado de la tabla.
+
+2. Lanza una corrutina con `scope.launch` y devuelve su `Job`.
+
+3. Dentro de ella, crea el flujo `progreso(pasos, retardoMs)` y conviértelo con `comoEstados`. La ruta es `/descargas/` seguido del nombre: para `a.zip`, `"/descargas/a.zip"`.
+
+4. Recógelo con `collect` y llama a `cambiarEstado(id, estado)` con cada valor.
+
+**Comprobación:** con `pasos = 2` y `retardoMs = 100`, a los 100 ms la descarga está en `Descargando(50)` y al final en `Completada("/descargas/a.zip")`.
+
+**`activas()`** se deriva de `descargas` con `map`. Si hay dos descargas y solo una está en `Descargando`, el flujo emite `1`.
 
 ---
 

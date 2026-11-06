@@ -39,19 +39,65 @@ sealed interface Resultado<out T> {
 
 ## 2. Tu tarea
 
-1. **`resultado.mapear(transformar)`:** si es `Exito`, aplica la función a su valor y devuelve otro `Exito`, que puede ser de otro tipo. Si es `Error`, lo devuelve igual.
+Hay tres archivos por completar. Las declaraciones de `Resultado` y `ConTamano`, y la propiedad `tamano` de la cola, ya están hechas.
 
-2. **`resultado.valorO(porDefecto)`:** devuelve el valor o, si es `Error`, el valor por defecto.
+### 2.1. `mapear` (en `Resultado.kt`)
 
-3. **`Cola<T>`:** completa `encolar`, `desencolar` y `siguiente`. Sale primero el que entró primero, y una cola vacía devuelve `null`.
+```kotlin
+fun <T, R> Resultado<T>.mapear(transformar: (T) -> R): Resultado<R>
+```
 
-4. **`mayor(elementos)` y `totalMb(elementos)`:** funcionan con cualquier `T : ConTamano`. Fíjate en que `mayor` devuelve el tipo real: un `Parche?` en el test, no un `ConTamano?`.
+Aplica `transformar` al valor, solo si lo hay. El resultado puede ser de otro tipo:
 
-??? tip "Pista: `Cola`"
+| Si el resultado es... | Devuelve | Ejemplo con `{ "$it MB" }` |
+| :--- | :--- | :--- |
+| `Exito(valor)` | `Exito` con el valor transformado | `Exito(5)` → `Exito("5 MB")` |
+| `Error(mensaje)` | El mismo `Error`, **sin llamar** a `transformar` | `Error("sin red")` → `Error("sin red")` |
+
+### 2.2. `valorO` (en `Resultado.kt`)
+
+```kotlin
+fun <T> Resultado<T>.valorO(porDefecto: T): T
+```
+
+| Si el resultado es... | Devuelve | Ejemplo con `porDefecto = "b"` |
+| :--- | :--- | :--- |
+| `Exito(valor)` | Su valor | `Exito("a")` → `"a"` |
+| `Error(mensaje)` | `porDefecto` | `Error("x")` → `"b"` |
+
+### 2.3. `Cola<T>` (en `Cola.kt`)
+
+Una cola en la que sale primero el que entró primero. Los elementos se guardan en `elementos`, que ya está declarado:
+
+| Método | Qué hace | Devuelve | Si la cola está vacía |
+| :--- | :--- | :--- | :--- |
+| `encolar(elemento)` | Lo añade al final | Nada | Lo añade igualmente |
+| `desencolar()` | Saca el primero | El elemento sacado | `null` |
+| `siguiente()` | Consulta el primero **sin sacarlo** | Ese elemento | `null` |
+
+Por ejemplo, tras `encolar("a")` y `encolar("b")`, `siguiente()` devuelve `"a"` y `tamano` sigue en 2. Después, `desencolar()` devuelve `"a"` y `tamano` baja a 1.
+
+??? tip "Pista"
 
     `ArrayDeque` ya tiene `addLast`, `removeFirstOrNull` y `firstOrNull`.
 
-??? tip "Pista: `mayor` y `totalMb`"
+### 2.4. `mayor` y `totalMb` (en `Restricciones.kt`)
+
+```kotlin
+fun <T : ConTamano> mayor(elementos: List<T>): T?
+fun <T : ConTamano> totalMb(elementos: List<T>): Int
+```
+
+Funcionan con cualquier tipo que implemente `ConTamano`. El test usa una clase propia, `Parche`:
+
+| Función | Qué devuelve | Con `[Parche("a", 10), Parche("b", 30)]` | Con una lista vacía |
+| :--- | :--- | :--- | :--- |
+| `mayor` | El elemento que más ocupa | `Parche("b", 30)` | `null` |
+| `totalMb` | La suma de lo que ocupan | `40` | `0` |
+
+Fíjate en que `mayor` devuelve el tipo real: un `Parche?`, no un `ConTamano?`.
+
+??? tip "Pista"
 
     Busca `maxByOrNull` y `sumOf`: gracias a la restricción, dentro de la lambda puedes usar `it.tamanoMb`.
 

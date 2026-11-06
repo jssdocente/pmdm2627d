@@ -26,7 +26,7 @@ servidor.pedirPermiso(nombre, { token ->
 }, { e -> alFallar(e) })
 ```
 
-El `Servidor` del paquete `modelo` hace lo mismo con funciones `suspend`, que devuelven su resultado con normalidad. `ServidorFalso` lo simula: cada llamada tarda un segundo.
+El `Servidor` del paquete `modelo` hace lo mismo con funciones `suspend`, que devuelven su resultado con normalidad. Sus respuestas están en la tarea, más abajo.
 
 ---
 
@@ -47,15 +47,59 @@ El `Servidor` del paquete `modelo` hace lo mismo con funciones `suspend`, que de
 
 ## 3. Tu tarea
 
-1. **`descargarUna(servidor, nombre)`:** la misma tarea que la pirámide, en tres líneas. Tarda 3 s.
+Todo se hace en `Descargas.kt`. Los tests usan un `ServidorFalso` en el que cada llamada tarda un segundo y devuelve esto:
 
-2. **`descargarVarias(servidor, nombres)`:** todas a la vez, con las rutas en el mismo orden. Con tres ficheros **tiene que tardar 3 s, no 9 s**.
+| Llamada | Devuelve |
+| :--- | :--- |
+| `servidor.pedirPermiso("a.zip")` | `"token-a.zip"` |
+| `servidor.obtenerEnlace("token-a.zip")` | `"enlace-a.zip"` |
+| `servidor.descargar("enlace-a.zip")` | `"/descargas/a.zip"` |
 
-3. **`descargarEnSegundoPlano(servidor, nombre, alTerminar)`:** lanza la descarga con `launch`, no espera y devuelve el `Job`. Es una extensión de `CoroutineScope`, porque `launch` necesita un *scope*.
+### 3.1. `descargarUna`
 
-??? tip "Pista: `descargarVarias`"
+```kotlin
+suspend fun descargarUna(servidor: Servidor, nombre: String): String
+```
+
+Escribe la misma tarea que la pirámide, en línea recta:
+
+1. Pide permiso con el `nombre` y guarda el token.
+
+2. Obtiene el enlace con ese token.
+
+3. Descarga con ese enlace y devuelve la ruta.
+
+**Comprobación:** `descargarUna(servidor, "a.zip")` devuelve `"/descargas/a.zip"` y tarda 3 s, porque son tres llamadas seguidas.
+
+### 3.2. `descargarVarias`
+
+```kotlin
+suspend fun descargarVarias(servidor: Servidor, nombres: List<String>): List<String>
+```
+
+Descarga todos los ficheros **a la vez** y devuelve las rutas en el mismo orden que los nombres. Reutiliza `descargarUna`.
+
+**Comprobación:** con `["a", "b", "c"]` devuelve `["/descargas/a", "/descargas/b", "/descargas/c"]` y tarda **3 s, no 9 s**.
+
+??? tip "Pista"
 
     Dentro de `coroutineScope { }`, usa `map` para crear un `async` por cada nombre y termina con `awaitAll()`. Si llamas a `await()` dentro del propio `map`, irán una detrás de otra y el test de los 3 s fallará.
+
+### 3.3. `descargarEnSegundoPlano`
+
+```kotlin
+fun CoroutineScope.descargarEnSegundoPlano(
+    servidor: Servidor,
+    nombre: String,
+    alTerminar: (String) -> Unit,
+): Job
+```
+
+Lanza la descarga con `launch` y retorna **sin esperarla**. Es una extensión de `CoroutineScope` porque `launch` necesita un *scope*:
+
+- **Al llamarla:** devuelve el `Job` de la corrutina al momento, y `alTerminar` aún no se ha ejecutado.
+
+- **Cuando acaba la descarga:** llama a `alTerminar` con la ruta, por ejemplo `alTerminar("/descargas/a")`.
 
 ---
 
