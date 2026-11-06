@@ -10,9 +10,6 @@ En la UT3 seguimos trabajando sobre **FichaJuego**, en el mismo repositorio: [gi
 
 Si es la primera vez que usas el repositorio, consulta [cómo descargarlo y moverte entre tags](../../02/sesiones/index.md#el-proyecto-de-clase-fichajuego).
 
-!!! info "Tu proyecto: «Mi colección»"
-    En paralelo a FichaJuego desarrollarás tu propio proyecto, **«Mi colección»**, con la temática que elijas. Lo que hagamos en clase con FichaJuego es justo lo que necesitarás aplicar en él.
-
 ---
 
 ## Plan de sesiones

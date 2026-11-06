@@ -558,7 +558,7 @@ El menú recorre `PantallaLab.entries`, así que la tarjeta nueva aparece sola.
 
 ## 9. Experimenta
 
-1. Genera una paleta con Material Theme Builder a partir del color de tu proyecto «Mi colección» y pégala en `Color.kt`. Todo el laboratorio cambia de golpe.
+1. Genera una paleta con Material Theme Builder a partir de un color que te guste y pégala en `Color.kt`. Todo el laboratorio cambia de golpe.
 
 2. Pon `dynamicColor = true` en `LabUt3Theme`, cambia el fondo de pantalla del emulador y vuelve a abrir la app.
 

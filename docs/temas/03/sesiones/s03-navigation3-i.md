@@ -366,7 +366,6 @@ Añade una acción en la barra de la biblioteca que abra una pantalla «Acerca d
 - Termina los bloques 7 y 8 si no dio tiempo en clase.
 - Codelab del laboratorio: [Codelab 3.05 · Navegar entre pantallas con Navigation 3](../codelabs/05-navegacion-navigation3.md).
 - Lee el apartado de [errores frecuentes](../b-navegacion/3b.1-navigation3.md#13-errores-frecuentes) de los apuntes y localiza cuáles te han pasado hoy.
-- Dibuja en papel las pantallas de tu proyecto «Mi colección» y la clave de cada una: ¿cuáles llevan argumentos?
 - Si faltaste a clase: `git checkout s3.03-fin` y repasa `navegacion/`, `DetalleJuegoScreen.kt` y la nueva firma de `BibliotecaScreen`.
 
 ---

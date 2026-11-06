@@ -414,7 +414,6 @@ Añade un botón «Eliminar juego» al final del detalle. Al pulsarlo, el juego 
 - Termina los bloques 7 y 8 si no dio tiempo en clase.
 - Codelab del laboratorio: [Codelab 3.06 · Quiz con ViewModel y `StateFlow`](../codelabs/06-quiz-viewmodel.md).
 - Lee [3C.1 §4.2](../c-arquitectura/3c.1-capa-ui-viewmodel.md#42-componente-de-presentacion-stateless-content): la separación entre la pantalla con estado y el contenido sin estado.
-- Piensa en tu proyecto «Mi colección»: ¿qué datos irían en su `UiState` y qué eventos tendría su ViewModel?
 - Si faltaste a clase: `git checkout s3.05-fin` y repasa `ui/FichaJuegoUiState.kt`, `ui/FichaJuegoViewModel.kt`, el test y `navegacion/FichaJuegoApp.kt`.
 
 ---

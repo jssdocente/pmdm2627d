@@ -447,7 +447,6 @@ Los ViewModel de hoy usan `viewModelScope`, que trabaja en el hilo principal de 
 - Termina los bloques 7 y 8 si no dio tiempo en clase.
 - Retos del laboratorio: [El Ahorcado y Wordle](../3.6-laboratorio-retos.md#4-retos-autonomos), dos juegos completos con `UiState` y ViewModel.
 - Lee [3C.2](../c-arquitectura/3c.2-clean-architecture.md) hasta el §9: verás estas mismas piezas con un contrato de repositorio y casos de uso.
-- Aplica a tu proyecto «Mi colección» lo que hemos hecho hoy: un repositorio y un ViewModel por pantalla.
 - Si faltaste a clase: `git checkout s3.07-fin` y repasa `data/JuegoRepositorio.kt`, `FichaJuegoApplication.kt`, los tres ViewModel y `navegacion/FichaJuegoApp.kt`.
 
 ---

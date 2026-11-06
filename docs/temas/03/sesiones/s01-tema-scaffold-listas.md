@@ -288,7 +288,7 @@ Cambia la `LazyColumn` por una `LazyVerticalGrid(columns = GridCells.Adaptive(mi
 
 - Termina los bloques 6 y 7 si no dio tiempo en clase.
 - Codelabs del laboratorio: [Codelab 3.01 · Tema de Material 3](../codelabs/01-tema-material3.md) y [Codelab 3.02 · Catálogo con `LazyColumn`](../codelabs/02-catalogo-lazycolumn.md).
-- Elige ya la **temática de tu proyecto «Mi colección»** y prueba Material Theme Builder con un color semilla que encaje con ella.
+- Prueba Material Theme Builder con un color semilla que te guste y fíjate en la paleta que genera.
 - Si faltaste a clase: `git checkout s3.01-fin` y repasa `ui/theme/`, `BibliotecaScreen.kt` y `model/Juego.kt`.
 
 ---
