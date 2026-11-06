@@ -1,0 +1,42 @@
+<svg class="arq-svg" viewBox="0 0 760 370" role="img" aria-labelledby="ut1-res-t ut1-res-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="ut1-res-t">Qué implica cada restricción del móvil al elegir tecnología</title>
+  <desc id="ut1-res-d">Cinco filas. Batería y temperatura: el sistema regula el segundo plano. Memoria limitada: el sistema cierra procesos y cada capa consume más. Red inestable: hay que decidir si funciona sin conexión. Muchos dispositivos: una base de código ahorra pero hay que probar en todos. El sistema manda: lo nuevo llega antes a las APIs nativas.</desc>
+  <defs><marker id="ut1-res-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker></defs>
+  <text x="20" y="24" class="arq-t arq-h">Restricción del móvil</text>
+  <text x="290" y="24" class="arq-t arq-h">Pregunta que te obliga a hacer al elegir</text>
+  <rect x="14" y="42" width="226" height="56" rx="8" class="arq-dom"/>
+  <text x="26" y="66" class="arq-t arq-strong">Batería y temperatura</text>
+  <text x="26" y="85" class="arq-t arq-xs">Android limita el trabajo en segundo plano</text>
+  <line x1="244" y1="70" x2="282" y2="70" class="arq-dep" marker-end="url(#ut1-res-a)"/>
+  <rect x="286" y="42" width="460" height="56" rx="8" class="arq-ui"/>
+  <text x="298" y="65" class="arq-t arq-s arq-strong">¿Tu app debe seguir trabajando con la pantalla apagada?</text>
+  <text x="298" y="85" class="arq-t arq-s">Es donde la web y las capas intermedias se quedan más cortas.</text>
+  <rect x="14" y="107" width="226" height="56" rx="8" class="arq-dom"/>
+  <text x="26" y="131" class="arq-t arq-strong">Memoria limitada</text>
+  <text x="26" y="150" class="arq-t arq-xs">El sistema cierra procesos sin avisar</text>
+  <line x1="244" y1="135" x2="282" y2="135" class="arq-dep" marker-end="url(#ut1-res-a)"/>
+  <rect x="286" y="107" width="460" height="56" rx="8" class="arq-ui"/>
+  <text x="298" y="130" class="arq-t arq-s arq-strong">¿Va justa de memoria o gráficos?</text>
+  <text x="298" y="150" class="arq-t arq-s">Cada capa añadida (navegador, motor, runtime) también consume.</text>
+  <rect x="14" y="172" width="226" height="56" rx="8" class="arq-dom"/>
+  <text x="26" y="196" class="arq-t arq-strong">Red inestable</text>
+  <text x="26" y="215" class="arq-t arq-xs">Wi-Fi, 5G, túneles, modo avión</text>
+  <line x1="244" y1="200" x2="282" y2="200" class="arq-dep" marker-end="url(#ut1-res-a)"/>
+  <rect x="286" y="172" width="460" height="56" rx="8" class="arq-ui"/>
+  <text x="298" y="195" class="arq-t arq-s arq-strong">¿Debe funcionar sin conexión?</text>
+  <text x="298" y="215" class="arq-t arq-s">Todas pueden, pero una web sencilla depende de la red.</text>
+  <rect x="14" y="237" width="226" height="56" rx="8" class="arq-dom"/>
+  <text x="26" y="261" class="arq-t arq-strong">Muchos dispositivos</text>
+  <text x="26" y="280" class="arq-t arq-xs">Pantallas, fabricantes y versiones</text>
+  <line x1="244" y1="265" x2="282" y2="265" class="arq-dep" marker-end="url(#ut1-res-a)"/>
+  <rect x="286" y="237" width="460" height="56" rx="8" class="arq-ui"/>
+  <text x="298" y="260" class="arq-t arq-s arq-strong">¿En cuántas plataformas y formatos debe estar?</text>
+  <text x="298" y="280" class="arq-t arq-s">Una sola base de código ahorra, pero hay que probar en todos.</text>
+  <rect x="14" y="302" width="226" height="56" rx="8" class="arq-dom"/>
+  <text x="26" y="326" class="arq-t arq-strong">El sistema manda</text>
+  <text x="26" y="345" class="arq-t arq-xs">Permisos y ciclo de vida</text>
+  <line x1="244" y1="330" x2="282" y2="330" class="arq-dep" marker-end="url(#ut1-res-a)"/>
+  <rect x="286" y="302" width="460" height="56" rx="8" class="arq-ui"/>
+  <text x="298" y="325" class="arq-t arq-s arq-strong">¿Necesitas lo último del sistema?</text>
+  <text x="298" y="345" class="arq-t arq-s">Lo nuevo llega primero a las APIs nativas; el resto va detrás.</text>
+</svg>

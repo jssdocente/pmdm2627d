@@ -1,1047 +1,442 @@
-# **UT1. Evolución y Entornos de Desarrollo Móvil**
+# **UT1. ¿Web, híbrida, multiplataforma o nativa?**
+
+Tienes una idea para una app. Antes de escribir una línea de código hay que tomar una decisión que condiciona todo lo demás: **¿con qué tecnología se construye?** De ella dependen lo que la app podrá hacer, cuánto costará y cuántas personas harán falta para mantenerla.
+
+Este tema te enseña a tomar esa decisión y a defenderla con argumentos. Después explica por qué en este módulo desarrollamos apps nativas para Android, y qué ocurre desde que escribes el código hasta que la app funciona en un móvil.
+
+!!! abstract "Al terminar este tema sabrás"
+
+    - Distinguir las cuatro formas de construir una app y qué hay entre tu código y el sistema en cada una.
+
+    - Elegir la opción adecuada para un caso concreto y justificarla.
+
+    - Explicar cuándo una app nativa compensa su coste y cuándo no.
+
+    - Situar los videojuegos y los formatos Android (reloj, TV y coche) dentro de esa decisión.
+
+    - Reconocer las piezas de una app Android: compilación, ART, APK/AAB y niveles de API.
 
 ---
 
-## 1. Limitaciones y Retos en el Desarrollo Móvil
+## 1. La respuesta corta
 
-A menudo, cuando empezamos a programar venimos del entorno de desarrollo de escritorio o de servidores web, donde los recursos del sistema parecen prácticamente ilimitados: gigabytes de memoria RAM, procesadores multinúcleo a altas velocidades sin restricciones térmicas estrictas, almacenamiento masivo y una alimentación eléctrica constante.
+**No hay una opción ganadora**: hay una opción adecuada para cada app. Como primera orientación:
 
-Sin embargo, el entorno móvil plantea un ecosistema radicalmente distinto. Un smartphone es un dispositivo de bolsillo, alimentado por una batería química finita y sujeto a condiciones de conectividad y temperatura muy variables. Ignorar estas limitaciones no solo conduce a un rendimiento deficiente, sino a la desinstalación inmediata de la aplicación por parte del usuario.
+- **Web**, cuando lo importante es llegar a cualquiera con un enlace, sin instalar nada.
 
-Pensemos en el desarrollador de escritorio o backend como el arquitecto de un rascacielos con cimientos profundos y acceso ilimitado a la red eléctrica; en cambio, el desarrollador móvil es como un **ingeniero de Fórmula 1**: cada gramo de peso, cada ciclo de reloj de la CPU, cada llamada a la red y cada milivatio de batería cuentan.
+- **Híbrida**, cuando ya tienes una web y quieres estar en las tiendas con una app sencilla.
 
-```mermaid
-graph TD
-    subgraph Retos del Entorno Móvil
-        A[Batería Finita] --> R[Optimización Extrema]
-        B[Hardware y RAM Limitados] --> R
-        C[Conectividad Inestable / Móvil] --> R
-        D[Fragmentación Extrema] --> R
-        E[Ciclo de Vida Agresivo del SO] --> R
-    end
-```
+- **Multiplataforma**, cuando necesitas Android e iOS con un solo equipo y una buena experiencia.
 
-### 1.1. Recursos de Hardware: La Eterna Dieta
+- **Nativa**, cuando el valor de la app depende del dispositivo: trabajo en segundo plano, sensores, integración con el sistema, rendimiento máximo o formatos como el reloj y el coche.
 
-A pesar de los enormes avances en microelectrónica móvil, los smartphones operan bajo restricciones físicas estrictas:
-
-- **Procesador (CPU y GPU):** Las CPUs móviles (basadas predominantemente en arquitecturas ARM y núcleos big.LITTLE) priorizan la eficiencia energética por encima de la potencia bruta continua. No disponen de ventiladores activos; si una aplicación satura la CPU durante periodos prolongados, el procesador entrará en *thermal throttling* (reducción automática de frecuencia para evitar daños térmicos), ralentizando el dispositivo.
-- **Memoria RAM y el Asesino Silencioso (Low Memory Killer):** A diferencia de un PC donde el sistema operativo utiliza memoria virtual (swap) en disco si la RAM se agota, en los sistemas operativos móviles la memoria swap intensiva está limitada para no degradar la memoria flash. Si el sistema detecta presión de memoria, el servicio **Low Memory Killer (LMK)** de Android destruirá procesos en segundo plano sin previo aviso. Nuestra aplicación debe estar preparada en todo momento para restaurar su estado tras ser eliminada de la memoria.
-- **Almacenamiento Flash:** Aunque la capacidad ha crecido, sigue siendo finita y compartida con fotos, vídeos y cachés del sistema. Las aplicaciones que superan cientos de megabytes sin justificación sufren mayores tasas de desinstalación.
-
-### 1.2. La Batería: El Recurso Más Crítico
-
-En un dispositivo móvil, cada byte transmitido por la antena celular, cada cálculo matemático y cada píxel iluminado en una pantalla OLED consume energía.
-
-- **Impacto de las Antenas (Radio Móvil):** La antena celular (4G/5G) pasa por estados de energía (*Sleep*, *Idle*, *Active*). Realizar muchas peticiones de red pequeñas y espaciadas en el tiempo despierta la antena repetidamente impidiendo que entre en reposo, lo que dispara el consumo.
-- **Mecanismos del Sistema Operativo:** Android implementa políticas muy estrictas como **Doze Mode** y **App Standby**. Cuando el usuario deja el teléfono sobre la mesa con la pantalla apagada, el sistema entra en un sueño profundo, limitando el acceso a la red y posponiendo tareas en segundo plano. El desarrollador no puede pretender ejecutar hilos infinitos; debe delegar el trabajo diferible a herramientas del sistema como **WorkManager**.
-
-### 1.3. Conectividad Móvil: Un Entorno Inestable
-
-Las aplicaciones móviles deben operar con la premisa de que la red es intrínsecamente hostil y cambiante:
-
-- **Transiciones Constantes:** La app debe tolerar el cambio instantáneo entre una red Wi-Fi de alta velocidad, una conexión 5G con baja latencia, una cobertura 3G degradada en un túnel y la pérdida total de señal (*modo avión* o zonas sin cobertura).
-- **Enfoque Offline-First:** Las aplicaciones modernas deben diseñarse con una arquitectura *offline-first*, almacenando los datos en una base de datos local (como Room o SQLDelight) y sincronizando con la nube de manera transparente cuando la conectividad se restablezca.
-
-### 1.4. Fragmentación del Ecosistema
-
-La diversidad de dispositivos en el mercado Android es inmensa:
-
-- **Pantallas y Densidades:** Dispositivos que van desde 4 pulgadas hasta pantallas plegables de 8 pulgadas, tablets y pantallas de vehículos, con diferentes densidades de píxeles (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`) y relaciones de aspecto variadas (16:9, 19.5:9, 21:9).
-- **Variedad de Fabricantes (Capas de Personalización):** Samsung (One UI), Xiaomi (HyperOS), Google (Pixel UI), etc., cada uno con configuraciones de ahorro de batería agresivas y modificaciones sobre el comportamiento estándar de Android AOSP.
-- **Versiones de Android en el Mercado:** Conviven dispositivos con versiones que van desde Android 10 hasta Android 17. La aplicación debe fijar una versión mínima (`minSdk`) y verificar capacidades en tiempo de ejecución.
+El resto del tema justifica estas cuatro frases.
 
 ---
 
-## 2. Ecosistema de Opciones en el Desarrollo Móvil Actual
+## 2. Qué hace distinto a un móvil
 
-A la hora de crear una aplicación móvil existen distintas aproximaciones técnicas. La elección adecuada impactará directamente en el rendimiento, los costes de mantenimiento y el tiempo de comercialización (*time-to-market*).
+En un ordenador de sobremesa puedes ignorar casi siempre los recursos: hay enchufe, ventilador y mucha memoria. Un móvil funciona con batería, sin ventilador y con una red que va y viene. Y, sobre todo, **quien manda es el sistema operativo, no tu app**. Estas restricciones son la razón por la que la elección de tecnología importa:
 
-```mermaid
-graph TD
-    A[Enfoques de Desarrollo Móvil] --> B[Nativo Puro]
-    A --> C[Híbrido Tradicional / Web-Based]
-    A --> D[Multiplataforma de UI Propia]
-    A --> E[Kotlin Multiplatform - KMP]
-    A --> F[Progressive Web Apps - PWA]
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/restricciones-decision.svg"
+<figcaption>Cada restricción del móvil se convierte en una pregunta al elegir tecnología.</figcaption>
+</figure>
 
-    B --> B1[Android: Kotlin / Jetpack Compose]
-    B --> B2[iOS: Swift / SwiftUI]
+Los conceptos que conviene recordar:
 
-    C --> C1[Capacitor / Ionic / Cordova]
+- **Segundo plano regulado.** Con la pantalla apagada, Android entra en *Doze* y limita la red y las tareas. El trabajo que debe terminar sí o sí se delega en herramientas del sistema como **WorkManager**.
 
-    D --> D1[Flutter / Dart]
-    D --> D2[React Native / JS-TS]
+- **Cierre de procesos.** Si falta memoria, el *Low Memory Killer* cierra procesos sin previo aviso. Tu app debe poder recuperar su estado al volver.
 
-    E --> E1[KMP: Lógica Compartida + UI Nativa]
-    E --> E2[Compose Multiplatform: Lógica + UI Compartida]
-```
+- **Calentamiento.** Sin ventilador, si la CPU trabaja mucho tiempo seguido, el sistema reduce su frecuencia (*thermal throttling*) y todo va más lento.
 
-### A. Desarrollo Nativo Puro: Máxima Potencia e Integración
+- **Sin conexión.** Lo habitual es guardar los datos en una base de datos local y sincronizar cuando vuelve la red (*offline-first*).
 
-Consiste en programar directamente contra las APIs oficiales de cada plataforma utilizando sus lenguajes y herramientas recomendadas.
-
-- **Android:** Lenguaje **Kotlin** (apoyado históricamente en Java; ver [Sección 3: De Java a Kotlin](#3-de-java-a-kotlin-la-transicion-historica-del-lenguaje-en-android)), entornos **Android Studio** o **IntelliJ IDEA** (ver [Sección 9](#9-entornos-de-desarrollo-integrados-ides-para-el-ecosistema-movil)), interfaz declarativa con **Jetpack Compose**.
-- **iOS:** Lenguaje **Swift** (anteriormente Objective-C), entorno **Xcode** (exclusivo de macOS), interfaz declarativa con **SwiftUI**.
-
-!!! info "Ventajas e Inconvenientes del Enfoque Nativo"
-
-    - **Ventajas:** Rendimiento óptimo sin capas de traducción; acceso el primer día a cualquier nueva API del sistema operativo; integración de diseño al 100% con las guías de estilo de cada plataforma (Material 3 en Android, Human Interface Guidelines en iOS).
-    - **Inconvenientes:** Coste económico y de tiempo duplicado. Requiere mantener dos bases de código distintas y contar con dos equipos de ingenieros especializados.
+- **Fragmentación.** Conviven tamaños de pantalla, fabricantes con capas propias y versiones de Android distintas.
 
 ---
 
-### B. Frameworks Híbridos y Multiplataforma Tradicionales
+## 3. Las cuatro formas de hacer una app
 
-Surgen con el lema *"Write Once, Run Anywhere"* buscando abaratar costes unificando el código fuente.
+La diferencia real entre las opciones es **qué hay entre tu código y el sistema operativo**. Cuantas más capas, más código reutilizas y menos control tienes:
 
-#### 1. Basados en WebView (Ionic / Capacitor)
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/capas-opciones.svg"
+<figcaption>Las cuatro opciones acaban en el mismo sistema. Cambia lo que hay por el camino, cómo llega la app al usuario y cuánto código hay que mantener.</figcaption>
+</figure>
 
-- Empaquetan una aplicación web (HTML5, CSS3, JavaScript/TypeScript) dentro de un contenedor nativo (*WebView*).
-- **Limitación:** El rendimiento gráfico y la fluidez son inferiores, existiendo latencia en animaciones complejas y un aspecto que delata que no es una aplicación nativa.
+### 3.1. Web y PWA
 
-#### 2. React Native (Meta)
+Una web se abre en el navegador con un enlace, se actualiza al instante y funciona en cualquier dispositivo. Una **PWA** (*Progressive Web App*) es una web que además usa APIs modernas para [ser instalable, funcionar sin conexión y enviar notificaciones](https://web.dev/articles/what-are-pwas).
 
-- Utiliza **JavaScript o TypeScript** con el paradigma declarativo de React.
-- **Funcionamiento:** En sus versiones modernas (con la nueva arquitectura *Fabric* y *TurboModules* con C++), sustituye el antiguo puente asíncrono (*bridge*) por la interfaz JSI (*JavaScript Interface*), renderizando componentes nativos reales de cada plataforma.
-- **Uso ideal:** Empresas con fuertes equipos frontend web que buscan reutilizar conocimientos para el mundo móvil.
+Su límite es que **solo puede hacer lo que le permita el navegador**, y eso cambia según la plataforma. En iOS, todos los navegadores usan el motor de Apple (WebKit), [no hay diálogo de instalación](https://www.magicbell.com/blog/pwa-ios-limitations-safari-support-complete-guide) y las [notificaciones web solo llegan si el usuario ha añadido la web a la pantalla de inicio](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/).
 
-#### 3. Flutter (Google)
+### 3.2. Híbrida
 
-- Utiliza el lenguaje **Dart**.
-- **Funcionamiento:** Flutter no utiliza los componentes de UI nativos del sistema. En su lugar, incluye su propio motor gráfico de alto rendimiento (**Impeller / Skia**) y dibuja cada botón, texto y animación directamente sobre un lienzo (*Canvas*).
-- **Ventajas:** Control absoluto sobre cada píxel de la pantalla e interfaces visualmente idénticas en todas las plataformas.
-- **Inconvenientes:** Mayor tamaño del ejecutable inicial y necesidad de aprender un lenguaje (Dart) con menor penetración fuera de Flutter.
+Una app híbrida es **una web empaquetada dentro de una app**: un contenedor nativo muestra tu HTML, CSS y JavaScript en un *WebView*, un navegador incrustado. Los *plugins* dan acceso a funciones del dispositivo como la cámara. **Ionic** y **Capacitor** son los ejemplos habituales.
 
----
+Se publica en las tiendas y reutiliza lo que ya tienes en web, pero la interfaz sigue siendo una página web: en animaciones complejas o listas muy largas se nota.
 
-## 3. De Java a Kotlin: La Transición Histórica del Lenguaje en Android
+### 3.3. Multiplataforma
 
-Uno de los aspectos más intrigantes para cualquier estudiante que se introduce en el desarrollo móvil tras cursar programación en Java (como ocurre habitualmente en 1º de DAM) es: **¿Por qué Android ya no se programa principalmente en Java? ¿Por qué Google apostó con tanta determinación por Kotlin?**
+Un solo código se ejecuta en Android e iOS, pero **sin ser una página web**. Cada framework lo resuelve de una forma:
 
-La respuesta combina una apasionante batalla legal y estratégica en los tribunales con una necesidad imperiosa de modernización técnica.
+| Framework | Lenguaje | Cómo dibuja la interfaz | Encaja si… |
+| :--- | :--- | :--- | :--- |
+| **Flutter** (Google) | Dart | Con su [motor gráfico propio, Impeller](https://docs.flutter.dev/perf/impeller): dibuja cada píxel y se ve igual en todas partes | Quieres un diseño propio idéntico en todas las plataformas |
+| **React Native** (Meta) | JavaScript o TypeScript | Con componentes nativos reales, gracias a su [Nueva Arquitectura](https://reactnative.dev/architecture/landing-page) | Tu equipo ya domina React |
+| **KMP** (JetBrains) | Kotlin | Comparte la lógica y deja la interfaz nativa en cada plataforma | Quieres compartir lógica sin renunciar a la interfaz nativa |
+| **KMP + Compose Multiplatform** | Kotlin | Con Compose: nativo en Android; en iOS, con su propio motor gráfico | Ya sabes Compose y quieres compartir también la interfaz |
 
-```mermaid
-graph LR
-    A["2008: Android 1.0<br/>Java lenguaje oficial"] --> B["2010: Litigio Legal<br/>Demanda Oracle vs Google"]
-    B --> C["2010: Nace Kotlin<br/>JetBrains busca modernizar la JVM"]
-    C --> D["2016: Kotlin 1.0<br/>Versión estable y adopción"]
-    D --> E["2017: Google I/O<br/>Soporte oficial de primer nivel"]
-    E --> F["2019: Android Kotlin-First<br/>Google prioriza Kotlin"]
-    F --> G["2021: Jetpack Compose<br/>UI declarativa exclusiva de Kotlin"]
-```
+!!! warning "«Híbrida» y «multiplataforma» no son lo mismo"
 
-### 3.1. Contexto Histórico: El Origen con Java y el Litigio Oracle vs Google
+    Verás que mucha gente llama «híbrida» a cualquier app que no sea nativa. En este módulo usamos los términos con precisión: **híbrida** es solo la que se apoya en un WebView. Flutter, React Native y KMP son **multiplataforma**, porque no ejecutan una página web.
 
-Cuando Android fue concebido a mediados de los 2000 por Andy Rubin y posteriormente adquirido por Google, la elección de **Java** como lenguaje principal fue una decisión de negocio brillante:
+### 3.4. Nativa
 
-- En 2008, Java era el lenguaje más extendido del planeta.
-- Permitía a Google atraer de inmediato a millones de programadores experimentados sin exigirles aprender un lenguaje nuevo.
+Se programa directamente contra el SDK de cada plataforma, con sus lenguajes y herramientas oficiales:
 
-Sin embargo, esta decisión desencadenó dos graves problemas a largo plazo:
+- **Android:** Kotlin y Jetpack Compose.
 
-1. **El Macro-Litigio Legal: *Oracle contra Google* (2010 - 2021):**
+- **iOS:** Swift y SwiftUI, con Xcode (solo en macOS).
 
-    - En 2010, **Oracle Corporation** compró **Sun Microsystems** (los creadores originales de Java) y demandó inmediatamente a Google por infracción de patentes y derechos de autor.
-    - La acusación se centraba en que Android utilizaba las especificaciones de 37 paquetes y cerca de 11.500 líneas de código de cabecera de las APIs de Java (como `java.lang`, `java.util`, etc.) reimplementadas sobre la máquina virtual Dalvik sin pagar licencias comerciales.
-    - El litigio se prolongó durante más de una década, con reclamaciones de daños que superaban los **9.000 millones de dólares**. Aunque en abril de 2021 el Tribunal Supremo de EE.UU. falló a favor de Google dictaminando que la reimplementación de APIs constituía un uso legítimo (*Fair Use*), la incertidumbre legal durante esos 11 años forzó a Google a buscar alternativas para no depender del futuro de Java ni de las decisiones corporativas de Oracle.
-
-2. **El Estancamiento Técnico de Java en Dispositivos Móviles:**
-
-    - Por razones de arquitectura y compatibilidad con versiones antiguas del sistema operativo, Android se quedó "atrapado" durante años en las especificaciones de **Java 6 y Java 7**.
-    - Mientras el ecosistema general de Java evolucionaba con lambdas, streams y nuevas APIs en Java 8 y posteriores, los desarrolladores de Android no podían utilizarlas sin complejas herramientas de desazucarado (*desugaring*) o retrocompatibilidad. El código Android en Java se volvía cada vez más verboso, anticuado y propenso a errores.
+Sin capas intermedias tienes acceso completo al sistema, desde el primer día en que aparece una función nueva, y la app sigue las convenciones visuales de la plataforma. El precio es claro: **si quieres estar en Android y en iOS, escribes y mantienes dos apps**.
 
 ---
 
-### 3.2. La Llegada de Kotlin y la Era "Kotlin-First"
+## 4. Qué puede hacer cada una
 
-En 2010, la compañía europea **JetBrains** (famosa por crear los mejores entornos de desarrollo del mercado, entre ellos IntelliJ IDEA) comenzó a diseñar un nuevo lenguaje de programación para la máquina virtual: **Kotlin**.
+Esta tabla es la que consultarás al decidir. Observa las filas de segundo plano y de hardware: ahí está la razón principal para elegir nativa.
 
-JetBrains buscaba un lenguaje que resolviera las grandes carencias de Java, pero con un requisito irrenunciable: **100% de interoperabilidad bidireccional con Java**.
-
-El impacto en la comunidad de Android fue tan abrumador que Google tomó decisiones históricas:
-
-- **Google I/O 2017:** Google anuncia oficialmente que Kotlin pasa a ser un **lenguaje de primera clase (*First-Class Language*)** para Android, soportado de forma nativa en Android Studio junto a Java y C++.
-- **Google I/O 2019: Anuncio "Kotlin-First":** Google declara que el desarrollo en Android pasa a ser oficialmente **Kotlin-First** (*"Android development will become increasingly Kotlin-first"*). A partir de ese momento:
-
-    - Todas las nuevas librerías oficiales de **Android Jetpack** se conciben y diseñan prioritariamente en Kotlin.
-    - La documentación oficial y los ejemplos de código pasan a priorizar Kotlin.
-    - Los nuevos frameworks revolucionarios de Google (como **Jetpack Compose**) se construyen de forma exclusiva sobre las capacidades avanzadas de Kotlin.
-
----
-
-### 3.3. Motivos Técnicos de Ingeniería: ¿Por qué Kotlin es Superior a Java en Móvil?
-
-La transición a Kotlin no fue solo una jugada legal; fue principalmente una **victoria técnica aplastante de diseño de lenguajes**. Despliega cada uno de los siguientes apartados para analizar en detalle las razones de ingeniería y acceder a los recursos donde ampliar conocimientos:
-
-??? info "1. Seguridad Frente a Nulos (*Null Safety* Integrada en el Sistema de Tipos)"
-
-    El creador de la referencia nula, Sir Tony Hoare, la denominó públicamente su *"error del millón de dólares"*. En Java, cualquier variable de objeto puede apuntar a `null`, y si intentamos invocar un método sobre ella sin comprobarlo previamente, la aplicación sufrirá un catastrófico **`NullPointerException` (NPE)** que provocará el cierre forzoso de la aplicación en el dispositivo del usuario.
-
-    Kotlin resuelve esto de raíz integrando la nulabilidad en el propio sistema de tipos del compilador:
-
-    === "Java (Peligro en Tiempo de Ejecución)"
-
-        ```java
-        // En Java, el compilador permite esto sin advertencia:
-        String nombre = null;
-        int longitud = nombre.length(); // ¡CRASH! NullPointerException en el dispositivo
-        ```
-
-    === "Kotlin (Seguridad en Tiempo de Compilación)"
-
-        ```kotlin
-        // El compilador prohíbe asignar null a un tipo estándar:
-        var nombre: String = "Ana"
-        // nombre = null // ¡ERROR DE COMPILACIÓN! El código ni siquiera compila
-
-        // Si explícitamente permitimos nulos con '?', el compilador nos exige gestionarlo:
-        var apellido: String? = null
-        val longitud = apellido?.length ?: 0 // Operador Elvis: seguro, limpio y sin crash
-        ```
-
-    ---
-
-    :material-arrow-right-circle: **Para profundizar en detalle:** Consulta la guía monográfica [**14. Null Safety en Kotlin**](../00-android/00-kotlin/14-null-safety.md), donde se estudian en profundidad los operadores de llamada segura (`?.`), el operador Elvis (`?:`), el aserto no nulo (`!!`) y el casteo seguro (`as?`).
-
-??? info "2. Concisión y Eliminación de Código Repetitivo (*Boilerplate* con Data Classes)"
-
-    En Java, modelar una simple entidad de datos (POJO) requiere decenas de líneas de código rutinario para getters, setters, constructores, `equals()`, `hashCode()` y `toString()`. En Kotlin, una **`data class`** lo resuelve de forma limpia, expresiva y mantenible en una única línea de código:
-
-    === "Java: 45 Líneas de Código (POJO)"
-
-        ```java
-        public class Juego {
-            private final int id;
-            private final String titulo;
-            private final double precio;
-
-            public Juego(int id, String titulo, double precio) {
-                this.id = id;
-                this.titulo = titulo;
-                this.precio = precio;
-            }
-
-            public int getId() { return id; }
-            public String getTitulo() { return titulo; }
-            public double getPrecio() { return precio; }
-
-            @Override
-            public boolean equals(Object o) { /* ... 10 líneas de comparación ... */ }
-            @Override
-            public int hashCode() { /* ... 5 líneas de cálculo de hash ... */ }
-            @Override
-            public String toString() { /* ... 5 líneas de formato ... */ }
-        }
-        ```
-
-    === "Kotlin: 1 Línea de Código (`data class`)"
-
-        ```kotlin
-        data class Juego(val id: Int, val titulo: String, val precio: Double)
-        // El compilador autogenera: getters, equals, hashCode, toString, componentN() y copy()
-        ```
-
-    ---
-
-    :material-arrow-right-circle: **Para profundizar en detalle:** Consulta la guía monográfica [**23. Data Classes en Kotlin**](../00-android/00-kotlin/23-data-classes.md), donde se analizan la desestructuración de datos, la función `.copy()` y las directrices de inmutabilidad recomendadas en Android.
-
-??? info "3. Funciones de Extensión (*Extension Functions*)"
-
-    Kotlin permite añadir nuevas funciones a clases existentes (incluso pertenecientes a librerías de terceros o del propio SDK de Android) sin necesidad de heredar de ellas ni crear farragosas clases utilitarias (`Utils.java`):
-
-    ```kotlin
-    // Extendemos la clase Context nativa de Android con un método propio:
-    fun Context.toast(mensaje: String) {
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
-    }
-
-    // Ahora cualquier Activity o Service puede invocarlo directamente de forma natural:
-    toast("¡Partida guardada con éxito!")
-    ```
-
-    ---
-
-    :material-arrow-right-circle: **Para profundizar en detalle:** Consulta la guía monográfica [**13. Funciones y Lambdas en Kotlin**](../00-android/00-kotlin/13-funciones-lambdas.md), donde se explica la sintaxis de funciones de extensión, parámetros con nombre, valores por defecto y funciones de orden superior.
-
-??? info "4. Concurrencia Moderna y Asincronía con Corrutinas"
-
-    En Android, cualquier tarea que consuma tiempo (consultas a base de datos Room, llamadas a una API REST o lectura de archivos) **no puede ejecutarse en el hilo principal (*Main Thread / UI Thread*)**, porque congelaría la pantalla provocando el temido error **ANR (Application Not Responding)**.
-
-    - **En Java:** La asincronía tradicionalmente requería `Thread`, `Handler` o la problemática clase `AsyncTask` (deprecada por Google por provocar fugas de memoria al retener referencias vivas a actividades destruidas), o recurrir a librerías externas complejas como RxJava.
-    - **En Kotlin:** Las **Corrutinas** permiten escribir código asíncrono no bloqueante con sintaxis secuencial ordinaria mediante `suspend fun`. Además, incorporan **concurrencia estructurada**: si el usuario abandona una pantalla, todas las tareas asíncronas ligadas a su `viewModelScope` se cancelan automáticamente, impidiendo fugas de memoria y gasto inútil de batería.
-
-    ```kotlin
-    // Código asíncrono con Corrutinas en Kotlin: secuencial, legible y seguro
-    suspend fun cargarDatosJuego(id: Int): Juego {
-        val juego = apiService.getGameById(id) // Se suspende sin congelar la UI
-        database.gameDao().insert(juego)        // Se guarda en Room en segundo plano
-        return juego
-    }
-    ```
-
-    ---
-
-    :material-arrow-right-circle: **Para profundizar en detalle:** Consulta las guías monográficas [**51. Corrutinas en Kotlin**](../00-android/00-kotlin/51-corrutinas.md) y [**52. Corrutinas de Forma Sencilla**](../00-android/00-kotlin/52-corrutinas-sencillo.md) para dominar `launch`, `async`, `Dispatchers` (IO, Main, Default) y la cancelación estructurada.
-
-??? info "5. Interoperabilidad 100% Bidireccional con Java"
-
-    Kotlin no exige reescribir un proyecto desde cero. Un proyecto Android puede contener archivos `.java` y archivos `.kt` conviviendo pacíficamente en el mismo módulo:
-
-    - Puedes instanciar una clase Java desde un fichero Kotlin exactamente igual que si fuera de Kotlin.
-    - Puedes invocar código Kotlin desde un fichero Java tradicional sin necesidad de adaptadores.
-    - Toda la inmensa biblioteca de código abierto construida en Java durante más de 25 años sigue siendo 100% aprovechable en Kotlin.
-
-    ---
-
-    :material-arrow-right-circle: **Para profundizar en detalle:** Consulta la guía monográfica [**21. Programación Orientada a Objetos en Kotlin**](../00-android/00-kotlin/21-poo.md) para comprender cómo compila Kotlin a bytecode de la JVM y cómo interactúa con clases Java, interfaces y herencia.
-
-??? info "6. El Pilar Obligatorio para Jetpack Compose"
-
-    La revolución de las interfaces declarativas (**Jetpack Compose**) no habría sido viable técnicamente con Java. Compose aprovecha características intrínsecas de Kotlin como los **Domain-Specific Languages (DSLs) tipados**, las funciones componibles anotadas (`@Composable`), los parámetros con valores por defecto y las llamadas con funciones lambda finales (*trailing lambdas*).
-
-    ```kotlin
-    // Jetpack Compose se apoya en trailing lambdas y funciones de Kotlin:
-    @Composable
-    fun TarjetaJuego(juego: Juego, onClick: () -> Unit) {
-        Card(onClick = onClick) {
-            Text(text = juego.titulo)
-        }
-    }
-    ```
-
-    ---
-
-    :material-arrow-right-circle: **Para profundizar en detalle:** Consulta la guía monográfica [**Introducción a Jetpack Compose**](../00-android/00-compose/index.md) para descubrir el ciclo de vida de los composables, recomposición y diseño declarativo.
-
----
-
-### 3.4. Tabla Resumen: Comparativa Directa Java vs Kotlin en Android
-
-| Característica | Java en Android | Kotlin en Android |
-| :--- | :--- | :--- |
-| **Seguridad de Nulos** | Nula en el compilador. Riesgo constante de `NullPointerException` en runtime. | **Garantizada por el sistema de tipos**. Distinción estricta entre `T` y `T?`. |
-| **Verbosidad del Código** | Alta. Requiere código repetitivo (*boilerplate*) para POJOs, constructores y getters. | **Muy baja**. `data class`, inferencia de tipos y propiedades automáticas. |
-| **Concurrencia Asíncrona** | Compleja: `Thread`, callbacks anidados (*callback hell*), fugas de memoria con `AsyncTask`. | **Moderna y limpia: Corrutinas** y `Flow` con concurrencia estructurada. |
-| **Extensibilidad** | Solo mediante herencia o clases estáticas utilitarias (`StringUtils.metodo()`). | **Funciones de Extensión** directas sobre cualquier clase (`objeto.metodo()`). |
-| **Paradigma Funcional** | Parcial (introducido en Java 8 de forma limitada). | **Ciudadano de primera clase**: lambdas idiomáticas, funciones de orden superior. |
-| **Soporte de Jetpack Compose** | No compatible. Compose requiere Kotlin. | **Soporte nativo absoluto**. Diseñado específicamente para y con Kotlin. |
-| **Estatus en Google** | Soportado por legado histórico. | **Lenguaje Oficial y Preferente ("Kotlin-First")**. |
-
-!!! info "Profundiza en la Sintaxis de Kotlin"
-
-    Para aprender y practicar la sintaxis completa del lenguaje, consulta la sección monográfica de los apuntes: [**Fundamentos de Programación en Kotlin**](../00-android/00-kotlin/index.md).
-
----
-
-## 4. Kotlin Multiplatform (KMP): La Revolución Multiplataforma
-
-**Kotlin Multiplatform (KMP)** no es un framework híbrido más: es una tecnología desarrollada por **JetBrains** y respaldada oficialmente por **Google** que replantea por completo la estrategia de código compartido en la industria del software.
-
-### 4.1. Filosofía de KMP: Código Compartido Donde Aporta Valor
-
-La premisa tradicional de los frameworks híbridos solía ser "comparte el 100% de la aplicación, incluida la interfaz, a costa de intermediarios y puentes". KMP introduce una perspectiva mucho más sensata:
-
-> **"Comparte la lógica de negocio que es idéntica en todas las plataformas, y decide libremente cuánta interfaz de usuario quieres compartir."**
-
-```mermaid
-graph TD
-    subgraph KMP Clásico: Lógica Compartida
-        CM[commonMain: Lógica de Negocio en Kotlin]
-        CM -->|Compilado a JVM Bytecode| AND[UI Android con Jetpack Compose]
-        CM -->|Compilado a Binario Nativo / Framework vía LLVM| IOS[UI iOS con SwiftUI / Swift]
-        CM -->|Compilado a JS / Wasm| WEB[Web Frontend]
-    end
-```
-
-A diferencia de React Native (que requiere un runtime de JavaScript en tiempo de ejecución) o Flutter (que empaqueta su propio motor de renderizado gráfico completo), **KMP se compila al formato nativo que cada plataforma espera**:
-
-- Para **Android**, Kotlin compila a **bytecode de la JVM/DEX**, integrándose como código nativo de primera clase.
-- Para **iOS**, el compilador de **Kotlin/Native** utiliza **LLVM** para generar un binario ejecutable o un `.framework` nativo de Apple que Swift consume sin wrappers ni penalización de rendimiento.
-
----
-
-### 4.2. Adopción Oficial de Google en AndroidX
-
-Un hito decisivo en la consolidación de KMP fue el anuncio oficial de **Google** adoptando Kotlin Multiplatform como tecnología recomendada para compartir código entre Android e iOS.
-
-Librerías oficiales de **AndroidX** que ya tienen soporte oficial de KMP:
-
-- **Room KMP:** La base de datos relacional estándar de Android ahora corre sobre iOS usando el mismo código de entidades y DAOs.
-- **DataStore:** Almacenamiento clave-valor reactivo y transaccional compartido.
-- **Lifecycle & ViewModel:** Los `ViewModel` de Jetpack y sus estados ahora pueden residir en el módulo común y ser consumidos tanto por Compose como por SwiftUI.
-- **Paging:** Paginación eficiente de listas compartida.
-- **Annotations & Collections:** Colecciones optimizadas de Android disponibles en iOS y Desktop.
-
----
-
-### 4.3. Estructura de un Proyecto KMP
-
-En un proyecto estándar de KMP, la estructura del código en el módulo compartido (habitualmente llamado `shared` o `composeApp`) organiza las fuentes por plataformas mediante los llamados **Source Sets**:
-
-```
-mi-proyecto-kmp/
-├── composeApp/ (o shared/)
-│   └── src/
-│       ├── commonMain/         <-- Código 100% compartido
-│       │   ├── kotlin/         <-- Modelos, Repositorios, Red, Casos de Uso
-│       │   └── resources/      <-- Strings, imágenes y fuentes comunes
-│       ├── androidMain/        <-- Código específico de Android (usa Android SDK)
-│       ├── iosMain/            <-- Código específico de iOS (usa APIs de Apple / Cocoa)
-│       ├── desktopMain/        <-- Código específico de JVM Desktop (Windows/Mac/Linux)
-│       └── wasmJsMain/         <-- Código para WebAssembly (Navegador)
-├── iosApp/                     <-- Proyecto Xcode de iOS (consume el framework de Kotlin)
-└── build.gradle.kts            <-- Configuración Gradle Multiplataforma
-```
-
-#### Configuración del `build.gradle.kts` Multiplataforma:
-
-```kotlin
-plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.composeMultiplatform)
-}
-
-kotlin {
-    // Objetivos de compilación (Targets)
-    androidTarget()
-    
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "SharedApp"
-            isStatic = true
-        }
-    }
-    
-    jvm("desktop")
-
-    // Configuración de dependencias por Source Set
-    sourceSets {
-        commonMain.dependencies {
-            implementation(libs.ktor.client.core)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.koin.core)
-        }
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
-    }
-}
-```
-
----
-
-### 4.4. El Mecanismo Clave: `expect` y `actual`
-
-¿Qué ocurre cuando el código compartido en `commonMain` necesita acceder a una funcionalidad que solo existe en el hardware o en el sistema operativo concreto (por ejemplo, obtener el modelo del dispositivo, guardar en el Keychain/Keystore o consultar el nivel de batería)?
-
-Kotlin proporciona un patrón de diseño a nivel de compilador mediante las palabras clave **`expect`** y **`actual`**.
-
-```mermaid
-classDiagram
-    class CommonMain {
-        <<expect>>
-        +getPlatform(): Platform
-    }
-    class AndroidMain {
-        <<actual>>
-        +getPlatform(): Platform (Retorna "Android API " + Build.VERSION.SDK_INT)
-    }
-    class IosMain {
-        <<actual>>
-        +getPlatform(): Platform (Retorna UIDevice.currentDevice.systemName)
-    }
-    CommonMain <|-- AndroidMain : Implementa
-    CommonMain <|-- IosMain : Implementa
-```
-
-#### Paso 1: Declarar el contrato en `commonMain` (`expect`)
-
-```kotlin
-// Archivo: commonMain/kotlin/com/example/Platform.kt
-interface Platform {
-    val name: String
-    val osVersion: String
-}
-
-// Declaramos que esperamos que cada plataforma proporcione esta función
-expect fun getPlatform(): Platform
-```
-
-#### Paso 2: Implementar en `androidMain` (`actual`)
-
-En `androidMain`, tenemos acceso total a todo el SDK de Android (`android.os.Build`, `Context`, etc.):
-
-```kotlin
-// Archivo: androidMain/kotlin/com/example/Platform.android.kt
-import android.os.Build
-
-class AndroidPlatform : Platform {
-    override val name: String = "Android"
-    override val osVersion: String = "${Build.VERSION.SDK_INT}"
-}
-
-actual fun getPlatform(): Platform = AndroidPlatform()
-```
-
-#### Paso 3: Implementar en `iosMain` (`actual`)
-
-En `iosMain`, Kotlin nos permite importar directamente los frameworks de Apple (**Foundation**, **UIKit**, etc.) como si fueran clases de Kotlin:
-
-```kotlin
-// Archivo: iosMain/kotlin/com/example/Platform.ios.kt
-import platform.UIKit.UIDevice
-
-class IOSPlatform : Platform {
-    override val name: String = UIDevice.currentDevice.systemName()
-    override val osVersion: String = UIDevice.currentDevice.systemVersion
-}
-
-actual fun getPlatform(): Platform = IOSPlatform()
-```
-
----
-
-### 4.5. Ecosistema de Librerías Estándar en KMP
-
-Para construir aplicaciones reales sin reinventar la rueda, el ecosistema KMP cuenta con un conjunto de bibliotecas de primer nivel respaldadas por la comunidad y grandes compañías:
-
-| Necesidad Arquitectónica | Librería KMP Estándar | Equivalente Tradicional en Android |
-| :--- | :--- | :--- |
-| **Cliente HTTP / Red** | **Ktor Client** | Retrofit / OkHttp |
-| **Serialización JSON** | **`kotlinx.serialization`** | Gson / Moshi / Jackson |
-| **Persistencia Local (BD)** | **Room KMP** / **SQLDelight** | Room (solo Android) / SQLite |
-| **Almacenamiento Clave-Valor** | **Multiplatform Settings** / **DataStore** | SharedPreferences / DataStore |
-| **Inyección de Dependencias** | **Koin** | Hilt / Dagger |
-| **Concurrencia Asíncrona** | **Kotlinx Coroutines & Flow** | RxJava / Threads / Handlers |
-| **Carga y Caché de Imágenes** | **Coil 3 (KMP)** / **Kamel** | Glide / Picasso / Coil 2 |
-| **Navegación Multiplataforma** | **Navigation Compose KMP** / **Voyager** | Jetpack Navigation |
-
-#### Ejemplo Práctico de Consumo de API en `commonMain`:
-
-```kotlin
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class Game(val id: Int, val title: String, val rating: Double)
-
-class GameRepository(private val client: HttpClient) {
-    suspend fun fetchGames(): List<Game> {
-        return client.get("https://api.example.com/games").body()
-    }
-}
-```
-*Este único bloque de código se ejecuta idénticamente en Android, iOS, Windows, Mac y navegador web.*
-
----
-
-### 4.6. Compose Multiplatform (CMP): Llevando la UI a Todas Partes
-
-Si bien KMP nació enfocado en la lógica compartida con UI nativa (Jetpack Compose en Android y SwiftUI en iOS), **JetBrains** dio el siguiente paso natural con **Compose Multiplatform (CMP)**.
-
-```mermaid
-graph LR
-    subgraph Compose Multiplatform
-        UI[Código Declarativo @Composable] --> ANDROID[Android: Render Nativo AndroidX]
-        UI --> IOS[iOS: Renderizado mediante Skiko / Metal]
-        UI --> DESK[Desktop: Renderizado mediante Skiko / DirectX / OpenGL]
-        UI --> WASM[Web: Renderizado mediante WebAssembly / Canvas]
-    end
-```
-
-- **¿Qué es CMP?** Es una extensión de Jetpack Compose que permite usar exactamente la misma sintaxis declarativa de Kotlin para describir la interfaz de usuario en Android, iOS, Escritorio y Web.
-- **¿Cómo funciona en iOS?** En iOS, Compose Multiplatform utiliza **Skiko** (un motor gráfico ligero basado en **Skia**, la misma tecnología gráfica que emplean Google Chrome y Flutter) para dibujar sobre una vista de Metal nativa a 60/120 FPS.
-- **Ventaja competitiva frente a Flutter:** No aprendes un lenguaje nuevo (todo es Kotlin), puedes integrar vistas SwiftUI nativas dentro de Compose cuando lo desees (`UIKitView`) y tienes acceso directo a todas las APIs de Apple sin necesidad de programar complejos "Method Channels".
-
----
-
-### 4.7. Matriz Comparativa: KMP vs Flutter vs React Native vs Nativo Puro
-
-| Criterio | Nativo Puro | Kotlin Multiplatform (KMP/CMP) | Flutter | React Native |
+| Criterio | Web / PWA | Híbrida | Multiplataforma | Nativa |
 | :--- | :--- | :--- | :--- | :--- |
-| **Lenguaje** | Kotlin (Android) / Swift (iOS) | **Kotlin** | Dart | JavaScript / TypeScript |
-| **Rendimiento** | Máximo (100% nativo) | **Nativo en lógica y compilación** | Casi nativo (motor propio Skia) | Casi nativo (con JSI / Fabric) |
-| **Estrategia de UI** | Nativa independiente | **Flexible:** 100% nativa o CMP compartida | Compartida (dibuja su propio Canvas) | Componentes nativos mapeados |
-| **Interoperabilidad** | Innecesaria | **Total y directa** (compila a `.framework` en iOS) | Requiere puentes (*Platform Channels*) | Requiere módulos nativos puente |
-| **Curva de Adopción** | Requiere dos equipos | **Gradual:** Puedes empezar con un solo módulo | "Todo o nada" en la mayoría de casos | "Todo o nada" para la app |
-| **Soporte Corporativo** | Google / Apple | **JetBrains & Google** | Google | Meta (Facebook) |
-| **Ideal para...** | Apps con uso intensivo de APIs exclusivas | Proyectos que buscan maximizar código compartido sin perder potencia nativa | Apps con diseño idéntico muy estilizado | Equipos con fuerte base web React |
+| **Instalación** | Ninguna; opcional en la pantalla de inicio | Tienda de apps | Tienda de apps | Tienda de apps |
+| **Actualización** | Inmediata | Tienda (la parte web puede cambiar antes) | Tienda | Tienda |
+| **Notificaciones** | Android: sí. iOS: solo instalada en la pantalla de inicio | Sí, con plugin | Sí | Sí |
+| **Trabajo en segundo plano** | Muy limitado | Limitado, con plugins | Sí, con código específico | **Completo** |
+| **Bluetooth, NFC, USB** | Android: parcial, según navegador. iOS: no | Con plugins | Con módulos nativos | **Completo** |
+| **Sin conexión** | Sí, con límites de almacenamiento | Sí | Sí | Sí |
+| **Funciones nuevas del sistema** | Cuando las adopte el navegador | Cuando exista un plugin | Cuando las adopte el framework, o con código propio | **Desde el primer día** |
+| **Reloj, TV y coche** | No | No | Depende del framework | **Con guías y bibliotecas oficiales** |
+| **Animaciones y listas largas** | Las más limitadas | Limitadas | Buenas | **Las mejores** |
+| **Bases de código** | Una | Una | Una, con partes específicas | **Una por plataforma** |
+| **Equipo** | Web | Web | Uno, con apoyo nativo puntual | Uno por plataforma |
+
+Visto en conjunto, hay un compromiso de fondo: **ganar alcance con un solo código suele costar acceso al dispositivo**.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/mapa-compromisos.svg"
+<figcaption>Mapa orientativo: sirve para razonar el compromiso, no mide nada. Un framework concreto puede quedar por encima o por debajo.</figcaption>
+</figure>
+
+!!! tip "Cuándo la nativa no compensa"
+
+    Si tu app es un catálogo, un formulario o la carta de un restaurante, pagar dos desarrollos no aporta nada al usuario. Elegir nativa «porque es mejor» es un error tan frecuente como elegir web para una app que debe registrar una ruta con la pantalla apagada.
 
 ---
 
-## 5. Evolución de los Paradigmas de Interfaz: De Imperativo a Declarativo
+## 5. Cómo decidir
 
-Uno de los saltos cualitativos más importantes en el desarrollo de software moderno ha sido la transición del paradigma imperativo al paradigma declarativo en el diseño de interfaces.
+### 5.1. Las preguntas, en orden
 
-```mermaid
-graph TD
-    subgraph Paradigma Imperativo - Histórico
-        A1[El desarrollador programa el CÓMO] --> A2[Búsqueda manual: findViewById]
-        A2 --> A3[Mutación de propiedades: setText, setVisibility]
-        A3 --> A4[Riesgo de desincronización de estado]
-    end
+Empieza por lo que descarta más opciones. La primera respuesta afirmativa te da un buen punto de partida:
 
-    subgraph Paradigma Declarativo - Moderno
-        B1[El desarrollador describe el QUÉ] --> B2[UI = f estado]
-        B2 --> B3[Cuando el estado cambia, la UI se recompone sola]
-        B3 --> B4[Código predecible, testeable y sin bugs de estado]
-    end
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/arbol-decision.svg"
+<figcaption>Un punto de partida, no una ley: presupuesto, plazos y lo que ya sabe el equipo pueden cambiar la decisión final.</figcaption>
+</figure>
 
-### 5.1. El Enfoque Imperativo Clásico (XML / Android Views)
+### 5.2. Cuatro casos resueltos
 
-Durante más de una década, construir una pantalla en Android requería:
+| Caso | Lo que importa | Decisión | Por qué no las demás |
+| :--- | :--- | :--- | :--- |
+| **Carta de un restaurante** con un código QR | Abrirla en segundos, sin instalar nada | **Web** | Nadie instala una app para leer una carta |
+| **Partes de trabajo** de una empresa que ya tiene su web interna | Reutilizar lo que hay; formularios y una foto | **Híbrida** | Una web sencilla no aparece en las tiendas ni usa la cámara con tanta comodidad; rehacerla sería caro |
+| **Startup** con una app de reservas para Android e iOS y tres programadores | Dos plataformas, buena experiencia, poco equipo | **Multiplataforma** | Dos desarrollos nativos no caben en el equipo; el WebView se quedaría corto si la interfaz crece |
+| **App de deporte** que registra el GPS con la pantalla apagada y tiene versión de reloj | Segundo plano fiable, sensores y otro formato | **Nativa**, con KMP si llega iOS | La web y la híbrida no pueden garantizarlo, y el reloj pide bibliotecas específicas |
 
-1. Diseñar la estructura visual en un archivo XML (`activity_main.xml`).
+Fíjate en el último caso: decidir nativa no impide compartir código más adelante.
 
-2. Enlazar los elementos desde la actividad en Java o Kotlin mediante `findViewById` o View Binding.
+### 5.3. ¿Y si es un videojuego?
 
-3. Mutar manualmente cada vista cuando cambiaban los datos:
+Los videojuegos son un caso aparte. Una interfaz normal se redibuja cuando algo cambia; un juego de acción **dibuja continuamente muchas veces por segundo**, con física, colisiones y sonido. Por eso, lo habitual no es programar sobre las herramientas de interfaz, sino usar un **motor de videojuegos**. La propia Google señala que [un motor permite concentrarse en el juego](https://developer.android.com/games/engines/engines-overview) en lugar de construir toda la tecnología desde cero.
 
-    ```kotlin
-    // Enfoque imperativo: Nosotros manipulamos la vista paso a paso
-    val textView = findViewById<TextView>(R.id.tvMensaje)
-    val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-    
-    if (cargando) {
-        progressBar.visibility = View.VISIBLE
-        textView.text = "Cargando datos..."
-    } else {
-        progressBar.visibility = View.GONE
-        textView.text = "Datos recibidos: ${datos.total}"
-    }
-    ```
-
-*Problema clásico:* Si el programador olvidaba ocultar la barra de progreso en uno de los muchos caminos de error, la vista quedaba en un estado inconsistente con la realidad interna de la aplicación.
-
-### 5.2. El Enfoque Declarativo Moderno (Jetpack Compose / SwiftUI)
-
-En el paradigma declarativo no manipulamos directamente los componentes gráficos. En su lugar, describimos **cómo debe verse la pantalla para cualquier estado posible**:
-
-> **UI = f(Estado)**
-
-```kotlin
-// Enfoque declarativo con Jetpack Compose: La UI es un reflejo reactivo del estado
-@Composable
-fun PantallaDatos(uiState: DatosUiState) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        if (uiState.isLoading) {
-            CircularProgressIndicator()
-            Text(text = "Cargando datos...")
-        } else {
-            Text(text = "Datos recibidos: ${uiState.total}")
-        }
-    }
-}
-```
-Cuando el estado (`DatosUiState`) cambia, el framework se encarga de calcular de forma inteligente qué partes de la pantalla han cambiado y redibujarlas automáticamente (**Recomposición**). Es imposible que la interfaz quede desincronizada con el estado.
-
----
-
-## 6. El Ciclo de Vida de una Aplicación Móvil como Producto
-
-Una aplicación móvil no es un simple programa de ordenador: es un producto vivo que atraviesa distintas fases con las que el usuario y el sistema operativo interactúan a lo largo del tiempo.
-
-```mermaid
-journey
-    title Viaje de la Aplicación en el Dispositivo del Usuario
-    section Adquisición
-      Búsqueda en Google Play (ASO): 5: Usuario
-      Instalación y Verificación: 4: SO / Tienda
-    section Uso
-      Primer Arranque & Splash Screen: 4: App
-      Solicitud de Permisos en Runtime: 3: Usuario
-      Uso Regular & Segundo Plano: 5: App / SO
-    section Mantenimiento
-      Actualizaciones Automáticas: 5: Tienda
-      Optimización de Batería (Doze): 4: SO
-    section Fin
-      Desinstalación y Limpieza de Sandbox: 2: Usuario / SO
-```
-
-### 6.1. Fases del Ciclo de Vida
-
-1. **Descubrimiento (Marketing y ASO):**
-
-    - Las tiendas oficiales (**Google Play Store** y **Apple App Store**) son el principal canal.
-    - **ASO (App Store Optimization):** Estrategias para optimizar palabras clave, icono, capturas de pantalla y valoraciones con el fin de aparecer en las primeras posiciones de búsqueda.
-
-2. **Instalación y Seguridad:**
-
-    - **Tiendas Oficiales:** El sistema verifica la firma criptográfica del paquete (`.apk` / `.aab` o `.ipa`) y crea un directorio privado y aislado para la aplicación (**Sandbox**).
-    - **Sideloading (Fuentes desconocidas):** En Android es posible instalar paquetes directamente desde un navegador o tiendas alternativas (como F-Droid). Por seguridad, el sistema bloquea estas acciones por defecto exigiendo confirmación explícita del usuario.
-
-3. **Ejecución y Permisos en Tiempo de Ejecución (Runtime Permissions):**
-
-    - Desde Android 6.0 (API 23), los permisos sensibles (cámara, ubicación precisa, micrófono, notificaciones a partir de Android 13) ya no se conceden al instalar la app.
-    - La aplicación debe solicitarlos en el momento exacto en que va a utilizarlos, explicando el motivo al usuario y gestionando de forma elegante la posibilidad de que el usuario los rechace.
-
-4. **Actualización:**
-
-    - Se descargan mediante deltas (solo los bytes que han cambiado). El sistema operativo exige que la actualización esté firmada con exactamente la misma clave criptográfica privada que la versión anterior; de lo contrario, la instalación será bloqueada para evitar suplantaciones de identidad.
-
-5. **Desinstalación y Datos Residuales:**
-
-    - Al desinstalar la app, el sistema elimina por completo el ejecutable y el almacenamiento privado (*sandbox* interno: base de datos Room, preferencias y cachés).
-    - Los archivos guardados en carpetas públicas compartidas (como `DCIM/` o `Descargas/`) y los datos almacenados en servidores en la nube no se borran con la desinstalación local.
-
----
-
-## 7. Arquitectura del Sistema Android y Entorno de Ejecución
-
-Para entender qué ocurre cuando pulsamos el botón "Run" en nuestro IDE, debemos conocer la maquinaria interna de Android.
-
-### 7.1. De Código Fuente a Código Máquina: El Proceso de Compilación
-
-A diferencia de una aplicación Java de escritorio convencional, Android no ejecuta directamente archivos `.class` ni empaqueta un archivo `.jar`.
-
-```mermaid
-graph LR
-    KT[Código Fuente Kotlin .kt] --> KTC[Compilador Kotlin kotlinc]
-    KTC --> CLASS[Bytecode Java .class]
-    CLASS --> D8[Compilador DEX / D8 y R8]
-    D8 --> DEX[Archivos DEX classes.dex]
-    RES[Recursos res/ y Manifest] --> AAPT2[AAPT2]
-    DEX --> PACK[Empaquetador APK / AAB]
-    AAPT2 --> PACK
-    PACK --> SIGN[Firma Criptográfica zipalign/apksigner]
-    SIGN --> FINAL[Artefacto Final APK / AAB]
-```
-
-1. **Compilación a Bytecode:** `kotlinc` compila los ficheros `.kt` a bytecode tradicional de la JVM (`.class`).
-
-2. **Desechado y Optimización con D8 / R8:** El compilador **D8** convierte el bytecode Java en formato **DEX (Dalvik Executable)**, optimizado específicamente para consumir la mínima memoria posible. La herramienta **R8** analiza el código, elimina clases y métodos no utilizados (*tree-shaking*), optimiza llamadas y ofusca el código renombrando identificadores para dificultar la ingeniería inversa.
-
-3. **Empaquetado de Recursos con AAPT2:** Compila los archivos XML, imágenes y recursos generando el binario compilado y la clase `R.java`.
-
----
-
-### 7.2. La Máquina Virtual: De Dalvik a ART (Android Runtime)
-
-Históricamente, Android ejecutaba el código sobre la máquina virtual **Dalvik**, pero desde Android 5.0 (Lollipop) el sistema utiliza **ART (Android Runtime)**:
-
-- **Dalvik (Histórico):** Utilizaba compilación **JIT (Just-In-Time)**. Cada vez que el usuario abría una app, el código DEX se traducía a código máquina en tiempo real sobre la marcha. Esto consumía mucha CPU y drenaba la batería.
-
-- **ART (Moderno):** Utiliza un modelo híbrido extremadamente avanzado:
-
-    - **Compilación AOT (Ahead-Of-Time):** Durante la instalación o en periodos de inactividad mientras el teléfono carga, ART compila porciones críticas de código directamente a lenguaje máquina nativo (`.oat` / `.elf`).
-    - **Perfiles Guiados por el Uso (Profile-Guided Optimization - PGO):** El sistema analiza qué partes de la app utiliza con más frecuencia el usuario y compila de forma prioritaria solo esas rutinas.
-    - **Baseline Profiles:** Los desarrolladores pueden empaquetar un archivo de perfil en su app para que el dispositivo precompile la aplicación nada más instalarse, logrando arranques hasta un 40% más rápidos sin esperar al aprendizaje del sistema.
-
----
-
-### 7.3. Formatos de Distribución: APK vs AAB (Android App Bundle)
-
-| Característica | APK (Android Package) | AAB (Android App Bundle) |
+| Opción | Lenguaje | Se usa para… |
 | :--- | :--- | :--- |
-| **Definición** | Formato de instalación clásico (`.apk`). Contiene todos los recursos para todos los dispositivos posibles. | Formato de publicación moderno (`.aab`). Contiene el código completo pero no es directamente instalable. |
-| **Destino** | Emuladores, pruebas directas y tiendas alternativas (F-Droid). | **Obligatorio para publicar en Google Play Store**. |
-| **Tamaño en el Dispositivo** | Mayor (incluye imágenes para todas las resoluciones y librerías C++ para todas las arquitecturas de CPU). | **Hasta un 30-40% más ligero**. Google Play genera un *Split APK* personalizado que solo contiene los recursos exactos que necesita el teléfono que lo descarga. |
-| **Entrega Dinámica** | No soportada. | Permite descargar módulos de funcionalidades bajo demanda (*Play Feature Delivery*). |
+| [**Unity**](https://unity.com/products/unity-engine) | C# | Juegos móviles 2D y 3D para varias plataformas: es una elección muy común en móvil |
+| [**Unreal Engine**](https://dev.epicgames.com/documentation/en-us/unreal-engine/android-support-for-unreal-engine) | C++ y Blueprints (visual) | 3D de alta calidad gráfica, en dispositivos potentes |
+| [**Godot**](https://godotengine.org/) | GDScript, C# y C++ | 2D y 3D con un motor libre y gratuito (licencia MIT) |
+| **Defold** y **Cocos** | Según el motor | Otros motores [que Google recoge en su guía](https://developer.android.com/games/engines/engines-overview), frecuentes en 2D y móvil |
+| [**AGDK**](https://developer.android.com/games/agdk/overview) con C/C++ y Vulkan | C o C++ | Crear o adaptar tu propio motor, cuando necesitas el máximo control. Es la opción nativa de Android, y la más costosa |
+| [**libGDX**](https://libgdx.com/) y [**KorGE**](https://korge.org/) | Java / Kotlin | Programar el juego como código, sin el editor de un motor grande |
+| [**Flame**](https://docs.flutter.dev/resources/games-toolkit) (con Flutter) | Dart | Juegos 2D casuales, sobre todo si ya usas Flutter |
+| **Phaser** y similares | JavaScript | Juegos 2D en el navegador, sin instalación |
+| **Compose** | Kotlin | Juegos sencillos por turnos, como un tablero o un puzle: no hay bucle de juego exigente |
+
+!!! note "Para decidir entre motores"
+
+    Antes de elegir, comprueba tres cosas: si el juego es 2D o 3D, en qué plataformas debe publicarse y qué condiciones tiene la licencia. Estas cambian con el tiempo, así que léelas en la web oficial de cada motor.
 
 ---
 
-## 8. El SDK de Android y la Tríada de Versiones en Gradle
+## 6. Por qué en este módulo: nativa para Android
 
-El **SDK (Software Development Kit)** es la colección de herramientas, cabeceras y librerías que Google proporciona para desarrollar aplicaciones. En Android Studio se gestiona a través del **SDK Manager** dividiéndose en dos grandes apartados:
+Android es la mejor plataforma para empezar, y no porque la nativa sea siempre la mejor opción:
 
-1. **SDK Platforms:** Versiones concretas del sistema operativo (que contienen el fichero esencial `android.jar` contra el que programamos y las imágenes de sistema para los emuladores).
+- **Es la plataforma mayoritaria.** Unos 7 de cada 10 móviles usan Android, tanto [en España](https://gs.statcounter.com/os-market-share/mobile/spain) como [en el mundo](https://gs.statcounter.com/os-market-share/mobile/worldwide) (StatCounter, octubre de 2026).
 
-2. **SDK Tools:** Herramientas independientes de la versión del SO (compiladores, emulador, analizadores de rendimiento y herramientas de línea de comandos).
+- **Lo que aprendes se transfiere.** Ciclo de vida, estado, permisos o arquitectura existen aunque un framework los oculte. Si los entiendes aquí, sabrás qué ocurre por debajo en cualquier otra opción.
+
+- **La interfaz declarativa es común.** Compose, SwiftUI, Flutter y React comparten la idea de que la interfaz es una función del estado.
+
+- **No te cierra puertas.** Con Kotlin ya tienes el lenguaje de KMP.
+
+- **No exige un equipo concreto.** Para desarrollar para iOS necesitas un Mac; para Android, no.
+
+### 6.1. Por qué Kotlin y no Java
+
+Android nació en 2008 con Java, el lenguaje que ya conocían millones de programadores. Vienes de Java, así que es normal preguntarse por qué lo cambiamos. La respuesta tiene dos partes:
+
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/java-kotlin.svg"
+<figcaption>Dos historias que transcurren en paralelo. Kotlin no nace por la demanda de Oracle, pero el litigio dio a Google un motivo más para no depender de Java.</figcaption>
+</figure>
+
+- **Legal.** En 2010, Oracle compró Sun y demandó a Google por usar las APIs de Java. El Tribunal Supremo de EE. UU. falló en 2021 a favor de Google, pero fueron once años de incertidumbre.
+
+- **Técnica.** Android arrastró durante años versiones antiguas de Java mientras Kotlin ofrecía un lenguaje más seguro y conciso, y 100 % interoperable con Java.
+
+Java sigue funcionando en Android y puede convivir con Kotlin en un mismo proyecto. Pero las bibliotecas nuevas se diseñan primero para Kotlin, y **Compose exige Kotlin**.
+
+| Aspecto | Java | Kotlin | Para saber más |
+| :--- | :--- | :--- | :--- |
+| **Nulos** | `NullPointerException` en ejecución | El compilador distingue `String` de `String?` | [Null Safety](../00-android/00-kotlin/14-null-safety.md) |
+| **Clases de datos** | Constructor, getters, `equals`, `hashCode`… | `data class`, en una línea | [Data classes](../00-android/00-kotlin/23-data-classes.md) |
+| **Extender clases** | Herencia o clases `Utils` | Funciones de extensión | [Funciones y lambdas](../00-android/00-kotlin/13-funciones-lambdas.md) |
+| **Asincronía** | Hilos y *callbacks* | Corrutinas | [Corrutinas](../00-android/00-kotlin/51-corrutinas.md) |
+| **Interfaz** | No compatible con Compose | Compose | [Jetpack Compose](../00-android/00-compose/index.md) |
+
+### 6.2. Compartir código: KMP y Compose Multiplatform {#kmp}
+
+**Kotlin Multiplatform (KMP)** permite escribir parte del código en Kotlin una sola vez y compilarlo para cada plataforma: a bytecode en Android y a binario nativo en iOS. Google lo [soporta oficialmente para compartir lógica de negocio entre Android e iOS](https://developer.android.com/kotlin/multiplatform). **Compose Multiplatform** da un paso más: comparte también la interfaz.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/que-se-comparte.svg"
+<figcaption>KMP decide cuánto se comparte: desde solo la lógica hasta casi toda la app.</figcaption>
+</figure>
+
+No es gratis: el equipo sigue necesitando conocer cada plataforma, y Compose Multiplatform en iOS dibuja con su propio motor, no con componentes de Apple. Lo practicarás en [UT3: Kotlin Multiplatform](../03/d-kmp/3d.1-anatomia-proyecto-kmp.md), y tienes un resumen de las bibliotecas en [Ecosistema multiplataforma](../00-android/02-arquitectura/04-ecosistema-kmp-multiplataforma.md).
+
+### 6.3. Reloj, TV y coche: ¿hace falta KMP? {#formatos-android}
+
+Es una confusión muy habitual. **Wear OS, Android TV, Android Auto y Android Automotive son Android**, así que no necesitas KMP para llegar a ellos: escribes Kotlin nativo. Lo que cambia es la interfaz, porque un reloj, un televisor y un coche no se usan como un móvil.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/formatos-android.svg"
+<figcaption>La lógica se reutiliza; cada formato tiene su propia interfaz. KMP solo entra en juego cuando sales de Android.</figcaption>
+</figure>
+
+| Formato | Interfaz | Lo que lo hace distinto |
+| :--- | :--- | :--- |
+| **Teléfono y tablet** | Compose con Material 3 | Es el caso base de este módulo |
+| [**Wear OS**](https://developer.android.com/training/wearables/compose) | Compose, con bibliotecas `androidx.wear.compose` | Pantalla mínima y sesiones de segundos. No reutilices sin más los componentes de móvil |
+| [**Android TV**](https://developer.android.com/training/tv/playback/compose) | Compose, con `androidx.tv:tv-material` | Se maneja con mando a distancia a varios metros: no hay pantalla táctil |
+| [**Android Auto**](https://developer.android.com/training/cars) | Car App Library (plantillas) | La app corre en el móvil y se muestra en la pantalla del coche. No diseñas libremente: las plantillas limitan las distracciones |
+| [**Android Automotive OS**](https://developer.android.com/training/cars) | Car App Library al conducir; Views o Compose en algunas apps con el coche parado (vídeo, juegos) | Android funciona en el propio coche, sin móvil |
+
+¿Dónde encaja entonces cada herramienta?
+
+- **Solo formatos Android:** un módulo Android normal con la lógica (por ejemplo, `:core`) y un módulo por interfaz. **KMP no aporta nada**, porque no sales de la plataforma.
+
+- **También iOS:** ese módulo pasa a ser KMP y la lógica se reutiliza en todos los destinos.
+
+- **Apple Watch y Apple TV:** KMP tiene [destinos para watchOS y tvOS](https://kotlinlang.org/docs/native-target-support.html), [en Beta](https://kotlinlang.org/docs/multiplatform/supported-platforms.html), para compartir la lógica. La interfaz se hace en SwiftUI.
+
+!!! warning "Compose Multiplatform no cubre reloj, TV ni coche"
+
+    Sus plataformas son [Android, iOS, escritorio y web](https://kotlinlang.org/docs/multiplatform/compose-compatibility-and-versioning.html). Las bibliotecas de Wear OS y TV son de Jetpack, solo para Android, y la Car App Library usa plantillas propias. Que se llamen «Compose» no significa que sean multiplataforma.
 
 ---
 
-### 8.1. La Tríada Clave en Gradle: `minSdk`, `compileSdk` y `targetSdk`
+## 7. Del código al móvil
 
-En todo archivo `build.gradle.kts` de un módulo Android encontraremos tres números esenciales que cualquier desarrollador debe comprender a la perfección:
+Ya has elegido nativa. Veamos las piezas que usarás en cada proyecto.
+
+### 7.1. Compilación y ejecución
+
+Una app Android no se ejecuta en la JVM de escritorio ni se empaqueta en un `.jar`:
+
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/de-kt-a-dispositivo.svg"
+<figcaption>El código y los recursos siguen caminos separados hasta empaquetarse. El dispositivo ejecuta el resultado con ART, no con la JVM.</figcaption>
+</figure>
+
+**ART** (*Android Runtime*) sustituyó a la antigua máquina virtual Dalvik. Observa qué partes de la app se usan más y las compila a código máquina. Con los [Baseline Profiles](https://developer.android.com/topic/performance/baselineprofiles/overview), que mejoran la velocidad de ejecución en torno a un 30 % desde el primer arranque, la app puede indicarlo de antemano.
+
+### 7.2. APK y AAB
+
+| | APK | AAB (*Android App Bundle*) |
+| :--- | :--- | :--- |
+| **Qué es** | El paquete que se instala | Un paquete de publicación; no se instala directamente |
+| **Para qué** | Pruebas, emulador y tiendas alternativas | [Obligatorio para apps nuevas en Google Play](https://developer.android.com/guide/app-bundle) |
+| **Qué recibe el usuario** | Todo lo que incluya el paquete | Solo lo que necesita su dispositivo: Google Play genera los APK a medida |
+
+El sistema verifica la firma del paquete y da a cada app un directorio privado (*sandbox*). Una actualización debe ir firmada con la misma clave que la versión anterior. Los permisos sensibles, como la cámara o la ubicación, se piden mientras se usa la app, y el usuario puede rechazarlos. Lo verás con detalle en [Publicación](../03/e-publicacion/3e.1-preparar-lanzamiento.md).
+
+### 7.3. `minSdk`, `targetSdk` y `compileSdk`
+
+Cada versión de Android tiene un **nivel de API**, un número entero. Con él configuras tres valores en `build.gradle.kts`:
 
 ```kotlin
 android {
-    compileSdk = 35 // Android 15
+    compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.docente.gamevault"
-        minSdk = 26     // Android 8.0 Oreo
-        targetSdk = 35  // Android 15
-        
-        versionCode = 1
-        versionName = "1.0.0"
+        minSdk = 26
+        targetSdk = 36
     }
 }
 ```
 
-```mermaid
-graph LR
-    MIN[minSdk: El Suelo] -->|Dispositivos permitidos| TARGET[targetSdk: La Promesa]
-    TARGET -->|Compatibilidad de comportamiento| COMPILE[compileSdk: El Techo del Compilador]
-```
+<figure class="arq-fig">
+--8<-- "docs/temas/01/images/regla-sdk.svg"
+<figcaption>Los valores de los proyectos de este módulo. Cada uno responde a una pregunta distinta.</figcaption>
+</figure>
 
-#### 1. `compileSdk` (El Techo del Compilador)
+- Con `minSdk = 26` llegas a más del 99 % de los dispositivos, [según apilevels.com](https://apilevels.com/).
 
-- Indica la versión del SDK de Android con la que el compilador comprobará tu código.
-- Define qué clases y métodos de la API de Android puedes invocar en tu código fuente. No afecta al comportamiento en tiempo de ejecución en el teléfono del usuario.
+- Google Play [exige `targetSdk` 36 o superior](https://developer.android.com/google/play/requirements/target-sdk) para publicar apps nuevas y actualizaciones de móvil. El requisito sube cada año.
 
-#### 2. `minSdk` (El Suelo de Compatibilidad)
+!!! warning "Error frecuente"
 
-- Define la versión **mínima** de Android que requiere un dispositivo para poder instalar y ejecutar la aplicación.
-- Si un usuario tiene un teléfono con una versión inferior a tu `minSdk`, Google Play ni siquiera le mostrará la aplicación en los resultados de búsqueda.
-- *Compromiso del desarrollador:* Un `minSdk` muy bajo (ej. API 21) permite llegar a más dispositivos antiguos, pero impide usar APIs modernas directamente y requiere código de compatibilidad adicional. Un `minSdk` razonable actual se sitúa habitualmente entre el API 24 (Android 7.0) y el API 26 (Android 8.0).
+    Subir `compileSdk` no cambia el comportamiento de tu app, solo las APIs que puedes usar. Subir `targetSdk` **sí** lo cambia: aceptas las reglas de esa versión. Pruébala antes de subirlo.
 
-#### 3. `targetSdk` (La Promesa de Comportamiento al Sistema Operativo)
+### 7.4. Versiones de Android y niveles de API {#versiones-api}
 
-- Indica a Android: *"He probado y diseñado mi app para comportarse según las reglas de seguridad y privacidad de esta versión de Android"*.
-- **Mecanismo de compatibilidad hacia atrás:** Si ejecutas tu app en un teléfono con Android 15 pero tu `targetSdk` es 33, Android activará modos de compatibilidad para no romper tu app aunque las políticas de permisos hayan cambiado en Android 15.
-- **Exigencia de Google Play:** Google obliga a que todas las aplicaciones publicadas o actualizadas en la Play Store tengan un `targetSdk` reciente (normalmente no superior a 1 año respecto a la última versión estable de Android).
+Lo que configuras es el nivel de API. El nombre interno no se usa al programar, pero lo verás en documentación y en el código de Android.
 
----
+| Versión | Nombre interno | API | Año | Qué recordar |
+| :---: | :---: | :---: | :---: | :--- |
+| **Android 8** | Oreo | 26 / 27 | 2017 | `minSdk` de este módulo. Canales de notificación |
+| **Android 9** | Pie | 28 | 2018 | Navegación por gestos |
+| **Android 10** | Quince Tart | 29 | 2019 | Almacenamiento aislado (*Scoped Storage*) y modo oscuro |
+| **Android 11** | Red Velvet Cake | 30 | 2020 | Permisos de un solo uso |
+| **Android 12** | Snow Cone | 31 / 32 | 2021 | Material You y colores dinámicos |
+| **Android 13** | Tiramisu | 33 | 2022 | Permiso para notificaciones y selector de fotos |
+| **Android 14** | Upside Down Cake | 34 | 2023 | Acceso parcial a fotos y vídeos |
+| **Android 15** | Vanilla Ice Cream | 35 | 2024 | Interfaz de borde a borde obligatoria |
+| **Android 16** | Baklava | 36 | 2025 | `targetSdk` de este módulo. Empieza el nuevo calendario de lanzamientos |
+| **Android 17** | Cinnamon Bun | 37 | 2026 | `compileSdk` de este módulo. Más exigencia de adaptarse a pantallas grandes |
 
-### 8.2. Herramientas Esenciales de Línea de Comandos: ADB Práctico
-
-Dentro de las *SDK Platform-Tools*, la herramienta más versátil para el desarrollador es **ADB (Android Debug Bridge)**. Permite comunicar nuestro ordenador de desarrollo con cualquier dispositivo físico o emulador conectado por USB o Wi-Fi.
-
-Principales comandos que todo desarrollador móvil debe dominar:
-
-```bash
-# 1. Comprobar qué dispositivos o emuladores están conectados y autorizados
-adb devices
-
-# 2. Instalar una aplicación directamente (la opción -r reinstala manteniendo datos)
-adb install -r app-release.apk
-
-# 3. Desinstalar una aplicación indicando su Application ID
-adb uninstall com.docente.gamevault
-
-# 4. Ver el flujo de registros (logs) del sistema en tiempo real
-adb logcat
-
-# 5. Filtrar el logcat solo para mostrar los logs de nuestra aplicación o una etiqueta concreta
-adb logcat -s "GameVaultTag"
-
-# 6. Abrir un terminal de comandos dentro del sistema operativo del dispositivo
-adb shell
-
-# 7. Copiar archivos entre el ordenador y el móvil
-adb push mi_archivo_local.json /sdcard/Download/
-adb pull /sdcard/Download/captura.png ./captura_en_pc.png
-
-# 8. Reiniciar el servidor daemon de ADB en caso de problemas de conexión
-adb kill-server
-adb start-server
-```
+Desde Android 16, la versión principal se publica en el segundo trimestre del año, con una actualización menor del SDK en el cuarto.
 
 ---
 
-### 8.3. Evolución de Versiones y Niveles de API de Android
+## 8. El entorno de desarrollo
 
-En el desarrollo profesional de Android conviven simultáneamente tres formas de identificar el sistema operativo: la **versión comercial** orientada al usuario final (ej. Android 15), el **nombre en clave interno** derivado de la histórica tradición de postres de Google (ej. *Vanilla Ice Cream* o *Baklava*), y el **Nivel de API (*API Level*)**, un número entero correlativo que identifica de forma unívoca la versión del framework contra la que compilamos.
+| IDE | Para qué | En este módulo |
+| :--- | :--- | :--- |
+| **IntelliJ IDEA** (JetBrains) | Android, KMP y backend en una sola herramienta. Desde la versión 2025.3 tiene [una única distribución](https://blog.jetbrains.com/idea/2025/12/intellij-idea-unified-release/) | **Es el que usamos** |
+| **Android Studio** (Google) | Solo Android, con herramientas especializadas. Está construido sobre la plataforma IntelliJ, así que los dos se manejan casi igual | Alternativa válida |
+| **Xcode** (Apple) | Compilar para iOS. Solo en macOS | Solo si pruebas KMP en iOS |
 
-Para el desarrollador móvil, el dato verdaderamente vinculante es el **Nivel de API**, ya que es el valor numérico con el que configuramos `minSdk`, `compileSdk` y `targetSdk` en los archivos de Gradle (`build.gradle.kts`) y el que seleccionamos en el **SDK Manager** de nuestro entorno de desarrollo.
+El desarrollo móvil pide bastante al ordenador, porque el emulador es una máquina virtual completa. Se recomiendan **16 GB de RAM** y la **virtualización activada en la BIOS/UEFI** (Intel VT-x o AMD-V). Con menos memoria, prueba en un móvil real conectado por USB.
 
-!!! note "Cambio de Ciclo Histórico a partir de Android 16"
+!!! tip "Prepara tu equipo"
 
-    A partir de **Android 16**, Google introdujo dos cambios de ingeniería trascendentales:
-    
-    1. **Ruptura de la convención alfabética tradicional:** Tras la "V" de Android 15 (*Vanilla Ice Cream*), la siguiente letra debía ser la "W". Sin embargo, Google adoptó el nombre en clave **Baklava** ("B") debido a la transición interna hacia el modelo unificado de desarrollo troncal (*Trunk-based development*).
-    
-    2. **Nuevo calendario de lanzamientos anuales:** Para sincronizar mejor las actualizaciones de software con el lanzamiento comercial de nuevos terminales por parte de los fabricantes asociados, la versión principal del SDK se publica en el **segundo trimestre (Q2)** de cada año (en lugar del tercer o cuarto trimestre habitual), complementándose con una actualización menor del SDK (minor SDK update) en el **cuarto trimestre (Q4)** orientada a nuevas APIs sin cambios de comportamiento disruptivos.
+    - [Configuración de IntelliJ IDEA](../00-android/00-ide-intellij/index.md): JDK, SDK de Android, emuladores y licencias.
 
-| Versión Comercial | Nombre Clave (Postre) | Nivel de API | Año | Relevancia en Desarrollo (2026/2027) | Hitos Tecnológicos y de Privacidad |
-| :---: | :---: | :---: | :---: | :---: | :--- |
-| **Android 7.0 / 7.1** | Nougat | 24 / 25 | 2016 | Referencia histórica legacy | Modo multi-ventana nativo, compilador híbrido inicial de ART y soporte inicial de Java 8 desugaring. |
-| **Android 8.0 / 8.1** | Oreo | 26 / 27 | 2017 | **Suelo habitual (`minSdk`)** recomendado | **Project Treble** (modularización del SO), canales de notificación obligatorios y soporte nativo de `java.time` sin desugaring. Cubre >95% del parque activo. |
-| **Android 9.0** | Pie | 28 | 2018 | Legacy activo | Navegación por gestos en pantalla y bloqueo de acceso a cámara/micrófono en segundo plano. |
-| **Android 10** | Quince Tart *(Fin nombres públicos)* | 29 | 2019 | Transición | Fin de nombres de postres comerciales. **Scoped Storage** (almacenamiento aislado obligatorio), modo oscuro nativo y soporte para dispositivos plegables. |
-| **Android 11** | Red Velvet Cake | 30 | 2020 | Dispositivos en uso | Permisos de un solo uso, burbujas flotantes de conversación y depuración inalámbrica nativa con ADB. |
-| **Android 12 / 12L** | Snow Cone | 31 / 32 | 2021 | Dispositivos en uso | Rediseño visual radical **Material You (Material 3)** con paletas dinámicas, Privacy Dashboard y APIs para tablets/plegables (12L). |
-| **Android 13** | Tiramisu | 33 | 2022 | Soporte generalizado | Permiso explícito en runtime para notificaciones (`POST_NOTIFICATIONS`), selector de fotos seguro (Photo Picker) e idiomas por app. |
-| **Android 14** | Upside Down Cake | 34 | 2023 | **Soporte extendido de Google Play** | Soporte para gráficos Ultra HDR, mayor rigor en alarmas exactas, acceso parcial a fotos/vídeos y bloqueo de instalación de apps legacy con targetSdk < 23. |
-| **Android 15** | Vanilla Ice Cream | 35 | 2024 | **Plataforma base madura** | **Edge-to-Edge forzado por defecto** (el contenido fluye bajo las barras del sistema), **Private Space** (espacio privado cifrado con biometría), optimizaciones de renderizado gráfico y soporte mandatario de páginas de memoria de 16 KB. |
-| **Android 16** | Baklava | 36 | 2025 | **Estándar actual exigido en Google Play (`targetSdk 36`)** | Adelanto del lanzamiento a Q2. Integración nativa de **Gemini Nano** a nivel de sistema para IA local multimodal, selector de fotos embebido en la propia app y APIs de Health Connect con registros médicos FHIR. |
-| **Android 17** | Cinnamon Bun | 37 | 2026 | **Última versión disponible (Lanzamiento Q2 2026)** | **Redimensionamiento adaptativo obligatorio** en pantallas grandes (≥ 600 dp, adiós al opt-out), **protección contra robo de códigos OTP** vía SMS (retención de broadcast `SMS_RECEIVED_ACTION`), Contact Picker granular con privacidad y cola `MessageQueue` *lock-free* en ART para eliminar tirones visuales (*jank*). |
+    - [Gradle y estructura del proyecto](../00-android/00-tools/01-gradle-agp-estructura.md) y [`build.gradle.kts`](../00-android/00-tools/02-build-gradle.md).
 
-!!! tip "Conexión Práctica: ¿Cómo se refleja esta tabla en IntelliJ IDEA?"
+    - [Matriz de compatibilidad](../00-android/00-tools/04-matriz-compatibilidad.md): qué versiones de JDK, Gradle, AGP y Kotlin funcionan juntas.
 
-    Cuando abras el entorno de trabajo configurado para el módulo, observarás que esta clasificación teórica se traslada directamente a las herramientas de desarrollo:
+    - [Terminal y herramientas de línea de comandos](../00-android/00-tools/05-terminal-warp.md).
 
-    - **Instalación de plataformas en el SDK Manager:** Al acceder a `Settings` → `Languages & Frameworks` → **Android SDK**, la lista de componentes te mostrará estas versiones por su nivel de API (recomendado instalar **API 35** como plataforma base de trabajo). Consulta el tutorial paso a paso en [**Configuración del SDK en IntelliJ IDEA**](../00-android/00-ide-intellij/index.md#61-descargar-el-sdk-desde-intellij-idea).
-    - **Creación de Emuladores de Pruebas (AVD):** Al configurar un nuevo dispositivo virtual en el **Device Manager**, deberás elegir la imagen del sistema operativo según el nivel de API deseado (por ejemplo, una imagen de Android 15 / API 35 con servicios de Google Play). Puedes seguir los pasos en [**Creación de Emuladores AVD en IntelliJ IDEA**](../00-android/00-ide-intellij/index.md#81-creacion-de-un-emulador-virtual-avd-android-virtual-device).
-    - **Configuración de Gradle y Compatibilidad de Herramientas:** Para saber qué versión de Java (JDK), qué versión del plugin AGP y qué compilador de Kotlin debes combinar con tu `compileSdk`, consulta la [**Matriz de Compatibilidad en Android**](../00-android/00-tools/04-matriz-compatibilidad.md).
+??? info "Comandos de ADB que usarás a menudo"
 
----
+    **ADB** (*Android Debug Bridge*) conecta tu ordenador con un móvil o un emulador:
 
-## 9. Entornos de Desarrollo Integrados (IDEs) para el Ecosistema Móvil
+    ```bash
+    # Ver los dispositivos conectados
+    adb devices
 
-El título de esta unidad formativa hace referencia a dos pilares inseparables: la **evolución tecnológica** de las plataformas móviles y los **entornos de desarrollo** utilizados para construirlas.
+    # Instalar un APK (-r reinstala conservando los datos)
+    adb install -r app-debug.apk
 
-Un IDE moderno para desarrollo móvil no es un mero editor de texto; es una estación de trabajo compleja que integra editor con análisis estático en tiempo real, compiladores nativos, gestor de dependencias (**Gradle**), depurador interactivo, emuladores de hardware (**AVD**) y analizadores de memoria y red.
+    # Desinstalar una app por su identificador
+    adb uninstall com.pmdm.lab.ut2
 
-```mermaid
-graph TD
-    A["IntelliJ Platform (JetBrains Engine)"] --> B["IntelliJ IDEA (Community / Ultimate)"]
-    A --> C["Android Studio (Google)"]
-    
-    B -->|Especialización| B1["Desarrollo KMP/CMP, Backend Ktor, Web y Móvil"]
-    C -->|Especialización| C1["Desarrollo Nativo Exclusivo Android y Google Play"]
-    
-    D["Xcode (Apple / macOS)"] -->|Obligatorio para| D1["Compilación Nativa iOS y Toolchain Apple"]
-```
+    # Ver los registros filtrados por etiqueta
+    adb logcat -s "MiEtiqueta"
 
-### 9.1. La Plataforma Común: IntelliJ IDEA y Android Studio
-
-Para entender el panorama actual de herramientas en el ecosistema Android y Kotlin, es clave conocer un detalle de ingeniería fundamental:
-
-> **Android Studio está desarrollado por Google sobre la base de código abierto de IntelliJ IDEA Community Edition (JetBrains).**
-
-Por este motivo, ambos entornos comparten el mismo motor de indexación, idénticos atajos de teclado, el mismo depurador y una integración total con el lenguaje Kotlin. La elección entre uno u otro dependerá del alcance y objetivos del proyecto:
-
-- **Android Studio (Google):** La opción de referencia si el objetivo es desarrollar exclusivamente para Android (teléfonos, tablets, Wear OS, Android Auto o Android TV). Incluye herramientas hiperespecializadas como *Layout Inspector*, *Compose Preview* nativo, *Device File Explorer* y gestión directa de emuladores dentro de pestañas de la propia ventana del IDE.
-
-- **IntelliJ IDEA (JetBrains):** El estándar de la industria para desarrollo con **Kotlin Multiplatform (KMP)** y **Compose Multiplatform (CMP)**. Permite gestionar en una única ventana el proyecto completo: la lógica común, la aplicación Android, los servicios backend (por ejemplo en Ktor o Spring Boot) e incluso los módulos para Desktop o Web.
-
-    Además, los estudiantes de Formación Profesional pueden solicitar una **licencia educativa gratuita de IntelliJ IDEA Ultimate**, que añade soporte avanzado para bases de datos (DataGrip integrado), perfiladores de rendimiento y herramientas web avanzadas.
-
-- **Xcode (Apple):** Es el entorno oficial y exclusivo de macOS para compilar aplicaciones iOS en Swift/SwiftUI. En proyectos multiplataforma con KMP, Xcode es necesario para generar el empaquetado final (`.ipa`) y probar la app en los simuladores de iPhone/iPad.
+    # Reiniciar ADB si deja de detectar el dispositivo
+    adb kill-server
+    adb start-server
+    ```
 
 ---
 
-### 9.2. Requisitos del Sistema y Virtualización Hardware
+## 9. Resumen
 
-El desarrollo móvil es una de las disciplinas más exigentes en hardware para el ordenador anfitrión. Durante una sesión de trabajo habitual se ejecutan simultáneamente el IDE, el demonio en segundo plano de **Gradle**, los analizadores de código y el **emulador de Android (AVD)**, que es una máquina virtual completa ejecutando el kernel de Android.
+- La pregunta no es qué tecnología es mejor, sino **qué necesita esta app**.
 
-Para trabajar de manera fluida se requieren:
+- **Web:** alcance inmediato, limitada por el navegador. **Híbrida:** una web dentro de una app. **Multiplataforma:** un código sin WebView, con su propia capa. **Nativa:** todo el sistema, con una base de código por plataforma.
 
-- **Procesador (CPU) con Virtualización:** Es imprescindible disponer de virtualización asistida por hardware activada en la BIOS/UEFI (**Intel VT-x** o **AMD-V**). En ordenadores con procesadores **Apple Silicon (M1/M2/M3/M4)**, la virtualización es nativa (arquitectura ARM sobre ARM) y el emulador opera con un rendimiento y eficiencia extraordinarios.
+- **La nativa compensa** cuando el valor depende del dispositivo, y no compensa en una app de contenido o de formularios.
 
-- **Memoria RAM:** Se recomiendan **16 GB de RAM** como estándar de trabajo (el sistema operativo, el IDE, Gradle y el emulador consumen fácilmente entre 12 y 14 GB de memoria combinada). Si se dispone de 8 GB de RAM, se aconseja depurar directamente sobre un **dispositivo físico real conectado por USB** para no sobrecargar el equipo con el emulador.
+- Los **videojuegos** son un caso aparte: lo normal es usar un motor.
 
-- **Almacenamiento:** Unidad de estado sólido (**SSD**) con al menos 20-30 GB de espacio libre para alojar las imágenes de sistema del SDK y la caché local de dependencias de Gradle (`.gradle/caches`).
+- **Wear OS, TV y coche son Android:** llegas con nativo. KMP sirve para salir de Android.
 
----
-
-### 9.3. Guía Práctica de Configuración y Puesta a Punto
-
-En el módulo PMDM abordamos el desarrollo desde una perspectiva profesional e interoperable, preparando al alumno tanto para proyectos Android nativos como para proyectos multiplataforma con KMP.
-
-!!! tip "Guía Práctica Paso a Paso en el Módulo"
-
-    Para preparar y configurar en detalle tu entorno de desarrollo, consulta la guía monográfica disponible en los apuntes:
-    
-    - [**Configuración de IntelliJ IDEA para Desarrollo Móvil y KMP**](../00-android/00-ide-intellij/index.md): Instalación del JDK 17, configuración del SDK de Android, creación de emuladores AVD, ajustes de memoria de Gradle y activación de licencias educativas.
-    - [**Terminal Moderna y Herramientas CLI (Warp + Shell)**](../00-android/00-tools/05-terminal-warp.md): Instalación de terminales aceleradas por GPU y utilidades de línea de comandos para agilizar el flujo de trabajo con Gradle y ADB.
-    - [**Estructura del Proyecto y Gradle**](../00-android/00-tools/01-gradle-agp-estructura.md): Comprensión de los archivos de configuración, plugins y version catalogs (`libs.versions.toml`).
-    - [**Matriz de Compatibilidad**](../00-android/00-tools/04-matriz-compatibilidad.md): Reglas de compatibilidad entre JDK, Gradle, AGP y Kotlin.
+- `minSdk` es el suelo, `targetSdk` la promesa y `compileSdk` el techo.
 
 ---
 
-## 10. Resumen y Conclusiones
+## 10. Ejercicios: decide y defiende
 
-A continuación se sintetizan los aprendizajes fundamentales de la unidad mediante un mapa conceptual global, las ideas fuerza en tarjetas de síntesis y una lista de autoevaluación pedagógica.
+Para cada caso, indica la opción elegida, **las dos razones de más peso** y **qué pierdes** con ella. No hay una única respuesta correcta: se evalúa el razonamiento.
 
-### 10.1. Mapa Conceptual de la Unidad
+### Básico
 
-```mermaid
-mindmap
-  root((UT1: Ecosistema Móvil))
-    Restricciones Físicas
-      Batería finita y Doze Mode
-      Memoria RAM y Low Memory Killer
-      Conectividad inestable y Offline-First
-      Fragmentación de pantallas y versiones
-    Lenguajes y Paradigmas
-      Java vs Kotlin: De la JVM a Kotlin-First
-      Imperativo histórico vs Declarativo moderno
-      Reactividad: UI = f(Estado)
-      KMP: Lógica de negocio nativa compartida
-      CMP: UI compartida multiplataforma
-    Runtime y Compilación Android
-      Proceso: kotlinc a bytecode y D8/R8 a DEX
-      Máquina Virtual ART: Compilación híbrida AOT/JIT
-      Distribución: Binarios APK vs Split AAB
-      Tríada Gradle: minSdk / targetSdk / compileSdk
-    Entornos de Desarrollo
-      IntelliJ Platform compartida
-      Android Studio: Especializado Android
-      IntelliJ IDEA: KMP, Backend y Móvil
-      Requisitos: 16 GB RAM y VT-x/AMD-V
-```
+1. El ayuntamiento quiere publicar los horarios de los autobuses. Se consultan de forma puntual, sobre todo por turistas.
+
+2. Un fabricante de bicicletas quiere una app que se conecte por Bluetooth a su sensor y registre la ruta con la pantalla apagada.
+
+### Intermedio
+
+3. Una tienda online con una web moderna quiere estar en Google Play y en la App Store antes de tres meses, con notificaciones de ofertas.
+
+4. Una aplicación de música para Android quiere llegar también a relojes, televisores y coches. Propón cómo organizarías los módulos. ¿Usarías KMP?
+
+### Avanzado
+
+5. Un banco tiene apps nativas separadas para Android e iOS, y las reglas de cálculo de comisiones divergen entre ambas. Quiere corregirlo sin rehacer las interfaces.
+
+6. Un estudio de dos personas quiere publicar un juego de plataformas 2D en móvil y en navegador, con presupuesto mínimo. Compara al menos dos opciones del apartado 5.3.
 
 ---
 
-### 10.2. Ideas Clave de la Unidad
+## 11. Autoevaluación
 
-<div class="grid cards" markdown>
+Antes de pasar al siguiente tema, comprueba si puedes hacer esto sin mirar los apuntes:
 
--   :material-battery-alert:{ .lg .middle } __1. Recursos y Arquitectura Offline-First__
+- [ ] Explico qué hay entre mi código y el sistema en cada una de las cuatro opciones.
 
-    ---
+- [ ] Sé por qué Flutter y React Native no son apps híbridas.
 
-    La batería finita, el cierre imprevisto de procesos por el **Low Memory Killer (LMK)** y la variabilidad de la red obligan a descartar suposiciones de escritorio y diseñar con persistencia local y sincronización transparente en segundo plano.
+- [ ] Dado un caso, elijo una opción y digo qué gano y qué pierdo.
 
--   :material-language-kotlin:{ .lg .middle } __2. De Java a Kotlin: La Era "Kotlin-First"__
+- [ ] Pongo un ejemplo en el que la nativa compensa y otro en el que no.
 
-    ---
+- [ ] Explico por qué un juego suele hacerse con un motor y nombro dos opciones.
 
-    Tras el conflicto legal con Oracle y el estancamiento técnico de Java, Google adoptó **Kotlin** por su seguridad frente a nulos (*Null Safety*), concisión con `data class`, concurrencia estructurada con Corrutinas y por ser la base imprescindible de Jetpack Compose.
+- [ ] Sé qué cambia en un reloj, una TV y un coche, y por qué no hace falta KMP para llegar a ellos.
 
--   :material-view-quilt:{ .lg .middle } __3. Paradigma Declarativo: UI = f(Estado)__
+- [ ] Distingo qué comparten KMP y Compose Multiplatform.
 
-    ---
+- [ ] Describo el camino de un `.kt` hasta el dispositivo.
 
-    Tanto **Jetpack Compose** como **SwiftUI** sustituyen la mutación imperativa manual (`findViewById`) por interfaces reactivas que se recomponen automáticamente según el estado, erradicando los errores de desincronización visual.
+- [ ] Explico qué hacen `minSdk`, `targetSdk` y `compileSdk`.
 
--   :material-layers-triple:{ .lg .middle } __4. Kotlin Multiplatform (KMP)__
-
-    ---
-
-    Revoluciona el código compartido: compila la lógica a bytecode JVM en Android y a binario nativo vía LLVM en iOS, sin capas intermedias ni penalización de rendimiento, con el respaldo oficial conjunto de **Google y JetBrains**.
-
--   :material-monitor-dashboard:{ .lg .middle } __5. Compose Multiplatform (CMP)__
-
-    ---
-
-    Lleva la UI declarativa de Jetpack Compose más allá de Android: dibuja interfaces nativas fluidas (60/120 FPS) en iOS (Skia/Metal), Escritorio y Web sin necesidad de aprender un lenguaje adicional ni recurrir a puentes lentos.
-
--   :material-cog-sync:{ .lg .middle } __6. Runtime Android y Tríada de Gradle__
-
-    ---
-
-    El compilador D8/R8 y el runtime **ART** (con compilación híbrida AOT/JIT) maximizan la fluidez. En Gradle, dominar el suelo (`minSdk`), la promesa (`targetSdk`) y el techo (`compileSdk`) es vital para la compatibilidad.
-
--   :material-laptop-account:{ .lg .middle } __7. Entornos de Desarrollo (IDEs)__
-
-    ---
-
-    **Android Studio** e **IntelliJ IDEA** comparten el mismo motor de JetBrains. Adoptar IntelliJ IDEA en el módulo permite unificar en una sola herramienta el desarrollo Android, los proyectos KMP/CMP y los servicios backend en Kotlin.
-
-</div>
-
----
-
-### 10.3. Autoevaluación: ¿Qué debo dominar al finalizar la UT1?
-
-!!! abstract "🎯 Checklist de Competencias Adquiridas"
-
-    Antes de abordar la programación práctica de aplicaciones, comprueba que eres capaz de responder afirmativamente a los siguientes conceptos clave:
-
-    - [x] **Comprendo los retos físicos del móvil:** Sé explicar por qué el sistema operativo destruye procesos en memoria (LMK) y cómo afecta el *Doze Mode* al consumo de batería.
-    - [x] **Comprendo la transición histórica de Java a Kotlin:** Sé explicar las razones legales (litigio Oracle vs Google) y las ventajas técnicas (Null Safety en compilación, eliminación de *boilerplate* con `data class`, corrutinas y base obligatoria para Compose) por las que Android es oficialmente "Kotlin-First".
-    - [x] **Diferencio el paradigma imperativo del declarativo:** Entiendo la fórmula reactiva **UI = f(Estado)** frente a la manipulación tradicional con `findViewById`.
-    - [x] **Distingo KMP de otros frameworks:** Conozco la diferencia entre compilar a binario nativo (KMP), empaquetar un motor gráfico propio (Flutter) o interpretar sobre un puente JS (React Native).
-    - [x] **Entiendo el ciclo de vida del producto móvil:** Sé cómo operan el aislamiento *Sandbox*, los permisos sensibles en tiempo de ejecución y las firmas criptográficas de actualización.
-    - [x] **Domino la tríada de versiones de Android:** Sé exactamente qué función cumplen y qué implicaciones tienen `minSdk`, `compileSdk` y `targetSdk` en el archivo `build.gradle.kts`.
-    - [x] **Conozco el proceso de compilación y ART:** Sé qué transformaciones ocurren desde el código fuente `.kt` hasta los ficheros DEX y las ventajas del modelo híbrido AOT/JIT de ART.
-    - [x] **Tengo preparado mi entorno de desarrollo:** Conozco la relación técnica entre Android Studio e IntelliJ IDEA, los requisitos de virtualización del ordenador y dispongo de las herramientas de taller configuradas.
+- [ ] Tengo el entorno instalado y he arrancado un emulador o un móvil real.

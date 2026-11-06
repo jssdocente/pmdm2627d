@@ -1,0 +1,63 @@
+<svg class="arq-svg" viewBox="0 0 760 470" role="img" aria-labelledby="ut1-cap-t ut1-cap-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="ut1-cap-t">Capas entre tu código y el sistema en las cuatro opciones</title>
+  <desc id="ut1-cap-d">Cuatro columnas. Web: tu código en HTML, CSS y JavaScript corre en el navegador. Híbrida: el mismo tipo de código corre en un WebView dentro de una app, con plugins. Multiplataforma: código en Dart, JavaScript o Kotlin con la capa del framework. Nativa: Kotlin y Compose llaman directamente a las APIs del sistema. Debajo, cómo se instala cada una y cuántas bases de código hacen falta.</desc>
+  <defs><marker id="ut1-cap-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker></defs>
+  <text x="104.0" y="28" class="arq-t arq-h" text-anchor="middle">Web / PWA</text>
+  <text x="288.0" y="28" class="arq-t arq-h" text-anchor="middle">Híbrida</text>
+  <text x="472.0" y="28" class="arq-t arq-h" text-anchor="middle">Multiplataforma</text>
+  <text x="656.0" y="28" class="arq-t arq-h" text-anchor="middle">Nativa</text>
+  <rect x="14" y="46" width="180" height="62" rx="8" class="arq-ui"/>
+  <text x="104.0" y="66" class="arq-t arq-s arq-strong" text-anchor="middle">Tu código</text>
+  <text x="104.0" y="82" class="arq-t arq-xs" text-anchor="middle">HTML, CSS y</text>
+  <text x="104.0" y="96" class="arq-t arq-xs" text-anchor="middle">JavaScript</text>
+  <rect x="198" y="46" width="180" height="62" rx="8" class="arq-ui"/>
+  <text x="288.0" y="66" class="arq-t arq-s arq-strong" text-anchor="middle">Tu código</text>
+  <text x="288.0" y="82" class="arq-t arq-xs" text-anchor="middle">HTML, CSS y</text>
+  <text x="288.0" y="96" class="arq-t arq-xs" text-anchor="middle">JavaScript</text>
+  <rect x="382" y="46" width="180" height="62" rx="8" class="arq-ui"/>
+  <text x="472.0" y="66" class="arq-t arq-s arq-strong" text-anchor="middle">Tu código</text>
+  <text x="472.0" y="82" class="arq-t arq-xs" text-anchor="middle">Dart, JavaScript</text>
+  <text x="472.0" y="96" class="arq-t arq-xs" text-anchor="middle">o Kotlin</text>
+  <rect x="566" y="46" width="180" height="62" rx="8" class="arq-ui"/>
+  <text x="656.0" y="66" class="arq-t arq-s arq-strong" text-anchor="middle">Tu código</text>
+  <text x="656.0" y="82" class="arq-t arq-xs" text-anchor="middle">Kotlin y Compose</text>
+  <text x="656.0" y="96" class="arq-t arq-xs" text-anchor="middle">(Swift en iOS)</text>
+  <rect x="14" y="120" width="180" height="140" rx="8" class="arq-dom"/>
+  <text x="104" y="180" class="arq-t arq-strong" text-anchor="middle">Navegador</text>
+  <text x="104" y="200" class="arq-t arq-s arq-muted" text-anchor="middle">lo elige el usuario</text>
+  <rect x="198" y="120" width="180" height="84" rx="8" class="arq-dom"/>
+  <text x="288" y="152" class="arq-t arq-strong" text-anchor="middle">WebView</text>
+  <text x="288" y="172" class="arq-t arq-xs" text-anchor="middle">navegador dentro de la app</text>
+  <rect x="198" y="212" width="180" height="48" rx="8" class="arq-gray"/>
+  <text x="288" y="233" class="arq-t arq-s arq-strong" text-anchor="middle">Plugins nativos</text>
+  <text x="288" y="250" class="arq-t arq-xs" text-anchor="middle">cámara, GPS…</text>
+  <rect x="382" y="120" width="180" height="140" rx="8" class="arq-dom"/>
+  <text x="472" y="144" class="arq-t arq-s arq-strong" text-anchor="middle">Capa del framework</text>
+  <text x="472" y="168" class="arq-t arq-xs" text-anchor="middle">Flutter: motor gráfico propio</text>
+  <text x="472" y="185" class="arq-t arq-xs" text-anchor="middle">React Native: JavaScript y</text>
+  <text x="472" y="202" class="arq-t arq-xs" text-anchor="middle">componentes nativos</text>
+  <text x="472" y="219" class="arq-t arq-xs" text-anchor="middle">KMP: compila a nativo</text>
+  <rect x="566" y="120" width="180" height="140" rx="8" class="arq-box arq-dashed"/>
+  <text x="656" y="180" class="arq-t arq-s arq-strong" text-anchor="middle">Sin capas intermedias</text>
+  <text x="656" y="200" class="arq-t arq-xs arq-muted" text-anchor="middle">solo el SDK de la plataforma</text>
+  <rect x="14" y="272" width="732" height="44" rx="8" class="arq-data"/>
+  <text x="380" y="299" class="arq-t arq-strong arq-s" text-anchor="middle">APIs del sistema operativo y hardware: sensores, red, batería, notificaciones…</text>
+  <text x="14" y="346" class="arq-t arq-s arq-muted">¿Cómo le llega al usuario?</text>
+  <rect x="14" y="354" width="180" height="34" rx="8" class="arq-box"/>
+  <text x="104.0" y="376" class="arq-t arq-s" text-anchor="middle">Un enlace</text>
+  <rect x="198" y="354" width="180" height="34" rx="8" class="arq-box"/>
+  <text x="288.0" y="376" class="arq-t arq-s" text-anchor="middle">Tienda de apps</text>
+  <rect x="382" y="354" width="180" height="34" rx="8" class="arq-box"/>
+  <text x="472.0" y="376" class="arq-t arq-s" text-anchor="middle">Tienda de apps</text>
+  <rect x="566" y="354" width="180" height="34" rx="8" class="arq-box"/>
+  <text x="656.0" y="376" class="arq-t arq-s" text-anchor="middle">Tienda de apps</text>
+  <text x="14" y="412" class="arq-t arq-s arq-muted">¿Cuántas bases de código?</text>
+  <rect x="14" y="420" width="180" height="34" rx="8" class="arq-box"/>
+  <text x="104.0" y="442" class="arq-t arq-s" text-anchor="middle">Una</text>
+  <rect x="198" y="420" width="180" height="34" rx="8" class="arq-box"/>
+  <text x="288.0" y="442" class="arq-t arq-s" text-anchor="middle">Una</text>
+  <rect x="382" y="420" width="180" height="34" rx="8" class="arq-box"/>
+  <text x="472.0" y="442" class="arq-t arq-s" text-anchor="middle">Una, con partes específicas</text>
+  <rect x="566" y="420" width="180" height="34" rx="8" class="arq-box"/>
+  <text x="656.0" y="442" class="arq-t arq-s" text-anchor="middle">Una por plataforma</text>
+</svg>

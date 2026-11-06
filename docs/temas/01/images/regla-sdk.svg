@@ -1,0 +1,60 @@
+<svg class="arq-svg" viewBox="0 0 760 300" role="img" aria-labelledby="ut1-sdk-t ut1-sdk-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="ut1-sdk-t">minSdk, targetSdk y compileSdk sobre la regla de versiones</title>
+  <desc id="ut1-sdk-d">Regla de niveles de API del 24 al 37. minSdk 26 marca el dispositivo más antiguo que puede instalar la app. targetSdk 36 indica para qué versión se ha probado su comportamiento. compileSdk 37 indica contra qué APIs compila el código.</desc>
+  <defs><marker id="ut1-sdk-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker></defs>
+  <rect x="148" y="92" width="508" height="22" rx="4" class="arq-data"/>
+  <text x="390.0" y="108" class="arq-t arq-xs" text-anchor="middle">pueden instalar la app</text>
+  <rect x="60" y="92" width="88" height="22" rx="4" class="arq-warn"/>
+  <text x="104.0" y="108" class="arq-t arq-xs" text-anchor="middle">no pueden</text>
+  <line x1="60" y1="130" x2="656" y2="130" class="arq-dep"/>
+  <line x1="60" y1="125" x2="60" y2="135" class="arq-dep"/>
+  <text x="60" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">24</text>
+  <line x1="104" y1="125" x2="104" y2="135" class="arq-dep"/>
+  <text x="104" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">25</text>
+  <line x1="148" y1="125" x2="148" y2="135" class="arq-dep"/>
+  <text x="148" y="152" class="arq-t arq-xs arq-strong" text-anchor="middle">26</text>
+  <line x1="192" y1="125" x2="192" y2="135" class="arq-dep"/>
+  <text x="192" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">27</text>
+  <line x1="236" y1="125" x2="236" y2="135" class="arq-dep"/>
+  <text x="236" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">28</text>
+  <line x1="280" y1="125" x2="280" y2="135" class="arq-dep"/>
+  <text x="280" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">29</text>
+  <line x1="324" y1="125" x2="324" y2="135" class="arq-dep"/>
+  <text x="324" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">30</text>
+  <line x1="368" y1="125" x2="368" y2="135" class="arq-dep"/>
+  <text x="368" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">31</text>
+  <line x1="412" y1="125" x2="412" y2="135" class="arq-dep"/>
+  <text x="412" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">32</text>
+  <line x1="456" y1="125" x2="456" y2="135" class="arq-dep"/>
+  <text x="456" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">33</text>
+  <line x1="500" y1="125" x2="500" y2="135" class="arq-dep"/>
+  <text x="500" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">34</text>
+  <line x1="544" y1="125" x2="544" y2="135" class="arq-dep"/>
+  <text x="544" y="152" class="arq-t arq-xs arq-muted" text-anchor="middle">35</text>
+  <line x1="588" y1="125" x2="588" y2="135" class="arq-dep"/>
+  <text x="588" y="152" class="arq-t arq-xs arq-strong" text-anchor="middle">36</text>
+  <line x1="632" y1="125" x2="632" y2="135" class="arq-dep"/>
+  <text x="632" y="152" class="arq-t arq-xs arq-strong" text-anchor="middle">37</text>
+  <text x="14" y="154" class="arq-t arq-xs arq-muted">API</text>
+  <line x1="148" y1="78" x2="148" y2="125" class="arq-guide"/>
+  <text x="128" y="72" class="arq-t arq-code arq-strong" text-anchor="start">minSdk = 26</text>
+  <line x1="588" y1="78" x2="588" y2="125" class="arq-guide"/>
+  <text x="594" y="72" class="arq-t arq-code arq-strong" text-anchor="end">targetSdk = 36</text>
+  <line x1="632" y1="50" x2="632" y2="125" class="arq-guide"/>
+  <text x="632" y="44" class="arq-t arq-code arq-strong" text-anchor="middle">compileSdk = 37</text>
+  <rect x="14" y="174" width="236" height="106" rx="8" class="arq-dom"/>
+  <text x="26" y="198" class="arq-t arq-s arq-strong">minSdk: el suelo</text>
+  <text x="26" y="220" class="arq-t arq-xs">El móvil más antiguo que puede</text>
+  <text x="26" y="237" class="arq-t arq-xs">instalar la app. Más bajo: más</text>
+  <text x="26" y="254" class="arq-t arq-xs">dispositivos y más compatibilidad.</text>
+  <rect x="262" y="174" width="236" height="106" rx="8" class="arq-ui"/>
+  <text x="274" y="198" class="arq-t arq-s arq-strong">targetSdk: la promesa</text>
+  <text x="274" y="220" class="arq-t arq-xs">La versión con la que has probado</text>
+  <text x="274" y="237" class="arq-t arq-xs">su comportamiento. Google Play</text>
+  <text x="274" y="254" class="arq-t arq-xs">exige que sea reciente.</text>
+  <rect x="510" y="174" width="236" height="106" rx="8" class="arq-gray"/>
+  <text x="522" y="198" class="arq-t arq-s arq-strong">compileSdk: el techo</text>
+  <text x="522" y="220" class="arq-t arq-xs">Las APIs que el compilador te deja</text>
+  <text x="522" y="237" class="arq-t arq-xs">usar. No cambia lo que hace la app</text>
+  <text x="522" y="254" class="arq-t arq-xs">en el móvil del usuario.</text>
+</svg>

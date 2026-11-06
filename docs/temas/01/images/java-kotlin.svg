@@ -1,0 +1,49 @@
+<svg class="arq-svg" viewBox="0 0 760 296" role="img" aria-labelledby="ut1-jk-t ut1-jk-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="ut1-jk-t">Línea temporal de Java a Kotlin en Android</title>
+  <desc id="ut1-jk-d">Eje de 2008 a 2021. Arriba, Kotlin: JetBrains lo presenta en 2011, versión 1.0 en 2016, soporte oficial de Google en 2017, Kotlin-first en 2019 y Compose 1.0 en 2021. Abajo, Java: Android nace con Java en 2008 y el litigio de Oracle contra Google dura de 2010 a 2021.</desc>
+  <defs><marker id="ut1-jk-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker></defs>
+  <text x="14" y="22" class="arq-t arq-strong">Kotlin</text>
+  <text x="14" y="224" class="arq-t arq-strong">Java</text>
+  <line x1="50" y1="170" x2="720" y2="170" class="arq-dep"/>
+  <line x1="50" y1="165" x2="50" y2="175" class="arq-dep"/>
+  <text x="50" y="192" class="arq-t arq-xs arq-muted" text-anchor="middle">2008</text>
+  <line x1="100" y1="165" x2="100" y2="175" class="arq-dep"/>
+  <line x1="150" y1="165" x2="150" y2="175" class="arq-dep"/>
+  <text x="150" y="192" class="arq-t arq-xs arq-muted" text-anchor="middle">2010</text>
+  <line x1="200" y1="165" x2="200" y2="175" class="arq-dep"/>
+  <text x="200" y="192" class="arq-t arq-xs arq-muted" text-anchor="middle">2011</text>
+  <line x1="250" y1="165" x2="250" y2="175" class="arq-dep"/>
+  <line x1="300" y1="165" x2="300" y2="175" class="arq-dep"/>
+  <line x1="350" y1="165" x2="350" y2="175" class="arq-dep"/>
+  <line x1="400" y1="165" x2="400" y2="175" class="arq-dep"/>
+  <line x1="450" y1="165" x2="450" y2="175" class="arq-dep"/>
+  <text x="450" y="192" class="arq-t arq-xs arq-muted" text-anchor="middle">2016</text>
+  <line x1="500" y1="165" x2="500" y2="175" class="arq-dep"/>
+  <text x="500" y="192" class="arq-t arq-xs arq-muted" text-anchor="middle">2017</text>
+  <line x1="550" y1="165" x2="550" y2="175" class="arq-dep"/>
+  <line x1="600" y1="165" x2="600" y2="175" class="arq-dep"/>
+  <text x="600" y="192" class="arq-t arq-xs arq-muted" text-anchor="middle">2019</text>
+  <line x1="650" y1="165" x2="650" y2="175" class="arq-dep"/>
+  <line x1="700" y1="165" x2="700" y2="175" class="arq-dep"/>
+  <text x="700" y="192" class="arq-t arq-xs arq-muted" text-anchor="middle">2021</text>
+  <line x1="200" y1="112" x2="200" y2="165" class="arq-guide"/>
+  <text x="194" y="88" class="arq-t arq-s" text-anchor="start">JetBrains presenta Kotlin</text>
+  <text x="194" y="104" class="arq-t arq-xs" text-anchor="start">(no nace de la demanda)</text>
+  <line x1="450" y1="96" x2="450" y2="165" class="arq-guide"/>
+  <text x="444" y="88" class="arq-t arq-s" text-anchor="end">Kotlin 1.0</text>
+  <line x1="500" y1="60" x2="500" y2="165" class="arq-guide"/>
+  <text x="500" y="36" class="arq-t arq-s" text-anchor="middle">Google: soporte</text>
+  <text x="500" y="52" class="arq-t arq-xs" text-anchor="middle">oficial en Android</text>
+  <line x1="600" y1="100" x2="600" y2="165" class="arq-guide"/>
+  <text x="600" y="92" class="arq-t arq-s" text-anchor="middle">Kotlin-first</text>
+  <line x1="700" y1="60" x2="700" y2="165" class="arq-guide"/>
+  <text x="700" y="36" class="arq-t arq-s" text-anchor="middle">Compose 1.0,</text>
+  <text x="700" y="52" class="arq-t arq-xs" text-anchor="middle">solo en Kotlin</text>
+  <line x1="50" y1="198" x2="50" y2="230" class="arq-guide"/>
+  <text x="44" y="244" class="arq-t arq-s">Android 1.0</text>
+  <text x="44" y="260" class="arq-t arq-s">con Java</text>
+  <rect x="150" y="206" width="550" height="30" rx="6" class="arq-warn"/>
+  <text x="425.0" y="226" class="arq-t arq-s" text-anchor="middle">Oracle contra Google: incertidumbre legal durante 11 años</text>
+  <text x="700" y="256" class="arq-t arq-xs" text-anchor="end">El Supremo de EE. UU. falla a favor de Google</text>
+  <text x="420" y="282" class="arq-t arq-xs arq-muted" text-anchor="middle">Mientras tanto, Android arrastra versiones antiguas de Java</text>
+</svg>

@@ -1,0 +1,57 @@
+<svg class="arq-svg" viewBox="0 0 760 520" role="img" aria-labelledby="ut1-arb-t ut1-arb-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="ut1-arb-t">Árbol de decisión para elegir tecnología</title>
+  <desc id="ut1-arb-d">Preguntas en orden. Si es un juego con gráficos intensivos, motor de videojuegos. Si basta con abrir un enlace, web o PWA. Si depende del hardware o del sistema, nativa. Si solo necesitas una plataforma, nativa de esa plataforma. Si ya tienes una web y la app es sencilla, híbrida. En otro caso, multiplataforma.</desc>
+  <defs><marker id="ut1-arb-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker></defs>
+  <rect x="14" y="14" width="430" height="62" rx="8" class="arq-box"/>
+  <text x="229" y="41" class="arq-t arq-s arq-strong" text-anchor="middle">¿Es un juego con gráficos intensivos</text>
+  <text x="229" y="59" class="arq-t arq-s arq-strong" text-anchor="middle">o con un bucle de juego continuo?</text>
+  <line x1="446" y1="45" x2="538" y2="45" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="490" y="38" class="arq-t arq-s arq-strong" text-anchor="middle">Sí</text>
+  <rect x="542" y="14" width="204" height="62" rx="8" class="arq-gray"/>
+  <text x="644" y="41" class="arq-t arq-strong" text-anchor="middle">Motor de videojuegos</text>
+  <text x="644" y="60" class="arq-t arq-xs" text-anchor="middle">apartado 5.3</text>
+  <line x1="229" y1="78" x2="229" y2="96" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="244" y="91" class="arq-t arq-xs arq-strong">No</text>
+  <rect x="14" y="98" width="430" height="62" rx="8" class="arq-box"/>
+  <text x="229" y="125" class="arq-t arq-s arq-strong" text-anchor="middle">¿Basta con abrir un enlace,</text>
+  <text x="229" y="143" class="arq-t arq-s arq-strong" text-anchor="middle">sin instalar nada?</text>
+  <line x1="446" y1="129" x2="538" y2="129" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="490" y="122" class="arq-t arq-s arq-strong" text-anchor="middle">Sí</text>
+  <rect x="542" y="98" width="204" height="62" rx="8" class="arq-dom"/>
+  <text x="644" y="125" class="arq-t arq-strong" text-anchor="middle">Web / PWA</text>
+  <text x="644" y="144" class="arq-t arq-xs" text-anchor="middle">contenido, consultas puntuales</text>
+  <line x1="229" y1="162" x2="229" y2="180" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="244" y="175" class="arq-t arq-xs arq-strong">No</text>
+  <rect x="14" y="182" width="430" height="62" rx="8" class="arq-box"/>
+  <text x="229" y="209" class="arq-t arq-s arq-strong" text-anchor="middle">¿Depende del dispositivo: segundo plano, sensores,</text>
+  <text x="229" y="227" class="arq-t arq-s arq-strong" text-anchor="middle">reloj, TV, coche o máximo rendimiento?</text>
+  <line x1="446" y1="213" x2="538" y2="213" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="490" y="206" class="arq-t arq-s arq-strong" text-anchor="middle">Sí</text>
+  <rect x="542" y="182" width="204" height="62" rx="8" class="arq-data"/>
+  <text x="644" y="209" class="arq-t arq-strong" text-anchor="middle">Nativa</text>
+  <text x="644" y="228" class="arq-t arq-xs" text-anchor="middle">y KMP si también hay iOS</text>
+  <line x1="229" y1="246" x2="229" y2="264" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="244" y="259" class="arq-t arq-xs arq-strong">No</text>
+  <rect x="14" y="266" width="430" height="62" rx="8" class="arq-box"/>
+  <text x="229" y="302" class="arq-t arq-s arq-strong" text-anchor="middle">¿Solo necesitas una plataforma?</text>
+  <line x1="446" y1="297" x2="538" y2="297" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="490" y="290" class="arq-t arq-s arq-strong" text-anchor="middle">Sí</text>
+  <rect x="542" y="266" width="204" height="62" rx="8" class="arq-data"/>
+  <text x="644" y="293" class="arq-t arq-strong" text-anchor="middle">Nativa</text>
+  <text x="644" y="312" class="arq-t arq-xs" text-anchor="middle">de esa plataforma</text>
+  <line x1="229" y1="330" x2="229" y2="348" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="244" y="343" class="arq-t arq-xs arq-strong">No</text>
+  <rect x="14" y="350" width="430" height="62" rx="8" class="arq-box"/>
+  <text x="229" y="377" class="arq-t arq-s arq-strong" text-anchor="middle">¿Ya tienes una web y la app es sencilla:</text>
+  <text x="229" y="395" class="arq-t arq-s arq-strong" text-anchor="middle">contenido o formularios?</text>
+  <line x1="446" y1="381" x2="538" y2="381" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="490" y="374" class="arq-t arq-s arq-strong" text-anchor="middle">Sí</text>
+  <rect x="542" y="350" width="204" height="62" rx="8" class="arq-dom"/>
+  <text x="644" y="377" class="arq-t arq-strong" text-anchor="middle">Híbrida</text>
+  <text x="644" y="396" class="arq-t arq-xs" text-anchor="middle">reutilizas lo que ya hay</text>
+  <line x1="229" y1="414" x2="229" y2="432" class="arq-dep" marker-end="url(#ut1-arb-a)"/>
+  <text x="244" y="427" class="arq-t arq-xs arq-strong">No</text>
+  <rect x="14" y="434" width="430" height="76" rx="8" class="arq-ui"/>
+  <text x="229" y="464" class="arq-t arq-strong" text-anchor="middle">Multiplataforma</text>
+  <text x="229" y="486" class="arq-t arq-s" text-anchor="middle">Flutter, React Native o KMP con Compose Multiplatform</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg class="arq-svg" viewBox="0 0 760 380" role="img" aria-labelledby="ut1-map-t ut1-map-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="ut1-map-t">Mapa orientativo de compromisos entre las cuatro opciones</title>
+  <desc id="ut1-map-d">Eje horizontal: alcance con una sola base de código. Eje vertical: acceso al dispositivo y rendimiento. Nativa arriba a la izquierda, multiplataforma arriba en el centro, híbrida abajo en el centro-derecha y web abajo a la derecha. Es orientativo, no una medida.</desc>
+  <defs><marker id="ut1-map-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker></defs>
+  <line x1="70" y1="20" x2="70" y2="330" class="arq-dep"/>
+  <line x1="70" y1="330" x2="740" y2="330" class="arq-dep"/>
+  <line x1="70" y1="330" x2="70" y2="20" class="arq-dep" marker-end="url(#ut1-map-a)"/>
+  <line x1="70" y1="330" x2="740" y2="330" class="arq-dep" marker-end="url(#ut1-map-a)"/>
+  <text x="405" y="360" class="arq-t arq-s arq-strong" text-anchor="middle">Alcance con una sola base de código</text>
+  <text x="36" y="175" class="arq-t arq-s arq-strong" text-anchor="middle" transform="rotate(-90 36 175)">Acceso al dispositivo y rendimiento</text>
+  <rect x="100" y="34" width="180" height="74" rx="8" class="arq-data"/>
+  <text x="190.0" y="58" class="arq-t arq-strong" text-anchor="middle">Nativa</text>
+  <text x="190.0" y="78" class="arq-t arq-xs" text-anchor="middle">todo el sistema, una base</text>
+  <text x="190.0" y="93" class="arq-t arq-xs" text-anchor="middle">de código por plataforma</text>
+  <rect x="300" y="90" width="190" height="74" rx="8" class="arq-ui"/>
+  <text x="395.0" y="114" class="arq-t arq-strong" text-anchor="middle">Multiplataforma</text>
+  <text x="395.0" y="134" class="arq-t arq-xs" text-anchor="middle">casi todo, con partes</text>
+  <text x="395.0" y="149" class="arq-t arq-xs" text-anchor="middle">específicas por plataforma</text>
+  <rect x="420" y="172" width="160" height="74" rx="8" class="arq-dom"/>
+  <text x="500.0" y="196" class="arq-t arq-strong" text-anchor="middle">Híbrida</text>
+  <text x="500.0" y="216" class="arq-t arq-xs" text-anchor="middle">lo que dé el WebView</text>
+  <text x="500.0" y="231" class="arq-t arq-xs" text-anchor="middle">y sus plugins</text>
+  <rect x="560" y="244" width="170" height="74" rx="8" class="arq-gray"/>
+  <text x="645.0" y="268" class="arq-t arq-strong" text-anchor="middle">Web / PWA</text>
+  <text x="645.0" y="288" class="arq-t arq-xs" text-anchor="middle">lo que permita cada</text>
+  <text x="645.0" y="303" class="arq-t arq-xs" text-anchor="middle">navegador; sin instalar</text>
+  <text x="100" y="300" class="arq-t arq-s arq-muted">Posición orientativa: no es una medida.</text>
+</svg>

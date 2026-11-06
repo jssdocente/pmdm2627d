@@ -1,0 +1,39 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="ut1-cmp-t ut1-cmp-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="ut1-cmp-t">Del código Kotlin al dispositivo</title>
+  <desc id="ut1-cmp-d">El código .kt pasa por kotlinc a .class y por D8 o R8 a .dex. Los recursos y el Manifest pasan por AAPT2. Todo se empaqueta y firma en un APK o AAB. En el dispositivo, ART ejecuta el código y compila a código máquina las partes más usadas.</desc>
+  <defs><marker id="ut1-cmp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker></defs>
+  <rect x="14" y="30" width="110" height="58" rx="8" class="arq-ui"/>
+  <text x="69.0" y="55" class="arq-t arq-code arq-strong" text-anchor="middle">.kt</text>
+  <text x="69.0" y="74" class="arq-t arq-xs" text-anchor="middle">código fuente</text>
+  <line x1="126" y1="59" x2="204" y2="59" class="arq-dep" marker-end="url(#ut1-cmp-a)"/>
+  <text x="165" y="50" class="arq-t arq-code" text-anchor="middle">kotlinc</text>
+  <rect x="208" y="30" width="110" height="58" rx="8" class="arq-box"/>
+  <text x="263.0" y="55" class="arq-t arq-code arq-strong" text-anchor="middle">.class</text>
+  <text x="263.0" y="74" class="arq-t arq-xs" text-anchor="middle">bytecode</text>
+  <line x1="320" y1="59" x2="398" y2="59" class="arq-dep" marker-end="url(#ut1-cmp-a)"/>
+  <text x="359" y="50" class="arq-t arq-code" text-anchor="middle">D8 / R8</text>
+  <rect x="402" y="30" width="110" height="58" rx="8" class="arq-box"/>
+  <text x="457.0" y="55" class="arq-t arq-code arq-strong" text-anchor="middle">.dex</text>
+  <text x="457.0" y="74" class="arq-t arq-xs" text-anchor="middle">formato de Android</text>
+  <rect x="14" y="120" width="110" height="58" rx="8" class="arq-ui"/>
+  <text x="69.0" y="145" class="arq-t arq-code arq-strong" text-anchor="middle">res/</text>
+  <text x="69.0" y="164" class="arq-t arq-xs" text-anchor="middle">y Manifest</text>
+  <line x1="126" y1="149" x2="204" y2="149" class="arq-dep" marker-end="url(#ut1-cmp-a)"/>
+  <text x="165" y="140" class="arq-t arq-code" text-anchor="middle">AAPT2</text>
+  <rect x="208" y="120" width="304" height="58" rx="8" class="arq-box"/>
+  <text x="360.0" y="145" class="arq-t arq-code arq-strong" text-anchor="middle">recursos compilados</text>
+  <text x="360.0" y="164" class="arq-t arq-xs" text-anchor="middle">y clase R</text>
+  <rect x="592" y="30" width="154" height="148" rx="8" class="arq-dom"/>
+  <text x="669" y="78" class="arq-t arq-strong" text-anchor="middle">Empaquetar</text>
+  <text x="669" y="98" class="arq-t arq-strong" text-anchor="middle">y firmar</text>
+  <text x="669" y="128" class="arq-t arq-code" text-anchor="middle">.apk / .aab</text>
+  <line x1="514" y1="59" x2="590" y2="59" class="arq-dep" marker-end="url(#ut1-cmp-a)"/>
+  <line x1="514" y1="149" x2="590" y2="149" class="arq-dep" marker-end="url(#ut1-cmp-a)"/>
+  <text x="263" y="104" class="arq-t arq-xs arq-muted" text-anchor="middle">R8 también elimina código sin usar y ofusca en la versión release</text>
+  <line x1="669" y1="180" x2="669" y2="222" class="arq-dep" marker-end="url(#ut1-cmp-a)"/>
+  <text x="680" y="206" class="arq-t arq-xs">tienda o adb</text>
+  <rect x="14" y="226" width="732" height="86" rx="8" class="arq-data"/>
+  <text x="30" y="252" class="arq-t arq-strong">En el dispositivo: ART (Android Runtime)</text>
+  <text x="30" y="274" class="arq-t arq-s">Interpreta o compila al vuelo (JIT) al principio y compila a código máquina (AOT) lo más usado.</text>
+  <text x="30" y="294" class="arq-t arq-s">Con Baseline Profiles, tu app indica de antemano qué partes conviene compilar desde la instalación.</text>
+</svg>

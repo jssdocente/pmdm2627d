@@ -1,0 +1,48 @@
+<svg class="arq-svg" viewBox="0 0 760 300" role="img" aria-labelledby="ut1-kmp-t ut1-kmp-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="ut1-kmp-t">Qué se comparte en nativo puro, KMP y Compose Multiplatform</title>
+  <desc id="ut1-kmp-d">Tres escenarios para Android e iOS. Nativo puro: interfaz y lógica duplicadas. Kotlin Multiplatform: lógica compartida e interfaz nativa en cada plataforma. KMP con Compose Multiplatform: lógica e interfaz compartidas, salvo partes específicas.</desc>
+  <defs><marker id="ut1-kmp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker></defs>
+  <text x="127.0" y="24" class="arq-t arq-strong" text-anchor="middle">Nativo puro</text>
+  <text x="127.0" y="44" class="arq-t arq-xs arq-muted" text-anchor="middle">Se escribe todo dos veces</text>
+  <text x="69" y="70" class="arq-t arq-s" text-anchor="middle">Android</text>
+  <text x="185" y="70" class="arq-t arq-s" text-anchor="middle">iOS</text>
+  <text x="380.0" y="24" class="arq-t arq-strong" text-anchor="middle">KMP</text>
+  <text x="380.0" y="44" class="arq-t arq-xs arq-muted" text-anchor="middle">Se comparte la lógica</text>
+  <text x="322" y="70" class="arq-t arq-s" text-anchor="middle">Android</text>
+  <text x="438" y="70" class="arq-t arq-s" text-anchor="middle">iOS</text>
+  <text x="633.0" y="24" class="arq-t arq-strong" text-anchor="middle">KMP + Compose Multiplatform</text>
+  <text x="633.0" y="44" class="arq-t arq-xs arq-muted" text-anchor="middle">Se comparte también la interfaz</text>
+  <text x="575" y="70" class="arq-t arq-s" text-anchor="middle">Android</text>
+  <text x="691" y="70" class="arq-t arq-s" text-anchor="middle">iOS</text>
+  <rect x="14" y="80" width="110" height="70" rx="8" class="arq-ui"/>
+  <rect x="130" y="80" width="110" height="70" rx="8" class="arq-ui"/>
+  <text x="69" y="120.0" class="arq-t arq-s" text-anchor="middle">Compose</text>
+  <text x="185" y="120.0" class="arq-t arq-s" text-anchor="middle">SwiftUI</text>
+  <rect x="14" y="158" width="110" height="70" rx="8" class="arq-data"/>
+  <rect x="130" y="158" width="110" height="70" rx="8" class="arq-data"/>
+  <text x="69" y="198.0" class="arq-t arq-s" text-anchor="middle">Lógica Kotlin</text>
+  <text x="185" y="198.0" class="arq-t arq-s" text-anchor="middle">Lógica Swift</text>
+  <rect x="267" y="80" width="110" height="70" rx="8" class="arq-ui"/>
+  <rect x="383" y="80" width="110" height="70" rx="8" class="arq-ui"/>
+  <text x="322" y="120.0" class="arq-t arq-s" text-anchor="middle">Compose</text>
+  <text x="438" y="120.0" class="arq-t arq-s" text-anchor="middle">SwiftUI</text>
+  <rect x="267" y="158" width="226" height="70" rx="8" class="arq-data"/>
+  <text x="380" y="198.0" class="arq-t arq-s arq-strong" text-anchor="middle">Lógica en Kotlin</text>
+  <rect x="520" y="80" width="226" height="70" rx="8" class="arq-ui"/>
+  <text x="633" y="120.0" class="arq-t arq-s arq-strong" text-anchor="middle">Interfaz con Compose</text>
+  <rect x="520" y="158" width="226" height="70" rx="8" class="arq-data"/>
+  <text x="633" y="198.0" class="arq-t arq-s arq-strong" text-anchor="middle">Lógica en Kotlin</text>
+  <rect x="14" y="236" width="110" height="26" rx="6" class="arq-gray"/>
+  <rect x="130" y="236" width="110" height="26" rx="6" class="arq-gray"/>
+  <text x="69" y="254" class="arq-t arq-xs" text-anchor="middle">SDK Android</text>
+  <text x="185" y="254" class="arq-t arq-xs" text-anchor="middle">SDK iOS</text>
+  <rect x="267" y="236" width="110" height="26" rx="6" class="arq-gray"/>
+  <rect x="383" y="236" width="110" height="26" rx="6" class="arq-gray"/>
+  <text x="322" y="254" class="arq-t arq-xs" text-anchor="middle">SDK Android</text>
+  <text x="438" y="254" class="arq-t arq-xs" text-anchor="middle">SDK iOS</text>
+  <rect x="520" y="236" width="110" height="26" rx="6" class="arq-gray"/>
+  <rect x="636" y="236" width="110" height="26" rx="6" class="arq-gray"/>
+  <text x="575" y="254" class="arq-t arq-xs" text-anchor="middle">SDK Android</text>
+  <text x="691" y="254" class="arq-t arq-xs" text-anchor="middle">SDK iOS</text>
+  <text x="380" y="288" class="arq-t arq-xs arq-muted" text-anchor="middle">Azul: interfaz. Verde: lógica. Un bloque ancho se escribe una sola vez.</text>
+</svg>
