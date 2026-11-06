@@ -24,7 +24,7 @@ Lo primero es saber de qué partes y qué quieres obtener.
 | Quiero… | Método | Devuelve |
 | :--- | :--- | :--- |
 | Buscar **un** elemento por su clave | [`associateBy { it.id }`](#associateby) | `Map<Int, Producto>` |
-| Asociar un dato a cada elemento, que pasa a ser la clave | [`associateWith { it.length }`](#associatewith) | `Map<String, Int>` |
+| Añadir un dato a cada elemento, que pasa a ser la clave | [`associateWith { it.length }`](#associatewith) | `Map<String, Int>` |
 | Elegir yo la clave y el valor | [`associate { it.nombre to it.precio }`](#associate) | `Map<String, Double>` |
 | Convertir una lista de pares | [`toMap()`](#tomap) | `Map<K, V>` |
 | Repartir en **grupos** | [`groupBy { it.categoria }`](#groupby) | `Map<String, List<Producto>>` |
@@ -188,11 +188,20 @@ val catalogo = listOf(
 )
 ```
 
-La pregunta que decide el método es qué será el valor del mapa: el elemento, un dato calculado o una lista de elementos.
+Lo que decide el método es **qué papel hace cada elemento de la lista** dentro del mapa: el valor, la clave o parte de una lista de valores. Lee el nombre como una frase: `associateBy` asocia cada elemento *por* un dato suyo, y `associateWith` lo asocia *con* un dato.
 
 ### `associateBy`: buscar un elemento por su clave {#associateby}
 
-La lambda calcula la **clave**, y el **elemento** es el valor. Sirve para no recorrer la lista cada vez que buscas algo por su id.
+**Cuándo se usa:** tienes una lista de objetos y necesitas encontrar uno a partir de un dato suyo, normalmente el id.
+
+**Qué hace:** la lambda indica **la clave**, y el **elemento completo** es el valor. `catalogo.associateBy { it.id }` se lee «asocia cada producto por su id»:
+
+| Elemento de la lista | La lambda devuelve (clave) | Entrada del mapa |
+| :--- | :--- | :--- |
+| `Producto(1, "Mando", …)` | `1` | `1` → `Producto(1, "Mando", …)` |
+| `Producto(2, "Funda", …)` | `2` | `2` → `Producto(2, "Funda", …)` |
+
+El resultado es un `Map<Int, Producto>`, y buscar es tan sencillo como usar la clave:
 
 ```kotlin
 val porId = catalogo.associateBy { it.id }
@@ -201,7 +210,16 @@ println(porId[3]) // Producto(id=3, nombre=Cascos, categoria=Audio, precio=90.0)
 println(porId[9]) // null
 ```
 
-Con una segunda lambda eliges también el valor:
+Con la lista también se puede buscar, pero `find` la recorre elemento a elemento cada vez. El mapa va directo a la clave, y eso se nota cuando se hacen muchas búsquedas:
+
+```kotlin
+val porId = catalogo.associateBy { it.id }
+
+println(catalogo.find { it.id == 3 }?.nombre) // Cascos
+println(porId[3]?.nombre)                     // Cascos
+```
+
+Con una segunda lambda eliges también el valor, en lugar de guardar el elemento completo:
 
 ```kotlin
 println(catalogo.associateBy({ it.id }, { it.nombre }))
@@ -215,15 +233,61 @@ println(catalogo.associateBy({ it.id }, { it.nombre }))
     println(catalogo.associateBy { it.categoria }["Audio"]?.nombre) // Altavoz
     ```
 
-### `associateWith`: asociar un dato a cada elemento {#associatewith}
+### `associateWith`: añadir un dato a cada elemento {#associatewith}
 
-Es el caso contrario: el **elemento** es la clave y la lambda calcula el **valor**.
+**Cuándo se usa:** tienes una lista de valores simples, como nombres o ids, y quieres guardar un dato de cada uno.
+
+**Qué hace:** el **elemento** es la clave, y la lambda indica **el valor**. `nombres.associateWith { it.length }` se lee «asocia cada nombre con su longitud»:
+
+| Elemento de la lista (clave) | La lambda devuelve | Entrada del mapa |
+| :--- | :--- | :--- |
+| `"Ana"` | `3` | `"Ana"` → `3` |
+| `"Luisa"` | `5` | `"Luisa"` → `5` |
+
+El resultado es un `Map<String, Int>`:
+
+```kotlin
+val nombres = listOf("Ana", "Luisa")
+val longitudes = nombres.associateWith { it.length }
+
+println(longitudes)          // {Ana=3, Luisa=5}
+println(longitudes["Luisa"]) // 5
+```
+
+También sirve para dar a todas las claves el mismo valor inicial, por ejemplo poner varios marcadores a cero:
+
+```kotlin
+println(listOf("Ana", "Luisa").associateWith { 0 }) // {Ana=0, Luisa=0}
+```
+
+### `associateBy` o `associateWith`: la diferencia {#associateby-o-associatewith}
+
+Con la misma lista y la misma lambda, el mapa sale «dado la vuelta»:
 
 ```kotlin
 val nombres = listOf("Ana", "Luisa")
 
+println(nombres.associateBy { it.length })   // {3=Ana, 5=Luisa}
 println(nombres.associateWith { it.length }) // {Ana=3, Luisa=5}
-println(nombres.associateWith { 0 })         // {Ana=0, Luisa=0}
+```
+
+| | La clave es | El valor es | Pregunta que resuelve |
+| :--- | :--- | :--- | :--- |
+| `associateBy { … }` | Lo que devuelve la lambda | El elemento | ¿Qué elemento tiene este id? |
+| `associateWith { … }` | El elemento | Lo que devuelve la lambda | ¿Qué dato tiene este elemento? |
+
+Si lo escribieras en Java con un bucle, la diferencia estaría en los argumentos de `put`:
+
+```java
+// associateBy: el elemento es el valor
+for (Producto p : catalogo) {
+    porId.put(p.getId(), p);
+}
+
+// associateWith: el elemento es la clave
+for (String n : nombres) {
+    longitudes.put(n, n.length());
+}
 ```
 
 ### `associate`: elegir clave y valor {#associate}
@@ -236,7 +300,7 @@ println(catalogo.associate { it.nombre to it.precio })
 ```
 
 !!! tip "Cuál de los tres elegir"
-    Elige el más específico que encaje: `associateBy` si el valor es el elemento, `associateWith` si la clave es el elemento, y `associate` solo si ninguno de los dos lo es.
+    Elige el más específico que encaje: `associateBy` si el valor es el elemento, `associateWith` si la clave es el elemento, y `associate` solo cuando ninguno de los dos lo es, como aquí, donde la clave es el nombre y el valor el precio.
 
 ### `toMap`: de una lista de pares a un mapa {#tomap}
 

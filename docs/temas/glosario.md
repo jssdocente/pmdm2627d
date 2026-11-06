@@ -134,7 +134,7 @@ Intenta convertir a un tipo y devuelve `null` si no puede, en lugar de lanzar un
 
 Funciones que convierten una lista en un `Map`. Se diferencian en qué es el valor: el elemento (`associateBy`), un dato calculado (`associateWith`) o lo que elijas (`associate`).
 
-**Dónde:** [Kotlin · De una lista a un Map](00-android/00-kotlin/43-maps.md#de-lista-a-map)<br>
+**Dónde:** [Kotlin · De una lista a un Map](00-android/00-kotlin/43-maps.md#de-lista-a-map) · [Kotlin · `associateBy` o `associateWith`](00-android/00-kotlin/43-maps.md#associateby-o-associatewith)<br>
 **Practica:** [Codelab de Kotlin · Colecciones y Maps](00-android/00-kotlin/codelabs/03-colecciones-maps.md#1-la-idea-en-un-minuto)<br>
 **Ver también:** [`Map`](#map) · [`groupBy`](#groupby)
 
