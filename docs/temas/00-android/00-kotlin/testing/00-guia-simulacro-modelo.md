@@ -165,6 +165,8 @@ fun contarHeroesPorRol(heroes: List<Heroe>): Map<RolHeroe, Int> =
         .mapValues { (_, listaDeRol) -> listaDeRol.size }
 ```
 
+Esta combinación está explicada, con más variantes, en [`groupBy` + `mapValues`](../43-maps.md#groupby-mapvalues). Para contar también sirve [`groupingBy` y `eachCount`](../43-maps.md#groupingby-eachcount).
+
 ---
 
 ### 4.4. Pipeline 4: Null-Safety con `mapNotNull`

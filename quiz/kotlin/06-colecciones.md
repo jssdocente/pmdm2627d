@@ -126,7 +126,7 @@ Lanza `IllegalArgumentException` por elementos duplicados.
 
 > Los duplicados no son un error en un `Set`: simplemente se ignoran.
 
-## kt-col-004 {dificultad=2 tipo=salida ancla=44-agrupacion-y-ordenacion-groupby-y-sortedby}
+## kt-col-004 {dificultad=2 tipo=salida ancla=43-maps.md#groupby}
 
 ¿Qué imprime este código?
 
@@ -763,7 +763,7 @@ Error de compilación: `precios` es `val`.
 
 > `val` solo impide reasignar la variable. El problema es que el tipo `Map` es de solo lectura.
 
-## kt-col-022 {dificultad=2 tipo=salida ancla=43-maps.md#operaciones-con-maps}
+## kt-col-022 {dificultad=2 tipo=salida ancla=43-maps.md#associatewith}
 
 ¿Qué imprime este código?
 
@@ -891,7 +891,7 @@ println((1..7).chunked(3))
 
 > Se devuelven las listas, no sus tamaños.
 
-## kt-col-026 {dificultad=3 tipo=salida ancla=44-agrupacion-y-ordenacion-groupby-y-sortedby}
+## kt-col-026 {dificultad=3 tipo=salida ancla=410-ordenar}
 
 ¿Qué imprime este código?
 
@@ -957,7 +957,7 @@ Lanza `NoSuchElementException` con `"w"`.
 
 > `indexOf` no lanza excepciones: devuelve −1.
 
-## kt-col-028 {dificultad=2 tipo=salida ancla=43-maps.md#operaciones-con-maps}
+## kt-col-028 {dificultad=2 tipo=salida ancla=43-maps.md#filtrar-un-map}
 
 ¿Qué imprime este código?
 
@@ -990,7 +990,7 @@ println(notas.filter { it.value >= 5 }.keys)
 
 > `Luis` tiene un 4 y no pasa el filtro.
 
-## kt-col-029 {dificultad=2 tipo=salida ancla=43-maps.md#operaciones-con-maps}
+## kt-col-029 {dificultad=2 tipo=salida ancla=43-maps.md#mapvalues}
 
 ¿Qué imprime este código?
 
@@ -1023,7 +1023,7 @@ println(notas.mapValues { it.value * 10 })
 
 > Las claves no cambian; solo se transforman los valores.
 
-## kt-col-030 {dificultad=3 tipo=salida ancla=43-maps.md#modificacion-de-elementos-de-un-map}
+## kt-col-030 {dificultad=3 tipo=salida ancla=43-maps.md#getorput}
 
 ¿Qué imprime este código?
 
@@ -1256,7 +1256,7 @@ true
 
 > `any` necesita al menos un elemento que cumpla, y no hay ninguno.
 
-## kt-col-036 {dificultad=3 tipo=salida ancla=44-agrupacion-y-ordenacion-groupby-y-sortedby}
+## kt-col-036 {dificultad=3 tipo=salida ancla=43-maps.md#groupby-mapvalues}
 
 ¿Qué imprime este código?
 

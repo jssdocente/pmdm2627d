@@ -1,41 +1,57 @@
-
-
 # Arrays en Kotlin
 
-En Kotlin, puedes crear arrays utilizando la función `arrayOf()`. Los arrays en Kotlin son inmutables por defecto, lo que significa que no puedes modificar su tamaño una vez que se han creado.
+En Kotlin, los arrays se crean con la función `arrayOf()`. Tienen un **tamaño fijo**: no se pueden añadir ni quitar posiciones. Su contenido, en cambio, **sí se puede modificar**, aunque la variable sea `val`.
 
 ```kotlin
 val numeros = arrayOf(1, 2, 3, 4, 5)
 ```
 
-En el ejemplo anterior, se crea un array `numeros` con los valores `1, 2, 3, 4, 5`. Los arrays en Kotlin se crean utilizando la función `arrayOf()` seguida de los valores del array entre paréntesis.
+Si la lista de valores se calcula, `Array(n) { … }` crea un array de `n` posiciones, y la lambda recibe el índice:
+
+```kotlin
+val cuadrados = Array(4) { it * it }
+println(cuadrados.joinToString()) // 0, 1, 4, 9
+```
+
+!!! tip "¿Array o lista?"
+    En la mayoría de los casos usarás [`List`](./42-listas.md). Los arrays quedan para parámetros como el de `main(args: Array<String>)` o para cuando el rendimiento lo exige.
 
 ## Acceso a elementos de un array
 
 Puedes acceder a elementos individuales de un array utilizando el operador de indexación `[]` seguido del índice del elemento que deseas acceder.
 
 ```kotlin
-val primerNumero = numeros[0]
-val segundoNumero = numeros[1]
+val numeros = arrayOf(1, 2, 3, 4, 5)
+println(numeros[0]) // 1
+println(numeros[1]) // 2
 ```
-
-En el ejemplo anterior, se accede al primer y segundo elemento del array `numeros` utilizando los índices `0` y `1` respectivamente.
 
 ## Modificación de elementos de un array
 
-Para modificar un elemento de un array, puedes utilizar el operador de indexación `[]` seguido del índice del elemento que deseas modificar.
+Para modificar un elemento de un array, se usa también el operador `[]`.
 
 ```kotlin
+val numeros = arrayOf(1, 2, 3, 4, 5)
 numeros[0] = 10
+println(numeros[0]) // 10
 ```
 
-En el ejemplo anterior, se modifica el primer elemento del array `numeros` asignándole el valor `10`.
+Un array es un objeto, así que asignarlo a otra variable no lo copia: las dos variables apuntan al mismo array.
+
+```kotlin
+val a = intArrayOf(1, 2, 3)
+val b = a
+b[0] = 99
+println(a[0]) // 99
+```
 
 ## Iteración sobre un array
 
 Puedes iterar sobre los elementos de un array utilizando un bucle `for` o la función `forEach()`.
 
 ```kotlin
+val numeros = arrayOf(1, 2, 3, 4, 5)
+
 for (numero in numeros) {
     println(numero)
 }
@@ -45,11 +61,9 @@ numeros.forEach { numero ->
 }
 ```
 
-En el ejemplo anterior, se itera sobre los elementos del array `numeros` utilizando un bucle `for` y la función `forEach()`.
-
 ## Arrays de tipos primitivos
 
-En Kotlin, puedes utilizar arrays de tipos primitivos como `IntArray`, `DoubleArray`, `BooleanArray`, etc. para mejorar el rendimiento de tu código.
+`IntArray`, `DoubleArray`, `BooleanArray` y similares guardan los valores como tipos primitivos de la JVM, sin objetos de por medio, lo que mejora el rendimiento.
 
 ```kotlin
 val enteros = intArrayOf(1, 2, 3, 4, 5)
@@ -57,16 +71,24 @@ val dobles = doubleArrayOf(1.0, 2.0, 3.0, 4.0, 5.0)
 val booleanos = booleanArrayOf(true, false, true, false)
 ```
 
-En el ejemplo anterior, se crean arrays de tipos primitivos `IntArray`, `DoubleArray` y `BooleanArray` con valores iniciales.
-
 ## Operaciones con arrays
 
-Los arrays en Kotlin proporcionan una serie de operaciones útiles, como `size` para obtener el tamaño del array, `contains` para comprobar si un elemento está presente en el array, `indexOf` para obtener el índice de un elemento en el array, etc.
+Los arrays tienen `size` para obtener el tamaño, `contains` para comprobar si está un elemento e `indexOf` para obtener su posición. También admiten las [operaciones funcionales de las listas](./42-listas.md#que-metodo-uso), como `filter` o `map`, que devuelven una `List`.
 
 ```kotlin
-val tamaño = numeros.size
-val contieneTres = numeros.contains(3)
-val indiceDeCuatro = numeros.indexOf(4)
+val numeros = arrayOf(1, 2, 3, 4, 5)
+
+println(numeros.size)                   // 5
+println(numeros.contains(3))            // true
+println(numeros.indexOf(4))             // 3
+println(numeros.filter { it % 2 == 0 }) // [2, 4]
 ```
 
-En el ejemplo anterior, se obtiene el tamaño del array `numeros`, se comprueba si el array contiene el número `3` y se obtiene el índice del número `4` en el array.
+!!! warning "`println` no muestra el contenido de un array"
+    `println(numeros)` imprime algo como `[Ljava.lang.Integer;@1b6d3586`, igual que en Java. Para ver el contenido usa `contentToString()` o `joinToString()`.
+
+    ```kotlin
+    val numeros = arrayOf(1, 2, 3)
+    println(numeros.contentToString()) // [1, 2, 3]
+    println(numeros.joinToString())    // 1, 2, 3
+    ```

@@ -76,7 +76,7 @@ fun titulosDisponibles(libros: List<Libro>, genero: Genero): List<String> =
 - Después transforma cada `Libro` en su `titulo` con `map`. A partir de ahí tienes una `List<String>`.
 - Una lista de `String` se ordena alfabéticamente con `sorted()`. También valdría `sortedBy { it.titulo }` antes del `map`.
 
-## kc-kata-02 Estación meteorológica {tema=agrupar,nulos dificultad=2 ancla=43-maps.md}
+## kc-kata-02 Estación meteorológica {tema=agrupar,nulos dificultad=2 ancla=43-maps.md#groupby-mapvalues}
 
 Una estación recoge lecturas diarias de varias ciudades. Implementa dos funciones:
 
@@ -665,7 +665,7 @@ fun masBaratoApto(platos: List<Plato>, alergia: String?): Plato? =
 - Las dos funciones comparten el mismo filtro: extráelo a una función auxiliar y reutilízalo.
 - `minByOrNull { it.precio }` devuelve el elemento con el menor valor, o `null` si la lista está vacía.
 
-## kc-kata-09 Recuento de una encuesta {tema=agrupar,nulos dificultad=2 ancla=43-maps.md}
+## kc-kata-09 Recuento de una encuesta {tema=agrupar,nulos dificultad=2 ancla=43-maps.md#groupingby-eachcount}
 
 Una encuesta abierta recoge votos escritos a mano, con espacios y mayúsculas al azar. Implementa:
 

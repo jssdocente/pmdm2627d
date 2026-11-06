@@ -1,31 +1,38 @@
-
-
 # Sets en Kotlin
 
-En Kotlin, un `Set` es una colección de elementos únicos, lo que significa que no puede contener elementos duplicados. Los `Set` en Kotlin son inmutables por defecto, lo que significa que no puedes modificar su tamaño una vez que se han creado.
+Un `Set` es una colección de elementos **únicos**: si añades un elemento repetido, se ignora. Igual que con las listas, Kotlin separa el `Set` de solo lectura, que se crea con `setOf()`, del `MutableSet`, que se crea con `mutableSetOf()`.
 
 ```kotlin
-val numeros = setOf(1, 2, 3, 4, 5)
+val numeros = setOf(1, 2, 2, 3, 3, 3)
+println(numeros)      // [1, 2, 3]
+println(numeros.size) // 3
 ```
 
-En el ejemplo anterior, se crea un `Set` `numeros` con los valores `1, 2, 3, 4, 5`. Los `Set` en Kotlin se crean utilizando la función `setOf()` seguida de los valores del `Set` entre paréntesis.
+Para eliminar los duplicados de una lista, `toSet()` la convierte en un conjunto. Si prefieres seguir teniendo una lista, usa [`distinct()`](./42-listas.md#46-distinct-y-distinctby-eliminacion-de-duplicados).
+
+```kotlin
+val votos = listOf("rojo", "azul", "rojo")
+println(votos.toSet())    // [rojo, azul]
+println(votos.distinct()) // [rojo, azul]
+```
 
 ## Acceso a elementos de un Set
 
-Puedes acceder a elementos individuales de un `Set` utilizando la función `contains()` para comprobar si un elemento está presente en el `Set`.
+Un `Set` no tiene índices: no existe `numeros[0]`. Lo habitual es preguntar si un elemento está, con `in` o con `contains()`.
 
 ```kotlin
-val contieneTres = numeros.contains(3)
-val contieneSeis = numeros.contains(6)
+val numeros = setOf(1, 2, 3)
+println(3 in numeros)        // true
+println(numeros.contains(6)) // false
 ```
-
-En el ejemplo anterior, se comprueba si el `Set` `numeros` contiene los elementos `3` y `6` utilizando la función `contains()`.
 
 ## Iteración sobre un Set
 
-Puedes iterar sobre los elementos de un `Set` utilizando un bucle `for` o la función `forEach()`.
+Se recorre con un bucle `for` o con `forEach()`. `setOf` conserva el orden de inserción.
 
 ```kotlin
+val numeros = setOf(1, 2, 3)
+
 for (numero in numeros) {
     println(numero)
 }
@@ -35,68 +42,71 @@ numeros.forEach { numero ->
 }
 ```
 
-En el ejemplo anterior, se itera sobre los elementos del `Set` `numeros` utilizando un bucle `for` y la función `forEach()`.
-
-## Sets de tipos primitivos
-
-En Kotlin, puedes utilizar `Set` de tipos primitivos como `IntSet`, `DoubleSet`, `BooleanSet`, etc. para mejorar el rendimiento de tu código.
-
-```kotlin
-val enteros = intSetOf(1, 2, 3, 4, 5)
-val dobles = doubleSetOf(1.0, 2.0, 3.0, 4.0, 5.0)
-val booleanos = booleanSetOf(true, false, true, false)
-```
-
-En el ejemplo anterior, se crean `Set` de tipos primitivos `IntSet`, `DoubleSet` y `BooleanSet` con valores iniciales.
+Las [operaciones funcionales de las listas](./42-listas.md#que-metodo-uso), como `filter`, `map` o `any`, también funcionan sobre un `Set`. Eso sí, `filter` devuelve un `Set` y `map` una `List`, porque al transformar pueden aparecer repetidos.
 
 ## Modificación de elementos de un Set
 
-Los `Set` en Kotlin son inmutables por defecto, por lo que no puedes modificar los elementos de un `Set` una vez que se ha creado. Si necesitas un `Set` mutable, puedes utilizar la función `mutableSetOf()`.
+`Set` no tiene métodos para modificarlo. Para eso está `mutableSetOf()`. `add()` devuelve `true` si el elemento era nuevo y `false` si ya estaba.
 
 ```kotlin
-val numeros = mutableSetOf(1, 2, 3, 4, 5)
-numeros.add(6)
+val numeros = mutableSetOf(1, 2, 3)
+
+println(numeros.add(4)) // true
+println(numeros.add(1)) // false
+numeros.remove(2)
+println(numeros) // [1, 3, 4]
 ```
 
-En el ejemplo anterior, se crea un `Set` mutable `numeros` con los valores `1, 2, 3, 4, 5` y se añade el valor `6` al `Set` utilizando la función `add()`.
+Con un `Set` de solo lectura, `+` y `-` devuelven un conjunto nuevo:
+
+```kotlin
+val numeros = setOf(1, 2, 3)
+println(numeros + 4) // [1, 2, 3, 4]
+println(numeros - 1) // [2, 3]
+println(numeros)     // [1, 2, 3]
+```
 
 ## Operaciones con Sets
 
-Los `Set` en Kotlin proporcionan una serie de operaciones útiles, como `size` para obtener el tamaño del `Set`, `contains` para comprobar si un elemento está presente en el `Set`, `union` para unir dos `Set`, `intersect` para obtener la intersección de dos `Set`, etc.
+Son las operaciones de conjuntos de matemáticas. Las tres primeras se pueden escribir como función o de forma infija, y devuelven un `Set` nuevo.
 
 ```kotlin
-val numerosPares = setOf(2, 4, 6, 8, 10)
-val numerosImpares = setOf(1, 3, 5, 7, 9)
+val a = setOf(1, 2, 3)
+val b = setOf(2, 3, 4)
 
-val union = numeros.union(numerosPares)
-val interseccion = numeros.intersect(numerosImpares)
-val diferencia = numeros.subtract(numerosPares)
-val diferenciaSimetrica = numeros.symmetricDifference(numerosPares)
-val contieneTodos = numeros.containsAll(numerosPares)
-val contieneAlguno = numeros.containsAny(numerosPares)
-val esSubconjunto = numeros.isSubset(numerosPares)
-val esSuperconjunto = numeros.isSuperset(numerosPares)
-val esDisjunto = numeros.isDisjoint(numerosPares)
-val esVacio = numeros.isEmpty()
+println(a union b)     // [1, 2, 3, 4]
+println(a intersect b) // [2, 3]
+println(a subtract b)  // [1]
+println(a.union(b))    // [1, 2, 3, 4]
 ```
 
-En el ejemplo anterior, se utilizan las operaciones `union()` e `intersect()` para realizar operaciones comunes con los `Set` `numeros`, `numerosPares` y `numerosImpares`.
+| Quiero saber o calcular… | Cómo se escribe | Con `a` y `b` da |
+| :--- | :--- | :--- |
+| Todos los elementos de los dos | `a union b` | `[1, 2, 3, 4]` |
+| Los elementos comunes | `a intersect b` | `[2, 3]` |
+| Los de `a` que no están en `b` | `a subtract b` | `[1]` |
+| Los que están solo en uno de los dos | `(a union b) subtract (a intersect b)` | `[1, 4]` |
+| Si `a` contiene todos los de `b` | `a.containsAll(b)` | `false` |
+| Si tienen algún elemento en común | `a.any { it in b }` | `true` |
+| Si no tienen ninguno en común | `a.none { it in b }` | `false` |
+| Si está vacío | `a.isEmpty()` | `false` |
 
-Estas operaciones sirven para lo siguiente:
+```kotlin
+val a = setOf(1, 2, 3)
+val b = setOf(2, 3, 4)
 
-- `union()`: Devuelve un `Set` que contiene todos los elementos de los dos `Set`.
-- `intersect()`: Devuelve un `Set` que contiene los elementos comunes de los dos `Set`.
-- `subtract()`: Devuelve un `Set` que contiene los elementos del primer `Set` que no están en el segundo `Set`.
-- `symmetricDifference()`: Devuelve un `Set` que contiene los elementos que están en uno de los `Set` pero no en ambos.
-- `containsAll()`: Comprueba si un `Set` contiene todos los elementos de otro `Set`.
-- `containsAny()`: Comprueba si un `Set` contiene al menos un elemento de otro `Set`.
-- `isSubset()`: Comprueba si un `Set` es un subconjunto de otro `Set`.
-- `isSuperset()`: Comprueba si un `Set` es un superconjunto de otro `Set`.
-- `isDisjoint()`: Comprueba si dos `Set` son disjuntos, es decir, si no tienen elementos en común.
-- `isEmpty()`: Comprueba si un `Set` está vacío.
+println((a union b) subtract (a intersect b)) // [1, 4]
+println(a.containsAll(b))                     // false
+println(a.any { it in b })                    // true
+println(a.none { it in b })                   // false
+println(a.isEmpty())                          // false
+```
 
-Los `Set` en Kotlin son una forma eficiente de almacenar y manipular colecciones de elementos únicos. Puedes utilizar las operaciones proporcionadas por los `Set` para realizar operaciones comunes, como unir, intersecar, restar y comparar `Set` entre sí.
+`union`, `intersect` y `subtract` también funcionan sobre una lista, pero el resultado siempre es un `Set`:
 
-Si necesitas un `Set` mutable, puedes utilizar la función `mutableSetOf()` para crear un `Set` que puedas modificar. Los `Set` en Kotlin son una herramienta poderosa que te permite trabajar con colecciones de elementos únicos de forma eficiente y concisa.
+```kotlin
+println(listOf(1, 1, 2) union listOf(2, 3)) // [1, 2, 3]
+```
 
-
+!!! info "Otros lenguajes tienen más métodos"
+    Kotlin no incluye métodos como `isSubset` o `symmetricDifference`, habituales en otros lenguajes. Se escriben combinando los de la tabla.

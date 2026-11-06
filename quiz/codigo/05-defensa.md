@@ -162,7 +162,7 @@ Con todas las líneas en una única lista ya puedo agrupar por producto y sumar 
 - Menciono la equivalencia con `map` + `flatten()`.
 - Relaciono el tipo resultante con lo que necesito hacer después (agrupar o sumar).
 
-## kc-def-08 ¿Qué devuelve groupBy? {tema=agrupar dificultad=2 ancla=43-maps.md}
+## kc-def-08 ¿Qué devuelve groupBy? {tema=agrupar dificultad=2 ancla=43-maps.md#groupby}
 
 En tu solución escribes `ventas.groupBy { it.vendedor }.mapValues { (_, lista) -> lista.sumOf { it.importe } }`. Explica qué tipo devuelve cada una de las dos operaciones, qué es `(_, lista)` y qué otra forma hay de **contar** elementos por clave.
 

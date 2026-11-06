@@ -6,7 +6,7 @@ Con una lista de descargas aparecen las preguntas reales: cuáles han terminado,
 
 - **Tests:** `paso3_colecciones/EstadisticasTest.kt` (9 tests)
 
-- **Apuntes:** [Listas](../42-listas.md) y [Maps](../43-maps.md)
+- **Apuntes:** [Listas](../42-listas.md), [De una lista a un Map](../43-maps.md#de-lista-a-map), [Operaciones con Maps](../43-maps.md#operaciones-con-maps) y [«Cambiar» un mapa con `+` y `-`](../43-maps.md#mas-menos-map)
 
 ---
 

@@ -299,7 +299,7 @@ class BuscarPeliculaTest {
 
 Se arregla con el parámetro con nombre `ignoreCase = true`. Lo mismo ocurre con `equals`, `startsWith` o `endsWith`.
 
-## kc-err-07 Contar en vez de sumar {tema=agrupar dificultad=2 ancla=43-maps.md}
+## kc-err-07 Contar en vez de sumar {tema=agrupar dificultad=2 ancla=43-maps.md#groupby-mapvalues}
 
 `minutosPorApp` debe sumar los minutos de uso de cada aplicación del móvil. Este test falla:
 

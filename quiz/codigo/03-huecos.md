@@ -41,7 +41,7 @@ class AprobadosTest {
 - `sortedByDescending` ordena de mayor a menor según el campo indicado (`sortedBy` lo haría al revés).
 - `map` transforma cada `Alumno` en su `nombre`. Va al final: si fuera antes, ya no tendrías la nota para filtrar ni ordenar.
 
-## kc-hue-02 Gasto por categoría {tema=agrupar dificultad=2 ancla=43-maps.md}
+## kc-hue-02 Gasto por categoría {tema=agrupar dificultad=2 ancla=43-maps.md#groupby-mapvalues}
 
 Completa la función para que devuelva cuánto se ha gastado en **cada categoría**.
 
@@ -481,7 +481,7 @@ class PagoTest {
 - Un caso sin datos se declara como `data object`: hay una sola instancia y se compara directamente (`Pago.Efectivo ->`), sin `is`.
 - `when (pago)` usado como expresión devuelve el valor de la rama que coincide.
 
-## kc-hue-13 Buscar por código {tema=agrupar,nulos dificultad=2 ancla=43-maps.md}
+## kc-hue-13 Buscar por código {tema=agrupar,nulos dificultad=2 ancla=43-maps.md#associateby}
 
 Completa `stockDe`: crea un mapa de artículos indexado por su código y devuelve el stock de un código, o `0` si no existe.
 

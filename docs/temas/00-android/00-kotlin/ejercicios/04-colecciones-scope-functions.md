@@ -129,7 +129,7 @@ Inventario ampliado (+): [Poción, Antídoto, Elixir Mágico]
 
 #### Ejercicio 0.3: Transformación Declarativa con `.map { }`
 📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
-📚 **Teoría de referencia:** [Transformación con map](../42-listas.md#4-transformaciones-con-map-y-mapindexed)
+📚 **Teoría de referencia:** [Transformación con map](../42-listas.md#41-map-transformacion-elemento-a-elemento)
 
 ##### 1. Concepto y Código Resuelto
 En Java tradicional, transformar una lista requiere crear una lista vacía, iterar con un bucle `for` y añadir los elementos convertidos uno a uno. En Kotlin, `.map { }` aplica una transformación elemento a elemento y devuelve la nueva lista en una sola expresión.
@@ -182,7 +182,7 @@ Precios convertidos a EUR: [9.2, 18.4, 46.0]
 
 #### Ejercicio 0.4: Filtrado Declarativo con `.filter { }`
 📄 **Archivo:** `E00_CalentamientoColecciones.kt`  
-📚 **Teoría de referencia:** [Filtrado con filter](../42-listas.md#5-filtrado-con-filter-y-variantes)
+📚 **Teoría de referencia:** [Filtrado con filter](../42-listas.md#42-filter-filtrado-por-condicion)
 
 ##### 1. Enunciado y Código de Partida
 
@@ -479,7 +479,7 @@ Pendientes por encontrar (subtract): [Estrategia, Terror]
 
 ### Ejercicio 4.4: Mapas Asociativos (`Map`) y Acceso Seguro
 📄 **Archivo:** `E04_MapasYValoresPorDefecto.kt`  
-📚 **Teoría de referencia:** [Acceso a elementos de un Map](../43-maps.md#acceso-a-elementos-de-un-map) y [Operaciones con Maps](../43-maps.md#operaciones-con-maps)
+📚 **Teoría de referencia:** [Acceso a elementos de un Map](../43-maps.md#acceso-a-elementos-de-un-map) y [`getOrDefault` y `getOrElse`](../43-maps.md#getordefault-getorelse)
 
 #### 1. Enunciado y Código de Partida
 
@@ -558,7 +558,7 @@ Munición Arco (getOrElse con lógica): 5 (suministro base)
 
 ### Ejercicio 4.5: Búsqueda y Predicados (`find`, `any`, `all`, `none`)
 📄 **Archivo:** `E05_BusquedaYPredicados.kt`  
-📚 **Teoría de referencia:** [Búsqueda y Verificación: find, any, all](../42-listas.md#43-busqueda-y-verificacion-find-any-all)
+📚 **Teoría de referencia:** [Búsqueda y Verificación: find, any, all](../42-listas.md#43-busqueda-y-verificacion-find-any-all) y [`none`](../42-listas.md#413-first-firstornull-last)
 
 #### 1. Enunciado y Código de Partida
 
@@ -634,7 +634,7 @@ Primer jugador > 400 pts: 450
 
 ### Ejercicio 4.6: Agrupación con `groupBy` y Estadísticas
 📄 **Archivo:** `E06_GroupByEstadisticas.kt`  
-📚 **Teoría de referencia:** [Agrupación y Ordenación: groupBy y sortedBy](../42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby)
+📚 **Teoría de referencia:** [`groupBy`](../43-maps.md#groupby) y [resumir cada grupo con `mapValues`](../43-maps.md#groupby-mapvalues)
 
 #### 1. Enunciado y Código de Partida
 
@@ -708,7 +708,7 @@ Categoría: Consumible (2 items) -> Valor total: 80 monedas
 
 ### Ejercicio 4.7: `partition` y Ordenación Funcional
 📄 **Archivo:** `E07_PartitionYSorted.kt`  
-📚 **Teoría de referencia:** [Agrupación y Ordenación en Listas](../42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby)
+📚 **Teoría de referencia:** [`partition`](../42-listas.md#48-partition-bifurcacion-en-dos-listas-simultaneas) y [Ordenar](../42-listas.md#410-ordenar)
 
 #### 1. Enunciado y Código de Partida
 
@@ -797,7 +797,7 @@ Total cuentas gratuitas: 2
 
 ### Ejercicio 4.8: Indexación Eficiente con `associateBy` y `associateWith`
 📄 **Archivo:** `E08_AssociateByYWith.kt`  
-📚 **Teoría de referencia:** [Operaciones con Maps: Creación e Indexación](../43-maps.md#operaciones-con-maps)
+📚 **Teoría de referencia:** [`associateBy`](../43-maps.md#associateby) y [`associateWith`](../43-maps.md#associatewith)
 
 #### 1. Enunciado y Código de Partida
 
@@ -887,7 +887,7 @@ Estados iniciales: {P-02=CARGADO, P-99=CARGADO}
 
 ### Ejercicio 4.9: Aplanado de Jerarquías con `flatten` y `flatMap`
 📄 **Archivo:** `E09_FlattenYFlatMap.kt`  
-📚 **Teoría de referencia:** [Operaciones Funcionales Imprescindibles en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
+📚 **Teoría de referencia:** [`flatMap` y `flatten`](../42-listas.md#45-flatmap-aplanando-colecciones-anidadas)
 
 #### 1. Enunciado y Código de Partida
 
@@ -1239,7 +1239,7 @@ fun main() {
 
 ### Ejercicio 4.13: Particionamiento y Paginación con `.chunked()` y `.windowed()`
 📄 **Archivo:** `E13_ChunkedWindowed.kt`  
-📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-transformaciones-con-map-y-mapindexed)
+📚 **Teoría de referencia:** [`chunked` y `windowed`](../42-listas.md#416-chunked-windowed)
 
 #### 1. Enunciado y Código de Partida
 
@@ -1321,7 +1321,7 @@ Ventana [55, 70, 65] -> Media: 63.3 ms
 
 ### Ejercicio 4.14: Emparejado y Separación de Listas con `.zip()` y `.unzip()`
 📄 **Archivo:** `E14_ZipUnzip.kt`  
-📚 **Teoría de referencia:** [Listas y Operaciones Funcionales](../42-listas.md)
+📚 **Teoría de referencia:** [`zip` y `unzip`](../42-listas.md#417-zip-unzip) y [`toMap`](../43-maps.md#tomap)
 
 #### 1. Enunciado y Código de Partida
 
@@ -1398,7 +1398,7 @@ Desacoplado con unzip:
 
 ### Ejercicio 4.15: Acumuladores Funcionales Puros: `.fold()` frente a `.reduce()`
 📄 **Archivo:** `E15_FoldVsReduce.kt`  
-📚 **Teoría de referencia:** [Operaciones Funcionales en Listas](../42-listas.md#4-operaciones-funcionales-imprescindibles)
+📚 **Teoría de referencia:** [`fold` y `reduce`](../42-listas.md#415-fold-reduce)
 
 #### 1. Enunciado y Código de Partida
 

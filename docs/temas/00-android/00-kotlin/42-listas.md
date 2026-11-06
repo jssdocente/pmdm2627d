@@ -75,15 +75,36 @@ println("Actualizada: $listaActualizada") // [Kotlin, Android, Jetpack Compose]
 
 ## 4. Operaciones Funcionales Imprescindibles
 
-La biblioteca estándar de Kotlin cuenta con un riquísimo catálogo de funciones de extensión para transformar y consultar listas sin necesidad de escribir bucles manuales:
+La biblioteca estándar de Kotlin cuenta con un riquísimo catálogo de funciones de extensión para transformar y consultar listas sin necesidad de escribir bucles manuales.
+
+### ¿Qué método uso? {#que-metodo-uso}
+
+| Quiero… | Método | Devuelve |
+| :--- | :--- | :--- |
+| Transformar cada elemento | [`map`](#41-map-transformacion-elemento-a-elemento), [`mapIndexed`](#411-mapindexed), [`mapNotNull`](#412-filtrar-mas) | `List<R>` |
+| Quedarme con algunos elementos | [`filter`](#42-filter-filtrado-por-condicion), [`filterNot`, `filterNotNull`](#412-filtrar-mas) | `List<T>` |
+| Separar los que cumplen y los que no | [`partition`](#48-partition-bifurcacion-en-dos-listas-simultaneas) | `Pair<List<T>, List<T>>` |
+| Encontrar un elemento | [`find`, `firstOrNull`, `first`](#413-first-firstornull-last) | `T?` o `T` |
+| Saber si alguno, todos o ninguno cumple | [`any`, `all`](#43-busqueda-y-verificacion-find-any-all), [`none`](#413-first-firstornull-last) | `Boolean` |
+| Ordenar | [`sortedBy`, `sortedByDescending`, `sorted`, `sortedWith`](#410-ordenar) | `List<T>` |
+| Quitar repetidos | [`distinct`, `distinctBy`](#46-distinct-y-distinctby-eliminacion-de-duplicados) | `List<T>` |
+| Los primeros o los últimos | [`take`, `drop`, `takeLast`](#47-take-y-drop-seleccion-y-descarte-por-cantidad) | `List<T>` |
+| Aplanar listas anidadas | [`flatMap`, `flatten`](#45-flatmap-aplanando-colecciones-anidadas) | `List<R>` |
+| Trocear en bloques | [`chunked`, `windowed`](#416-chunked-windowed) | `List<List<T>>` |
+| Emparejar dos listas | [`zip`, `unzip`](#417-zip-unzip) | `List<Pair<A, B>>` |
+| Un solo número: suma, media, máximo, recuento | [`sumOf`, `average`, `maxByOrNull`, `count`](#49-operaciones-de-agregacion-sumof-maxbyornull-count-average) | Un número o `T?` |
+| Un solo valor acumulado a mi manera | [`fold`, `reduce`](#415-fold-reduce) | `R` o `T` |
+| Un texto con todos los elementos | [`joinToString`](#418-jointostring) | `String` |
+| Otro tipo de colección | [`toSet`, `toMutableList`](#419-convertir) | `Set<T>`, `MutableList<T>` |
+| **Un `Map`:** buscar por clave, agrupar o contar | [`associateBy`, `groupBy`, `eachCount`…](./43-maps.md#que-metodo-uso) | `Map<K, V>` |
 
 ### 4.1. `map`: Transformación elemento a elemento
 Aplica una función a cada elemento y produce una nueva lista con los resultados:
 
 ```kotlin
-val preciosDolares = listOf(10.0, 20.0, 50.0)
-val preciosEuros = preciosDolares.map { it * 0.92 }
-println(preciosEuros) // [9.2, 18.4, 46.0]
+val precios = listOf(10.0, 20.0, 50.0)
+val mitadDePrecio = precios.map { it / 2 }
+println(mitadDePrecio) // [5.0, 10.0, 25.0]
 ```
 
 ### 4.2. `filter`: Filtrado por condición
@@ -125,8 +146,10 @@ val ordenados = catalogo.sortedBy { it.precio }
 
 // Agrupar en un Map por categoría:
 val porCategoria = catalogo.groupBy { it.categoria }
-println(porCategoria["Accesorios"]) // Lista con Mando Pro y Funda Switch
+println(porCategoria["Accesorios"]?.map { it.nombre }) // [Mando Pro, Funda Switch]
 ```
+
+`groupBy` devuelve un `Map`, no una lista. En [Maps](./43-maps.md#groupby) está explicado con más detalle, junto con cómo [resumir cada grupo con `mapValues`](./43-maps.md#groupby-mapvalues) y [contar con `eachCount`](./43-maps.md#groupingby-eachcount).
 
 ### 4.5. `flatMap`: Aplanando colecciones anidadas
 Cuando cada elemento contiene a su vez una lista (relaciones 1 a N) y deseas obtener una única lista plana con todos los elementos combinados:
@@ -144,6 +167,12 @@ val equipo = listOf(
 val todasHabilidades = equipo.flatMap { it.habilidades }
 println(todasHabilidades)
 // [Kotlin, Compose, Kotlin, Corrutinas, Room, Figma, Compose]
+```
+
+Si ya tienes una lista de listas, `flatten()` hace lo mismo sin lambda:
+
+```kotlin
+println(listOf(listOf(1, 2), listOf(3)).flatten()) // [1, 2, 3]
 ```
 
 ### 4.6. `distinct` y `distinctBy`: Eliminación de duplicados
@@ -164,6 +193,7 @@ val puntuaciones = listOf(100, 95, 88, 70, 65, 40)
 
 val podio = puntuaciones.take(3)        // [100, 95, 88] (Primeros 3)
 val resto = puntuaciones.drop(3)        // [70, 65, 40] (Descarta los 3 primeros)
+val ultimos = puntuaciones.takeLast(2)  // [65, 40] (Últimos 2)
 val aprobados = puntuaciones.takeWhile { it >= 50 } // [100, 95, 88, 70, 65]
 ```
 
@@ -183,10 +213,175 @@ println("Suspensos: $suspensosList") // [4.5, 3.8]
 val precios = listOf(19.99, 49.99, 9.99)
 
 val totalGastado = precios.sumOf { it }          // 79.97
-val precioMedio = precios.average()             // 26.65
+val precioMedio = precios.average()             // 26.656666666666666
 val articulosCaros = precios.count { it > 20 }   // 1
 val masCaro = catalogo.maxByOrNull { it.precio } // Producto con precio más alto
+val masBarato = catalogo.minByOrNull { it.precio } // Producto con precio más bajo
+val precioMaximo = catalogo.maxOf { it.precio }  // 89.99 (el valor, no el producto)
 ```
+
+### 4.10. Ordenar: `sorted`, `sortedByDescending` y `sortedWith` {#410-ordenar}
+
+Ninguna modifica la lista original: todas devuelven una lista nueva.
+
+```kotlin
+val numeros = listOf(3, 1, 2)
+println(numeros.sorted())           // [1, 2, 3]
+println(numeros.sortedDescending()) // [3, 2, 1]
+
+val palabras = listOf("bb", "a", "ccc")
+println(palabras.sortedBy { it.length })           // [a, bb, ccc]
+println(palabras.sortedByDescending { it.length }) // [ccc, bb, a]
+```
+
+Para ordenar por varios criterios, `sortedWith` con `compareBy`: el segundo criterio decide cuando hay empate en el primero. `compareByDescending` y `thenByDescending` ordenan de mayor a menor.
+
+```kotlin
+val palabras = listOf("bb", "a", "ab")
+println(palabras.sortedWith(compareBy({ it.length }, { it }))) // [a, ab, bb]
+println(palabras.sortedWith(compareByDescending<String> { it.length }.thenBy { it }))
+// [ab, bb, a]
+```
+
+### 4.11. `mapIndexed` y `forEachIndexed`: con el índice {#411-mapindexed}
+
+Son `map` y `forEach` con la posición de cada elemento como primer parámetro de la lambda:
+
+```kotlin
+val nombres = listOf("Ana", "Luis")
+
+println(nombres.mapIndexed { i, nombre -> "${i + 1}. $nombre" })
+// [1. Ana, 2. Luis]
+
+nombres.forEachIndexed { i, nombre ->
+    println("$i: $nombre")
+}
+```
+
+### 4.12. `filterNot`, `filterNotNull` y `mapNotNull`: filtrar con más precisión {#412-filtrar-mas}
+
+```kotlin
+val numeros = listOf(1, 2, 3, 4)
+println(numeros.filterNot { it % 2 == 0 }) // [1, 3]
+
+val conNulos: List<String?> = listOf("Ana", null, "Luis")
+println(conNulos.filterNotNull()) // [Ana, Luis]
+
+val textos = listOf("1", "dos", "3")
+println(textos.mapNotNull { it.toIntOrNull() }) // [1, 3]
+```
+
+`filterNotNull` cambia el tipo de `List<String?>` a `List<String>`. `mapNotNull` transforma y descarta a la vez los resultados `null`, en un solo paso.
+
+### 4.13. `first`, `firstOrNull`, `last` y `none` {#413-first-firstornull-last}
+
+```kotlin
+val numeros = listOf(1, 2, 3, 4)
+
+println(numeros.first())                 // 1
+println(numeros.last())                  // 4
+println(numeros.first { it > 2 })        // 3
+println(numeros.firstOrNull { it > 10 }) // null
+println(numeros.none { it > 10 })        // true
+```
+
+`first` lanza `NoSuchElementException` si no encuentra nada, y `firstOrNull` devuelve `null`. `find` es otro nombre para `firstOrNull` con condición. `none` es lo contrario de `any`.
+
+### 4.14. Qué pasa con una lista vacía {#414-lista-vacia}
+
+Muchos fallos vienen de aquí, así que conviene saberlo:
+
+```kotlin
+val vacia = emptyList<Int>()
+
+println(vacia.sum())              // 0
+println(vacia.average())          // NaN
+println(vacia.maxByOrNull { it }) // null
+println(vacia.firstOrNull())      // null
+println(vacia.all { it > 0 })     // true
+println(vacia.any { it > 0 })     // false
+```
+
+`first()` y `reduce` lanzan una excepción con una lista vacía.
+
+### 4.15. `fold` y `reduce`: acumular a tu manera {#415-fold-reduce}
+
+Cuando `sumOf` o `count` no bastan, estas dos recorren la lista y combinan cada elemento con un **acumulador**.
+
+```kotlin
+val numeros = listOf(1, 2, 3)
+
+println(numeros.reduce { acumulado, n -> acumulado + n })    // 6
+println(numeros.fold(100) { acumulado, n -> acumulado + n }) // 106
+println(numeros.fold("") { texto, n -> texto + n })          // 123
+```
+
+| | `reduce` | `fold` |
+| :--- | :--- | :--- |
+| **Valor inicial** | El primer elemento | El que le pases |
+| **Tipo del resultado** | El de los elementos | El del valor inicial, que puede ser otro |
+| **Con una lista vacía** | Lanza una excepción | Devuelve el valor inicial |
+
+Por eso `fold` es la opción más segura. Así funciona paso a paso `fold(100)`: `100 + 1 = 101`, `101 + 2 = 103` y `103 + 3 = 106`.
+
+### 4.16. `chunked` y `windowed`: trocear en bloques {#416-chunked-windowed}
+
+`chunked` parte la lista en bloques sin solaparse, y `windowed` desliza una ventana sobre ella:
+
+```kotlin
+val numeros = listOf(1, 2, 3, 4, 5)
+
+println(numeros.chunked(2))                   // [[1, 2], [3, 4], [5]]
+println(numeros.windowed(3))                  // [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
+println(numeros.windowed(size = 2, step = 2)) // [[1, 2], [3, 4]]
+```
+
+`chunked` sirve para paginar, y `windowed` para calcular medias móviles. Observa que el último bloque de `chunked` puede ser más corto, mientras que `windowed` descarta las ventanas incompletas.
+
+### 4.17. `zip` y `unzip`: emparejar listas {#417-zip-unzip}
+
+`zip` empareja dos listas por posición y se detiene al acabarse la más corta. `unzip` hace lo contrario.
+
+```kotlin
+val nombres = listOf("Ana", "Luis", "Eva")
+val notas = listOf(8, 4)
+
+println(nombres.zip(notas))         // [(Ana, 8), (Luis, 4)]
+println(nombres.zip(notas).toMap()) // {Ana=8, Luis=4}
+
+val (izquierda, derecha) = listOf("a" to 1, "b" to 2).unzip()
+println(izquierda) // [a, b]
+println(derecha)   // [1, 2]
+```
+
+### 4.18. `joinToString`: de lista a texto {#418-jointostring}
+
+```kotlin
+val nombres = listOf("Ana", "Luis")
+
+println(nombres.joinToString())                  // Ana, Luis
+println(nombres.joinToString(" | "))             // Ana | Luis
+println(nombres.joinToString(" y ") { "- $it" }) // - Ana y - Luis
+println(nombres.joinToString(prefix = "[", postfix = "]") { it.uppercase() })
+// [ANA, LUIS]
+```
+
+La lambda transforma cada elemento antes de unirlo, así que no necesitas un `map` previo.
+
+### 4.19. Convertir entre colecciones {#419-convertir}
+
+Cada `toX()` crea una colección nueva, sin cambiar la original:
+
+```kotlin
+val numeros = listOf(1, 1, 2)
+
+println(numeros.toSet())             // [1, 2]
+println(numeros.toMutableList() + 3) // [1, 1, 2, 3]
+println(setOf(1, 2).toList())        // [1, 2]
+println(listOf("a" to 1).toMap())    // {a=1}
+```
+
+Para pasar de una lista a un `Map` calculando las claves, consulta [Maps](./43-maps.md#de-lista-a-map), y para el camino inverso, [de un `Map` a una lista](./43-maps.md#de-map-a-lista).
 
 ---
 
@@ -407,7 +602,7 @@ Si ya conoces la API de Streams de Java (de 1º de DAM o *Acceso a Datos*), `Seq
 ## 7. Retos Prácticos
 
 ### 🟢 Reto 1: Transformación de nombres (Básico)
-Dada una lista `listOf("juan", "maría", "pedro")`, utiliza `map` para obtener una nueva lista donde cada nombre tenga la primera letra en mayúscula (`capitalize()` / `replaceFirstChar { it.uppercase() }`).
+Dada una lista `listOf("juan", "maría", "pedro")`, utiliza `map` para obtener una nueva lista donde cada nombre tenga la primera letra en mayúscula (`replaceFirstChar { it.uppercase() }`).
 
 ??? tip "Ver solución"
     ```kotlin

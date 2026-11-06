@@ -146,7 +146,7 @@ class ParkingTest {
 - Después se crea la copia y se devuelve. Cualquier línea detrás de un `return` sería código inalcanzable.
 - Sobra `parking.ocupadas += coches`: `ocupadas` es `val`, así que **no compila**, y aunque fuera `var`, mutaría el objeto original en lugar de devolver uno nuevo.
 
-## kc-par-04 Informe de gastos {tema=agrupar dificultad=3 ancla=43-maps.md}
+## kc-par-04 Informe de gastos {tema=agrupar dificultad=3 ancla=43-maps.md#groupby-mapvalues}
 
 Ordena el *pipeline* que genera un informe con el total de cada categoría, **de mayor a menor gasto**, una por línea (por ejemplo, `OCIO: 30.0`). **Una línea sobra.**
 
@@ -345,7 +345,7 @@ En un `when` sin argumento gana la **primera** rama verdadera, así que las cond
 
 Sobra `total < 50.0 -> "envío gratis"`: contradice el enunciado.
 
-## kc-par-09 Contar votos {tema=agrupar dificultad=2 ancla=43-maps.md}
+## kc-par-09 Contar votos {tema=agrupar dificultad=2 ancla=43-maps.md#groupingby-eachcount}
 
 Ordena el *pipeline* que cuenta los votos de una encuesta, sin tener en cuenta mayúsculas ni espacios y descartando los votos vacíos. **Una línea sobra.**
 

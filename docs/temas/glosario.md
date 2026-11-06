@@ -130,6 +130,14 @@ Intenta convertir a un tipo y devuelve `null` si no puede, en lugar de lanzar un
 **Dónde:** [Kotlin · Casteo seguro](00-android/00-kotlin/14-null-safety.md#4-casteo-seguro-de-tipos-as)<br>
 **Ver también:** [Smart cast](#smart-cast)
 
+#### `associateBy`, `associateWith` y `associate` {#associateby}
+
+Funciones que convierten una lista en un `Map`. Se diferencian en qué es el valor: el elemento (`associateBy`), un dato calculado (`associateWith`) o lo que elijas (`associate`).
+
+**Dónde:** [Kotlin · De una lista a un Map](00-android/00-kotlin/43-maps.md#de-lista-a-map)<br>
+**Practica:** [Codelab de Kotlin · Colecciones y Maps](00-android/00-kotlin/codelabs/03-colecciones-maps.md#1-la-idea-en-un-minuto)<br>
+**Ver también:** [`Map`](#map) · [`groupBy`](#groupby)
+
 #### `!!` (aserción no nula) {#asercion-no-nula}
 
 Operador que afirma que un valor no es `null`. Si lo es, lanza `NullPointerException`, así que anula la protección de *null safety*.
@@ -599,6 +607,13 @@ Implementación sencilla pero funcional de una interfaz, escrita por ti y con da
 **Dónde:** [3C.4 · Fakes frente a mocks](03/c-arquitectura/3c.4-testing.md#31-fakes-frente-a-mocks) · [3C.4 · Un repositorio de prueba](03/c-arquitectura/3c.4-testing.md#32-un-repositorio-de-prueba-controlable)<br>
 **Ver también:** [Mock](#mock) · [Repositorio](#repositorio)
 
+#### `filterKeys` y `filterValues` {#filterkeys}
+
+Filtran un `Map` según su clave o su valor, y devuelven otro `Map`.
+
+**Dónde:** [Kotlin · Filtrar un Map](00-android/00-kotlin/43-maps.md#filtrar-un-map)<br>
+**Ver también:** [`Map`](#map) · [`mapValues`](#mapvalues)
+
 #### Firma de la app {#firma}
 
 Toda app debe estar firmada para instalarse: la firma demuestra quién la publica y que no se ha alterado. La clave se guarda en un *keystore*.
@@ -620,6 +635,14 @@ Un flujo frío empieza a emitir por cada colector que se conecta, y uno caliente
 
 **Dónde:** [Kotlin · Fríos y calientes](00-android/00-kotlin/52-flows.md#3-flujos-frios-cold-streams-vs-flujos-calientes-hot-streams)<br>
 **Ver también:** [`Flow`](#flow) · [`StateFlow`](#stateflow) · [`SharedFlow`](#sharedflow)
+
+#### `fold` y `reduce` {#fold}
+
+Recorren una lista y combinan cada elemento con un acumulador para obtener un único valor. `fold` recibe el valor inicial, y `reduce` empieza por el primer elemento.
+
+**Dónde:** [Kotlin · `fold` y `reduce`](00-android/00-kotlin/42-listas.md#415-fold-reduce)<br>
+**Practica:** [Ejercicios de Kotlin · Ejercicio 4.15](00-android/00-kotlin/ejercicios/04-colecciones-scope-functions.md#ejercicio-415-acumuladores-funcionales-puros-fold-frente-a-reduce)<br>
+**Ver también:** [Pipeline de colecciones](#pipeline)
 
 #### Flutter {#flutter}
 
@@ -664,6 +687,14 @@ Modificador que transforma el dibujo (rotación, escala, opacidad) sin volver a 
 
 **Dónde:** [3A.4 · `graphicsLayer`](03/a-diseno/3a.4-animaciones.md#2-transformar-el-dibujo-graphicslayer)<br>
 **Ver también:** [`animate*AsState`](#animate-as-state)
+
+#### `groupBy` {#groupby}
+
+Reparte una lista en un `Map` cuyas claves son los grupos y cuyos valores son listas con los elementos de cada grupo. Suele ir seguido de `mapValues` para resumir cada grupo.
+
+**Dónde:** [Kotlin · `groupBy`](00-android/00-kotlin/43-maps.md#groupby) · [Kotlin · `groupBy` + `mapValues`](00-android/00-kotlin/43-maps.md#groupby-mapvalues)<br>
+**Practica:** [Codelab de Kotlin · Colecciones y Maps](00-android/00-kotlin/codelabs/03-colecciones-maps.md#1-la-idea-en-un-minuto)<br>
+**Ver también:** [`Map`](#map) · [`mapValues`](#mapvalues) · [`associateBy`](#associateby)
 
 ## H {#letra-h}
 
@@ -912,6 +943,22 @@ Fichero que describe la app al sistema: nombre, icono, componentes y permisos.
 **Dónde:** [UT2 · El archivo Manifest](02/2.1-primeros-pasos.md#31-el-archivo-androidmanifestxml) · [Herramientas · Permisos y hardware](00-android/00-tools/03-android-manifest.md#1-permisos-y-hardware-declarando-intenciones)<br>
 **Ver también:** [Componentes de Android](#componentes-de-android) · [Intent filter](#intent-filter)
 
+#### `Map` {#map}
+
+Colección de pares clave-valor en la que cada clave aparece una sola vez. `Map` es de solo lectura, y `MutableMap` se puede modificar.
+
+**Dónde:** [Kotlin · Qué método uso](00-android/00-kotlin/43-maps.md#que-metodo-uso) · [Kotlin · De una lista a un Map](00-android/00-kotlin/43-maps.md#de-lista-a-map)<br>
+**Practica:** [Codelab de Kotlin · Colecciones y Maps](00-android/00-kotlin/codelabs/03-colecciones-maps.md#1-la-idea-en-un-minuto)<br>
+**Ver también:** [`associateBy`](#associateby) · [`groupBy`](#groupby) · [`mapValues`](#mapvalues)
+
+#### `mapValues` y `mapKeys` {#mapvalues}
+
+Crean otro `Map` cambiando sus valores (`mapValues`) o sus claves (`mapKeys`). Dentro de la lambda, `it` es la entrada completa, no el valor.
+
+**Dónde:** [Kotlin · `mapValues`](00-android/00-kotlin/43-maps.md#mapvalues) · [Kotlin · `mapKeys`](00-android/00-kotlin/43-maps.md#mapkeys)<br>
+**Practica:** [Codelab de Kotlin · Colecciones y Maps](00-android/00-kotlin/codelabs/03-colecciones-maps.md#1-la-idea-en-un-minuto)<br>
+**Ver también:** [`Map`](#map) · [`groupBy`](#groupby)
+
 #### Mapper {#mapper}
 
 Función que convierte un modelo de una capa al de otra, normalmente como función de extensión: `JuegoDto.toDomain()`.
@@ -1102,7 +1149,7 @@ Cadena de operaciones como `filter`, `map` o `sortedBy`, cada una de las cuales 
 
 **Dónde:** [Kotlin · Operaciones funcionales](00-android/00-kotlin/42-listas.md#4-operaciones-funcionales-imprescindibles) · [Kotlin · Pipelines](00-android/00-kotlin/42-listas.md#5-programacion-fluent-pipelines-de-transformacion-encadenados)<br>
 **Practica:** [Codelab de Kotlin · Colecciones y Maps](00-android/00-kotlin/codelabs/03-colecciones-maps.md#1-la-idea-en-un-minuto)<br>
-**Ver también:** [`Sequence`](#sequence)
+**Ver también:** [`Sequence`](#sequence) · [`Map`](#map) · [`groupBy`](#groupby)
 
 #### Pirámide de tests {#piramide-de-tests}
 

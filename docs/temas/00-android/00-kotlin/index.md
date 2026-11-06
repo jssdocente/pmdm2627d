@@ -29,7 +29,8 @@ Este bloque formativo está diseñado específicamente para alumnos de 2º de DA
 
 - **[Funciones de Ámbito (Scope Functions)](./31-scope-functions.md):** Guía comparativa de `let`, `apply`, `also`, `run` y `with` con casos de uso en Android.
 - **[Listas y Operaciones Funcionales](./42-listas.md):** Listas inmutables `List` vs `MutableList`, adición funcional (`+`), transformaciones con `map`, `filter`, `groupBy`.
-- **[Colecciones Asociativas (Mapas y Sets)](./43-maps.md):** Almacenamiento clave-valor y conjuntos únicos.
+- **[Maps](./43-maps.md):** Almacenamiento clave-valor, de una lista a un `Map` (`associateBy`, `groupBy`) y operaciones (`mapValues`, `filterValues`), con una tabla de qué método usar.
+- **[Sets](./44-sets.md):** Conjuntos de elementos únicos y operaciones de conjuntos.
 - **[Programación Asíncrona con Corrutinas](./51-corrutinas.md):** La analogía del camarero, ANR, funciones `suspend`, constructores `launch`/`async` y Dispatchers en Android.
 - **[Flujos Asíncronos y Reactivos (Flow y StateFlow)](./52-flows.md):** Flujos fríos vs calientes, `StateFlow` en Android, emisión reactiva hacia Compose y Room.
 - **[Anexo: La Magia de los DSLs en Kotlin](./61-dsl-en-kotlin.md):** Cómo Compose, Gradle y Koin crean sintaxis declarativa mediante lambdas con receptor, trailing lambdas, funciones de extensión y el operador `invoke`.
