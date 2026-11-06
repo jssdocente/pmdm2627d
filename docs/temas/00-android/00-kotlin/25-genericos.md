@@ -175,3 +175,9 @@ Escribe una función genérica `filtrarMayoresQue<T : Comparable<T>>(lista: List
         println("Notas superiores a 7.0: $aprobadosAltos") // [9.2, 8.0]
     }
     ```
+
+---
+
+!!! tip "Practícalo en el codelab"
+
+    Pon en práctica este tema con tests que te corrigen al momento: [Codelab de Kotlin, Paso 2](./codelabs/02-genericos.md).

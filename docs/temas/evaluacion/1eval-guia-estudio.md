@@ -39,6 +39,7 @@ La evaluación tiene cuatro partes, y todas se apoyan en las mismas bases:
 | :--- | :--- | :--- | :--- |
 | [🎯 Práctica tipo test](practica-kotlin.md) | 396 preguntas de 11 bloques, con explicación de cada opción | Navegador | Aprender a **leer** Kotlin; Simulacro con el baremo real |
 | [🧪 Práctica de código y TDD](practica-codigo.md) | 64 ejercicios: katas, encontrar el error, huecos, ordenar líneas y explicar código | Navegador | Entrenar sin montar un proyecto |
+| [🧩 Codelab de Kotlin](../00-android/00-kotlin/codelabs/index.md) | 7 pasos con tests ya escritos sobre un único proyecto: sellados, genéricos, Maps, *scope functions*, corrutinas y flujos | IDE | Practicar lo importante con poco tiempo |
 | [Laboratorio de Kotlin](../00-android/00-kotlin/ejercicios/index.md#entorno-de-trabajo-un-unico-proyecto-en-intellij-idea) (`pmdm-kotlin-lab`) | Un proyecto de consola para todos los ejercicios | IDE | Practicar cada bloque |
 | [Talleres de testing](../00-android/00-kotlin/testing/index.md#6-talleres-practicos-de-testing-de-retos) y [modelo resuelto](../../_res/00-ejemplo-modelo-resuelto.zip) | Proyectos con tests, como el examen | IDE | Simular el examen práctico |
 | **FichaJuego**, [el proyecto de clase](../02/sesiones/index.md#el-proyecto-de-clase-fichajuego) | Una app que crece sesión a sesión, con un tag por sesión | IDE y emulador | Ver cada pieza en una app real |

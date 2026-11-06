@@ -733,3 +733,9 @@ Simula la carga de un juego descargando en paralelo sus texturas (demora 1.5 s) 
         println("Tiempo total en paralelo: $totalMs ms (menos de 2 segundos)")
     }
     ```
+
+---
+
+!!! tip "Practícalo en el codelab"
+
+    Pon en práctica este tema con tests que te corrigen al momento: [Codelab de Kotlin, Pasos 5 y 6](./codelabs/05-suspend-async.md).

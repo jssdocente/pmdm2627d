@@ -87,3 +87,9 @@ Estas operaciones sirven para lo siguiente:
 Los `Map` en Kotlin son una forma eficiente de almacenar y acceder a datos asociados a claves. Puedes utilizar `Map` para representar relaciones entre objetos y realizar operaciones comunes con ellos de forma sencilla y eficiente.
 
 Para más información sobre los `Map` en Kotlin, puedes consultar la [documentación oficial de Kotlin sobre Maps](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/).`;
+
+---
+
+!!! tip "Practícalo en el codelab"
+
+    Pon en práctica este tema con tests que te corrigen al momento: [Codelab de Kotlin, Paso 3](./codelabs/03-colecciones-maps.md).

@@ -36,6 +36,12 @@ Este bloque formativo está diseñado específicamente para alumnos de 2º de DA
 
 ---
 
+## 🧪 Codelab de Kotlin
+
+El [Codelab de Kotlin](./codelabs/index.md) es el camino corto para practicar: siete pasos sobre un gestor de descargas, con tests ya escritos que te corrigen al momento. Cubre tipos sellados, genéricos, colecciones y Maps, *scope functions*, corrutinas y flujos.
+
+---
+
 ## 🎯 Laboratorio Práctico (`pmdm-kotlin-lab`)
 
 Accede al bloque de ejercicios estructurados en un único proyecto de IntelliJ IDEA con soluciones comentadas y retos lúdicos graduados:

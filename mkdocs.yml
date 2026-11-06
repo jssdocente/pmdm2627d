@@ -32,6 +32,15 @@ nav:
               - "Corrutinas": temas/00-android/00-kotlin/51-corrutinas.md
               - "Flujos Asíncronos (Flow y StateFlow)": temas/00-android/00-kotlin/52-flows.md
               - "Anexo: La Magia de los DSLs": temas/00-android/00-kotlin/61-dsl-en-kotlin.md
+          - "Codelab de Kotlin":
+              - "Presentación y preparación": temas/00-android/00-kotlin/codelabs/index.md
+              - "Paso 1: Tipos sellados": temas/00-android/00-kotlin/codelabs/01-tipos-sellados.md
+              - "Paso 2: Genéricos": temas/00-android/00-kotlin/codelabs/02-genericos.md
+              - "Paso 3: Colecciones y Maps": temas/00-android/00-kotlin/codelabs/03-colecciones-maps.md
+              - "Paso 4: Scope functions": temas/00-android/00-kotlin/codelabs/04-scope-functions.md
+              - "Paso 5: suspend y async": temas/00-android/00-kotlin/codelabs/05-suspend-async.md
+              - "Paso 6: Cancelación y errores": temas/00-android/00-kotlin/codelabs/06-cancelacion-errores.md
+              - "Paso 7: Flow y StateFlow": temas/00-android/00-kotlin/codelabs/07-flow-stateflow.md
           - "Actividades":
               - "🎯 Practica Kotlin (test)": temas/evaluacion/practica-kotlin.md
               - "🧪 Practica Kotlin (código y TDD)": temas/evaluacion/practica-codigo.md

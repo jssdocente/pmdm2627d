@@ -1,0 +1,35 @@
+<svg class="arq-svg" viewBox="0 0 760 240" role="img" aria-labelledby="arq-ckf-t arq-ckf-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-ckf-t">Del flujo de progreso al estado de la pantalla</title>
+  <desc id="arq-ckf-d">progreso emite porcentajes, comoEstados los convierte en estados y GestorDescargas.iniciar los recoge y actualiza un StateFlow con el mapa de descargas. De ese StateFlow leen la pantalla con collect y activas, que deriva el número de descargas en curso.</desc>
+  <defs>
+    <marker id="arq-ckf-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-ckf-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="16" y="44" width="150" height="70" rx="8" class="arq-ui"/>
+  <text x="26" y="70" class="arq-t arq-code" style="font-size:11px">progreso(5, 400)</text>
+  <text x="26" y="94" class="arq-t arq-xs">20, 40, 60, 80, 100</text>
+  <rect x="196" y="44" width="160" height="70" rx="8" class="arq-ui"/>
+  <text x="206" y="70" class="arq-t arq-code" style="font-size:11px">comoEstados(ruta)</text>
+  <text x="206" y="94" class="arq-t arq-xs">Descargando… Completada</text>
+  <rect x="386" y="44" width="120" height="70" rx="8" class="arq-dom"/>
+  <text x="396" y="70" class="arq-t arq-code" style="font-size:11px">iniciar(id)</text>
+  <text x="396" y="94" class="arq-t arq-xs">collect y update</text>
+  <rect x="536" y="44" width="208" height="70" rx="8" class="arq-data"/>
+  <text x="546" y="70" class="arq-t arq-code" style="font-size:11px">StateFlow&lt;Map&lt;Int, Descarga&gt;&gt;</text>
+  <text x="546" y="94" class="arq-t arq-xs">El estado de toda la cola</text>
+  <line x1="167" y1="79" x2="194" y2="79" class="arq-dep" marker-end="url(#arq-ckf-a)"/>
+  <line x1="357" y1="79" x2="384" y2="79" class="arq-dep" marker-end="url(#arq-ckf-a)"/>
+  <line x1="507" y1="79" x2="534" y2="79" class="arq-dep" marker-end="url(#arq-ckf-a)"/>
+  <text x="90" y="30" class="arq-t arq-xs arq-muted" text-anchor="middle">flujo frío</text>
+  <text x="276" y="30" class="arq-t arq-xs arq-muted" text-anchor="middle">transforma</text>
+  <text x="446" y="30" class="arq-t arq-xs arq-muted" text-anchor="middle">recoge</text>
+  <text x="640" y="30" class="arq-t arq-xs arq-muted" text-anchor="middle">flujo caliente</text>
+  <rect x="386" y="160" width="170" height="62" rx="8" class="arq-box"/>
+  <text x="396" y="184" class="arq-t arq-code" style="font-size:11.5px">collect { }</text>
+  <text x="396" y="206" class="arq-t arq-xs">La pantalla pinta el mapa</text>
+  <rect x="574" y="160" width="170" height="62" rx="8" class="arq-box"/>
+  <text x="584" y="184" class="arq-t arq-code" style="font-size:11.5px">activas()</text>
+  <text x="584" y="206" class="arq-t arq-xs">Cuántas hay en curso</text>
+  <line x1="590" y1="115" x2="500" y2="158" class="arq-dep" marker-end="url(#arq-ckf-a)"/>
+  <line x1="660" y1="115" x2="660" y2="158" class="arq-dep" marker-end="url(#arq-ckf-a)"/>
+</svg>

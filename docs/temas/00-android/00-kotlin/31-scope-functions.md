@@ -467,3 +467,9 @@ Modela una clase `SimuladorRed` con propiedades `pingMs: Int = 50` y `paquetesPe
         println("Diagnóstico de red: $diagnostico")
     }
     ```
+
+---
+
+!!! tip "Practícalo en el codelab"
+
+    Pon en práctica este tema con tests que te corrigen al momento: [Codelab de Kotlin, Paso 4](./codelabs/04-scope-functions.md).

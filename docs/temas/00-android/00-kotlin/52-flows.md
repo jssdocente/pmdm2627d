@@ -1085,3 +1085,8 @@ Diseña una clase `MarcadorJuego` que exponga un `StateFlow<Int>` con la puntuac
     }
     ```
 
+---
+
+!!! tip "Practícalo en el codelab"
+
+    Pon en práctica este tema con tests que te corrigen al momento: [Codelab de Kotlin, Paso 7](./codelabs/07-flow-stateflow.md).

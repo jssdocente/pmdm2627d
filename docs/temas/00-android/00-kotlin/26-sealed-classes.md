@@ -350,3 +350,9 @@ Escribe un programa que cree una respuesta correcta con un entero y otra de fall
         procesar(errorServidor)
     }
     ```
+
+---
+
+!!! tip "Practícalo en el codelab"
+
+    Pon en práctica este tema con tests que te corrigen al momento: [Codelab de Kotlin, Paso 1](./codelabs/01-tipos-sellados.md).

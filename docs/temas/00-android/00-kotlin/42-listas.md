@@ -467,3 +467,9 @@ Comprueba que el cálculo es instantáneo gracias a la evaluación perezosa y el
         // Salida: [49, 196, 441, 784, 1225]
     }
     ```
+
+---
+
+!!! tip "Practícalo en el codelab"
+
+    Pon en práctica este tema con tests que te corrigen al momento: [Codelab de Kotlin, Paso 3](./codelabs/03-colecciones-maps.md).

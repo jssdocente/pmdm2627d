@@ -2,6 +2,10 @@
 
 ¡Bienvenido al bloque práctico de programación en Kotlin! Este repositorio de actividades está diseñado para que afiances de forma progresiva, rigurosa y aplicada todos los conceptos del lenguaje necesarios para abordar el desarrollo en Android con **Jetpack Compose**.
 
+!!! tip "¿Vas justo de tiempo?"
+
+    Empieza por el [Codelab de Kotlin](../codelabs/index.md): siete pasos cortos sobre un único problema, con tests ya escritos. Este laboratorio es para quien quiere practicar más a fondo cada tema.
+
 ---
 
 ## 🛠️ Entorno de Trabajo: Un Único Proyecto en IntelliJ IDEA
@@ -18,7 +22,7 @@ pmdm-kotlin-lab/
     │   ├── b03_poo_sealed/           <-- Bloque 3: POO, Data Classes y Sealed Types
     │   ├── b04_colecciones/          <-- Bloque 4: Colecciones y Scope Functions
     │   ├── b05_corrutinas/           <-- Bloque 5: Asincronía con Corrutinas
-    │   └── b06_proyecto_integrador/  <-- Proyecto Final: GameVault CLI
+    │   └── b06_proyecto_integrador/  <-- Proyecto Final: Juego del Calamar
     │
     └── test/kotlin/                  <-- PRUEBAS AUTOMATIZADAS (Suites de Tests Unitarios)
         └── b01_fundamentos/          <-- Tests con kotlin.test y JUnit
