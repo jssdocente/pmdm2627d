@@ -11,7 +11,7 @@ Este fichero define **CÓMO** se debe construir tu aplicación: qué SDK de Andr
 ```mermaid
 graph TD
     B["app/build.gradle.kts"] --> P["1. plugins { }<br>Herramientas: Android, Kotlin, Compose, KSP"]
-    B --> A["2. android { }<br>SDKs, Compose, Java 17, BuildTypes (Debug/Release)"]
+    B --> A["2. android { }<br>SDKs, Compose, JVM 11, BuildTypes (Debug/Release)"]
     B --> D["3. dependencies { }<br>Librerías externas, BOM, KSP y Tests"]
 
     style B fill:#f9f,stroke:#333,stroke-width:2px
@@ -24,26 +24,25 @@ graph TD
 
 ## 2. Anatomía Completa de un `build.gradle.kts` Profesional
 
-A continuación se muestra la estructura recomendada para proyectos modernos de **2º DAM**, configurada para **Jetpack Compose**, **Kotlin 2.0+** y **Java 17**:
+A continuación se muestra la estructura recomendada para proyectos modernos de **2º DAM**, configurada para **Jetpack Compose**, **Kotlin 2.4**, **AGP 9.1** y **JVM 11** como versión de destino:
 
 ```kotlin
 // 1. PLUGINS APLICADOS
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.application) // Desde AGP 9 ya incluye el soporte de Kotlin
     alias(libs.plugins.compose.compiler) // Imprescindible desde Kotlin 2.0+
-    alias(libs.plugins.ksp) optional true // Procesador moderno de anotaciones (Room)
+    alias(libs.plugins.ksp) // Procesador moderno de anotaciones (Room); quítalo si no lo usas
 }
 
 // 2. CONFIGURACIÓN DEL ECOSISTEMA ANDROID
 android {
     namespace = "com.ejemplo.gamevault"
-    compileSdk = 35 // Android 15 (APIs disponibles durante la compilación)
+    compileSdk = 37 // Android 17 (APIs disponibles durante la compilación)
 
     defaultConfig {
         applicationId = "com.ejemplo.gamevault"
-        minSdk = 24 // Android 7.0 (compatibilidad con el 95%+ de dispositivos)
-        targetSdk = 35 // Versión para la que se ha diseñado y probado la app
+        minSdk = 26 // Android 8.0 (más del 99 % de los dispositivos)
+        targetSdk = 36 // Android 16 (versión para la que se ha probado la app)
         versionCode = 1 // Número incremental para la Play Store
         versionName = "1.0.0" // Versión visible para los usuarios
 
@@ -72,11 +71,15 @@ android {
 
     // Estándar de compilación para la JVM
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "17"
+}
+
+// Desde AGP 9, la versión de la JVM para Kotlin se configura fuera del bloque android
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
     }
 }
 
@@ -129,9 +132,13 @@ Es uno de los conceptos que más dudas genera en los exámenes y prácticas:
 
 | Propiedad | Función | Ejemplo recomendado |
 | :--- | :--- | :--- |
-| **`compileSdk`** | ¿Con qué APIs compila Android Studio? Define los métodos y clases disponibles en tu código Kotlin. | `35` (Android 15) |
-| **`minSdk`** | ¿Cuál es el teléfono más antiguo que puede instalar la app? Si un usuario tiene una versión inferior, Google Play no le dejará instalarla. | `24` (Android 7.0) |
-| **`targetSdk`** | ¿Para qué versión has certificado el comportamiento de tu app? Activa las restricciones de seguridad y permisos modernos del sistema operativo. | `35` (Debe coincidir con `compileSdk`) |
+| **`compileSdk`** | ¿Con qué APIs compila Android Studio? Define los métodos y clases disponibles en tu código Kotlin. | `37` (Android 17) |
+| **`minSdk`** | ¿Cuál es el teléfono más antiguo que puede instalar la app? Si un usuario tiene una versión inferior, Google Play no le dejará instalarla. | `26` (Android 8.0) |
+| **`targetSdk`** | ¿Para qué versión has certificado el comportamiento de tu app? Activa las restricciones de seguridad y permisos modernos del sistema operativo. | `36` (Android 16) |
+
+**`targetSdk` no tiene que coincidir con `compileSdk`.** Solo debe ser igual o inferior. Compilar con la API 37 te da acceso a sus novedades, pero tu app no adopta los cambios de comportamiento de esa versión hasta que subas `targetSdk` y la pruebes. Por eso los proyectos del módulo usan valores distintos.
+
+Google Play [exige `targetSdk` 36 o superior](https://developer.android.com/google/play/requirements/target-sdk) para publicar apps nuevas y actualizaciones de móvil. Tienes la explicación completa y la tabla de versiones en la [UT1](../../01/index.md#versiones-api).
 
 ---
 

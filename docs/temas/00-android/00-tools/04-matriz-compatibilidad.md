@@ -28,10 +28,10 @@ Para compilar una aplicación Android moderna, cuatro fabricantes independientes
 graph TD
     subgraph Ecosistema[La Fábrica de Compilación de Android]
         A["1. Oracle / OpenJDK / Eclipse<br><b>El JDK (Java 17 / 21)</b><br>La electricidad que alimenta la nave"] 
-        B["2. Gradle Inc.<br><b>El Motor Gradle (8.x)</b><br>La cinta transportadora de tareas"]
-        C["3. Google<br><b>Android Gradle Plugin (AGP 8.x)</b><br>Los robots especializados en crear APKs"]
-        D["4. Google Android SDK<br><b>compileSdk 35 (Android 15)</b><br>Las piezas oficiales del vehículo"]
-        E["5. JetBrains<br><b>Kotlin (2.0+) y Compose</b><br>Los operarios y su lenguaje moderno"]
+        B["2. Gradle Inc.<br><b>El Motor Gradle (9.x)</b><br>La cinta transportadora de tareas"]
+        C["3. Google<br><b>Android Gradle Plugin (AGP 9.x)</b><br>Los robots especializados en crear APKs"]
+        D["4. Google Android SDK<br><b>compileSdk 37 (Android 17)</b><br>Las piezas oficiales del vehículo"]
+        E["5. JetBrains<br><b>Kotlin (2.4) y Compose</b><br>Los operarios y su lenguaje moderno"]
     end
 
     A -->|Alimenta y ejecuta a| B
@@ -52,7 +52,7 @@ graph TD
 - **Kotlin y Compose:** Es el lenguaje de programación y el compilador de interfaz gráfica de JetBrains que traduce tu código declarativo a bytecode ejecutable.
 
 !!! warning "La Ley de Oro de la Compatibilidad"
-    **Un robot moderno de Google (AGP 8.7) no sabe funcionar en una cinta antigua de Gradle de hace dos años (Gradle 7.2), ni Gradle 8.0 sabe ejecutarse sobre la electricidad moderna de Java 21.**
+    **Un robot moderno de Google (AGP 9.1) no sabe funcionar en una cinta antigua de Gradle de hace dos años (Gradle 7.2), ni Gradle 8.0 sabe ejecutarse sobre la electricidad moderna de Java 21.**
     
     Todas las piezas deben pertenecer a épocas compatibles.
 
@@ -65,10 +65,17 @@ Antes de analizar proyectos antiguos o tablas complejas, grábate esta combinaci
 | Componente | Versión Recomendada para 2º DAM | Dónde se define |
 | :--- | :--- | :--- |
 | **JDK en el equipo (Gradle JVM)** | **Java 17 LTS** (o Java 21 LTS) | En Warp con Scoop/SDKMAN y en los ajustes del IDE |
-| **Gradle Wrapper** | **Gradle 8.9 o superior** | `gradle/wrapper/gradle-wrapper.properties` |
-| **Android Plugin (AGP)** | **8.7.x** | `gradle/libs.versions.toml` |
-| **SDK de Compilación (`compileSdk`)** | **35** (Android 15) | `app/build.gradle.kts` |
-| **Kotlin + Compilador de Compose** | **2.0.21** (o superior) | `gradle/libs.versions.toml` |
+| **Gradle Wrapper** | **Gradle 9.3.1** | `gradle/wrapper/gradle-wrapper.properties` |
+| **Android Plugin (AGP)** | **9.1.1** | `gradle/libs.versions.toml` |
+| **SDK de Compilación (`compileSdk`)** | **37** (Android 17) | `app/build.gradle.kts` |
+| **Versión objetivo (`targetSdk`)** | **36** (Android 16) | `app/build.gradle.kts` |
+| **Versión mínima (`minSdk`)** | **26** (Android 8.0) | `app/build.gradle.kts` |
+| **Versión de destino de la JVM** | **11** (no es el JDK del equipo) | `app/build.gradle.kts` |
+| **Kotlin + Compilador de Compose** | **2.4.21** | `gradle/libs.versions.toml` |
+
+!!! warning "No subas AGP por tu cuenta"
+
+    AGP está fijado en 9.1.x porque es la versión máxima que admite el plugin de Android de IntelliJ IDEA 2026.2. Si el IDE te propone una versión superior, no la aceptes.
 
 ---
 
@@ -96,13 +103,16 @@ A partir de **Kotlin 2.0**, Google y JetBrains unificaron esfuerzos: el compilad
 // ✅ ENFOQUE MODERNO (Oficial en Kotlin 2.0+):
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler) // <-- Sincronizado automáticamente con Kotlin
 }
 ```
 
 !!! success "Ventaja Directa para el Alumno"
     Al usar `alias(libs.plugins.compose.compiler)`, la versión del compilador de Compose **se sincroniza automáticamente** con la versión de Kotlin definida en tu catálogo. Ya no existe la propiedad `kotlinCompilerExtensionVersion`.
+
+!!! info "Desde AGP 9, Kotlin viene integrado"
+
+    [AGP 9 incluye el soporte de Kotlin](https://developer.android.com/build/releases/agp-9-0-0-release-notes), así que los proyectos del módulo ya no aplican el plugin `org.jetbrains.kotlin.android`. Lo verás en proyectos anteriores a AGP 9.
 
 ---
 
@@ -112,6 +122,8 @@ Utiliza esta tabla como referencia de consulta cuando abras proyectos de cursos 
 
 | Versión de Android Objetivo | `compileSdk` | Versión de AGP Requerida | Versión de Gradle Recomendada | Versión de JDK (Gradle JVM) | Versión de Kotlin |
 | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Android 17 (Cinnamon Bun)** | **37** | **9.1.1+** | **9.3.1+** | **Java 17 o superior** | **Kotlin 2.4.x** (integrado en AGP) |
+| **Android 16 (Baklava)** | **36** | **8.9.1+** | **8.11.1+** | **Java 17 o superior** | **Kotlin 2.x** |
 | **Android 15 (Vanilla Ice Cream)** | **35** | **8.6.x - 8.8+** | **8.9 - 8.11+** | **Java 17 o Java 21** | **Kotlin 2.0.x / 2.1.x** |
 | **Android 14 (Upside Down Cake)** | **34** | **8.2.x - 8.5.x** | **8.4 - 8.7** | **Java 17** | **Kotlin 1.9.2x / 2.0.x** |
 | **Android 13 (Tiramisu)** | **33** | **7.4.x - 8.1.x** | **7.5 - 8.0** | **Java 11 o Java 17** | **Kotlin 1.8.x / 1.9.x** |
@@ -136,34 +148,39 @@ mi-proyecto/
 
 ### 1. `gradle/wrapper/gradle-wrapper.properties` (Gradle)
 ```properties
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.9-bin.zip
+distributionUrl=https\://services.gradle.org/distributions/gradle-9.3.1-bin.zip
 ```
 
 ### 2. `gradle/libs.versions.toml` (Plugins y Lenguaje)
 ```toml
 [versions]
-agp = "8.7.0"
-kotlin = "2.0.21"
+agp = "9.1.1"
+kotlin = "2.4.21"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ```
 
 ### 3. `app/build.gradle.kts` (SDK de Android y JVM Target)
 ```kotlin
 android {
-    compileSdk = 35 // Android 15
+    compileSdk = 37 // Android 17
 
     defaultConfig {
-        minSdk = 24
-        targetSdk = 35
+        minSdk = 26
+        targetSdk = 36
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
     }
 }
 ```
@@ -181,7 +198,7 @@ Cuando veas un error rojo durante la sincronización, usa esta guía para locali
 graph TD
     E1["Error: 'Unsupported class file major version XX'"] --> S1["Causa: Tu Gradle es muy viejo para tu Java.<br><b>Solución:</b> Sube la versión en gradle-wrapper.properties a 8.9+"]
     E2["Error: 'AGP requires Java 17 to run'"] --> S2["Causa: Tu IDE está ejecutando Gradle con Java 11 o inferior.<br><b>Solución:</b> Cambia Gradle JVM a JDK 17 en Ajustes del IDE"]
-    E3["Error: 'This version of Android Support plugin cannot open...'"] --> S3["Causa: Tu IDE es más antiguo que el AGP del proyecto.<br><b>Solución:</b> Actualiza tu IntelliJ/Android Studio o baja el AGP a 8.6"]
+    E3["Error: 'This version of Android Support plugin cannot open...'"] --> S3["Causa: Tu IDE es más antiguo que el AGP del proyecto.<br><b>Solución:</b> Actualiza tu IntelliJ/Android Studio o baja el AGP a la versión que admita"]
     E4["Error: 'Compose Compiler requires Kotlin version...'"] --> S4["Causa: Desajuste de versiones en Kotlin 1.9.<br><b>Solución:</b> Actualiza a Kotlin 2.0+ con el plugin org.jetbrains.kotlin.plugin.compose"]
 
     style E1 fill:#ffebee,stroke:#c62828,stroke-width:1px

@@ -83,9 +83,9 @@ Estructura de `libs.versions.toml`:
 ```toml
 [versions]
 # 1. Aquí definimos los NÚMEROS de las versiones
-agp = "8.7.0"
-kotlin = "2.0.21"
-coreKtx = "1.15.0"
+agp = "9.1.1"
+kotlin = "2.4.21"
+coreKtx = "1.19.1"
 retrofit = "2.11.0"
 
 [libraries]
@@ -104,7 +104,6 @@ networking = ["retrofit", "retrofit-gson"]
 [plugins]
 # 4. Aquí definimos los PLUGINS (Herramientas de construcción)
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ```
 
@@ -159,7 +158,7 @@ El BOM es una "super-librería" vacía que solo contiene una lista de versiones 
 
     ```toml
     [versions]
-    composeBom = "2024.10.01"
+    composeBom = "2026.09.00"
 
     [libraries]
     androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -182,7 +181,7 @@ El BOM es una "super-librería" vacía que solo contiene una lista de versiones 
     }
     ```
 
-Esto garantiza que si actualizas el BOM a `2024.10.01`, *todas* las librerías de Compose se actualizarán automáticamente a las versiones probadas y compatibles de esa release.
+Esto garantiza que si actualizas el BOM a `2026.09.00`, *todas* las librerías de Compose se actualizarán automáticamente a las versiones probadas y compatibles de esa release.
 
 ### ¿Qué librerías funcionan con BOM?
 
@@ -221,7 +220,7 @@ En un proyecto real, **siempre** tendrás una mezcla de ambas cosas. No hay conf
 ```toml
 [versions]
 # --- Versiones para BOMs ---
-composeBom = "2024.10.01"
+composeBom = "2026.09.00"
 firebaseBom = "33.5.1"
 
 # --- Versiones para Librerías Normales ---
@@ -297,11 +296,11 @@ Aquí definimos nuestros ingredientes para una app moderna con **Jetpack Compose
 
 ```toml
 [versions]
-agp = "8.7.0"
-kotlin = "2.0.21"
-coreKtx = "1.15.0"
-composeBom = "2024.10.01"
-activityCompose = "1.9.3"
+agp = "9.1.1"
+kotlin = "2.4.21"
+coreKtx = "1.19.1"
+composeBom = "2026.09.00"
+activityCompose = "1.13.0"
 junit = "4.13.2"
 
 [libraries]
@@ -316,7 +315,6 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ```
 
@@ -327,7 +325,6 @@ Hoy en día es muy simple, solo registra los plugins para que los módulos hijos
 // Build script de nivel superior (Top-level)
 plugins {
     alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.composeCompiler) apply false
 }
 ```
@@ -338,18 +335,17 @@ Aquí se define la configuración de la app móvil con soporte nativo para **Jet
 ```kotlin
 plugins {
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.composeCompiler) // Plugin oficial de Compose en Kotlin 2.0+
 }
 
 android {
     namespace = "com.example.mysimpleapp"
-    compileSdk = 35 // Android 15 (versión del SDK usada para compilar)
+    compileSdk = 37 // Android 17 (versión del SDK usada para compilar)
 
     defaultConfig {
         applicationId = "com.example.mysimpleapp"
-        minSdk = 24 // Versión mínima (Android 7.0)
-        targetSdk = 35 // Versión recomendada y probada
+        minSdk = 26 // Versión mínima (Android 8.0)
+        targetSdk = 36 // Android 16 (versión probada)
         versionCode = 1
         versionName = "1.0"
 
@@ -368,13 +364,17 @@ android {
         compose = true
     }
 
-    // Estándar moderno de compilación en Android con Java 17
+    // Versión de Java de destino del código de la app
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "17"
+}
+
+// Desde AGP 9, Kotlin viene integrado y su JVM se configura fuera del bloque android
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
     }
 }
 
@@ -453,6 +453,7 @@ Un dolor de cabeza común es cuando las versiones no coinciden. Gradle, el Plugi
 ### 6.1. La Matriz de Compatibilidad
 No puedes usar cualquier versión de Gradle con cualquier versión de AGP.
 
+-   **AGP 9.1** requiere **Gradle 9.3.1+** y **Java 17**. Es la versión de los proyectos del módulo.
 -   **AGP 8.0+** requiere **Gradle 8.0+** y **Java 17**.
 -   **AGP 7.4** requiere **Gradle 7.5+** y **Java 11**.
 
@@ -469,20 +470,19 @@ Hay **dos** configuraciones de Java que debes distinguir:
     ```kotlin
     android {
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
-        }
-        kotlinOptions {
-            jvmTarget = "17"
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
     }
-    ```
-    *En proyectos Kotlin modernos, también es muy común usar la toolchain unificada:*
-    ```kotlin
+
     kotlin {
-        jvmToolchain(17) // Configura el JDK de compilación automáticamente
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
     ```
+
+    Los proyectos del módulo usan **JVM 11**. Este valor no es el JDK instalado en tu equipo: con JDK 17 puedes generar código para JVM 11 sin problema.
 
 2.  **Java para ejecutar Gradle (Gradle Daemon)**:
     Es la versión de Java que usa tu ordenador para *correr* el proceso de construcción.

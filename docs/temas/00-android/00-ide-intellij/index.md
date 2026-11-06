@@ -8,13 +8,13 @@ Cuando pensamos en programar aplicaciones para Android, la primera herramienta q
 
 Para entender la relación entre ambas herramientas, conviene recordar un dato clave de ingeniería:
 
-> **Android Studio está construido por Google sobre la base de código abierto de IntelliJ IDEA Community Edition.**
+> **Android Studio está construido por Google sobre la plataforma de código abierto IntelliJ, la misma de IntelliJ IDEA.**
 
 Ambos entornos comparten el mismo motor de indexación, los mismos atajos de teclado, el mismo depurador y la misma integración con el compilador de Kotlin desarrollado por JetBrains.
 
 ```mermaid
 graph TD
-    A[IntelliJ Platform - JetBrains Open Source Engine] --> B[IntelliJ IDEA Community / Ultimate]
+    A[IntelliJ Platform - JetBrains Open Source Engine] --> B[IntelliJ IDEA]
     A --> C[Android Studio - Google]
     
     B -->|Especialización| B1[Desarrollo Kotlin Multiplatform KMP/CMP, Backend Ktor/Spring, Web y Móvil]
@@ -28,8 +28,8 @@ graph TD
 | **Enfoque Principal** | Desarrollo exclusivo para el ecosistema Android (móvil, Wear OS, Android TV, Auto). | Desarrollo multiplataforma integral: **KMP**, Compose Multiplatform, Backend (Ktor/Spring), Web y Android. |
 | **Soporte de Kotlin Multiplatform (KMP)** | Soporte centrado en la parte Android; soporte limitado para targets de Desktop o Web. | **Soporte nativo excelente** para todos los targets: Android, iOS, Desktop (Windows/Mac/Linux) y Web (Wasm). |
 | **Desarrollo Fullstack (Móvil + API Backend)** | Poco práctico; orientado exclusivamente al cliente Android. | **Ideal:** Puedes tener en el mismo espacio de trabajo la app móvil y el microservicio backend en Kotlin. |
-| **Herramientas de Base de Datos** | App Inspection básico para Room/SQLite en el dispositivo. | **DataGrip integrado** (en Ultimate): conexión y gestión visual de bases de datos PostgreSQL, MySQL, SQLite, etc. |
-| **Licenciamiento** | 100% Gratuito (Google / Apache 2.0). | Versión **Community** (gratuita) y versión **Ultimate** (comercial, con **licencia gratuita para alumnos de FP**). |
+| **Herramientas de Base de Datos** | App Inspection básico para Room/SQLite en el dispositivo. | Conexión a bases de datos y SQL incluidos; herramientas de datos avanzadas con la suscripción Ultimate. |
+| **Licenciamiento** | 100% Gratuito (Google / Apache 2.0). | **Una única distribución**, gratuita sin suscripción. La suscripción **Ultimate** añade funciones y es **gratuita para estudiantes y docentes**. |
 
 ---
 
@@ -80,21 +80,23 @@ pie title Reparto de Memoria RAM en una Sesión Típica de Desarrollo Móvil (16
 
 ---
 
-## 3. Ediciones de IntelliJ IDEA: Community vs Ultimate
+## 3. Una única distribución de IntelliJ IDEA
 
-JetBrains distribuye IntelliJ IDEA en dos variantes principales:
+Hasta la versión 2025.2, JetBrains publicaba dos productos separados: Community y Ultimate. **Desde la versión 2025.3 hay [una única distribución](https://blog.jetbrains.com/idea/2025/12/intellij-idea-unified-release/)**: instalas IntelliJ IDEA y una suscripción decide qué funciones se activan.
 
-### 3.1. IntelliJ IDEA Community Edition
+| Sin suscripción | Con suscripción Ultimate |
+| :--- | :--- |
+| Todo lo que ofrecía Community: Java, Kotlin, Gradle, Git y desarrollo Android mediante plugins oficiales. | Soporte completo de Spring y de tecnologías del ecosistema JVM más allá de Java y Kotlin. |
+| Conexión a bases de datos, vista de esquemas y soporte completo de SQL. | Herramientas de datos integradas e IntelliJ Profiler. |
+| Soporte de Ktor. | Cliente HTTP y asistencia de IA. |
 
-- **Coste:** 100% Gratuita y de código abierto (licencia Apache 2.0).
-- **Alcance:** Soporte completo para Java, Kotlin, Gradle, Git y desarrollo Android mediante plugins oficiales.
-- **Limitaciones:** No incluye herramientas avanzadas de perfilado de bases de datos, diagramas arquitectónicos ni soporte para tecnologías web fullstack (Spring Boot, frameworks JavaScript avanzados).
+- **Coste:** sin suscripción es gratuito, también para proyectos comerciales.
 
-### 3.2. IntelliJ IDEA Ultimate Edition (Licencia Educativa Gratuita)
+- **Prueba:** la primera instalación activa una prueba de Ultimate de 30 días. Al terminar se desactivan las funciones avanzadas, pero el IDE sigue funcionando y no hay que reinstalar nada.
 
-- Es la versión comercial profesional completa de JetBrains.
-- **¡Gratis para estudiantes y profesores de Formación Profesional!**
-  JetBrains ofrece el programa **JetBrains Student Pack**, que otorga una licencia anual renovable para todo el catálogo de herramientas (IntelliJ Ultimate, DataGrip, CLion, WebStorm, etc.).
+- **Si tienes Community 2025.2:** al actualizar a 2025.3 o posterior pasas automáticamente a la distribución única.
+
+- **Estudiantes y docentes:** la suscripción Ultimate [sigue siendo gratuita](https://lp.jetbrains.com/intellij-idea-unified-faq/) para ellos.
 
 !!! info "Cómo Solicitar tu Licencia de Estudiante Gratuita"
     1. Accede al portal oficial de [JetBrains Student Support](https://www.jetbrains.com/community/education/#students).
@@ -119,7 +121,7 @@ Existen dos vías para instalar IntelliJ IDEA en tu sistema operativo:
 
 ```mermaid
 graph LR
-    TB[JetBrains Toolbox App] -->|Gestiona| IJ[IntelliJ IDEA Ultimate / Community]
+    TB[JetBrains Toolbox App] -->|Gestiona| IJ[IntelliJ IDEA]
     TB -->|Gestiona| AS[Android Studio]
     TB -->|Ajusta| RAM[Asignación de Memoria Máxima -Xmx]
     TB -->|Actualiza| ROLL[Actualizaciones con 1 Clic y Rollback Seguro]
@@ -152,9 +154,7 @@ Si prefieres no utilizar Toolbox, puedes descargar directamente el instalador st
   - Descarga la versión **Intel (x86_64)** únicamente si tienes un Mac antiguo con procesador Intel.
 - **Linux:** Descarga el archivo comprimido `.tar.gz` y descomprímelo en `/opt/`, o instálalo vía Snap:
   ```bash
-  sudo snap install intellij-idea-community --classic
-  # o para Ultimate:
-  sudo snap install intellij-idea-ultimate --classic
+  sudo snap install intellij-idea --classic
   ```
 
 ---
@@ -205,10 +205,10 @@ Para que IntelliJ IDEA pueda compilar proyectos de Android y ejecutar comandos d
     - **macOS:** `/Users/<TuUsuario>/Library/Android/sdk`
     - **Linux:** `/home/<TuUsuario>/Android/Sdk`
 
-4. En la pestaña **SDK Platforms**, selecciona la versión estable de compilación recomendada (por ejemplo, **Android 15 - API 35** o **Android 16 - API 36**).
+4. En la pestaña **SDK Platforms**, selecciona **Android 17 - API 37**, la versión con la que compilan los proyectos del módulo (`compileSdk = 37`).
 
     !!! info "¿Dudas sobre Versiones Comerciales y Niveles de API?"
-        Si quieres comprender la correlación entre las versiones comerciales (Android 15, 16, 17), sus nombres clave de postres (*Vanilla Ice Cream*, *Baklava*, *Cinnamon Bun*) y los niveles numéricos de API requeridos para `compileSdk` y `targetSdk`, consulta la [**Tabla de Evolución de Versiones y Niveles de API de Android en UT1](../../01/index.md#versiones-api).
+        Si quieres comprender la correlación entre las versiones comerciales (Android 15, 16, 17), sus nombres clave de postres (*Vanilla Ice Cream*, *Baklava*, *Cinnamon Bun*) y los niveles numéricos de API requeridos para `compileSdk` y `targetSdk`, consulta la [**Tabla de Evolución de Versiones y Niveles de API de Android en UT1**](../../01/index.md#versiones-api).
 
 5. En la pestaña **SDK Tools**, asegúrate de marcar:
 
@@ -338,7 +338,7 @@ graph LR
 4. Selecciona la imagen del sistema operativo:
 
     - Descarga una imagen con **Google Play** para disponer de servicios de autenticación y mapas.
-    - Se recomienda elegir **Android 15 (API 35)** o **Android 14 (API 34)** como base de pruebas estándar (consulta las características de cada versión en la [**Tabla de Versiones y Niveles de API de la UT1**](../../01/index.md#versiones-api)).
+    - Se recomienda elegir **Android 16 (API 36)**, la versión para la que están probados los proyectos del módulo (`targetSdk = 36`) (consulta las características de cada versión en la [**Tabla de Versiones y Niveles de API de la UT1**](../../01/index.md#versiones-api)).
     - En equipos Intel/AMD, selecciona la pestaña **x86_64**.
     - En equipos Apple Silicon (Mac M1-M4), selecciona la pestaña **arm64-v8a**.
 
