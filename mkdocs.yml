@@ -76,7 +76,6 @@ nav:
           - "Material Design": temas/00-android/00-compose/25-material-design.md
           - "Diseño con @Preview y Mock Data": temas/00-android/00-compose/26-preview-diseno-mock.md
           - "Contexto y CompositionLocal": temas/00-android/00-compose/27-compositionlocal-contexto-efectos.md
-          - "Glosario": temas/00-android/00-compose/99-glosario-android.md
 
       - "Arquitectura y KMP con Koin":
           - "Introducción": temas/00-android/02-arquitectura/index.md
@@ -85,7 +84,7 @@ nav:
           - "Inyección con Koin": temas/00-android/02-arquitectura/03-inyeccion-dependencias-koin.md
           - "Ecosistema Multiplataforma (KMP)": temas/00-android/02-arquitectura/04-ecosistema-kmp-multiplataforma.md
           - "Testing en Android y KMP": temas/00-android/02-arquitectura/06-testing-android-kmp.md
-          - "Glosario de Patrones": temas/00-android/02-arquitectura/05-glosario-patrones.md
+          - "Patrones de arquitectura": temas/00-android/02-arquitectura/05-glosario-patrones.md
       - "Anexos":
           - "A. Iconos de la app y gestión de recursos": temas/00-android/anexos/a-iconos-app-recursos.md
           - "B. Pantalla de inicio (splash)": temas/00-android/anexos/b-pantalla-inicio-splash.md
@@ -159,6 +158,7 @@ nav:
           - "Guía de estudio": temas/evaluacion/1eval-guia-estudio.md
           - "🎯 Practica Kotlin (test)": temas/evaluacion/practica-kotlin.md
           - "🧪 Practica Kotlin (código y TDD)": temas/evaluacion/practica-codigo.md
+  - "Glosario": temas/glosario.md
 
   # - "UT4 - Persistencia":
   #   - "Introducción": temas/04/4.0-persistencia.md
@@ -273,10 +273,12 @@ extra_css:
 extra_javascript:
   - extra/js/compose-playground.js
   - extra/js/compose-playground-components.js
+  - extra/js/glosario.js
 
 hooks:
   - quiz/hook_mkdocs.py
   - quiz/hook_codigo.py
+  - hooks/hook_glosario.py
 
 watch:
   - quiz

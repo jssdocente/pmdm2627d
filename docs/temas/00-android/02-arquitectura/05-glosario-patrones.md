@@ -1,6 +1,6 @@
-# Glosario y Patrones Clave de Arquitectura
+# Patrones de Arquitectura
 
-En el desarrollo móvil moderno con Android y Kotlin Multiplatform (KMP), la arquitectura se fundamenta en un conjunto de **patrones de diseño y componentes estructurales** bien definidos. Este glosario proporciona una referencia rápida, precisa y pedagógica sobre el propósito de cada pieza, a qué capa pertenece y qué errores comunes se deben evitar.
+En el desarrollo móvil moderno con Android y Kotlin Multiplatform (KMP), la arquitectura se fundamenta en un conjunto de **patrones de diseño y componentes estructurales** bien definidos. Esta página explica el propósito de cada pieza, a qué capa pertenece y qué errores comunes se deben evitar. Si solo buscas la definición breve de un término, consulta el [glosario del módulo](../../glosario.md).
 
 ---
 

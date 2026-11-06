@@ -388,7 +388,7 @@ class CatalogoJuegosContentTest {
 ## 📚 Enlaces Relacionados
 
 - [Diseño Ágil con @Preview y Datos Mock en Compose](../00-compose/26-preview-diseno-mock.md)
-- [Glosario y Patrones Clave de Arquitectura](./05-glosario-patrones.md)
+- [Patrones de arquitectura](./05-glosario-patrones.md)
 - [Clean Architecture en Android y KMP](./02-clean-architecture.md)
 - [Inyección de Dependencias con Koin](./03-inyeccion-dependencias-koin.md)
 - [Documentación oficial de Testing en Android (Google Developers)](https://developer.android.com/training/testing)

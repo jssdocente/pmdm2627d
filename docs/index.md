@@ -24,6 +24,7 @@ Empezamos por el desarrollo de aplicaciones Android con **Kotlin** como lenguaje
 | **[UT2](./temas/02/index.md)** | Primeros pasos, ciclo de vida, maquetación y recursos, con [sesiones de clase](./temas/02/sesiones/index.md) y [codelabs y retos](./temas/02/2.4-laboratorio-retos.md) |
 | **[UT3](./temas/03/index.md)** | Material 3, navegación, arquitectura, Kotlin Multiplatform y publicación, con [sesiones de clase](./temas/03/sesiones/index.md) y [codelabs y retos](./temas/03/3.6-laboratorio-retos.md) |
 | **Evaluación** | La [guía de estudio](./temas/evaluacion/1eval-guia-estudio.md) y las prácticas online |
+| **[Glosario](./temas/glosario.md)** | Qué significa cada término del módulo y dónde se explica |
 
 ---
 

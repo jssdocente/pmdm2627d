@@ -27,3 +27,26 @@
       grid-template-columns: 2fr 1fr;
   }
 }
+/* Filtro del glosario */
+#glosario-filtro input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+}
+
+#glosario-filtro input:focus {
+  outline: none;
+  border-color: var(--md-accent-fg-color);
+}
+
+#glosario-filtro .glosario-estado {
+  margin: 0.4rem 0 0;
+  min-height: 1.4em;
+  font-size: 0.85em;
+  color: var(--md-default-fg-color--light);
+}

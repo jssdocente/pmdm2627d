@@ -14,7 +14,7 @@ flowchart TD
     --> G2["2. Clean Architecture a Fondo<br>• Regla de dependencia<br>• Entidades puras y Casos de Uso<br>• Repositorios y Patrón Mapper"]
     --> G3["3. Inyección de Dependencias con Koin<br>• Fundamentos de IoC y DI<br>• Por qué Koin frente a Hilt para KMP<br>• Integración en Compose con koinViewModel"]
     --> G4["4. Ecosistema Multiplataforma (KMP y CMP)<br>• KMP vs Compose Multiplatform<br>• Mecanismo expect / actual<br>• Pila oficial: Ktor, Room KMP, Coil 3 y DataStore"]
-    --> G5["5. Glosario de Patrones<br>• ViewModel, UiState, UseCase, Repository<br>• DataSource, DTO, Mapper, SSOT, UDF y DI"]
+    --> G5["5. Patrones de arquitectura<br>• ViewModel, UiState, UseCase, Repository<br>• DataSource, DTO, Mapper, SSOT, UDF y DI"]
     --> G6["6. Testing en Android y KMP<br>• Pirámide de testing y patrón AAA<br>• Fakes vs Mocks<br>• Tests de UseCases, ViewModels y Compose"]
 ```
 
@@ -46,7 +46,7 @@ flowchart TD
    - La pila tecnológica oficial de librerías multiplataforma (Ktor, Kotlinx.serialization, Room KMP, DataStore KMP, Coil 3).
    - Gestión de recursos compartidos con `composeResources` y navegación multiplataforma.
 
-5. **[Glosario y Patrones Clave de Arquitectura](./05-glosario-patrones.md):**
+5. **[Patrones de arquitectura](./05-glosario-patrones.md):**
 
    - Diccionario de referencia rápida sobre el rol, responsabilidades y errores comunes de cada pieza: **ViewModel**, **UiState**, **State Hoisting**, **UseCase**, **Entidad de Dominio**, **Repository**, **DataSource**, **DTO**, **Mapper**, **UDF**, **SSOT** y **DI**.
 

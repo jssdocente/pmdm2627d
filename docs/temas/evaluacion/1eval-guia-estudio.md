@@ -16,6 +16,7 @@ La evaluación tiene cuatro partes, y todas se apoyan en las mismas bases:
     - Marca cada casilla ☐ cuando sepas hacerlo **sin mirar los apuntes**.
     - Las preguntas de autoevaluación están plegadas: intenta responder antes de abrir la solución.
     - ⭐ marca lo imprescindible. Si vas justo de tiempo, empieza por ahí.
+    - Si te atascas con un término, búscalo en el [glosario](../glosario.md): te lleva a la sección donde se explica.
 
 ---
 

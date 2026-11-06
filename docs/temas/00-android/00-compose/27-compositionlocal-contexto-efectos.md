@@ -306,5 +306,5 @@ fun ReceptorBateria() {
 
 - [Gestión del Estado y UDF](./22-state-management.md)
 - [Diseño Ágil con @Preview y Datos Mock](./26-preview-diseno-mock.md)
-- [Glosario y Patrones Clave de Arquitectura](../02-arquitectura/05-glosario-patrones.md)
+- [Patrones de arquitectura](../02-arquitectura/05-glosario-patrones.md)
 - [Documentación oficial de CompositionLocal (Google Developers)](https://developer.android.com/develop/ui/compose/compositionlocal)
