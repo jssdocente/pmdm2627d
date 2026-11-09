@@ -2,7 +2,8 @@
 
 Vas a programar en Android, con **Kotlin** y **Jetpack Compose**, un **juego de memoria**: un tablero de cartas boca abajo en el que hay que encontrar las parejas volteándolas de dos en dos. Esta página te dice **qué tiene que hacer tu proyecto**, qué es obligatorio, qué es opcional, cómo se entrega y cómo se evalúa.
 
-!!! info "Lo esencial en cuatro líneas"
+!!! info "Lo esencial en cinco líneas"
+    - **Empiezas descargando la [plantilla](#plantilla-readme)**, que ya trae el proyecto preparado y el README que tienes que rellenar.
     - El proyecto es **el mismo para toda la clase**. Lo único que eliges tú es la **temática de las cartas**.
     - Hay unos **mínimos obligatorios** (funcionalidad, estructura y dos investigaciones) y unas **mejoras opcionales** que suben la nota.
     - Se entrega **generando un `.zip`** con tu proyecto y un **README** que sigue la plantilla.
@@ -16,7 +17,51 @@ Vas a programar en Android, con **Kotlin** y **Jetpack Compose**, un **juego de 
 
 ---
 
-## 1. Qué vas a construir {#que-construir}
+## 1. La plantilla del proyecto y el README {#plantilla-readme}
+
+No tendrás que empezar de cero. Hay un **proyecto plantilla** con el paquete ya creado (`com.pm2627.p1ev.memory`), las dependencias necesarias y un **README normalizado**, con los apartados ya preparados para que los rellenes.
+
+!!! info "Descarga la plantilla"
+    [**pmdm2627_1eval_proyecto** en GitHub](https://github.com/jssdocente/pmdm2627_1eval_proyecto): clónala o descárgala con *Code → Download ZIP* y trabaja sobre tu copia.
+
+    Dentro tienes una carpeta `ayuda/` con tres páginas:
+
+    - [**README de ejemplo**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/README-ejemplo.md): cómo se debe estructurar y rellenar el README. Está hecho para un proyecto **simulado** (otro juego), para que veas qué nivel de detalle se espera en cada apartado. No lo copies: tu README tiene que explicar **tu** proyecto.
+
+    - [**Pistas**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/pistas.md): la tabla de [claves del proyecto](#claves), para tenerla junto al código.
+
+    - [**Preparar el entorno**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/preparar-entorno.md): IDE, SDK, JDK y errores frecuentes al abrir y compilar.
+
+El README no es un trámite: es donde **explicas tu proyecto**, y te servirá para prepararte el examen y la defensa. Sus apartados son estos:
+
+1. **Datos del proyecto**: título y autoría.
+
+2. **Temática y fuente de las imágenes**: qué temática has elegido y, para cada imagen, quién la ha hecho o de dónde sale y con qué licencia.
+
+3. **Captura o GIF** de tu juego funcionando.
+
+4. **Cómo compilar y ejecutar**, y cómo lanzar los tests.
+
+5. **Organización y estructura del proyecto**. Es el apartado más importante, y tiene cuatro partes:
+
+    - **Paquetes:** el árbol de paquetes de tu proyecto y para qué sirve cada uno.
+
+    - **Ficheros importantes:** una tabla con qué hace cada fichero relevante (por ejemplo, dónde está el `UiState`, dónde está la lógica, dónde está la navegación).
+
+    - **Cómo fluye un evento:** el recorrido completo desde que el usuario pulsa algo hasta que la pantalla se vuelve a dibujar, nombrando **tus** funciones.
+
+    - **Decisiones de diseño:** qué has decidido y por qué.
+
+6. **Mejoras opcionales** que incluyes, cada una con su API, su fichero y función, y el enlace a la documentación.
+
+7. **Limitaciones conocidas**: lo que no funciona o lo que mejorarías.
+
+!!! tip "Rellénalo mientras programas"
+    Si lo escribes al terminar, se te olvidarán las decisiones. Si lo vas completando por el camino, el apartado de organización y estructura queda casi hecho, y será tu **mapa del proyecto**.
+
+---
+
+## 2. Qué vas a construir {#que-construir}
 
 Un juego de parejas con varios niveles de dificultad y tres pantallas. El jugador elige un nivel, destapa cartas de dos en dos y gana cuando encuentra todas las parejas. Al ganar ve cuántos movimientos y cuánto tiempo ha tardado.
 
@@ -37,11 +82,11 @@ Si no quieres depender de imágenes, también valen vectores dibujados por ti, s
 
 ---
 
-## 2. Mínimos de funcionalidad {#minimos-funcionalidad}
+## 3. Mínimos de funcionalidad {#minimos-funcionalidad}
 
 Todo lo de esta sección es **obligatorio**. Sin ello, el proyecto no se considera completo.
 
-### 2.1. El juego
+### 3.1. El juego
 
 | Requisito | Qué significa en la práctica |
 | :--- | :--- |
@@ -55,7 +100,7 @@ Todo lo de esta sección es **obligatorio**. Sin ello, el proyecto no se conside
 
 Pistas para cada requisito, en [Cómo afrontarlo: las claves del proyecto](#claves).
 
-### 2.2. Tiempo y ciclo de vida
+### 3.2. Tiempo y ciclo de vida
 
 - Hay un **temporizador** que cuenta los segundos de la partida y se ve en el tablero.
 
@@ -65,7 +110,7 @@ Pistas para cada requisito, en [Cómo afrontarlo: las claves del proyecto](#clav
 
 Pistas para resolverlo, en [Cómo afrontarlo: las claves del proyecto](#claves).
 
-### 2.3. Tres pantallas con Navigation 3
+### 3.3. Tres pantallas con Navigation 3
 
 | Pantalla | Qué hace |
 | :--- | :--- |
@@ -83,7 +128,7 @@ Cómo se hace, en [3B.1 · Navegación con Navigation 3](../03/b-navegacion/3b.1
 
 ---
 
-## 3. Mínimos de estructura y arquitectura {#minimos-estructura}
+## 4. Mínimos de estructura y arquitectura {#minimos-estructura}
 
 Importa tanto **cómo** está hecho como que funcione. Estos requisitos son obligatorios:
 
@@ -146,7 +191,7 @@ Un test comprueba una parte de la lógica: das un estado de partida, lanzas un e
 
 ---
 
-## 4. Cómo afrontarlo: las claves del proyecto {#claves}
+## 5. Cómo afrontarlo: las claves del proyecto {#claves}
 
 Antes de escribir código, conviene saber **qué decisiones** tendrás que tomar. Esta tabla no te da la solución: te dice **qué preguntarte** en cada parte y **dónde mirar**. Las respuestas, y su justificación, las tienes que poner tú.
 
@@ -185,11 +230,11 @@ Si algo falla, revisa en este orden: ¿es un problema de los **datos** (qué gua
 
 ---
 
-## 5. Las dos investigaciones obligatorias {#investigaciones}
+## 6. Las dos investigaciones obligatorias {#investigaciones}
 
 Estas dos partes no se ven del todo en clase. Tienes que **investigar** cómo resolverlas, con los apuntes y la documentación oficial.
 
-### 5.1. Volteo animado {#investigacion-volteo}
+### 6.1. Volteo animado {#investigacion-volteo}
 
 Al pulsar una carta, debe **girar en 3D** para mostrar su cara. Investiga y usa:
 
@@ -209,7 +254,7 @@ Dónde mirar:
 
 - Documentación oficial: [animaciones de valores en Compose](https://developer.android.com/develop/ui/compose/animation/value-based).
 
-### 5.2. Temporizador, retardo de fallo y pausa {#investigacion-temporizador}
+### 6.2. Temporizador, retardo de fallo y pausa {#investigacion-temporizador}
 
 Tres piezas que se apoyan en corrutinas dentro del ViewModel:
 
@@ -237,7 +282,7 @@ Dónde mirar:
 
 ---
 
-## 6. Mejoras opcionales {#mejoras}
+## 7. Mejoras opcionales {#mejoras}
 
 Cuando los mínimos estén completos y funcionando, puedes añadir mejoras. **Suben la nota del proyecto**, pero no sustituyen a ningún mínimo.
 
@@ -282,7 +327,7 @@ Las mejoras **no sustituyen** a los mínimos: se pregunta por ellos igual.
 
 ---
 
-## 7. Entrega {#entrega}
+## 8. Entrega {#entrega}
 
 Para entregar tienes que **generar un fichero `.zip`** con tu proyecto, y enviarlo en la forma y el plazo que indique el profesor.
 
@@ -327,50 +372,6 @@ En Windows se escribe `gradlew.bat crearZip -Pnombre=apellido-nombre`. El zip se
         ```
 
     Si no funciona así, no funcionará al corregirlo.
-
----
-
-## 8. La plantilla del proyecto y el README {#plantilla-readme}
-
-No tendrás que empezar de cero. Hay un **proyecto plantilla** con el paquete ya creado (`com.pm2627.p1ev.memory`), las dependencias necesarias y un **README normalizado**, con los apartados ya preparados para que los rellenes.
-
-!!! info "Descarga la plantilla"
-    [**pmdm2627_1eval_proyecto** en GitHub](https://github.com/jssdocente/pmdm2627_1eval_proyecto): clónala o descárgala con *Code → Download ZIP* y trabaja sobre tu copia.
-
-    Dentro tienes una carpeta `ayuda/` con tres páginas:
-
-    - [**README de ejemplo**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/README-ejemplo.md): cómo se debe estructurar y rellenar el README. Está hecho para un proyecto **simulado** (otro juego), para que veas qué nivel de detalle se espera en cada apartado. No lo copies: tu README tiene que explicar **tu** proyecto.
-
-    - [**Pistas**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/pistas.md): la tabla de [claves del proyecto](#claves), para tenerla junto al código.
-
-    - [**Preparar el entorno**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/preparar-entorno.md): IDE, SDK, JDK y errores frecuentes al abrir y compilar.
-
-El README no es un trámite: es donde **explicas tu proyecto**, y te servirá para prepararte el examen y la defensa. Sus apartados son estos:
-
-1. **Datos del proyecto**: título y autoría.
-
-2. **Temática y fuente de las imágenes**: qué temática has elegido y, para cada imagen, quién la ha hecho o de dónde sale y con qué licencia.
-
-3. **Captura o GIF** de tu juego funcionando.
-
-4. **Cómo compilar y ejecutar**, y cómo lanzar los tests.
-
-5. **Organización y estructura del proyecto**. Es el apartado más importante, y tiene cuatro partes:
-
-    - **Paquetes:** el árbol de paquetes de tu proyecto y para qué sirve cada uno.
-
-    - **Ficheros importantes:** una tabla con qué hace cada fichero relevante (por ejemplo, dónde está el `UiState`, dónde está la lógica, dónde está la navegación).
-
-    - **Cómo fluye un evento:** el recorrido completo desde que el usuario pulsa algo hasta que la pantalla se vuelve a dibujar, nombrando **tus** funciones.
-
-    - **Decisiones de diseño:** qué has decidido y por qué.
-
-6. **Mejoras opcionales** que incluyes, cada una con su API, su fichero y función, y el enlace a la documentación.
-
-7. **Limitaciones conocidas**: lo que no funciona o lo que mejorarías.
-
-!!! tip "Rellénalo mientras programas"
-    Si lo escribes al terminar, se te olvidarán las decisiones. Si lo vas completando por el camino, el apartado de organización y estructura queda casi hecho, y será tu **mapa del proyecto**.
 
 ---
 
