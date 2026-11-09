@@ -1,0 +1,74 @@
+<svg class="arq-svg" viewBox="0 0 600 432" style="max-width:600px" role="img" aria-labelledby="colflat-t colflat-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colflat-t">map frente a flatMap y flatten</title>
+  <desc id="colflat-d">Con un equipo de tres desarrolladores, map de las habilidades da una lista de tres listas, mientras que flatMap da una sola lista con las siete habilidades. flatten aplana una lista de listas ya hecha: de [[1, 2], [3]] a [1, 2, 3].</desc>
+  <defs>
+    <marker id="colflat-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colflat-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code arq-strong" style="font-size:13.5px">equipo</text>
+  <text x="580" y="26" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">List&lt;Desarrollador&gt;</text>
+  <rect x="20" y="38" width="148" height="50" rx="8" class="arq-gray"/>
+  <text x="30" y="57" class="arq-t arq-strong arq-s">Lucía</text>
+  <text x="30" y="78" class="arq-t arq-code" style="font-size:12.5px">[Kotlin, Compose]</text>
+  <rect x="178" y="38" width="215" height="50" rx="8" class="arq-gray"/>
+  <text x="188" y="57" class="arq-t arq-strong arq-s">Marcos</text>
+  <text x="188" y="78" class="arq-t arq-code" style="font-size:12.5px">[Kotlin, Corrutinas, Room]</text>
+  <rect x="402" y="38" width="140" height="50" rx="8" class="arq-gray"/>
+  <text x="412" y="57" class="arq-t arq-strong arq-s">Elena</text>
+  <text x="412" y="78" class="arq-t arq-code" style="font-size:12.5px">[Figma, Compose]</text>
+  <text x="20" y="120" class="arq-t arq-code arq-strong" style="font-size:13.5px">equipo.map { it.habilidades }</text>
+  <text x="580" y="120" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">List&lt;List&lt;String&gt;&gt;</text>
+  <text x="20" y="140" class="arq-t arq-muted arq-s">una lista por desarrollador: quedan anidadas</text>
+  <rect x="26" y="158" width="63" height="26" rx="6" class="arq-ui"/>
+  <text x="58" y="176" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Kotlin</text>
+  <rect x="93" y="158" width="70" height="26" rx="6" class="arq-ui"/>
+  <text x="128" y="176" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Compose</text>
+  <rect x="20" y="152" width="150" height="38" rx="6" class="arq-box" style="fill:none"/>
+  <rect x="186" y="158" width="63" height="26" rx="6" class="arq-ui"/>
+  <text x="217" y="176" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Kotlin</text>
+  <rect x="252" y="158" width="93" height="26" rx="6" class="arq-ui"/>
+  <text x="299" y="176" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Corrutinas</text>
+  <rect x="350" y="158" width="48" height="26" rx="6" class="arq-ui"/>
+  <text x="374" y="176" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Room</text>
+  <rect x="180" y="152" width="224" height="38" rx="6" class="arq-box" style="fill:none"/>
+  <rect x="420" y="158" width="56" height="26" rx="6" class="arq-ui"/>
+  <text x="447" y="176" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Figma</text>
+  <rect x="479" y="158" width="70" height="26" rx="6" class="arq-ui"/>
+  <text x="514" y="176" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Compose</text>
+  <rect x="414" y="152" width="142" height="38" rx="6" class="arq-box" style="fill:none"/>
+  <text x="20" y="228" class="arq-t arq-code arq-strong" style="font-size:13.5px">equipo.flatMap { it.habilidades }</text>
+  <text x="580" y="228" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">List&lt;String&gt;</text>
+  <text x="20" y="248" class="arq-t arq-muted arq-s">transforma y concatena: una sola lista, con repetidos</text>
+  <rect x="20" y="260" width="63" height="26" rx="6" class="arq-ui"/>
+  <text x="52" y="278" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Kotlin</text>
+  <rect x="87" y="260" width="70" height="26" rx="6" class="arq-ui"/>
+  <text x="122" y="278" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Compose</text>
+  <rect x="162" y="260" width="63" height="26" rx="6" class="arq-ui"/>
+  <text x="193" y="278" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Kotlin</text>
+  <rect x="228" y="260" width="93" height="26" rx="6" class="arq-ui"/>
+  <text x="275" y="278" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Corrutinas</text>
+  <rect x="326" y="260" width="48" height="26" rx="6" class="arq-ui"/>
+  <text x="350" y="278" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Room</text>
+  <rect x="378" y="260" width="56" height="26" rx="6" class="arq-ui"/>
+  <text x="405" y="278" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Figma</text>
+  <rect x="437" y="260" width="70" height="26" rx="6" class="arq-ui"/>
+  <text x="472" y="278" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Compose</text>
+  <line x1="20" y1="320" x2="580" y2="320" style="stroke:var(--md-default-fg-color--lightest);stroke-width:1"/>
+  <text x="20" y="348" class="arq-t arq-code arq-strong" style="font-size:13.5px">listOf(listOf(1, 2), listOf(3)).flatten()</text>
+  <text x="20" y="368" class="arq-t arq-muted arq-s">flatten no lleva lambda: aplana una lista de listas que ya tienes</text>
+  <rect x="26" y="386" width="26" height="26" rx="6" class="arq-ui"/>
+  <text x="39" y="404" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">1</text>
+  <rect x="56" y="386" width="26" height="26" rx="6" class="arq-ui"/>
+  <text x="68" y="404" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">2</text>
+  <rect x="20" y="380" width="67" height="38" rx="6" class="arq-box" style="fill:none"/>
+  <rect x="101" y="386" width="26" height="26" rx="6" class="arq-ui"/>
+  <text x="114" y="404" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">3</text>
+  <rect x="95" y="380" width="38" height="38" rx="6" class="arq-box" style="fill:none"/>
+  <path d="M144,399 L192,399" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colflat-a)"/>
+  <rect x="202" y="386" width="26" height="26" rx="6" class="arq-ui"/>
+  <text x="215" y="404" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">1</text>
+  <rect x="232" y="386" width="26" height="26" rx="6" class="arq-ui"/>
+  <text x="245" y="404" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">2</text>
+  <rect x="262" y="386" width="26" height="26" rx="6" class="arq-ui"/>
+  <text x="274" y="404" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">3</text>
+</svg>

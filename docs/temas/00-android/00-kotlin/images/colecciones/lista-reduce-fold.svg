@@ -1,0 +1,40 @@
+<svg class="arq-svg" viewBox="0 0 560 294" style="max-width:560px" role="img" aria-labelledby="colfold-t colfold-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colfold-t">reduce y fold paso a paso</title>
+  <desc id="colfold-d">Con numeros 1, 2, 3: reduce empieza con el primer elemento, 1, suma 2 y da 3, suma 3 y da 6. fold(100) empieza con 100, suma 1, 2 y 3 y pasa por 101 y 103 hasta 106.</desc>
+  <defs>
+    <marker id="colfold-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colfold-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code" style="font-size:13.5px">val numeros = listOf(1, 2, 3)</text>
+  <text x="20" y="66" class="arq-t arq-code arq-strong" style="font-size:13.5px">numeros.reduce { acumulado, n -&gt; acumulado + n }</text>
+  <rect x="20" y="82" width="58" height="34" rx="6" class="arq-dom"/>
+  <text x="49" y="104" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">1</text>
+  <text x="49" y="134" class="arq-t arq-muted arq-xs" text-anchor="middle">1.er elemento</text>
+  <path d="M82,99 L144,99" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colfold-a)"/>
+  <text x="113" y="92" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px;fill:#4a7dff">+ 2</text>
+  <rect x="148" y="82" width="58" height="34" rx="6" class="arq-dom"/>
+  <text x="177" y="104" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">3</text>
+  <path d="M210,99 L272,99" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colfold-a)"/>
+  <text x="241" y="92" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px;fill:#4a7dff">+ 3</text>
+  <rect x="276" y="82" width="58" height="34" rx="6" class="arq-data"/>
+  <text x="305" y="104" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">6</text>
+  <text x="305" y="134" class="arq-t arq-muted arq-xs" text-anchor="middle">resultado</text>
+  <text x="20" y="176" class="arq-t arq-code arq-strong" style="font-size:13.5px">numeros.fold(100) { acumulado, n -&gt; acumulado + n }</text>
+  <rect x="20" y="192" width="58" height="34" rx="6" class="arq-dom"/>
+  <text x="49" y="214" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">100</text>
+  <text x="49" y="244" class="arq-t arq-muted arq-xs" text-anchor="middle">valor inicial</text>
+  <path d="M82,209 L144,209" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colfold-a)"/>
+  <text x="113" y="202" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px;fill:#4a7dff">+ 1</text>
+  <rect x="148" y="192" width="58" height="34" rx="6" class="arq-dom"/>
+  <text x="177" y="214" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">101</text>
+  <path d="M210,209 L272,209" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colfold-a)"/>
+  <text x="241" y="202" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px;fill:#4a7dff">+ 2</text>
+  <rect x="276" y="192" width="58" height="34" rx="6" class="arq-dom"/>
+  <text x="305" y="214" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">103</text>
+  <path d="M338,209 L400,209" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colfold-a)"/>
+  <text x="369" y="202" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px;fill:#4a7dff">+ 3</text>
+  <rect x="404" y="192" width="58" height="34" rx="6" class="arq-data"/>
+  <text x="433" y="214" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">106</text>
+  <text x="433" y="244" class="arq-t arq-muted arq-xs" text-anchor="middle">resultado</text>
+  <text x="20" y="278" class="arq-t arq-muted arq-s">Naranja: acumulado de cada vuelta · azul: elemento que se suma · verde: resultado.</text>
+</svg>

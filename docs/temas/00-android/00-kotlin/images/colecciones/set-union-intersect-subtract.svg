@@ -1,0 +1,43 @@
+<svg class="arq-svg" viewBox="0 0 600 232" style="max-width:600px" role="img" aria-labelledby="colset-t colset-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colset-t">union, intersect y subtract</title>
+  <desc id="colset-d">Con a = 1, 2, 3 y b = 2, 3, 4: a union b es 1, 2, 3, 4; a intersect b es 2, 3; a subtract b es 1. Cada diagrama sombrea la zona del resultado.</desc>
+  <defs>
+    <marker id="colset-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colset-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+    <clipPath id="colset-c1"><circle cx="330" cy="112" r="54"/></clipPath>
+  </defs>
+  <text x="300" y="26" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">val a = setOf(1, 2, 3)     val b = setOf(2, 3, 4)</text>
+  <g style="opacity:.3"><circle cx="70" cy="112" r="54" style="fill:#4a7dff"/><circle cx="130" cy="112" r="54" style="fill:#4a7dff"/></g>
+  <circle cx="70" cy="112" r="54" class="arq-dep" style="stroke-width:1.4"/>
+  <circle cx="130" cy="112" r="54" class="arq-dep" style="stroke-width:1.4"/>
+  <text x="26" y="60" class="arq-t arq-code arq-strong" style="font-size:13.5px">a</text>
+  <text x="166" y="60" class="arq-t arq-code arq-strong" style="font-size:13.5px">b</text>
+  <text x="48" y="117" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:15px">1</text>
+  <text x="100" y="104" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:15px">2</text>
+  <text x="100" y="130" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:15px">3</text>
+  <text x="152" y="117" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:15px">4</text>
+  <text x="100" y="196" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">a union b</text>
+  <text x="100" y="218" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">[1, 2, 3, 4]</text>
+  <circle cx="270" cy="112" r="54" clip-path="url(#colset-c1)" style="fill:#4a7dff;opacity:.3"/>
+  <circle cx="270" cy="112" r="54" class="arq-dep" style="stroke-width:1.4"/>
+  <circle cx="330" cy="112" r="54" class="arq-dep" style="stroke-width:1.4"/>
+  <text x="226" y="60" class="arq-t arq-code arq-strong" style="font-size:13.5px">a</text>
+  <text x="366" y="60" class="arq-t arq-code arq-strong" style="font-size:13.5px">b</text>
+  <text x="248" y="117" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:15px">1</text>
+  <text x="300" y="104" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:15px">2</text>
+  <text x="300" y="130" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:15px">3</text>
+  <text x="352" y="117" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:15px">4</text>
+  <text x="300" y="196" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">a intersect b</text>
+  <text x="300" y="218" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">[2, 3]</text>
+  <g style="opacity:.3"><circle cx="470" cy="112" r="54" style="fill:#4a7dff"/><circle cx="530" cy="112" r="54" style="fill:var(--md-default-bg-color)"/></g>
+  <circle cx="470" cy="112" r="54" class="arq-dep" style="stroke-width:1.4"/>
+  <circle cx="530" cy="112" r="54" class="arq-dep" style="stroke-width:1.4"/>
+  <text x="426" y="60" class="arq-t arq-code arq-strong" style="font-size:13.5px">a</text>
+  <text x="566" y="60" class="arq-t arq-code arq-strong" style="font-size:13.5px">b</text>
+  <text x="448" y="117" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:15px">1</text>
+  <text x="500" y="104" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:15px">2</text>
+  <text x="500" y="130" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:15px">3</text>
+  <text x="552" y="117" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:15px">4</text>
+  <text x="500" y="196" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">a subtract b</text>
+  <text x="500" y="218" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">[1]</text>
+</svg>

@@ -1,0 +1,58 @@
+<svg class="arq-svg" viewBox="0 0 560 418" style="max-width:560px" role="img" aria-labelledby="colmap-t colmap-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colmap-t">Claves, valores y entradas de un Map</title>
+  <desc id="colmap-d">El mapa stock tiene dos entradas: Mando con 3 y Funda con 0. keys da las claves, values los valores y entries las entradas completas. El for desestructura cada entrada en producto y unidades.</desc>
+  <defs>
+    <marker id="colmap-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colmap-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code" style="font-size:13.5px">val stock = mapOf("Mando" to 3, "Funda" to 0)</text>
+  <text x="79" y="54" class="arq-t arq-muted arq-xs" text-anchor="middle">clave</text>
+  <text x="164" y="54" class="arq-t arq-muted arq-xs" text-anchor="middle">valor</text>
+  <rect x="24" y="62" width="110" height="34" rx="6" class="arq-ui"/>
+  <text x="79" y="84" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Mando</text>
+  <rect x="138" y="62" width="60" height="34" rx="6" class="arq-data"/>
+  <text x="168" y="84" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <rect x="24" y="100" width="110" height="34" rx="6" class="arq-ui"/>
+  <text x="79" y="122" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Funda</text>
+  <rect x="138" y="100" width="60" height="34" rx="6" class="arq-data"/>
+  <text x="168" y="122" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">0</text>
+  <rect x="19" y="58" width="180" height="42" rx="8" class="arq-gray arq-dashed" style="fill:none"/>
+  <path d="M206,79 L250,79" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colmap-a)"/>
+  <text x="258" y="84" class="arq-t arq-code" style="font-size:13.5px">entrada: key = "Mando", value = 3</text>
+  <rect x="19" y="96" width="180" height="42" rx="8" class="arq-gray arq-dashed" style="fill:none"/>
+  <path d="M206,117 L250,117" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colmap-a)"/>
+  <text x="258" y="122" class="arq-t arq-code" style="font-size:13.5px">entrada: key = "Funda", value = 0</text>
+  <rect x="24" y="155" width="14" height="14" rx="3" class="arq-ui"/>
+  <text x="46" y="168" class="arq-t arq-code arq-strong" style="font-size:13.5px">stock.keys</text>
+  <text x="176" y="168" class="arq-t arq-code" style="font-size:13.5px">[Mando, Funda]</text>
+  <text x="540" y="168" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Set&lt;String&gt;</text>
+  <rect x="24" y="183" width="14" height="14" rx="3" class="arq-data"/>
+  <text x="46" y="196" class="arq-t arq-code arq-strong" style="font-size:13.5px">stock.values</text>
+  <text x="176" y="196" class="arq-t arq-code" style="font-size:13.5px">[3, 0]</text>
+  <text x="540" y="196" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Collection&lt;Int&gt;</text>
+  <rect x="24" y="211" width="14" height="14" rx="3" class="arq-gray"/>
+  <text x="46" y="224" class="arq-t arq-code arq-strong" style="font-size:13.5px">stock.entries</text>
+  <text x="176" y="224" class="arq-t arq-code" style="font-size:13.5px">[Mando=3, Funda=0]</text>
+  <text x="540" y="224" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Set&lt;Map.Entry&lt;String, Int&gt;&gt;</text>
+  <line x1="20" y1="266" x2="540" y2="266" style="stroke:var(--md-default-fg-color--lightest);stroke-width:1"/>
+  <text x="20" y="296" class="arq-t arq-code arq-strong" style="font-size:13.5px">for ((producto, unidades) in stock) { … }</text>
+  <text x="24" y="332" class="arq-t arq-muted arq-s">1.ª vuelta</text>
+  <rect x="100" y="312" width="58" height="28" rx="6" class="arq-ui"/>
+  <text x="129" y="331" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Mando</text>
+  <text x="170" y="331" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="182" y="312" width="26" height="28" rx="6" class="arq-data"/>
+  <text x="196" y="331" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <path d="M219,326 L255,326" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colmap-a)"/>
+  <text x="265" y="331" class="arq-t arq-code" style="font-size:13.5px;fill:#4a7dff">producto = "Mando"</text>
+  <text x="428" y="331" class="arq-t arq-code" style="font-size:13.5px;fill:#2eaa6e">unidades = 3</text>
+  <text x="24" y="370" class="arq-t arq-muted arq-s">2.ª vuelta</text>
+  <rect x="100" y="350" width="58" height="28" rx="6" class="arq-ui"/>
+  <text x="129" y="369" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Funda</text>
+  <text x="170" y="369" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="182" y="350" width="26" height="28" rx="6" class="arq-data"/>
+  <text x="196" y="369" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">0</text>
+  <path d="M219,364 L255,364" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colmap-a)"/>
+  <text x="265" y="369" class="arq-t arq-code" style="font-size:13.5px;fill:#4a7dff">producto = "Funda"</text>
+  <text x="428" y="369" class="arq-t arq-code" style="font-size:13.5px;fill:#2eaa6e">unidades = 0</text>
+  <text x="20" y="402" class="arq-t arq-muted arq-s">stock.forEach { (producto, unidades) -&gt; … } hace el mismo recorrido.</text>
+</svg>

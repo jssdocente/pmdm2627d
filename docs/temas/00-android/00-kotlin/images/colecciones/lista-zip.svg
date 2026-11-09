@@ -1,0 +1,47 @@
+<svg class="arq-svg" viewBox="0 0 520 376" style="max-width:520px" role="img" aria-labelledby="colzip-t colzip-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colzip-t">zip empareja por posición</title>
+  <desc id="colzip-d">nombres Ana, Luis, Eva y notas 8, 4 se emparejan por posición en (Ana, 8) y (Luis, 4). Eva no tiene pareja y se descarta. toMap convierte los pares en {Ana=8, Luis=4}.</desc>
+  <defs>
+    <marker id="colzip-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colzip-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code" style="font-size:13.5px">val nombres = listOf("Ana", "Luis", "Eva")</text>
+  <text x="20" y="46" class="arq-t arq-code" style="font-size:13.5px">val notas = listOf(8, 4)</text>
+  <rect x="14" y="62" width="92" height="92" rx="10" class="arq-gray arq-dashed" style="fill:none"/>
+  <rect x="20" y="70" width="80" height="28" rx="6" class="arq-ui"/>
+  <text x="60" y="89" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Ana</text>
+  <rect x="20" y="118" width="80" height="28" rx="6" class="arq-data"/>
+  <text x="60" y="137" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">8</text>
+  <rect x="114" y="62" width="92" height="92" rx="10" class="arq-gray arq-dashed" style="fill:none"/>
+  <rect x="120" y="70" width="80" height="28" rx="6" class="arq-ui"/>
+  <text x="160" y="89" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Luis</text>
+  <rect x="120" y="118" width="80" height="28" rx="6" class="arq-data"/>
+  <text x="160" y="137" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <rect x="220" y="70" width="80" height="28" rx="6" class="arq-gray"/>
+  <text x="260" y="89" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">Eva</text>
+  <rect x="220" y="118" width="80" height="28" rx="6" class="arq-gray arq-dashed" style="fill:none"/>
+  <text x="260" y="137" class="arq-t arq-muted" text-anchor="middle">—</text>
+  <text x="320" y="88" class="arq-t arq-muted arq-s">nombres</text>
+  <text x="320" y="136" class="arq-t arq-muted arq-s">notas</text>
+  <text x="220" y="172" class="arq-t arq-xs" style="fill:#e5484d">Eva no tiene pareja: se descarta</text>
+  <path d="M60,182 L60,230" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colzip-a)"/>
+  <text x="74" y="211" class="arq-t arq-code arq-strong" style="font-size:13.5px">nombres.zip(notas)</text>
+  <text x="500" y="230" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">List&lt;Pair&lt;String, Int&gt;&gt;</text>
+  <rect x="20" y="240" width="83" height="28" rx="6" class="arq-gray"/>
+  <text x="61" y="259" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">(Ana, 8)</text>
+  <rect x="113" y="240" width="91" height="28" rx="6" class="arq-gray"/>
+  <text x="158" y="259" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">(Luis, 4)</text>
+  <path d="M60,276 L60,324" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colzip-a)"/>
+  <text x="74" y="305" class="arq-t arq-code arq-strong" style="font-size:13.5px">.toMap()</text>
+  <text x="500" y="324" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Map&lt;String, Int&gt;</text>
+  <rect x="20" y="334" width="42" height="28" rx="6" class="arq-ui"/>
+  <text x="41" y="353" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Ana</text>
+  <text x="74" y="353" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="86" y="334" width="26" height="28" rx="6" class="arq-data"/>
+  <text x="99" y="353" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">8</text>
+  <rect x="132" y="334" width="50" height="28" rx="6" class="arq-ui"/>
+  <text x="158" y="353" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Luis</text>
+  <text x="195" y="353" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="207" y="334" width="26" height="28" rx="6" class="arq-data"/>
+  <text x="220" y="353" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+</svg>

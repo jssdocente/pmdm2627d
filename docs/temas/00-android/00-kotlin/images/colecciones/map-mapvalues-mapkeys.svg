@@ -1,0 +1,47 @@
+<svg class="arq-svg" viewBox="0 0 560 316" style="max-width:560px" role="img" aria-labelledby="colmv-t colmv-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colmv-t">mapValues frente a mapKeys</title>
+  <desc id="colmv-d">A partir de notas, Ana 8 y Luis 4, mapValues multiplica los valores por 10 y deja Ana 80 y Luis 40; mapKeys pasa las claves a mayúsculas y deja ANA 8 y LUIS 4.</desc>
+  <defs>
+    <marker id="colmv-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colmv-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="280" y="26" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">val notas = mapOf("Ana" to 8, "Luis" to 4)</text>
+  <text x="250" y="48" class="arq-t arq-muted arq-xs" text-anchor="middle">clave</text>
+  <text x="318" y="48" class="arq-t arq-muted arq-xs" text-anchor="middle">valor</text>
+  <rect x="210" y="56" width="80" height="30" rx="6" class="arq-ui"/>
+  <text x="250" y="76" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Ana</text>
+  <rect x="294" y="56" width="56" height="30" rx="6" class="arq-data"/>
+  <text x="322" y="76" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">8</text>
+  <rect x="210" y="90" width="80" height="30" rx="6" class="arq-ui"/>
+  <text x="250" y="110" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Luis</text>
+  <rect x="294" y="90" width="56" height="30" rx="6" class="arq-data"/>
+  <text x="322" y="110" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <path d="M200,110 L150,150" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colmv-a)"/>
+  <path d="M360,110 L410,150" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colmv-a)"/>
+  <text x="20" y="170" class="arq-t arq-code arq-strong" style="font-size:13.5px">mapValues { it.value * 10 }</text>
+  <text x="540" y="170" class="arq-t arq-code arq-strong" text-anchor="end" style="font-size:13.5px">mapKeys { it.key.uppercase() }</text>
+  <text x="110" y="190" class="arq-t arq-muted arq-xs" text-anchor="middle">clave</text>
+  <text x="178" y="190" class="arq-t arq-muted arq-xs" text-anchor="middle">valor</text>
+  <rect x="70" y="198" width="80" height="30" rx="6" class="arq-ui"/>
+  <text x="110" y="218" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Ana</text>
+  <rect x="154" y="198" width="56" height="30" rx="6" class="arq-dom"/>
+  <text x="182" y="218" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">80</text>
+  <rect x="70" y="232" width="80" height="30" rx="6" class="arq-ui"/>
+  <text x="110" y="252" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Luis</text>
+  <rect x="154" y="232" width="56" height="30" rx="6" class="arq-dom"/>
+  <text x="182" y="252" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">40</text>
+  <text x="390" y="190" class="arq-t arq-muted arq-xs" text-anchor="middle">clave</text>
+  <text x="458" y="190" class="arq-t arq-muted arq-xs" text-anchor="middle">valor</text>
+  <rect x="350" y="198" width="80" height="30" rx="6" class="arq-dom"/>
+  <text x="390" y="218" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">ANA</text>
+  <rect x="434" y="198" width="56" height="30" rx="6" class="arq-data"/>
+  <text x="462" y="218" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">8</text>
+  <rect x="350" y="232" width="80" height="30" rx="6" class="arq-dom"/>
+  <text x="390" y="252" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">LUIS</text>
+  <rect x="434" y="232" width="56" height="30" rx="6" class="arq-data"/>
+  <text x="462" y="252" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <text x="138" y="284" class="arq-t arq-s" text-anchor="middle" style="fill:#e09400">cambian los valores</text>
+  <text x="138" y="302" class="arq-t arq-muted arq-s" text-anchor="middle">las claves se quedan igual</text>
+  <text x="418" y="284" class="arq-t arq-s" text-anchor="middle" style="fill:#e09400">cambian las claves</text>
+  <text x="418" y="302" class="arq-t arq-muted arq-s" text-anchor="middle">los valores se quedan igual</text>
+</svg>

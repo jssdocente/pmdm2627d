@@ -121,6 +121,11 @@ println(stock.values)  // [3, 0]
 println(stock.entries) // [Mando=3, Funda=0]
 ```
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/map-claves-valores-entradas.svg"
+<figcaption>Cada fila del mapa es una entrada con su clave y su valor. <code>keys</code> toma la columna de claves, <code>values</code> la de valores y <code>entries</code> las filas completas. El <code>for</code> recorre las entradas y separa cada una en dos variables.</figcaption>
+</figure>
+
 Cada elemento de `entries` es una entrada con las propiedades `key` y `value`. Es lo que recibe la lambda de casi todas las operaciones de esta página: dentro de ella, `it` es la entrada completa, no el valor.
 
 ---
@@ -190,6 +195,21 @@ val catalogo = listOf(
 
 Lo que decide el método es **qué papel hace cada elemento de la lista** dentro del mapa: el valor, la clave o parte de una lista de valores. Lee el nombre como una frase: `associateBy` asocia cada elemento *por* un dato suyo, y `associateWith` lo asocia *con* un dato.
 
+Se ve muy claro con una lista sencilla y la misma lambda en los tres métodos:
+
+```kotlin
+val palabras = listOf("sol", "luna", "mar")
+
+println(palabras.associateBy { it.length })   // {3=mar, 4=luna}
+println(palabras.associateWith { it.length }) // {sol=3, luna=4, mar=3}
+println(palabras.groupBy { it.length })       // {3=[sol, mar], 4=[luna]}
+```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/col-asociar-agrupar.svg"
+<figcaption>La misma lista y la misma lambda dan tres mapas distintos. Con <code>associateBy</code>, «sol» y «mar» comparten la clave 3, y el último sustituye al primero. <code>groupBy</code> los guarda a los dos en una lista.</figcaption>
+</figure>
+
 ### `associateBy`: buscar un elemento por su clave {#associateby}
 
 **Cuándo se usa:** tienes una lista de objetos y necesitas encontrar uno a partir de un dato suyo, normalmente el id.
@@ -209,6 +229,11 @@ val porId = catalogo.associateBy { it.id }
 println(porId[3]) // Producto(id=3, nombre=Cascos, categoria=Audio, precio=90.0)
 println(porId[9]) // null
 ```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/map-associateby.svg"
+<figcaption><code>associateBy { it.id }</code>: el id de cada producto pasa a ser la clave, y el producto entero, el valor.</figcaption>
+</figure>
 
 Con la lista también se puede buscar, pero `find` la recorre elemento a elemento cada vez. El mapa va directo a la clave, y eso se nota cuando se hacen muchas búsquedas:
 
@@ -253,6 +278,11 @@ val longitudes = nombres.associateWith { it.length }
 println(longitudes)          // {Ana=3, Luisa=5}
 println(longitudes["Luisa"]) // 5
 ```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/map-associatewith.svg"
+<figcaption><code>associateWith { it.length }</code>: cada nombre pasa tal cual a ser la clave, y la lambda calcula su valor.</figcaption>
+</figure>
 
 También sirve para dar a todas las claves el mismo valor inicial, por ejemplo poner varios marcadores a cero:
 
@@ -327,6 +357,11 @@ println(porCategoria.keys)                        // [Accesorios, Audio]
 println(porCategoria["Audio"]?.map { it.nombre }) // [Cascos, Altavoz]
 ```
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/map-groupby.svg"
+<figcaption><code>groupBy { it.categoria }</code>: los productos con la misma categoría van a parar a la misma lista. El mapa tiene tantas claves como categorías distintas.</figcaption>
+</figure>
+
 Con una segunda lambda eliges qué se guarda en cada lista:
 
 ```kotlin
@@ -378,6 +413,11 @@ val notas = mapOf("Ana" to 8, "Luis" to 4)
 println(notas.mapKeys { it.key.uppercase() }) // {ANA=8, LUIS=4}
 ```
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/map-mapvalues-mapkeys.svg"
+<figcaption>En naranja, lo que cambia. <code>mapValues</code> recalcula la columna de valores y <code>mapKeys</code> la de claves; la otra columna pasa igual al mapa nuevo.</figcaption>
+</figure>
+
 ### `groupBy` + `mapValues`: resumir cada grupo {#groupby-mapvalues}
 
 Es la combinación más habitual: repartir en grupos y calcular un dato de cada grupo. `groupBy` deja un `Map<K, List<T>>`, y `mapValues` sustituye cada lista por el resumen.
@@ -399,7 +439,12 @@ println(porCategoria.mapValues { (_, lista) -> lista.map { it.nombre } })
 // {Accesorios=[Mando, Funda], Audio=[Cascos, Altavoz]}
 ```
 
-Dentro de la lambda, `productos` es una lista normal, así que sirve cualquier [operación de listas](./42-listas.md#que-metodo-uso).
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/map-groupby-mapvalues.svg"
+<figcaption>Un pipeline en dos pasos: <code>groupBy</code> reparte el catálogo en listas y <code>mapValues</code> cambia cada lista por un solo dato, aquí la suma de sus precios.</figcaption>
+</figure>
+
+Dentro de la lambda, `lista` es una lista normal, así que sirve cualquier [operación de listas](./42-listas.md#que-metodo-uso).
 
 ### `filterKeys`, `filterValues` y `filter`: quedarse con algunas entradas {#filtrar-un-map}
 
@@ -413,6 +458,11 @@ println(notas.filterValues { it >= 5 })          // {Ana=8, Alba=6}
 println(notas.filter { (nombre, nota) -> nombre != "Ana" && nota >= 5 })
 // {Alba=6}
 ```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/map-filtrar.svg"
+<figcaption>Las tres recorren las mismas entradas y dejan pasar las que cumplen la condición. Solo cambia lo que mira esa condición: la clave, el valor o los dos a la vez.</figcaption>
+</figure>
 
 Como el resultado es otro mapa, se puede seguir encadenando, por ejemplo con `.keys`:
 

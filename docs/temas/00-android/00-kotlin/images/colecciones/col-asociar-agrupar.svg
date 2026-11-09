@@ -1,0 +1,75 @@
+<svg class="arq-svg" viewBox="0 0 560 452" style="max-width:560px" role="img" aria-labelledby="colab-t colab-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colab-t">associateBy, associateWith y groupBy con la misma lista</title>
+  <desc id="colab-d">La lista sol, luna, mar con la lambda it.length. associateBy da {3=mar, 4=luna}: sol se pierde porque mar tiene la misma clave. associateWith da {sol=3, luna=4, mar=3}. groupBy da {3=[sol, mar], 4=[luna]}.</desc>
+  <defs>
+    <marker id="colab-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colab-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code" style="font-size:13.5px">val palabras = listOf("sol", "luna", "mar")</text>
+  <rect x="20" y="40" width="74" height="28" rx="6" class="arq-gray"/>
+  <text x="57" y="59" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">sol</text>
+  <text x="57" y="86" class="arq-t arq-muted arq-xs" text-anchor="middle">it.length = 3</text>
+  <rect x="110" y="40" width="74" height="28" rx="6" class="arq-gray"/>
+  <text x="147" y="59" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">luna</text>
+  <text x="147" y="86" class="arq-t arq-muted arq-xs" text-anchor="middle">it.length = 4</text>
+  <rect x="200" y="40" width="74" height="28" rx="6" class="arq-gray"/>
+  <text x="237" y="59" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">mar</text>
+  <text x="237" y="86" class="arq-t arq-muted arq-xs" text-anchor="middle">it.length = 3</text>
+  <rect x="10" y="104" width="540" height="104" rx="10" class="arq-box"/>
+  <text x="24" y="129" class="arq-t arq-code arq-strong" style="font-size:13.5px">palabras.associateBy { it.length }</text>
+  <text x="536" y="129" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Map&lt;Int, String&gt;</text>
+  <text x="24" y="149" class="arq-t arq-muted arq-s">clave: lo que da la lambda · valor: el elemento</text>
+  <rect x="24" y="164" width="26" height="28" rx="6" class="arq-ui"/>
+  <text x="37" y="183" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <text x="62" y="183" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="74" y="164" width="42" height="28" rx="6" class="arq-data"/>
+  <text x="95" y="183" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">mar</text>
+  <rect x="136" y="164" width="26" height="28" rx="6" class="arq-ui"/>
+  <text x="149" y="183" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <text x="174" y="183" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="186" y="164" width="50" height="28" rx="6" class="arq-data"/>
+  <text x="212" y="183" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">luna</text>
+  <rect x="271" y="164" width="26" height="28" rx="6" class="arq-warn"/>
+  <text x="284" y="183" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <line x1="275" y1="178" x2="293" y2="178" style="stroke:#e5484d;stroke-width:2"/>
+  <text x="309" y="183" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="321" y="164" width="42" height="28" rx="6" class="arq-warn"/>
+  <text x="342" y="183" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">sol</text>
+  <line x1="325" y1="178" x2="359" y2="178" style="stroke:#e5484d;stroke-width:2"/>
+  <text x="375" y="175" class="arq-t arq-xs" style="fill:#e5484d">sol se pierde: mar llega</text>
+  <text x="375" y="189" class="arq-t arq-xs" style="fill:#e5484d">después con la misma clave</text>
+  <rect x="10" y="220" width="540" height="104" rx="10" class="arq-box"/>
+  <text x="24" y="245" class="arq-t arq-code arq-strong" style="font-size:13.5px">palabras.associateWith { it.length }</text>
+  <text x="536" y="245" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Map&lt;String, Int&gt;</text>
+  <text x="24" y="265" class="arq-t arq-muted arq-s">clave: el elemento · valor: lo que da la lambda</text>
+  <rect x="24" y="280" width="42" height="28" rx="6" class="arq-ui"/>
+  <text x="45" y="299" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">sol</text>
+  <text x="78" y="299" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="90" y="280" width="26" height="28" rx="6" class="arq-data"/>
+  <text x="103" y="299" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <rect x="136" y="280" width="50" height="28" rx="6" class="arq-ui"/>
+  <text x="162" y="299" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">luna</text>
+  <text x="199" y="299" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="211" y="280" width="26" height="28" rx="6" class="arq-data"/>
+  <text x="224" y="299" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <rect x="257" y="280" width="42" height="28" rx="6" class="arq-ui"/>
+  <text x="278" y="299" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">mar</text>
+  <text x="311" y="299" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="323" y="280" width="26" height="28" rx="6" class="arq-data"/>
+  <text x="336" y="299" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <rect x="10" y="336" width="540" height="104" rx="10" class="arq-box"/>
+  <text x="24" y="361" class="arq-t arq-code arq-strong" style="font-size:13.5px">palabras.groupBy { it.length }</text>
+  <text x="536" y="361" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Map&lt;Int, List&lt;String&gt;&gt;</text>
+  <text x="24" y="381" class="arq-t arq-muted arq-s">clave: lo que da la lambda · valor: lista de elementos</text>
+  <rect x="24" y="396" width="26" height="28" rx="6" class="arq-ui"/>
+  <text x="37" y="415" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <text x="62" y="415" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="74" y="396" width="99" height="28" rx="6" class="arq-data"/>
+  <text x="124" y="415" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">[sol, mar]</text>
+  <rect x="193" y="396" width="26" height="28" rx="6" class="arq-ui"/>
+  <text x="206" y="415" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <text x="231" y="415" class="arq-t arq-code arq-muted" text-anchor="middle" style="font-size:13.5px">→</text>
+  <rect x="243" y="396" width="67" height="28" rx="6" class="arq-data"/>
+  <text x="276" y="415" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">[luna]</text>
+  <text x="536" y="415" class="arq-t arq-s" text-anchor="end" style="fill:#2eaa6e">no se pierde ninguno</text>
+</svg>

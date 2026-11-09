@@ -1,0 +1,30 @@
+<svg class="arq-svg" viewBox="0 0 460 252" style="max-width:460px" role="img" aria-labelledby="colarr-t colarr-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colarr-t">Dos variables, el mismo array</title>
+  <desc id="colarr-d">val b = a no copia el array: a y b apuntan al mismo IntArray. Al hacer b[0] = 99 cambia ese único array, y a[0] también da 99.</desc>
+  <defs>
+    <marker id="colarr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colarr-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code" style="font-size:13.5px">val a = intArrayOf(1, 2, 3)</text>
+  <text x="20" y="46" class="arq-t arq-code" style="font-size:13.5px">val b = a</text>
+  <text x="20" y="66" class="arq-t arq-code" style="font-size:13.5px">b[0] = 99</text>
+  <rect x="20" y="92" width="50" height="32" rx="6" class="arq-box"/>
+  <text x="45" y="113" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">a</text>
+  <rect x="20" y="152" width="50" height="32" rx="6" class="arq-box"/>
+  <text x="45" y="173" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">b</text>
+  <text x="212" y="204" class="arq-t arq-code arq-muted" style="font-size:12px">IntArray: un solo objeto</text>
+  <rect x="212" y="112" width="174" height="48" rx="8" class="arq-box"/>
+  <rect x="220" y="120" width="48" height="32" rx="6" class="arq-dom"/>
+  <text x="244" y="141" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">99</text>
+  <text x="244" y="176" class="arq-t arq-muted arq-xs" text-anchor="middle">[0]</text>
+  <rect x="274" y="120" width="48" height="32" rx="6" class="arq-ui"/>
+  <text x="298" y="141" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">2</text>
+  <text x="298" y="176" class="arq-t arq-muted arq-xs" text-anchor="middle">[1]</text>
+  <rect x="328" y="120" width="48" height="32" rx="6" class="arq-ui"/>
+  <text x="352" y="141" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <text x="352" y="176" class="arq-t arq-muted arq-xs" text-anchor="middle">[2]</text>
+  <text x="244" y="100" class="arq-t arq-xs" text-anchor="middle" style="fill:#e09400">antes 1</text>
+  <path d="M74,108 L208,130" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colarr-a)"/>
+  <path d="M74,168 L208,144" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colarr-a)"/>
+  <text x="20" y="236" class="arq-t arq-muted arq-s">Asignar no copia: println(a[0]) también muestra 99.</text>
+</svg>

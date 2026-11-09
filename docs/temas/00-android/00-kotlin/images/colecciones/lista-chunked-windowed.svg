@@ -1,0 +1,67 @@
+<svg class="arq-svg" viewBox="0 0 560 410" style="max-width:560px" role="img" aria-labelledby="colchunk-t colchunk-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colchunk-t">chunked y windowed</title>
+  <desc id="colchunk-d">La lista 1 a 5 con chunked(2) da [1, 2], [3, 4] y [5], el último más corto. windowed(3) da [1, 2, 3], [2, 3, 4] y [3, 4, 5]. windowed con tamaño 2 y paso 2 da [1, 2] y [3, 4]: el 5 no completa ventana y se descarta.</desc>
+  <defs>
+    <marker id="colchunk-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colchunk-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code" style="font-size:13.5px">val numeros = listOf(1, 2, 3, 4, 5)</text>
+  <text x="20" y="66" class="arq-t arq-code arq-strong" style="font-size:13.5px">numeros.chunked(2)</text>
+  <rect x="20" y="78" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="43" y="98" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">1</text>
+  <rect x="74" y="78" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="97" y="98" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">2</text>
+  <rect x="128" y="78" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="151" y="98" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <rect x="182" y="78" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="205" y="98" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <rect x="236" y="78" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="259" y="98" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">5</text>
+  <rect x="20" y="114" width="100" height="24" rx="6" class="arq-data"/>
+  <text x="70" y="130" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[1, 2]</text>
+  <rect x="128" y="114" width="100" height="24" rx="6" class="arq-data"/>
+  <text x="178" y="130" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[3, 4]</text>
+  <rect x="236" y="114" width="46" height="24" rx="6" class="arq-dom"/>
+  <text x="259" y="130" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[5]</text>
+  <text x="300" y="100" class="arq-t arq-muted arq-s">bloques seguidos, sin solaparse;</text>
+  <text x="300" y="118" class="arq-t arq-muted arq-s">el último puede quedar más corto</text>
+  <text x="20" y="168" class="arq-t arq-code arq-strong" style="font-size:13.5px">numeros.windowed(3)</text>
+  <rect x="20" y="180" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="43" y="200" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">1</text>
+  <rect x="74" y="180" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="97" y="200" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">2</text>
+  <rect x="128" y="180" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="151" y="200" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <rect x="182" y="180" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="205" y="200" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <rect x="236" y="180" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="259" y="200" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">5</text>
+  <rect x="20" y="216" width="154" height="24" rx="6" class="arq-data"/>
+  <text x="97" y="232" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[1, 2, 3]</text>
+  <rect x="74" y="244" width="154" height="24" rx="6" class="arq-data"/>
+  <text x="151" y="260" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[2, 3, 4]</text>
+  <rect x="128" y="272" width="154" height="24" rx="6" class="arq-data"/>
+  <text x="205" y="288" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[3, 4, 5]</text>
+  <text x="300" y="202" class="arq-t arq-muted arq-s">una ventana de 3 que avanza de 1 en 1;</text>
+  <text x="300" y="220" class="arq-t arq-muted arq-s">se solapan</text>
+  <text x="20" y="324" class="arq-t arq-code arq-strong" style="font-size:13.5px">numeros.windowed(size = 2, step = 2)</text>
+  <rect x="20" y="336" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="43" y="356" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">1</text>
+  <rect x="74" y="336" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="97" y="356" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">2</text>
+  <rect x="128" y="336" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="151" y="356" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3</text>
+  <rect x="182" y="336" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="205" y="356" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <rect x="236" y="336" width="46" height="30" rx="6" class="arq-ui"/>
+  <text x="259" y="356" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">5</text>
+  <rect x="20" y="372" width="100" height="24" rx="6" class="arq-data"/>
+  <text x="70" y="388" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[1, 2]</text>
+  <rect x="128" y="372" width="100" height="24" rx="6" class="arq-data"/>
+  <text x="178" y="388" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[3, 4]</text>
+  <rect x="236" y="372" width="46" height="24" rx="6" class="arq-warn"/>
+  <text x="259" y="388" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">[5]</text>
+  <line x1="240" y1="384" x2="278" y2="384" style="stroke:#e5484d;stroke-width:2"/>
+  <text x="300" y="358" class="arq-t arq-muted arq-s">avanza de 2 en 2; la ventana del 5</text>
+  <text x="300" y="376" class="arq-t arq-muted arq-s">está incompleta y se descarta</text>
+</svg>

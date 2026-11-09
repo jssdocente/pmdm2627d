@@ -1,0 +1,53 @@
+<svg class="arq-svg" viewBox="0 0 560 446" style="max-width:560px" role="img" aria-labelledby="colgbmv-t colgbmv-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colgbmv-t">groupBy y después mapValues</title>
+  <desc id="colgbmv-d">El catálogo se agrupa por categoría en un mapa de listas, y mapValues sustituye cada lista por la suma de sus precios: Accesorios 90.0 y Audio 135.0.</desc>
+  <defs>
+    <marker id="colgbmv-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colgbmv-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code arq-strong" style="font-size:13.5px">catalogo</text>
+  <text x="540" y="26" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">List&lt;Producto&gt;</text>
+  <text x="70" y="52" class="arq-t arq-xs" text-anchor="middle" style="fill:#4a7dff">Accesorios</text>
+  <rect x="20" y="60" width="99" height="28" rx="6" class="arq-gray"/>
+  <text x="70" y="79" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Mando 70.0</text>
+  <text x="178" y="52" class="arq-t arq-xs" text-anchor="middle" style="fill:#4a7dff">Accesorios</text>
+  <rect x="129" y="60" width="99" height="28" rx="6" class="arq-gray"/>
+  <text x="178" y="79" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Funda 20.0</text>
+  <text x="292" y="52" class="arq-t arq-xs" text-anchor="middle" style="fill:#4a7dff">Audio</text>
+  <rect x="238" y="60" width="107" height="28" rx="6" class="arq-gray"/>
+  <text x="292" y="79" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Cascos 90.0</text>
+  <text x="413" y="52" class="arq-t arq-xs" text-anchor="middle" style="fill:#4a7dff">Audio</text>
+  <rect x="355" y="60" width="115" height="28" rx="6" class="arq-gray"/>
+  <text x="413" y="79" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Altavoz 45.0</text>
+  <path d="M60,96 L60,150" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colgbmv-a)"/>
+  <text x="74" y="128" class="arq-t arq-code arq-strong" style="font-size:13.5px">groupBy { it.categoria }</text>
+  <text x="540" y="150" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Map&lt;String, List&lt;Producto&gt;&gt;</text>
+  <rect x="20" y="160" width="110" height="42" rx="6" class="arq-ui"/>
+  <text x="75" y="186" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">Accesorios</text>
+  <rect x="134" y="160" width="290" height="42" rx="6" class="arq-data"/>
+  <rect x="144" y="167" width="93" height="28" rx="6" class="arq-box"/>
+  <text x="190" y="186" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Mando 70.0</text>
+  <rect x="245" y="167" width="93" height="28" rx="6" class="arq-box"/>
+  <text x="292" y="186" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Funda 20.0</text>
+  <rect x="20" y="208" width="110" height="42" rx="6" class="arq-ui"/>
+  <text x="75" y="234" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">Audio</text>
+  <rect x="134" y="208" width="290" height="42" rx="6" class="arq-data"/>
+  <rect x="144" y="215" width="100" height="28" rx="6" class="arq-box"/>
+  <text x="194" y="234" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Cascos 90.0</text>
+  <rect x="252" y="215" width="108" height="28" rx="6" class="arq-box"/>
+  <text x="306" y="234" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Altavoz 45.0</text>
+  <path d="M60,262 L60,322" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colgbmv-a)"/>
+  <text x="74" y="297" class="arq-t arq-code arq-strong" style="font-size:13.5px">mapValues { (_, lista) -&gt; lista.sumOf { it.precio } }</text>
+  <text x="540" y="322" class="arq-t arq-code arq-muted" text-anchor="end" style="font-size:12px">Map&lt;String, Double&gt;</text>
+  <rect x="20" y="332" width="110" height="34" rx="6" class="arq-ui"/>
+  <text x="75" y="354" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">Accesorios</text>
+  <rect x="134" y="332" width="80" height="34" rx="6" class="arq-dom"/>
+  <text x="174" y="354" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">90.0</text>
+  <text x="226" y="354" class="arq-t arq-muted arq-s">= 70.0 + 20.0</text>
+  <rect x="20" y="372" width="110" height="34" rx="6" class="arq-ui"/>
+  <text x="75" y="394" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">Audio</text>
+  <rect x="134" y="372" width="80" height="34" rx="6" class="arq-dom"/>
+  <text x="174" y="394" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">135.0</text>
+  <text x="226" y="394" class="arq-t arq-muted arq-s">= 90.0 + 45.0</text>
+  <text x="20" y="430" class="arq-t arq-muted arq-s">Las claves se mantienen; cada lista se sustituye por lo que devuelve la lambda.</text>
+</svg>

@@ -1,0 +1,44 @@
+<svg class="arq-svg" viewBox="0 0 580 318" style="max-width:580px" role="img" aria-labelledby="colaby-t colaby-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colaby-t">associateBy por id</title>
+  <desc id="colaby-d">Cada producto del catálogo pasa al mapa con su id como clave y el producto completo como valor: 1 Mando, 2 Funda, 3 Cascos y 4 Altavoz.</desc>
+  <defs>
+    <marker id="colaby-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colaby-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code arq-strong" style="font-size:13.5px">val porId = catalogo.associateBy { it.id }</text>
+  <text x="20" y="48" class="arq-t arq-muted arq-s">La lambda da la clave; el producto completo es el valor.</text>
+  <text x="20" y="82" class="arq-t arq-code arq-muted" style="font-size:12px">catalogo: List&lt;Producto&gt;</text>
+  <text x="324" y="82" class="arq-t arq-code arq-muted" style="font-size:12px">porId: Map&lt;Int, Producto&gt;</text>
+  <text x="347" y="100" class="arq-t arq-muted arq-xs" text-anchor="middle">clave</text>
+  <text x="472" y="100" class="arq-t arq-muted arq-xs" text-anchor="middle">valor</text>
+  <rect x="20" y="108" width="204" height="32" rx="6" class="arq-gray"/>
+  <text x="32" y="129" class="arq-t arq-code" style="font-size:13.5px">Producto(<tspan style="fill:#4a7dff;font-weight:700">1</tspan>, Mando, …)</text>
+  <path d="M230,124 L318,124" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colaby-a)"/>
+  <rect x="324" y="108" width="46" height="32" rx="6" class="arq-ui"/>
+  <text x="347" y="129" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">1</text>
+  <rect x="374" y="108" width="196" height="32" rx="6" class="arq-data"/>
+  <text x="472" y="128" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Producto(1, Mando, …)</text>
+  <rect x="20" y="152" width="204" height="32" rx="6" class="arq-gray"/>
+  <text x="32" y="173" class="arq-t arq-code" style="font-size:13.5px">Producto(<tspan style="fill:#4a7dff;font-weight:700">2</tspan>, Funda, …)</text>
+  <path d="M230,168 L318,168" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colaby-a)"/>
+  <rect x="324" y="152" width="46" height="32" rx="6" class="arq-ui"/>
+  <text x="347" y="173" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">2</text>
+  <rect x="374" y="152" width="196" height="32" rx="6" class="arq-data"/>
+  <text x="472" y="172" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Producto(2, Funda, …)</text>
+  <rect x="20" y="196" width="204" height="32" rx="6" class="arq-gray"/>
+  <text x="32" y="217" class="arq-t arq-code" style="font-size:13.5px">Producto(<tspan style="fill:#4a7dff;font-weight:700">3</tspan>, Cascos, …)</text>
+  <path d="M230,212 L318,212" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colaby-a)"/>
+  <rect x="324" y="196" width="46" height="32" rx="6" class="arq-ui"/>
+  <text x="347" y="217" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">3</text>
+  <rect x="374" y="196" width="196" height="32" rx="6" class="arq-data"/>
+  <text x="472" y="216" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Producto(3, Cascos, …)</text>
+  <rect x="20" y="240" width="204" height="32" rx="6" class="arq-gray"/>
+  <text x="32" y="261" class="arq-t arq-code" style="font-size:13.5px">Producto(<tspan style="fill:#4a7dff;font-weight:700">4</tspan>, Altavoz, …)</text>
+  <path d="M230,256 L318,256" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colaby-a)"/>
+  <rect x="324" y="240" width="46" height="32" rx="6" class="arq-ui"/>
+  <text x="347" y="261" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">4</text>
+  <rect x="374" y="240" width="196" height="32" rx="6" class="arq-data"/>
+  <text x="472" y="260" class="arq-t arq-code" text-anchor="middle" style="font-size:12.5px">Producto(4, Altavoz, …)</text>
+  <text x="20" y="300" class="arq-t arq-code arq-strong" style="font-size:13.5px">porId[3]</text>
+  <text x="96" y="300" class="arq-t arq-muted arq-s">va directo a la clave 3 → Producto(3, Cascos, …), sin recorrer la lista</text>
+</svg>

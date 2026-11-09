@@ -175,6 +175,11 @@ Si ya tienes una lista de listas, `flatten()` hace lo mismo sin lambda:
 println(listOf(listOf(1, 2), listOf(3)).flatten()) // [1, 2, 3]
 ```
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/lista-map-flatmap-flatten.svg"
+<figcaption>Con <code>map</code>, cada desarrollador aporta su lista y el resultado es una lista de listas. <code>flatMap</code> concatena esas listas en una sola. <code>flatten</code> hace solo la parte de concatenar.</figcaption>
+</figure>
+
 ### 4.6. `distinct` y `distinctBy`: Eliminación de duplicados
 ```kotlin
 // Elimina valores idénticos repetidos:
@@ -207,6 +212,11 @@ val (aprobadosList, suspensosList) = notas.partition { it >= 5.0 }
 println("Aprobados: $aprobadosList") // [7.0, 9.2, 6.0]
 println("Suspensos: $suspensosList") // [4.5, 3.8]
 ```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/lista-partition.svg"
+<figcaption><code>partition</code> devuelve un <code>Pair</code> con dos listas. La desestructuración <code>val (a, b)</code> guarda <code>first</code> en la primera variable y <code>second</code> en la segunda.</figcaption>
+</figure>
 
 ### 4.9. Operaciones de Agregación: `sumOf`, `maxByOrNull`, `count`, `average`
 ```kotlin
@@ -324,6 +334,11 @@ println(numeros.fold("") { texto, n -> texto + n })          // 123
 
 Por eso `fold` es la opción más segura. Así funciona paso a paso `fold(100)`: `100 + 1 = 101`, `101 + 2 = 103` y `103 + 3 = 106`.
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/lista-reduce-fold.svg"
+<figcaption>Cada flecha es una vuelta de la lambda: recibe el acumulado y el elemento, y lo que devuelve es el acumulado de la vuelta siguiente. Solo cambia el punto de partida.</figcaption>
+</figure>
+
 ### 4.16. `chunked` y `windowed`: trocear en bloques {#416-chunked-windowed}
 
 `chunked` parte la lista en bloques sin solaparse, y `windowed` desliza una ventana sobre ella:
@@ -335,6 +350,11 @@ println(numeros.chunked(2))                   // [[1, 2], [3, 4], [5]]
 println(numeros.windowed(3))                  // [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
 println(numeros.windowed(size = 2, step = 2)) // [[1, 2], [3, 4]]
 ```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/lista-chunked-windowed.svg"
+<figcaption>Cada barra es una de las listas del resultado, colocada bajo los elementos que contiene.</figcaption>
+</figure>
 
 `chunked` sirve para paginar, y `windowed` para calcular medias móviles. Observa que el último bloque de `chunked` puede ser más corto, mientras que `windowed` descarta las ventanas incompletas.
 
@@ -353,6 +373,11 @@ val (izquierda, derecha) = listOf("a" to 1, "b" to 2).unzip()
 println(izquierda) // [a, b]
 println(derecha)   // [1, 2]
 ```
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/lista-zip.svg"
+<figcaption><code>zip</code> junta el primero con el primero, el segundo con el segundo… Cada par puede convertirse después en una entrada de mapa con <code>toMap()</code>.</figcaption>
+</figure>
 
 ### 4.18. `joinToString`: de lista a texto {#418-jointostring}
 

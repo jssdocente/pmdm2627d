@@ -80,6 +80,11 @@ println(a subtract b)  // [1]
 println(a.union(b))    // [1, 2, 3, 4]
 ```
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/set-union-intersect-subtract.svg"
+<figcaption>Cada círculo es un conjunto y la zona sombreada es el resultado. El 2 y el 3 están en los dos conjuntos, por eso quedan en la parte común.</figcaption>
+</figure>
+
 | Quiero saber o calcular… | Cómo se escribe | Con `a` y `b` da |
 | :--- | :--- | :--- |
 | Todos los elementos de los dos | `a union b` | `[1, 2, 3, 4]` |

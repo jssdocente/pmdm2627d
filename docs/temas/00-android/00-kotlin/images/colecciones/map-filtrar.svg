@@ -1,0 +1,62 @@
+<svg class="arq-svg" viewBox="0 0 600 352" style="max-width:600px" role="img" aria-labelledby="colfil-t colfil-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colfil-t">filterKeys, filterValues y filter</title>
+  <desc id="colfil-d">Con notas Ana 8, Luis 4 y Alba 6: filterKeys con startsWith A deja Ana y Alba; filterValues con nota mayor o igual que 5 deja Ana y Alba; filter con nombre distinto de Ana y nota mayor o igual que 5 deja solo Alba.</desc>
+  <defs>
+    <marker id="colfil-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colfil-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code" style="font-size:13.5px">val notas = mapOf("Ana" to 8, "Luis" to 4, "Alba" to 6)</text>
+  <text x="240" y="64" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">filterKeys</text>
+  <text x="240" y="82" class="arq-t arq-muted arq-s" text-anchor="middle">mira la clave</text>
+  <text x="385" y="64" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">filterValues</text>
+  <text x="385" y="82" class="arq-t arq-muted arq-s" text-anchor="middle">mira el valor</text>
+  <text x="530" y="64" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">filter</text>
+  <text x="530" y="82" class="arq-t arq-muted arq-s" text-anchor="middle">mira la entrada</text>
+  <rect x="20" y="100" width="70" height="32" rx="6" class="arq-ui"/>
+  <text x="55" y="121" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Ana</text>
+  <rect x="94" y="100" width="44" height="32" rx="6" class="arq-data"/>
+  <text x="116" y="121" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">8</text>
+  <circle cx="184" cy="116" r="10" style="fill:#2eaa6e"/>
+  <path d="M179,116 L182.5,120 L189,112" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="200" y="121" class="arq-t arq-xs">empieza por A</text>
+  <circle cx="329" cy="116" r="10" style="fill:#2eaa6e"/>
+  <path d="M324,116 L327.5,120 L334,112" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="345" y="121" class="arq-t arq-xs">8 ≥ 5</text>
+  <circle cx="474" cy="116" r="10" style="fill:#e5484d"/>
+  <path d="M470,112 L478,120 M478,112 L470,120" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="490" y="121" class="arq-t arq-muted arq-xs">es Ana</text>
+  <rect x="20" y="140" width="70" height="32" rx="6" class="arq-ui"/>
+  <text x="55" y="161" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Luis</text>
+  <rect x="94" y="140" width="44" height="32" rx="6" class="arq-data"/>
+  <text x="116" y="161" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4</text>
+  <circle cx="184" cy="156" r="10" style="fill:#e5484d"/>
+  <path d="M180,152 L188,160 M188,152 L180,160" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="200" y="161" class="arq-t arq-muted arq-xs">no empieza por A</text>
+  <circle cx="329" cy="156" r="10" style="fill:#e5484d"/>
+  <path d="M325,152 L333,160 M333,152 L325,160" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="345" y="161" class="arq-t arq-muted arq-xs">4 &lt; 5</text>
+  <circle cx="474" cy="156" r="10" style="fill:#e5484d"/>
+  <path d="M470,152 L478,160 M478,152 L470,160" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="490" y="161" class="arq-t arq-muted arq-xs">4 &lt; 5</text>
+  <rect x="20" y="180" width="70" height="32" rx="6" class="arq-ui"/>
+  <text x="55" y="201" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">Alba</text>
+  <rect x="94" y="180" width="44" height="32" rx="6" class="arq-data"/>
+  <text x="116" y="201" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">6</text>
+  <circle cx="184" cy="196" r="10" style="fill:#2eaa6e"/>
+  <path d="M179,196 L182.5,200 L189,192" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="200" y="201" class="arq-t arq-xs">empieza por A</text>
+  <circle cx="329" cy="196" r="10" style="fill:#2eaa6e"/>
+  <path d="M324,196 L327.5,200 L334,192" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="345" y="201" class="arq-t arq-xs">6 ≥ 5</text>
+  <circle cx="474" cy="196" r="10" style="fill:#2eaa6e"/>
+  <path d="M469,196 L472.5,200 L479,192" style="fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round"/>
+  <text x="490" y="201" class="arq-t arq-xs">no es Ana y 6 ≥ 5</text>
+  <line x1="20" y1="228" x2="580" y2="228" style="stroke:var(--md-default-fg-color--lightest);stroke-width:1"/>
+  <text x="20" y="254" class="arq-t arq-muted arq-s">resultado</text>
+  <text x="240" y="254" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">{Ana=8, Alba=6}</text>
+  <text x="385" y="254" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">{Ana=8, Alba=6}</text>
+  <text x="530" y="254" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">{Alba=6}</text>
+  <text x="20" y="286" class="arq-t arq-code arq-muted" style="font-size:12.5px">notas.filterKeys { it.startsWith("A") }</text>
+  <text x="20" y="308" class="arq-t arq-code arq-muted" style="font-size:12.5px">notas.filterValues { it &gt;= 5 }</text>
+  <text x="20" y="330" class="arq-t arq-code arq-muted" style="font-size:12.5px">notas.filter { (nombre, nota) -&gt; nombre != "Ana" &amp;&amp; nota &gt;= 5 }</text>
+</svg>

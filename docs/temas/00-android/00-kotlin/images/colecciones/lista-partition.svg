@@ -1,0 +1,41 @@
+<svg class="arq-svg" viewBox="0 0 480 306" style="max-width:480px" role="img" aria-labelledby="colpart-t colpart-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="colpart-t">partition en aprobados y suspensos</title>
+  <desc id="colpart-d">La lista 4.5, 7.0, 9.2, 3.8, 6.0 se parte en un Pair: first con los que cumplen it &gt;= 5.0, que son 7.0, 9.2 y 6.0, y second con los demás, 4.5 y 3.8. La desestructuración los guarda en aprobadosList y suspensosList.</desc>
+  <defs>
+    <marker id="colpart-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="colpart-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <text x="20" y="26" class="arq-t arq-code" style="font-size:13.5px">val notas = listOf(4.5, 7.0, 9.2, 3.8, 6.0)</text>
+  <rect x="20" y="40" width="56" height="28" rx="6" class="arq-warn"/>
+  <text x="48" y="59" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4.5</text>
+  <rect x="84" y="40" width="56" height="28" rx="6" class="arq-data"/>
+  <text x="112" y="59" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">7.0</text>
+  <rect x="148" y="40" width="56" height="28" rx="6" class="arq-data"/>
+  <text x="176" y="59" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">9.2</text>
+  <rect x="212" y="40" width="56" height="28" rx="6" class="arq-warn"/>
+  <text x="240" y="59" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3.8</text>
+  <rect x="276" y="40" width="56" height="28" rx="6" class="arq-data"/>
+  <text x="304" y="59" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">6.0</text>
+  <path d="M60,76 L60,128" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colpart-a)"/>
+  <text x="74" y="102" class="arq-t arq-code arq-strong" style="font-size:13.5px">partition { it &gt;= 5.0 }</text>
+  <text x="74" y="120" class="arq-t arq-muted arq-s">una sola pasada; cada elemento va a un lado</text>
+  <rect x="10" y="138" width="460" height="104" rx="10" class="arq-box"/>
+  <text x="24" y="158" class="arq-t arq-code arq-muted" style="font-size:12px">Pair&lt;List&lt;Double&gt;, List&lt;Double&gt;&gt;</text>
+  <rect x="24" y="168" width="220" height="62" rx="8" class="arq-data" style="fill-opacity:.35"/>
+  <text x="36" y="186" class="arq-t arq-s">first: los que cumplen</text>
+  <rect x="36" y="194" width="56" height="28" rx="6" class="arq-data"/>
+  <text x="64" y="213" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">7.0</text>
+  <rect x="98" y="194" width="56" height="28" rx="6" class="arq-data"/>
+  <text x="126" y="213" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">9.2</text>
+  <rect x="160" y="194" width="56" height="28" rx="6" class="arq-data"/>
+  <text x="188" y="213" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">6.0</text>
+  <rect x="256" y="168" width="200" height="62" rx="8" class="arq-warn"/>
+  <text x="268" y="186" class="arq-t arq-s">second: los que no</text>
+  <rect x="268" y="194" width="56" height="28" rx="6" class="arq-warn"/>
+  <text x="296" y="213" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">4.5</text>
+  <rect x="330" y="194" width="56" height="28" rx="6" class="arq-warn"/>
+  <text x="358" y="213" class="arq-t arq-code" text-anchor="middle" style="font-size:13.5px">3.8</text>
+  <path d="M134,232 L134,268" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colpart-a)"/>
+  <path d="M356,232 L356,268" class="arq-dep" style="stroke-width:1.6" marker-end="url(#colpart-a)"/>
+  <text x="240" y="290" class="arq-t arq-code arq-strong" text-anchor="middle" style="font-size:13.5px">val (aprobadosList, suspensosList) = …</text>
+</svg>

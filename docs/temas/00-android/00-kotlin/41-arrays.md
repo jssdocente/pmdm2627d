@@ -45,6 +45,11 @@ b[0] = 99
 println(a[0]) // 99
 ```
 
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/images/colecciones/array-referencia.svg"
+<figcaption><code>a</code> y <code>b</code> son dos nombres para el mismo array. Si necesitas una copia independiente, usa <code>a.copyOf()</code>.</figcaption>
+</figure>
+
 ## Iteración sobre un array
 
 Puedes iterar sobre los elementos de un array utilizando un bucle `for` o la función `forEach()`.
