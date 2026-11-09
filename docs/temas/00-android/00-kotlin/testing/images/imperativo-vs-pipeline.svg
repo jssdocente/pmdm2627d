@@ -1,0 +1,32 @@
+<svg class="arq-svg" viewBox="0 0 760 402" role="img" aria-labelledby="gm-imp-t gm-imp-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="gm-imp-t">El mismo resultado con bucles y con un pipeline</title>
+  <desc id="gm-imp-d">Tres pasos comparados. Filtrar: una lista mutable, un for y un if frente a filter. Ordenar: sortByDescending sobre la lista mutable frente a sortedByDescending. Transformar: otra lista mutable y otro for frente a map. A la izquierda son 12 líneas con dos listas mutables; a la derecha, una expresión con tres pasos. Los dos pasan los mismos tests, pero el de la izquierda pierde el 50 % de ese ejercicio.</desc>
+  <text x="20" y="28" class="arq-t arq-s arq-strong">Con bucles: 12 líneas y 2 listas mutables</text>
+  <text x="395" y="28" class="arq-t arq-s arq-strong">Con pipeline: una expresión y 3 pasos</text>
+  <rect x="20" y="44" width="350" height="136" rx="8" class="arq-ui"/>
+  <rect x="390" y="44" width="350" height="136" rx="8" class="arq-ui"/>
+  <text x="30" y="68.5" class="arq-t arq-code">val seleccionados = mutableListOf&lt;Heroe&gt;()</text>
+  <text x="30" y="87.5" class="arq-t arq-code">for (h in heroes) {</text>
+  <text x="30" y="106.5" class="arq-t arq-code">    if (h.rol == rol &amp;&amp; h.nivel &gt;= min) {</text>
+  <text x="30" y="125.5" class="arq-t arq-code">        seleccionados.add(h)</text>
+  <text x="30" y="144.5" class="arq-t arq-code">    }</text>
+  <text x="30" y="163.5" class="arq-t arq-code">}</text>
+  <text x="400" y="64" class="arq-t arq-xs arq-strong">1. Filtrar</text>
+  <text x="400" y="116" class="arq-t arq-code">heroes</text>
+  <text x="400" y="136" class="arq-t arq-code">.filter { it.rol == rol &amp;&amp; it.nivel &gt;= min }</text>
+  <rect x="20" y="188" width="350" height="62" rx="8" class="arq-dom"/>
+  <rect x="390" y="188" width="350" height="62" rx="8" class="arq-dom"/>
+  <text x="30" y="223" class="arq-t arq-code">seleccionados.sortByDescending { it.poder }</text>
+  <text x="400" y="208" class="arq-t arq-xs arq-strong">2. Ordenar</text>
+  <text x="400" y="233" class="arq-t arq-code">.sortedByDescending { it.poder }</text>
+  <rect x="20" y="258" width="350" height="112" rx="8" class="arq-data"/>
+  <rect x="390" y="258" width="350" height="112" rx="8" class="arq-data"/>
+  <text x="30" y="280" class="arq-t arq-code">val nombres = mutableListOf&lt;String&gt;()</text>
+  <text x="30" y="299" class="arq-t arq-code">for (h in seleccionados) {</text>
+  <text x="30" y="318" class="arq-t arq-code">    nombres.add(h.nombre.uppercase())</text>
+  <text x="30" y="337" class="arq-t arq-code">}</text>
+  <text x="30" y="356" class="arq-t arq-code">return nombres</text>
+  <text x="400" y="278" class="arq-t arq-xs arq-strong">3. Transformar</text>
+  <text x="400" y="328" class="arq-t arq-code">.map { it.nombre.uppercase() }</text>
+  <text x="380" y="392" class="arq-t arq-s arq-strong" text-anchor="middle">Los dos pasan los mismos tests, pero el de la izquierda pierde el 50 % de ese ejercicio.</text>
+</svg>

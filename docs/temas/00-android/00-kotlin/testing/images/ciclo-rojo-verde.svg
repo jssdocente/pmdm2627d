@@ -1,0 +1,86 @@
+<svg class="arq-svg" viewBox="0 0 760 244" role="img" aria-labelledby="gm-ciclo-t gm-ciclo-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="gm-ciclo-t">Del rojo al verde</title>
+  <desc id="gm-ciclo-d">Ciclo de cuatro pasos: lanzar los tests, con el botón de IntelliJ o con gradlew test, leer qué test falla y por qué, programar un método con un pipeline y volver a lanzar los tests, hasta que no falle ninguno. Si completas los métodos en orden, los fallos bajan así: 8 al empezar, 6 tras el método 1, 4 tras el 2, 3 tras el 3, 2 tras el 4 y 0 tras el 5.</desc>
+  <defs>
+    <marker id="gm-ciclo-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="gm-ciclo-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+  </defs>
+  <rect x="20" y="16" width="160" height="62" rx="10" class="arq-box"/>
+  <text x="100" y="41" class="arq-t arq-s arq-strong" text-anchor="middle">1. Lanza los tests</text>
+  <text x="100" y="62" class="arq-t arq-s arq-muted" text-anchor="middle">▶ o ./gradlew test</text>
+  <line x1="180" y1="47" x2="204" y2="47" class="arq-dep" marker-end="url(#gm-ciclo-a)"/>
+  <rect x="206" y="16" width="160" height="62" rx="10" class="arq-box"/>
+  <text x="286" y="41" class="arq-t arq-s arq-strong" text-anchor="middle">2. Lee el fallo</text>
+  <text x="286" y="62" class="arq-t arq-s arq-muted" text-anchor="middle">qué test y por qué</text>
+  <line x1="366" y1="47" x2="390" y2="47" class="arq-dep" marker-end="url(#gm-ciclo-a)"/>
+  <rect x="392" y="16" width="160" height="62" rx="10" class="arq-box"/>
+  <text x="472" y="41" class="arq-t arq-s arq-strong" text-anchor="middle">3. Programa</text>
+  <text x="472" y="62" class="arq-t arq-s arq-muted" text-anchor="middle">un método, con pipeline</text>
+  <line x1="552" y1="47" x2="576" y2="47" class="arq-dep" marker-end="url(#gm-ciclo-a)"/>
+  <rect x="578" y="16" width="160" height="62" rx="10" class="arq-box"/>
+  <text x="658" y="41" class="arq-t arq-s arq-strong" text-anchor="middle">4. Repite</text>
+  <text x="658" y="62" class="arq-t arq-s arq-muted" text-anchor="middle">vuelve a lanzar</text>
+  <path d="M658,78 L658,100 L100,100 L100,81" class="arq-flow" marker-end="url(#gm-ciclo-f)"/>
+  <text x="380" y="118" class="arq-t arq-xs" text-anchor="middle">hasta que no falle ninguno</text>
+  <text x="20" y="150" class="arq-t arq-s arq-strong">Lo que verás si completas los métodos en orden</text>
+  <rect x="20" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="34" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="48" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="62" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="76" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="90" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="104" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="118" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <text x="20" y="204" class="arq-t arq-s arq-strong">8 fallan</text>
+  <text x="20" y="222" class="arq-t arq-xs arq-muted">Al empezar</text>
+  <rect x="142" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="156" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="170" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="184" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="198" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="212" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="226" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="240" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <text x="142" y="204" class="arq-t arq-s arq-strong">6 fallan</text>
+  <text x="142" y="222" class="arq-t arq-xs arq-muted">Método 1</text>
+  <rect x="264" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="278" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="292" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="306" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="320" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="334" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="348" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="362" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <text x="264" y="204" class="arq-t arq-s arq-strong">4 fallan</text>
+  <text x="264" y="222" class="arq-t arq-xs arq-muted">Método 2</text>
+  <rect x="386" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="400" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="414" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="428" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="442" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="456" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="470" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="484" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <text x="386" y="204" class="arq-t arq-s arq-strong">3 fallan</text>
+  <text x="386" y="222" class="arq-t arq-xs arq-muted">Método 3</text>
+  <rect x="508" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="522" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="536" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="550" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="564" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="578" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="592" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <rect x="606" y="164" width="12" height="18" rx="2" class="arq-red"/>
+  <text x="508" y="204" class="arq-t arq-s arq-strong">2 fallan</text>
+  <text x="508" y="222" class="arq-t arq-xs arq-muted">Método 4</text>
+  <rect x="630" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="644" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="658" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="672" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="686" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="700" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="714" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <rect x="728" y="164" width="12" height="18" rx="2" class="arq-bar-vm"/>
+  <text x="630" y="204" class="arq-t arq-s arq-strong">0: verde</text>
+  <text x="630" y="222" class="arq-t arq-xs arq-muted">Método 5</text>
+</svg>

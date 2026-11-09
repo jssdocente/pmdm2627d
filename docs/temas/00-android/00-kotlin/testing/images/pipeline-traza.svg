@@ -1,0 +1,56 @@
+<svg class="arq-svg" viewBox="0 0 760 346" role="img" aria-labelledby="gm-traza-t gm-traza-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="gm-traza-t">Traza del pipeline 1 con rol MAGO y nivel mínimo 5</title>
+  <desc id="gm-traza-d">Entran seis héroes. filter deja pasar a Aria y a Vex: Thorin, Lyra y Brom no son magos y Kael tiene nivel 3. sortedByDescending coloca primero a Vex, con poder 110, y después a Aria, con poder 85. map los convierte en los textos VEX y ARIA. El resultado es la lista VEX, ARIA.</desc>
+  <defs>
+    <marker id="gm-traza-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <text x="130" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">heroes</text>
+  <text x="350" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">.filter { … }</text>
+  <text x="535" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">.sortedByDescending</text>
+  <text x="690" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">.map { … }</text>
+  <text x="130" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">entran 6</text>
+  <text x="350" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">rol MAGO y nivel ≥ 5</text>
+  <text x="535" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">mayor poder primero</text>
+  <text x="690" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">nombre en mayúsculas</text>
+  <rect x="20" y="58" width="220" height="32" rx="6" class="arq-box"/>
+  <text x="30" y="79" class="arq-t arq-s arq-strong">Aria</text>
+  <text x="232" y="79" class="arq-t arq-xs arq-muted" text-anchor="end">MAGO · niv 5 · poder 85</text>
+  <line x1="241" y1="74" x2="274" y2="74" class="arq-dep" marker-end="url(#gm-traza-a)"/>
+  <rect x="276" y="58" width="148" height="32" rx="6" class="arq-data"/>
+  <text x="350" y="79" class="arq-t arq-s" text-anchor="middle">Aria · nivel 5</text>
+  <rect x="20" y="98" width="220" height="32" rx="6" class="arq-box"/>
+  <text x="30" y="119" class="arq-t arq-s arq-strong">Thorin</text>
+  <text x="232" y="119" class="arq-t arq-xs arq-muted" text-anchor="end">GUERRERO · niv 8 · poder 120</text>
+  <text x="276" y="119" class="arq-t arq-xs arq-muted">✕ es GUERRERO</text>
+  <rect x="20" y="138" width="220" height="32" rx="6" class="arq-box"/>
+  <text x="30" y="159" class="arq-t arq-s arq-strong">Kael</text>
+  <text x="232" y="159" class="arq-t arq-xs arq-muted" text-anchor="end">MAGO · niv 3 · poder 45</text>
+  <text x="276" y="159" class="arq-t arq-xs arq-muted">✕ nivel 3 &lt; 5</text>
+  <rect x="20" y="178" width="220" height="32" rx="6" class="arq-box"/>
+  <text x="30" y="199" class="arq-t arq-s arq-strong">Lyra</text>
+  <text x="232" y="199" class="arq-t arq-xs arq-muted" text-anchor="end">SANADOR · niv 6 · poder 95</text>
+  <text x="276" y="199" class="arq-t arq-xs arq-muted">✕ es SANADOR</text>
+  <rect x="20" y="218" width="220" height="32" rx="6" class="arq-box"/>
+  <text x="30" y="239" class="arq-t arq-s arq-strong">Vex</text>
+  <text x="232" y="239" class="arq-t arq-xs arq-muted" text-anchor="end">MAGO · niv 7 · poder 110</text>
+  <line x1="241" y1="234" x2="274" y2="234" class="arq-dep" marker-end="url(#gm-traza-a)"/>
+  <rect x="276" y="218" width="148" height="32" rx="6" class="arq-data"/>
+  <text x="350" y="239" class="arq-t arq-s" text-anchor="middle">Vex · nivel 7</text>
+  <rect x="20" y="258" width="220" height="32" rx="6" class="arq-box"/>
+  <text x="30" y="279" class="arq-t arq-s arq-strong">Brom</text>
+  <text x="232" y="279" class="arq-t arq-xs arq-muted" text-anchor="end">GUERRERO · niv 4 · poder 70</text>
+  <text x="276" y="279" class="arq-t arq-xs arq-muted">✕ es GUERRERO</text>
+  <line x1="425" y1="234" x2="459" y2="154" class="arq-dep" marker-end="url(#gm-traza-a)"/>
+  <line x1="425" y1="74" x2="459" y2="194" class="arq-dep" marker-end="url(#gm-traza-a)"/>
+  <rect x="461" y="138" width="148" height="32" rx="6" class="arq-dom"/>
+  <text x="535" y="159" class="arq-t arq-s" text-anchor="middle">Vex · poder 110</text>
+  <line x1="610" y1="154" x2="638" y2="154" class="arq-dep" marker-end="url(#gm-traza-a)"/>
+  <rect x="640" y="138" width="100" height="32" rx="6" class="arq-ui"/>
+  <text x="690" y="159" class="arq-t arq-code" text-anchor="middle">"VEX"</text>
+  <rect x="461" y="178" width="148" height="32" rx="6" class="arq-dom"/>
+  <text x="535" y="199" class="arq-t arq-s" text-anchor="middle">Aria · poder 85</text>
+  <line x1="610" y1="194" x2="638" y2="194" class="arq-dep" marker-end="url(#gm-traza-a)"/>
+  <rect x="640" y="178" width="100" height="32" rx="6" class="arq-ui"/>
+  <text x="690" y="199" class="arq-t arq-code" text-anchor="middle">"ARIA"</text>
+  <text x="380" y="332" class="arq-t arq-code arq-strong" text-anchor="middle">resultado: [VEX, ARIA]</text>
+</svg>

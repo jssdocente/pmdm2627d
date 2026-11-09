@@ -1,0 +1,51 @@
+<svg class="arq-svg" viewBox="0 0 760 312" role="img" aria-labelledby="gm-grp-t gm-grp-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="gm-grp-t">groupBy y mapValues paso a paso</title>
+  <desc id="gm-grp-d">De una lista de seis héroes, groupBy crea un mapa de rol a lista: MAGO con Aria, Kael y Vex; GUERRERO con Thorin y Brom; SANADOR con Lyra. mapValues mantiene las claves y cambia cada lista por su tamaño: MAGO 3, GUERRERO 2, SANADOR 1. EXPLORADOR no aparece porque no hay ninguno: consultarlo devuelve null.</desc>
+  <defs>
+    <marker id="gm-grp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <text x="95" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">heroes</text>
+  <text x="95" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">List&lt;Heroe&gt;</text>
+  <text x="370" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">.groupBy { it.rol }</text>
+  <text x="370" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">Map&lt;RolHeroe, List&lt;Heroe&gt;&gt;</text>
+  <text x="650" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">.mapValues { … size }</text>
+  <text x="650" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">Map&lt;RolHeroe, Int&gt;</text>
+  <rect x="20" y="56" width="150" height="28" rx="6" class="arq-ui"/>
+  <text x="30" y="75" class="arq-t arq-s arq-strong">Aria</text>
+  <text x="162" y="75" class="arq-t arq-xs arq-muted" text-anchor="end">MAGO</text>
+  <rect x="20" y="90" width="150" height="28" rx="6" class="arq-dom"/>
+  <text x="30" y="109" class="arq-t arq-s arq-strong">Thorin</text>
+  <text x="162" y="109" class="arq-t arq-xs arq-muted" text-anchor="end">GUERRERO</text>
+  <rect x="20" y="124" width="150" height="28" rx="6" class="arq-ui"/>
+  <text x="30" y="143" class="arq-t arq-s arq-strong">Kael</text>
+  <text x="162" y="143" class="arq-t arq-xs arq-muted" text-anchor="end">MAGO</text>
+  <rect x="20" y="158" width="150" height="28" rx="6" class="arq-data"/>
+  <text x="30" y="177" class="arq-t arq-s arq-strong">Lyra</text>
+  <text x="162" y="177" class="arq-t arq-xs arq-muted" text-anchor="end">SANADOR</text>
+  <rect x="20" y="192" width="150" height="28" rx="6" class="arq-ui"/>
+  <text x="30" y="211" class="arq-t arq-s arq-strong">Vex</text>
+  <text x="162" y="211" class="arq-t arq-xs arq-muted" text-anchor="end">MAGO</text>
+  <rect x="20" y="226" width="150" height="28" rx="6" class="arq-dom"/>
+  <text x="30" y="245" class="arq-t arq-s arq-strong">Brom</text>
+  <text x="162" y="245" class="arq-t arq-xs arq-muted" text-anchor="end">GUERRERO</text>
+  <line x1="176" y1="154" x2="236" y2="154" class="arq-dep" marker-end="url(#gm-grp-a)"/>
+  <rect x="240" y="56" width="260" height="58" rx="8" class="arq-ui"/>
+  <text x="254" y="79" class="arq-t arq-code arq-strong">MAGO</text>
+  <text x="254" y="101" class="arq-t arq-code">[Aria, Kael, Vex]</text>
+  <line x1="504" y1="85" x2="556" y2="85" class="arq-dep" marker-end="url(#gm-grp-a)"/>
+  <rect x="560" y="56" width="180" height="58" rx="8" class="arq-ui"/>
+  <text x="650" y="90" class="arq-t arq-code arq-strong" text-anchor="middle">MAGO = 3</text>
+  <rect x="240" y="124" width="260" height="58" rx="8" class="arq-dom"/>
+  <text x="254" y="147" class="arq-t arq-code arq-strong">GUERRERO</text>
+  <text x="254" y="169" class="arq-t arq-code">[Thorin, Brom]</text>
+  <line x1="504" y1="153" x2="556" y2="153" class="arq-dep" marker-end="url(#gm-grp-a)"/>
+  <rect x="560" y="124" width="180" height="58" rx="8" class="arq-dom"/>
+  <text x="650" y="158" class="arq-t arq-code arq-strong" text-anchor="middle">GUERRERO = 2</text>
+  <rect x="240" y="192" width="260" height="58" rx="8" class="arq-data"/>
+  <text x="254" y="215" class="arq-t arq-code arq-strong">SANADOR</text>
+  <text x="254" y="237" class="arq-t arq-code">[Lyra]</text>
+  <line x1="504" y1="221" x2="556" y2="221" class="arq-dep" marker-end="url(#gm-grp-a)"/>
+  <rect x="560" y="192" width="180" height="58" rx="8" class="arq-data"/>
+  <text x="650" y="226" class="arq-t arq-code arq-strong" text-anchor="middle">SANADOR = 1</text>
+  <text x="380" y="288" class="arq-t arq-s" text-anchor="middle">EXPLORADOR no aparece porque no hay ninguno: mapa[RolHeroe.EXPLORADOR] devuelve null, no 0.</text>
+</svg>

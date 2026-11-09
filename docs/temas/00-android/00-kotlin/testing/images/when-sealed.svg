@@ -1,0 +1,38 @@
+<svg class="arq-svg" viewBox="0 0 760 296" role="img" aria-labelledby="gm-when-t gm-when-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="gm-when-t">Del resultado sellado a la consola</title>
+  <desc id="gm-when-d">promocionarHeroe con nivel 6 devuelve AccionResultado.Exito, y la rama is Exito del when imprime que Aria asciende al nivel 6 con poder final 105. Con nivel 4 devuelve AccionResultado.Error, y la rama is Error imprime el rechazo. El when no lleva else: si falta una rama, no compila.</desc>
+  <defs>
+    <marker id="gm-when-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <text x="105" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">promocionarHeroe</text>
+  <text x="105" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">decide, sin imprimir</text>
+  <text x="335" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">AccionResultado</text>
+  <text x="335" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">el resultado, con su tipo</text>
+  <text x="610" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">mostrarResultado</text>
+  <text x="610" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">imprime con un when</text>
+  <rect x="20" y="54" width="170" height="90" rx="10" class="arq-box"/>
+  <text x="105" y="92" class="arq-t arq-s" text-anchor="middle">Aria, nivel 5</text>
+  <text x="105" y="114" class="arq-t arq-code" text-anchor="middle">nuevoNivel = 6</text>
+  <line x1="192" y1="99" x2="236" y2="99" class="arq-dep" marker-end="url(#gm-when-a)"/>
+  <rect x="240" y="54" width="190" height="90" rx="10" class="arq-data"/>
+  <text x="335" y="92" class="arq-t arq-code arq-strong" text-anchor="middle">Exito</text>
+  <text x="335" y="114" class="arq-t arq-code" text-anchor="middle">heroeActualizado</text>
+  <line x1="432" y1="99" x2="476" y2="99" class="arq-dep" marker-end="url(#gm-when-a)"/>
+  <rect x="480" y="54" width="260" height="90" rx="10" class="arq-box"/>
+  <text x="494" y="78" class="arq-t arq-code arq-strong">is Exito -&gt;</text>
+  <text x="494" y="104" class="arq-t arq-xs">ÉXITO: ¡Aria asciende con éxito al nivel 6!</text>
+  <text x="494" y="124" class="arq-t arq-xs">-&gt; Poder final: 105 pts</text>
+  <rect x="20" y="156" width="170" height="90" rx="10" class="arq-box"/>
+  <text x="105" y="194" class="arq-t arq-s" text-anchor="middle">Aria, nivel 5</text>
+  <text x="105" y="216" class="arq-t arq-code" text-anchor="middle">nuevoNivel = 4</text>
+  <line x1="192" y1="201" x2="236" y2="201" class="arq-dep" marker-end="url(#gm-when-a)"/>
+  <rect x="240" y="156" width="190" height="90" rx="10" class="arq-warn"/>
+  <text x="335" y="194" class="arq-t arq-code arq-strong" text-anchor="middle">Error</text>
+  <text x="335" y="216" class="arq-t arq-code" text-anchor="middle">motivo</text>
+  <line x1="432" y1="201" x2="476" y2="201" class="arq-dep" marker-end="url(#gm-when-a)"/>
+  <rect x="480" y="156" width="260" height="90" rx="10" class="arq-box"/>
+  <text x="494" y="180" class="arq-t arq-code arq-strong">is Error -&gt;</text>
+  <text x="494" y="206" class="arq-t arq-xs">RECHAZADO: El nuevo nivel (4) debe ser</text>
+  <text x="494" y="226" class="arq-t arq-xs">estrictamente superior al actual (5)</text>
+  <text x="380" y="280" class="arq-t arq-s arq-strong" text-anchor="middle">El when no lleva else: si falta una rama, el código no compila.</text>
+</svg>

@@ -1,0 +1,25 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="gm-fich-t gm-fich-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="gm-fich-t">Ficheros del proyecto</title>
+  <desc id="gm-fich-d">Cinco ficheros. Se dan hechos: build.gradle.kts, con la configuración; model/Heroe.kt, con los datos; y service/HeroeServiceTest.kt, con 8 tests que son el contrato. Programas en dos: service/HeroeService.kt en la Parte 1 y app/Main.kt en la Parte 2.</desc>
+  <text x="20" y="30" class="arq-t arq-code arq-strong">00-ejemplo-modelo-resuelto/</text>
+  <rect x="20" y="46" width="350" height="46" rx="8" class="arq-gray"/>
+  <text x="34" y="74" class="arq-t arq-code">build.gradle.kts</text>
+  <text x="390" y="65" class="arq-t arq-s arq-strong">La configuración</text>
+  <text x="390" y="83" class="arq-t arq-s arq-muted">Se da hecho: Kotlin, kotlin.test y la clase principal</text>
+  <rect x="20" y="100" width="350" height="46" rx="8" class="arq-gray"/>
+  <text x="34" y="128" class="arq-t arq-code">src/main/kotlin/model/Heroe.kt</text>
+  <text x="390" y="119" class="arq-t arq-s arq-strong">Los datos</text>
+  <text x="390" y="137" class="arq-t arq-s arq-muted">Se da hecho: Heroe, RolHeroe y AccionResultado</text>
+  <rect x="20" y="154" width="350" height="46" rx="8" class="arq-ui"/>
+  <text x="34" y="182" class="arq-t arq-code">src/main/kotlin/service/HeroeService.kt</text>
+  <text x="390" y="173" class="arq-t arq-s arq-strong">Parte 1: aquí programas</text>
+  <text x="390" y="191" class="arq-t arq-s arq-muted">Cinco métodos con TODO, sin consola: solo lógica</text>
+  <rect x="20" y="208" width="350" height="46" rx="8" class="arq-dom"/>
+  <text x="34" y="236" class="arq-t arq-code">src/main/kotlin/app/Main.kt</text>
+  <text x="390" y="227" class="arq-t arq-s arq-strong">Parte 2: aquí programas</text>
+  <text x="390" y="245" class="arq-t arq-s arq-muted">Datos de prueba listos y funciones por completar</text>
+  <rect x="20" y="262" width="350" height="46" rx="8" class="arq-data"/>
+  <text x="34" y="290" class="arq-t arq-code">src/test/kotlin/service/HeroeServiceTest.kt</text>
+  <text x="390" y="281" class="arq-t arq-s arq-strong">El contrato</text>
+  <text x="390" y="299" class="arq-t arq-s arq-muted">Se da hecho: 8 tests que dicen qué debe hacer el servicio</text>
+</svg>

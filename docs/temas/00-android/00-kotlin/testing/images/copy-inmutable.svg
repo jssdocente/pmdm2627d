@@ -1,0 +1,46 @@
+<svg class="arq-svg" viewBox="0 0 760 280" role="img" aria-labelledby="gm-copy-t gm-copy-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="gm-copy-t">copy crea un héroe nuevo</title>
+  <desc id="gm-copy-d">A la izquierda, Aria original con nivel 5 y poder 85, que no cambia. En el centro, la llamada a copy con nivel 6 y poder 85 más 20. A la derecha, una instancia nueva con nivel 6 y poder 105; el resto de propiedades se copian tal cual.</desc>
+  <defs>
+    <marker id="gm-copy-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+  <text x="130" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">heroe</text>
+  <text x="130" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">el original no cambia</text>
+  <rect x="20" y="52" width="220" height="176" rx="10" class="arq-box"/>
+  <text x="36" y="77" class="arq-t arq-code arq-muted">id</text>
+  <text x="224" y="77" class="arq-t arq-code" text-anchor="end">"H01"</text>
+  <text x="36" y="104" class="arq-t arq-code arq-muted">nombre</text>
+  <text x="224" y="104" class="arq-t arq-code" text-anchor="end">"Aria"</text>
+  <text x="36" y="131" class="arq-t arq-code arq-muted">rol</text>
+  <text x="224" y="131" class="arq-t arq-code" text-anchor="end">MAGO</text>
+  <text x="36" y="158" class="arq-t arq-code arq-muted">nivel</text>
+  <text x="224" y="158" class="arq-t arq-code" text-anchor="end">5</text>
+  <text x="36" y="185" class="arq-t arq-code arq-muted">poder</text>
+  <text x="224" y="185" class="arq-t arq-code" text-anchor="end">85</text>
+  <text x="36" y="212" class="arq-t arq-code arq-muted">mentor</text>
+  <text x="224" y="212" class="arq-t arq-code" text-anchor="end">"Gandalf"</text>
+  <text x="630" y="24" class="arq-t arq-code arq-strong" text-anchor="middle">heroePromocionado</text>
+  <text x="630" y="42" class="arq-t arq-xs arq-muted" text-anchor="middle">una instancia nueva</text>
+  <rect x="520" y="52" width="220" height="176" rx="10" class="arq-box"/>
+  <text x="536" y="77" class="arq-t arq-code arq-muted">id</text>
+  <text x="724" y="77" class="arq-t arq-code" text-anchor="end">"H01"</text>
+  <text x="536" y="104" class="arq-t arq-code arq-muted">nombre</text>
+  <text x="724" y="104" class="arq-t arq-code" text-anchor="end">"Aria"</text>
+  <text x="536" y="131" class="arq-t arq-code arq-muted">rol</text>
+  <text x="724" y="131" class="arq-t arq-code" text-anchor="end">MAGO</text>
+  <rect x="526" y="141" width="208" height="25" rx="5" class="arq-dom"/>
+  <text x="536" y="158" class="arq-t arq-code arq-muted">nivel</text>
+  <text x="724" y="158" class="arq-t arq-code arq-strong" text-anchor="end">6</text>
+  <rect x="526" y="168" width="208" height="25" rx="5" class="arq-dom"/>
+  <text x="536" y="185" class="arq-t arq-code arq-muted">poder</text>
+  <text x="724" y="185" class="arq-t arq-code arq-strong" text-anchor="end">105</text>
+  <text x="536" y="212" class="arq-t arq-code arq-muted">mentor</text>
+  <text x="724" y="212" class="arq-t arq-code" text-anchor="end">"Gandalf"</text>
+  <line x1="244" y1="184" x2="516" y2="184" class="arq-dep" marker-end="url(#gm-copy-a)"/>
+  <text x="290" y="86" class="arq-t arq-code">heroe.copy(</text>
+  <text x="290" y="106" class="arq-t arq-code">    nivel = 6,</text>
+  <text x="290" y="126" class="arq-t arq-code">    poder = 85 + 20</text>
+  <text x="290" y="146" class="arq-t arq-code">)</text>
+  <text x="380" y="204" class="arq-t arq-xs arq-muted" text-anchor="middle">lo que no nombras se copia tal cual</text>
+  <text x="380" y="262" class="arq-t arq-s arq-strong" text-anchor="middle">Sin copy() habría que escribir heroe.nivel = 6, y eso no compila: la propiedad es val.</text>
+</svg>

@@ -1,76 +1,89 @@
-# Guía Modelo: Examen Práctico Resuelto (HeroAcademy)
+# Guía modelo: examen práctico resuelto (HeroAcademy)
 
-Esta guía explica la metodología, estructura y mentalidad necesarias para superar con éxito los **simulacros y el examen práctico de Kotlin** en el módulo de PMDM.
-
-El objetivo central de la prueba es demostrar la transición desde la **programación imperativa tradicional** (Java de 1º de DAM) hacia el **paradigma declarativo moderno** basado en **pipelines de colecciones**, inmutabilidad y pruebas unitarias automatizadas (**TDD**).
+Esta guía recorre un examen práctico de Kotlin ya resuelto, para que sepas **qué tendrás que hacer, en qué orden y cómo comprobar que está bien**. Los simulacros y el examen siguen este mismo formato, con otros datos y otros ejercicios.
 
 ---
 
-## 1. Estructura de la Evaluación (50% TDD / 50% Funcionalidad)
+## 1. Qué vas a hacer
 
-Cada prueba práctica consta de dos bloques independientes y complementarios:
+La prueba es un proyecto de consola con dos partes. En cada una programas en un fichero y compruebas el resultado de una forma distinta:
 
-```mermaid
-flowchart TD
-    subgraph Examen ["Examen Práctico Kotlin (10 Puntos)"]
-        A["Parte 1: TDD y Lógica Pura (5 pts)"]
-        B["Parte 2: Funcionalidad CLI y Estados (5 pts)"]
-    end
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/testing/images/mapa-examen.svg"
+<figcaption>Las dos partes valen lo mismo. La primera se comprueba con tests; la segunda, con lo que imprime la consola.</figcaption>
+</figure>
 
-    subgraph P1 ["Parte 1: src/test -> src/main/service"]
-        A --> A1["Tests ya preparados en rojo"]
-        A1 --> A2["Pipelines de colecciones (filter, map, groupBy)"]
-        A2 --> A3["./gradlew test en verde (0 errores)"]
-    end
+El orden recomendado es este:
 
-    subgraph P2 ["Parte 2: src/main/app/Main.kt"]
-        B --> B1["Esqueleto de consola con firmas TODO"]
-        B1 --> B2["Transiciones de estado inmutables con copy()"]
-        B2 --> B3["Salida formateada con joinToString() y when"]
-    end
-```
+1. **Abre el proyecto y lanza los tests.** Comprueba que todo arranca antes de escribir nada.
+
+2. **Haz la Parte 1, método a método**, hasta que los tests pasen en verde.
+
+3. **Haz la Parte 2**, comparando la consola con la salida esperada.
+
+4. **Repasa el código** con la [comprobación final](#7-comprobacion-final).
+
+Las dos partes puntúan por separado, pero conviene empezar por la primera: en este modelo, `main` llama a los métodos del servicio, y si alguno sigue con `TODO` el programa se detiene con un `NotImplementedError`.
 
 ---
 
-## 2. El Cambio de Mentalidad: De Imperativo a Declarativo (Pipelines)
+## 2. Descarga el modelo y pruébalo
 
-En 1º de DAM estabas acostumbrado a ordenar a la máquina paso a paso cómo mover punteros y variables en memoria:
+Descarga el [proyecto resuelto](../../../../_res/00-ejemplo-modelo-resuelto.zip) y descomprímelo. En el examen trabajarás con **IntelliJ IDEA**, y desde él puedes hacer las dos comprobaciones: lanzar los tests y ejecutar el programa. Gradle por terminal hace lo mismo y es la alternativa si el IDE da problemas.
 
-```kotlin
-// ❌ ESTILO IMPERATIVO (1º DAM - Penalizado en este examen)
-fun obtenerNombresMagosViejos(heroes: List<Heroe>): List<String> {
-    val resultado = ArrayList<String>()
-    for (i in 0 until heroes.size) {
-        val h = heroes[i]
-        if (h.rol == RolHeroe.MAGO && h.nivel >= 5) {
-            resultado.add(h.nombre.uppercase())
-        }
-    }
-    return resultado
-}
-```
+=== "IntelliJ IDEA"
 
-En Kotlin moderno y en el desarrollo Android reactivo con **Jetpack Compose**, el código describe **qué transformación se aplica al dato**, encadenando operaciones puras e inmutables:
+    1. **Abre el proyecto:** *File → Open* y elige la carpeta `00-ejemplo-modelo-resuelto`. Espera a que IntelliJ termine de cargar Gradle (la barra inferior deja de mostrar progreso).
 
-```kotlin
-// ✅ ESTILO DECLARATIVO (PMDM - Kotlin Moderno)
-fun obtenerNombresMagos(heroes: List<Heroe>): List<String> =
-    heroes
-        .filter { it.rol == RolHeroe.MAGO && it.nivel >= 5 }
-        .sortedByDescending { it.poder }
-        .map { it.nombre.uppercase() }
-```
+    2. **Lanza los tests:** abre `src/test/kotlin/service/HeroeServiceTest.kt` y pulsa el **▶** verde del margen, junto a `class HeroeServiceTest`. También puedes pulsar con el botón derecho sobre la carpeta `src/test/kotlin` y elegir *Run 'Tests in…'*. El ▶ de cada `@Test` lanza solo ese test.
 
-!!! warning "Criterio de Corrección: Rúbrica Anti-Imperativo"
-    El uso innecesario de bucles imperativos tradicionales (`for`, `while`) junto con acumuladores mutables (`var`, `mutableListOf()` + `.add()`) en ejercicios de procesamiento de colecciones supondrá una penalización del 50% de la nota de ese ejercicio, aun cuando el test unitario resulte en verde.
+    3. **Ejecuta el programa:** abre `src/main/kotlin/app/Main.kt` y pulsa el **▶** junto a `fun main()`. La salida aparece en el panel *Run*.
+
+    Los tests y el programa también se pueden lanzar desde el panel *Gradle* (el icono del elefante, a la derecha): *Tasks → verification → test* y *Tasks → application → run*.
+
+=== "Terminal (macOS / Linux)"
+
+    ```bash
+    cd 00-ejemplo-modelo-resuelto
+    ./gradlew test
+    ./gradlew run
+    ```
+
+=== "Terminal (Windows)"
+
+    ```powershell
+    cd 00-ejemplo-modelo-resuelto
+    .\gradlew.bat test
+    .\gradlew.bat run
+    ```
+
+Si todo va bien, los tests pasan (en IntelliJ, `Tests passed: 8 of 8 tests`; en la terminal, `BUILD SUCCESSFUL`) y el programa imprime la [salida del apartado 6.4](#64-la-salida-que-debes-obtener).
+
+!!! warning "Este proyecto ya está resuelto"
+    En el examen recibirás los métodos con `TODO` y los tests en rojo. Aquí todo está hecho y en verde, así que **no verás el punto de partida** hasta que lo prepares tú, como se explica a continuación.
+
+!!! tip "Practica con él como si fuera un examen"
+    Haz una copia del proyecto y deja sin programar los cinco métodos de `HeroeService.kt`, cambiando cada cuerpo por un `TODO`:
+
+    ```kotlin
+    fun calcularPoderMedio(heroes: List<Heroe>): Double =
+        TODO("Pendiente de implementar")
+    ```
+
+    Al lanzar los tests verás los 8 en rojo: `Tests failed: 8 of 8 tests` en IntelliJ y `8 tests completed, 8 failed` en la terminal. Ese es el estado inicial de la Parte 1. Resuélvelo sin mirar esta guía y compara después.
 
 ---
 
-## 3. Dominio de Ejemplo: HeroAcademy
+## 3. Qué recibes: el proyecto
 
-El proyecto modelo toma como referencia una academia de héroes donde se gestionan alumnos, especialidades y mentores.
+Solo programas en dos ficheros. El resto te dice qué tienes que conseguir o te da los datos con los que trabajar:
 
-### 3.1. Modelo de Datos (`model/Heroe.kt`)
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/testing/images/ficheros-proyecto.svg"
+<figcaption>Los ficheros que importan. Los tests no se cambian: son la definición de lo que debe hacer tu código.</figcaption>
+</figure>
+
+El proyecto modelo gestiona una academia de héroes. Este es su modelo de datos, en `model/Heroe.kt`:
 
 ```kotlin
 package model
@@ -88,7 +101,7 @@ data class Heroe(
     val rol: RolHeroe,
     val nivel: Int,
     val poder: Int,
-    val mentor: String? = null // Nullable: puede no tener mentor asignado
+    val mentor: String? = null // puede no tener mentor
 )
 
 sealed interface AccionResultado {
@@ -97,18 +110,80 @@ sealed interface AccionResultado {
 }
 ```
 
+Tanto los tests como `main` usan estos seis héroes. Tenlos a mano, porque todos los ejemplos de esta guía salen de ellos:
+
+| ID | Nombre | Rol | Nivel | Poder | Mentor |
+|----|--------|-----|-------|-------|--------|
+| H01 | Aria | `MAGO` | 5 | 85 | Gandalf |
+| H02 | Thorin | `GUERRERO` | 8 | 120 | `null` |
+| H03 | Kael | `MAGO` | 3 | 45 | Gandalf |
+| H04 | Lyra | `SANADOR` | 6 | 95 | Elrond |
+| H05 | Vex | `MAGO` | 7 | 110 | Saruman |
+| H06 | Brom | `GUERRERO` | 4 | 70 | `null` |
+
 ---
 
-## 4. PARTE 1 (TDD): Los 5 Pipelines Fundamentales
+## 4. La regla de estilo: pipelines, no bucles
 
-En esta parte el alumno recibe el archivo de tests unitarios completamente programado. Su labor es abrir la clase de servicio y sustituir los bloques `TODO(...)` por pipelines limpios.
+Lo que se evalúa no es solo que funcione, sino **cómo** procesas las colecciones. En 1º de DAM recorrías la lista con un bucle y llenabas otra a mano. Aquí encadenas operaciones que describen la transformación:
 
-### 4.1. Pipeline 1: Filtrado, Ordenación y Mapeo
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/testing/images/imperativo-vs-pipeline.svg"
+<figcaption>El mismo método resuelto de las dos formas. Cada color es el mismo paso. Los parámetros <code>rolBuscado</code> y <code>nivelMinimo</code> se abrevian como <code>rol</code> y <code>min</code>.</figcaption>
+</figure>
 
-El contrato exige obtener los nombres en mayúsculas de los héroes de un rol concreto cuyo nivel sea superior o igual al mínimo, ordenados de mayor a menor poder.
+!!! warning "Criterio de corrección: penalización por estilo imperativo"
+    El uso innecesario de bucles (`for`, `while`) con acumuladores mutables (`var`, `mutableListOf()` + `.add()`) para procesar colecciones supone una **penalización del 50 % de la nota de ese ejercicio**, aunque el test pase en verde.
+
+---
+
+## 5. Parte 1 (TDD): del rojo al verde
+
+Recibes los tests ya programados. Tu trabajo es cambiar cada `TODO` de `HeroeService.kt` por un pipeline, sin tocar los tests.
+
+### 5.1. El ciclo de trabajo
+
+Trabaja **un método cada vez** y lanza los tests después de cada uno. Así sabes qué ha arreglado cada cambio:
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/testing/images/ciclo-rojo-verde.svg"
+<figcaption>Datos reales de este modelo. El número de fallos baja de forma desigual porque no todos los métodos tienen el mismo número de tests.</figcaption>
+</figure>
+
+| Método | Tests | Qué exigen los tests |
+|--------|:-----:|----------------------|
+| `obtenerNombresHeroesDestacados` | 2 | Filtrar, ordenar y pasar a mayúsculas; lista vacía si nadie cumple |
+| `calcularPoderMedio` | 2 | La media correcta; `0.0` si la lista está vacía |
+| `contarHeroesPorRol` | 1 | Cuántos hay de cada rol; sin entrada para los roles sin héroes |
+| `obtenerMentoresUnicos` | 1 | Sin `null`, sin duplicados y por orden alfabético |
+| `buscarHeroePorId` | 2 | Encontrar ignorando mayúsculas; `null` si no existe o el id es nulo o está en blanco |
+
+!!! info "Cómo leer el resultado de los tests"
+    Hay dos tipos de fallo, y conviene distinguirlos:
+
+    - `NotImplementedError` significa que ese método todavía tiene el `TODO`.
+
+    - `AssertionFailedError` significa que el método devuelve algo, pero no lo que se espera.
+
+    === "IntelliJ IDEA"
+
+        El panel inferior muestra el árbol de tests con ✔ verdes y ✖ rojos, y el recuento arriba (`Tests failed: 2 of 8 tests`). Pulsa un test en rojo para ver su mensaje y la línea donde falla; si es una comparación, el enlace *Click to see difference* muestra lo esperado y lo obtenido uno al lado del otro.
+
+    === "Terminal"
+
+        Cuando todo pasa, Gradle **no muestra ningún recuento**: solo `BUILD SUCCESSFUL`. Cuando algo falla, indica cuántos tests han fallado y cuáles, pero solo te da la línea del test. El detalle está en `build/reports/tests/test/index.html`.
+
+    Por ejemplo, si olvidas ordenar en el pipeline 1, el mensaje es este:
+
+    ```text
+    expected: <[VEX, ARIA]> but was: <[ARIA, VEX]>
+    ```
+
+### 5.2. Pipeline 1: filtrar, ordenar y transformar
+
+Debe devolver los nombres en mayúsculas de los héroes de un rol con al menos cierto nivel, de mayor a menor poder. Cada operación es un paso del enunciado:
 
 ```kotlin
-// En src/main/kotlin/service/HeroeService.kt
 fun obtenerNombresHeroesDestacados(
     heroes: List<Heroe>,
     rolBuscado: RolHeroe,
@@ -120,7 +195,14 @@ fun obtenerNombresHeroesDestacados(
         .map { it.nombre.uppercase() }
 ```
 
-El test unitario que lo verifica en `HeroeServiceTest.kt`:
+Así recorren los datos esas tres operaciones:
+
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/testing/images/pipeline-traza.svg"
+<figcaption>Cada operación devuelve una lista nueva, que es la entrada de la siguiente. La lista <code>heroes</code> no cambia.</figcaption>
+</figure>
+
+Este es el test que lo comprueba. Lee siempre los tests antes de programar: dicen exactamente qué entrada se usa y qué salida se espera.
 
 ```kotlin
 @Test
@@ -131,19 +213,16 @@ fun `obtenerNombresHeroesDestacados filtra por rol, nivel minimo y ordena por po
         nivelMinimo = 5
     )
 
-    // Magos con nivel >= 5 en la muestra:
-    // Vex (nivel 7, poder 110)
-    // Aria (nivel 5, poder 85)
     val esperado = listOf("VEX", "ARIA")
-    assertEquals(esperado, resultado)
+    assertEquals(esperado, resultado, "Debe devolver los nombres en mayúsculas ordenados por poder descendente")
 }
 ```
 
----
+Repasa: [`filter`](../42-listas.md#42-filter-filtrado-por-condicion), [`map`](../42-listas.md#41-map-transformacion-elemento-a-elemento) y [`sortedBy`](../42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby).
 
-### 4.2. Pipeline 2: Agregación Numérica Segura
+### 5.3. Pipeline 2: una media segura con la lista vacía
 
-Calcular la media de poder del escuadrón protegiendo el caso extremo de lista vacía.
+Debe calcular el poder medio y devolver `0.0` si no hay héroes. El caso límite se resuelve primero; así el resto de la función se ocupa solo del caso normal:
 
 ```kotlin
 fun calcularPoderMedio(heroes: List<Heroe>): Double {
@@ -152,11 +231,11 @@ fun calcularPoderMedio(heroes: List<Heroe>): Double {
 }
 ```
 
----
+Con los seis héroes, el resultado es `525 / 6 = 87.5`.
 
-### 4.3. Pipeline 3: Agrupación y Reducción por Clave (`groupBy -> mapValues`)
+### 5.4. Pipeline 3: agrupar y contar
 
-Transformar una lista de elementos en un mapa analítico con el recuento por especialidad.
+Debe devolver cuántos héroes hay de cada rol. Se hace en dos pasos: `groupBy` reparte la lista en grupos y `mapValues` resume cada grupo.
 
 ```kotlin
 fun contarHeroesPorRol(heroes: List<Heroe>): Map<RolHeroe, Int> =
@@ -165,13 +244,16 @@ fun contarHeroesPorRol(heroes: List<Heroe>): Map<RolHeroe, Int> =
         .mapValues { (_, listaDeRol) -> listaDeRol.size }
 ```
 
-Esta combinación está explicada, con más variantes, en [`groupBy` + `mapValues`](../43-maps.md#groupby-mapvalues). Para contar también sirve [`groupingBy` y `eachCount`](../43-maps.md#groupingby-eachcount).
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/testing/images/groupby-mapvalues.svg"
+<figcaption>El mapa intermedio guarda listas; <code>mapValues</code> mantiene las claves y cambia cada lista por su tamaño.</figcaption>
+</figure>
 
----
+Repasa: [`groupBy` + `mapValues`](../43-maps.md#groupby-mapvalues), con más variantes. Para contar también sirve [`groupingBy` y `eachCount`](../43-maps.md#groupingby-eachcount).
 
-### 4.4. Pipeline 4: Null-Safety con `mapNotNull`
+### 5.5. Pipeline 4: quitar los nulos con `mapNotNull`
 
-Extraer los nombres únicos de mentores activos, omitiendo automáticamente a los alumnos sin mentor (`null`) y eliminando duplicados.
+Debe devolver los mentores sin repetir y por orden alfabético. `mapNotNull` extrae el dato y descarta los `null` en un solo paso, y además el resultado ya es de tipo `List<String>`, no `List<String?>`:
 
 ```kotlin
 fun obtenerMentoresUnicos(heroes: List<Heroe>): List<String> =
@@ -181,11 +263,17 @@ fun obtenerMentoresUnicos(heroes: List<Heroe>): List<String> =
         .sorted()
 ```
 
----
+Paso a paso con los seis héroes:
 
-### 4.5. Pipeline 5: Búsqueda con Verificación Segura
+| Tras | Resultado |
+|------|-----------|
+| `mapNotNull` | `[Gandalf, Gandalf, Elrond, Saruman]` |
+| `distinct` | `[Gandalf, Elrond, Saruman]` |
+| `sorted` | `[Elrond, Gandalf, Saruman]` |
 
-Localizar a un héroe por su identificador ignorando mayúsculas y minúsculas, gestionando posibles entradas nulas o vacías.
+### 5.6. Pipeline 5: buscar un elemento que puede no existir
+
+Debe localizar un héroe por su id sin distinguir mayúsculas, y devolver `null` si el id es nulo, está en blanco o no coincide con ninguno. Por eso el tipo de retorno es `Heroe?`:
 
 ```kotlin
 fun buscarHeroePorId(heroes: List<Heroe>, idBuscado: String?): Heroe? {
@@ -194,22 +282,24 @@ fun buscarHeroePorId(heroes: List<Heroe>, idBuscado: String?): Heroe? {
 }
 ```
 
+Repasa: [`find`, `any` y `all`](../42-listas.md#43-busqueda-y-verificacion-find-any-all).
+
 ---
 
-## 5. PARTE 2: Funcionalidad CLI y Estados Inmutables (`Main.kt`)
+## 6. Parte 2 (funcionalidad): `Main.kt`
 
-En la segunda parte no hay tests unitarios predefinidos, sino una especificación de funcionalidad ejecutable en consola.
+Aquí no hay tests: se comprueba ejecutando el programa (el ▶ junto a `fun main()` en IntelliJ, o `./gradlew run`) y comparando la consola con la salida esperada. Las funciones son tres, y cada una trabaja una idea distinta.
 
-### 5.1. Formateo Tabular con `joinToString()`
+### 6.1. Una tabla con `joinToString`
 
-Para construir tablas o listados legibles en la terminal no se utilizan bucles `for` que van imprimiendo línea por línea. Se construye una única cadena inmutable:
+Una función que devuelve el texto se puede probar y reutilizar; una que va imprimiendo línea a línea, no. Por eso se construye una sola cadena: `map` convierte cada héroe en una fila y `joinToString` las une.
 
 ```kotlin
 fun generarInformeHeroes(heroes: List<Heroe>): String {
     val cabecera = "ID    | NOMBRE     | ROL        | NIVEL | PODER | MENTOR\n" +
                    "------------------------------------------------------------------"
 
-    val filas = heroes.joinToString("\n") { h ->
+    val filas = heroes.map { h ->
         val mentorTexto = h.mentor ?: "(Sin mentor)"
         "%-5s | %-10s | %-10s | %-5d | %-5d | %s".format(
             h.id,
@@ -219,17 +309,18 @@ fun generarInformeHeroes(heroes: List<Heroe>): String {
             h.poder,
             mentorTexto
         )
-    }
+    }.joinToString("\n")
 
     return "$cabecera\n$filas"
 }
 ```
 
----
+!!! tip "Una forma más corta"
+    `joinToString` admite la transformación directamente, sin el `map` previo: `heroes.joinToString("\n") { h -> ... }`. El resultado es el mismo.
 
-### 5.2. Mutación Inmutable de Estado con `.copy()`
+### 6.2. Cambiar el estado con `copy()`
 
-En lugar de reasignar variables mutables de un objeto, se generan nuevas instancias preservando la inmutabilidad:
+Las propiedades de `Heroe` son `val`, así que un héroe no se modifica: se crea otro con los cambios. `promocionarHeroe` comprueba primero si el cambio es válido y devuelve el resultado, sin imprimir nada:
 
 ```kotlin
 fun promocionarHeroe(heroe: Heroe, nuevoNivel: Int, incrementoPoder: Int): AccionResultado {
@@ -239,7 +330,6 @@ fun promocionarHeroe(heroe: Heroe, nuevoNivel: Int, incrementoPoder: Int): Accio
         )
     }
 
-    // Se clona el objeto original inmutable con las propiedades modificadas
     val heroePromocionado = heroe.copy(
         nivel = nuevoNivel,
         poder = heroe.poder + incrementoPoder
@@ -252,11 +342,16 @@ fun promocionarHeroe(heroe: Heroe, nuevoNivel: Int, incrementoPoder: Int): Accio
 }
 ```
 
----
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/testing/images/copy-inmutable.svg"
+<figcaption>Promoción de Aria con <code>nuevoNivel = 6</code> e <code>incrementoPoder = 20</code>. Es el mismo patrón con el que cambiarás el estado de una pantalla en Compose.</figcaption>
+</figure>
 
-### 5.3. Control de Flujo Exhaustivo con `when`
+Repasa: [`copy()` y la inmutabilidad](../23-data-classes.md#3-el-metodo-copy-y-la-inmutabilidad).
 
-Manejo de resultados tipados mediante `sealed interface`:
+### 6.3. Decidir con un `when` exhaustivo
+
+`AccionResultado` es un `sealed interface`: el compilador conoce todos sus casos. Por eso `when` puede cubrirlos sin `else`, y dentro de cada rama ya puedes usar las propiedades de ese caso:
 
 ```kotlin
 fun mostrarResultado(resultado: AccionResultado) {
@@ -272,15 +367,20 @@ fun mostrarResultado(resultado: AccionResultado) {
 }
 ```
 
----
+<figure class="arq-fig">
+--8<-- "docs/temas/00-android/00-kotlin/testing/images/when-sealed.svg"
+<figcaption>Una función decide y otra muestra. Los dos casos que ejecuta <code>main</code>, con lo que imprime cada uno.</figcaption>
+</figure>
 
-## 6. Salida de Consola Esperada
+Repasa: [`sealed interface`](../26-sealed-classes.md).
 
-Al ejecutar `./gradlew run` o lanzar `fun main()`, la consola debe mostrar:
+### 6.4. La salida que debes obtener
+
+Al ejecutar el programa, el panel *Run* de IntelliJ (o la terminal, con `./gradlew run`) debe mostrar esto:
 
 ```text
 ==========================================================
-          🏛️  HERO ACADEMY DASHBOARD (KOTLIN)             
+          🏛️  HERO ACADEMY DASHBOARD (KOTLIN)
 ==========================================================
 
 --- 1. TABLÓN OFICIAL DE ALUMNOS (PIPELINE FORMAT) ---
@@ -305,16 +405,26 @@ H06   | Brom       | GUERRERO   | 4     | 70    | (Sin mentor)
 ❌ RECHAZADO: El nuevo nivel (4) debe ser estrictamente superior al actual (5)
 ```
 
+!!! note "`87,50` o `87.50`"
+    `%.2f` usa el idioma del sistema: con el ordenador en español sale `87,50` y en inglés, `87.50`. No es un error de tu código.
+
 ---
 
-## 7. Dónde Encontrar el Código Fuente Completo
+## 7. Comprobación final
 
-El proyecto Gradle listo para abrir en IntelliJ IDEA se encuentra en:
+Antes de entregar, repasa esta lista:
 
-- Acceso al proyecto: [proyecto](../../../../_res/00-ejemplo-modelo-resuelto.zip)
-- Para compilar y verificar tests desde la terminal, descomprime el zip y ejecuta:
+- [ ] Pasan todos los tests: `Tests passed: 8 of 8 tests` en IntelliJ, o `BUILD SUCCESSFUL` con `./gradlew test`.
 
-    ```bash
-    cd 00-ejemplo-modelo-resuelto
-    ./gradlew test run
-    ```
+- [ ] No has cambiado ningún test para que pase.
+
+- [ ] No queda ningún `TODO` en `HeroeService.kt` ni en `Main.kt`.
+
+- [ ] El programa termina sin errores y su salida coincide con la esperada.
+
+- [ ] No procesas ninguna colección con un bucle y una lista auxiliar.
+
+- [ ] Los cambios de estado usan `copy()`, y el `when` sobre el `sealed interface` no tiene `else`.
+
+!!! tip "Sigue practicando"
+    La [práctica de código y TDD](../../../evaluacion/practica-codigo.md) trabaja con este mismo esquema en el navegador: un esqueleto con `TODO`, sus tests y un botón para ejecutarlos.

@@ -121,12 +121,12 @@ Cada página de teoría termina con **Retos prácticos** y muchas tienen **Error
 
 ## 3. Examen Práctico de Kotlin
 
-El examen práctico es un proyecto de consola con dos partes, explicadas con detalle en la [guía modelo](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#1-estructura-de-la-evaluacion-50-tdd-50-funcionalidad):
+El examen práctico es un proyecto de consola con dos partes, explicadas con detalle en la [guía modelo](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#1-que-vas-a-hacer):
 
 - **TDD (50 %):** implementas los métodos marcados con `TODO` hasta que pasen los tests que se te dan.
 - **Funcionalidad (50 %):** completas `Main.kt` para mostrar datos, cambiar estados con `copy()` y decidir con `when`.
 
-Se valora que uses **pipelines declarativos de colecciones**, no bucles con listas auxiliares: lee [el cambio de mentalidad de imperativo a declarativo](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#2-el-cambio-de-mentalidad-de-imperativo-a-declarativo-pipelines).
+Se valora que uses **pipelines declarativos de colecciones**, no bucles con listas auxiliares: lee [el cambio de mentalidad de imperativo a declarativo](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#4-la-regla-de-estilo-pipelines-no-bucles).
 
 !!! tip "Entrena en el navegador"
     La [🧪 práctica de código y TDD](practica-codigo.md) trabaja igual que el examen, sin abrir el IDE: un esqueleto con `TODO`, sus tests y un botón para ejecutarlos. Elige una [tanda](practica-codigo.md#tanda-de-practica) o ve al [catálogo](practica-codigo.md#catalogo-por-tipo-de-ejercicio). «[Encuentra el error](practica-codigo.md#2-encuentra-el-error)» te enseña además a leer el mensaje de un test que falla, y es lo primero que necesitas cuando te quedas atascado.
@@ -135,14 +135,14 @@ Se valora que uses **pipelines declarativos de colecciones**, no bucles con list
 
 | Técnica | Dónde está explicada | Practica en el navegador |
 | :--- | :--- | :--- |
-| ⭐ Filtrar, ordenar y transformar en una cadena | [Pipeline 1](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#41-pipeline-1-filtrado-ordenacion-y-mapeo) | [Tanda](practica-codigo.md?temas=ordenar) |
-| ⭐ Sumar o promediar sin dividir entre cero | [Pipeline 2](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#42-pipeline-2-agregacion-numerica-segura) | [Tanda](practica-codigo.md?temas=agrupar) |
-| ⭐ Agrupar por una clave y resumir cada grupo | [Pipeline 3](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#43-pipeline-3-agrupacion-y-reduccion-por-clave-groupby-mapvalues) y [Maps](../00-android/00-kotlin/43-maps.md#groupby-mapvalues) | [Tanda](practica-codigo.md?temas=agrupar) |
-| Quedarte solo con los valores que no son `null` | [Pipeline 4](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#44-pipeline-4-null-safety-con-mapnotnull) | [Tanda](practica-codigo.md?temas=nulos) |
-| Buscar un elemento que puede no existir | [Pipeline 5](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#45-pipeline-5-busqueda-con-verificacion-segura) | [Tanda](practica-codigo.md?temas=nulos) |
-| Mostrar una tabla con `joinToString` | [§5.1](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#51-formateo-tabular-con-jointostring) | [Huecos](practica-codigo.md#3-completa-los-huecos) |
-| ⭐ Cambiar un estado inmutable con `copy()` | [§5.2](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#52-mutacion-inmutable-de-estado-con-copy) | [Tanda](practica-codigo.md?temas=inmutable) |
-| ⭐ Decidir con un `when` exhaustivo sobre un `sealed interface` | [§5.3](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#53-control-de-flujo-exhaustivo-con-when) | [Tanda](practica-codigo.md?temas=inmutable) |
+| ⭐ Filtrar, ordenar y transformar en una cadena | [Pipeline 1](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#52-pipeline-1-filtrar-ordenar-y-transformar) | [Tanda](practica-codigo.md?temas=ordenar) |
+| ⭐ Sumar o promediar sin dividir entre cero | [Pipeline 2](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#53-pipeline-2-una-media-segura-con-la-lista-vacia) | [Tanda](practica-codigo.md?temas=agrupar) |
+| ⭐ Agrupar por una clave y resumir cada grupo | [Pipeline 3](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#54-pipeline-3-agrupar-y-contar) y [Maps](../00-android/00-kotlin/43-maps.md#groupby-mapvalues) | [Tanda](practica-codigo.md?temas=agrupar) |
+| Quedarte solo con los valores que no son `null` | [Pipeline 4](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#55-pipeline-4-quitar-los-nulos-con-mapnotnull) | [Tanda](practica-codigo.md?temas=nulos) |
+| Buscar un elemento que puede no existir | [Pipeline 5](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#56-pipeline-5-buscar-un-elemento-que-puede-no-existir) | [Tanda](practica-codigo.md?temas=nulos) |
+| Mostrar una tabla con `joinToString` | [§6.1](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#61-una-tabla-con-jointostring) | [Huecos](practica-codigo.md#3-completa-los-huecos) |
+| ⭐ Cambiar un estado inmutable con `copy()` | [§6.2](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#62-cambiar-el-estado-con-copy) | [Tanda](practica-codigo.md?temas=inmutable) |
+| ⭐ Decidir con un `when` exhaustivo sobre un `sealed interface` | [§6.3](../00-android/00-kotlin/testing/00-guia-simulacro-modelo.md#63-decidir-con-un-when-exhaustivo) | [Tanda](practica-codigo.md?temas=inmutable) |
 | Leer un test y saber qué espera | [Estructura AAA](../00-android/00-kotlin/testing/index.md#23-estructura-mental-de-una-prueba-el-patron-aaa-arrange-act-assert), [casos límite](../00-android/00-kotlin/testing/index.md#24-identificacion-de-casos-casos-nominales-vs-casos-limite-edge-cases) | [Encuentra el error](practica-codigo.md?tipos=error) |
 | Ejecutar los tests y leer el informe | [Formas de ejecutar los tests](../00-android/00-kotlin/testing/index.md#43-formas-de-ejecutar-los-tests), [informe HTML](../00-android/00-kotlin/testing/index.md#44-el-informe-visual-html-generado-por-gradle) | [Katas](practica-codigo.md#1-katas-tdd) |
 
