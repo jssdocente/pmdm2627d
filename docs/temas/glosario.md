@@ -221,6 +221,13 @@ Cambio del entorno, como girar el móvil o el idioma, que hace que Android destr
 **Practica:** [Codelab 2.03 · Girar la pantalla](02/codelabs/03-ciclo-vida-logcat.md#6-paso-4-experimento-2-girar-la-pantalla)<br>
 **Ver también:** [`rememberSaveable`](#remembersaveable) · [`ViewModel`](#viewmodel)
 
+#### `cameraDistance` {#camera-distance}
+
+Propiedad de `graphicsLayer` que fija a qué distancia se coloca la «cámara» respecto al elemento. Con un giro en 3D (`rotationY`), cambia cuánta perspectiva se ve: demasiado cerca, el giro se deforma.
+
+**Dónde:** [Guía del proyecto · Volteo animado](evaluacion/1eval-proyecto.md#investigacion-volteo)<br>
+**Ver también:** [`graphicsLayer`](#graphicslayer) · [`animate*AsState`](#animate-as-state)
+
 #### Cancelación cooperativa {#cancelacion-cooperativa}
 
 Una corrutina no se detiene a la fuerza: la cancelación se atiende en los puntos de suspensión o cuando el código la comprueba.
@@ -841,6 +848,13 @@ Librería de inyección de dependencias con un DSL en Kotlin, compatible con KMP
 **Dónde:** [3C.3 · Describir las piezas](03/c-arquitectura/3c.3-inyeccion-dependencias-koin.md#3-paso-1-describir-las-piezas-en-un-modulo) · [3C.3 · Arrancar Koin](03/c-arquitectura/3c.3-inyeccion-dependencias-koin.md#4-paso-2-arrancar-koin) · [3C.3 · Obtener los ViewModel](03/c-arquitectura/3c.3-inyeccion-dependencias-koin.md#5-paso-3-obtener-los-viewmodel-en-compose)<br>
 **Ver también:** [Inyección de dependencias (DI)](#inyeccion-de-dependencias) · [Hilt](#hilt)
 
+#### `kotlinx.serialization` {#kotlinx-serialization}
+
+Biblioteca de Kotlin que convierte objetos en texto (por ejemplo, JSON) y al revés. Sirve para leer datos de un fichero, como la definición de los niveles de un juego.
+
+**Dónde:** [Guía del proyecto · Mejoras opcionales](evaluacion/1eval-proyecto.md#mejoras)<br>
+**Ver también:** [`data class`](#data-class)
+
 ## L {#letra-l}
 
 #### Lambda {#lambda}
@@ -1284,6 +1298,12 @@ Pieza que centraliza el acceso a los datos y oculta de dónde vienen. Con Clean 
 **Dónde:** [3C.2 · El contrato del repositorio](03/c-arquitectura/3c.2-clean-architecture.md#5-paso-2-el-contrato-del-repositorio) · [3C.2 · La implementación en memoria](03/c-arquitectura/3c.2-clean-architecture.md#6-paso-3-la-implementacion-en-memoria) · [Patrones · Repository](00-android/02-arquitectura/05-glosario-patrones.md#repository-repositorio)<br>
 **Ver también:** [Caso de uso (*use case*)](#caso-de-uso) · [DataSource](#datasource) · [SSOT (fuente única de verdad)](#ssot) · [Fake](#fake)
 
+#### Respuesta háptica {#respuesta-haptica}
+
+Vibración breve del dispositivo que confirma una acción del usuario, como acertar o fallar en un juego.
+
+**Dónde:** [Guía del proyecto · Mejoras opcionales](evaluacion/1eval-proyecto.md#mejoras)
+
 #### Room {#room}
 
 Librería de Android para usar una base de datos SQLite local, que puede exponer los datos como `Flow`. Aquí se presenta como avance.
@@ -1383,6 +1403,12 @@ Aviso temporal en la parte inferior de la pantalla, que puede incluir una acció
 **Dónde:** [3A.1 · Notificaciones temporales](03/a-diseno/3a.1-material-design-3-scaffold.md#5-notificaciones-temporales-con-snackbar)<br>
 **Practica:** [Codelab 3.03 · Deshacer con Snackbar](03/codelabs/03-tareas-scaffold.md#6-paso-4-deshacer-con-snackbar)<br>
 **Ver también:** [`Scaffold`](#scaffold)
+
+#### `SoundPool` {#soundpool}
+
+Clase de Android para reproducir efectos de sonido cortos con poca latencia. Se cargan una vez y se disparan cuando hace falta.
+
+**Dónde:** [Guía del proyecto · Mejoras opcionales](evaluacion/1eval-proyecto.md#mejoras)
 
 #### SSOT (fuente única de verdad) {#ssot}
 
