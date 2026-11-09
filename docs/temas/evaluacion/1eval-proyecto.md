@@ -53,6 +53,8 @@ Todo lo de esta sección es **obligatorio**. Sin ello, el proyecto no se conside
 | **Cartas ya descubiertas** | Pulsar una carta que ya está boca arriba o ya emparejada no hace nada ni rompe la partida |
 | **Victoria** | Al encontrar la última pareja, el tiempo se detiene y se pasa a la pantalla de resultado |
 
+Pistas para cada requisito, en [Cómo afrontarlo: las claves del proyecto](#claves).
+
 ### 2.2. Tiempo y ciclo de vida
 
 - Hay un **temporizador** que cuenta los segundos de la partida y se ve en el tablero.
@@ -60,6 +62,8 @@ Todo lo de esta sección es **obligatorio**. Sin ello, el proyecto no se conside
 - Si el usuario pulsa el botón de inicio del móvil, **el tiempo se detiene**, y **continúa** al volver. Se hace con `LifecycleResumeEffect`.
 
 - Al **girar el móvil**, la partida sigue igual: las mismas cartas, los mismos contadores y el mismo tiempo.
+
+Pistas para resolverlo, en [Cómo afrontarlo: las claves del proyecto](#claves).
 
 ### 2.3. Tres pantallas con Navigation 3
 
@@ -87,7 +91,7 @@ Importa tanto **cómo** está hecho como que funcione. Estos requisitos son obli
 
 2. **La pantalla solo pinta el estado y envía eventos.** Ejemplo de evento: «se ha pulsado la carta 7». La pantalla no decide si dos cartas son pareja, ni si se ha ganado, ni cuántos movimientos lleva.
 
-3. **Las reglas del juego viven en el ViewModel.** Todo lo que se pueda comprobar sin pantalla está ahí.
+3. **La lógica del juego vive en el ViewModel.** Es lo que decide qué pasa cuando se pulsa una carta: si hay pareja, si se ha ganado, cuántos movimientos lleva, cuándo se bloquea el tablero. También se llaman «las reglas del juego». Todo lo que se pueda comprobar sin pantalla está ahí.
 
 4. **El estado de cada carta está en el `UiState`**, no en un `remember` de la pantalla ni dentro de una animación.
 
@@ -100,7 +104,7 @@ Este es el esquema que tiene que seguir tu proyecto. Es el **flujo de datos unid
 ```mermaid
 flowchart TB
     P["<b>Pantalla</b> (Composable)<br>Solo pinta el estado y envía eventos"]
-    VM["<b>ViewModel</b><br>Aplica las reglas del juego<br>y crea el nuevo UiState"]
+    VM["<b>ViewModel</b><br>Aplica la lógica del juego<br>y crea el nuevo UiState"]
     P -- "evento hacia arriba<br>onCartaPulsada(id)" --> VM
     VM -- "estado hacia abajo<br>StateFlow de UiState" --> P
 ```
@@ -127,11 +131,11 @@ app/src/test/java/<tu.paquete>/
 └── ui/tablero/             ← tests del ViewModel
 ```
 
-Lo importante no es copiar estos nombres, sino que **se pueda saber dónde está cada cosa**: el estado, las reglas, la navegación y la pantalla no pueden estar mezclados en un solo fichero.
+Lo importante no es copiar estos nombres, sino que **se pueda saber dónde está cada cosa**: el estado, la lógica, la navegación y la pantalla no pueden estar mezclados en un solo fichero.
 
 ### Tests del ViewModel
 
-Un test comprueba una regla: das un estado de partida, lanzas un evento y compruebas el estado resultante. Para que sean fáciles de escribir:
+Un test comprueba una parte de la lógica: das un estado de partida, lanzas un evento y compruebas el estado resultante. Para que sean fáciles de escribir:
 
 - Deja que el ViewModel **reciba como parámetro** lo que cuesta probar (cómo se barajan las cartas, cuánto dura el retardo de fallo).
 
@@ -142,11 +146,50 @@ Un test comprueba una regla: das un estado de partida, lanzas un evento y compru
 
 ---
 
-## 4. Las dos investigaciones obligatorias {#investigaciones}
+## 4. Cómo afrontarlo: las claves del proyecto {#claves}
+
+Antes de escribir código, conviene saber **qué decisiones** tendrás que tomar. Esta tabla no te da la solución: te dice **qué preguntarte** en cada parte y **dónde mirar**. Las respuestas, y su justificación, las tienes que poner tú.
+
+| Clave | Preguntas que te tienes que hacer | Dónde mirar |
+| :--- | :--- | :--- |
+| **Qué es una carta** | ¿Qué datos necesita una carta para que el estado diga *todo* lo que se pinta? ¿Cómo sabes qué dos cartas son pareja? ¿Cuántos estados distintos puede tener una carta: dos o más? | [3C.1 · Estado inmutable](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#2-modelado-inmutable-del-estado-uistate), [`data class`](../00-android/00-kotlin/23-data-classes.md), [`enum class`](../00-android/00-kotlin/24-enum-classes.md) |
+| **Dónde guardas el tablero** | ¿Qué estructura guarda todas las cartas de un nivel: una lista plana, una lista de filas…? ¿Cómo localizas la carta pulsada? Si la lista no se puede modificar, ¿cómo cambias **solo** esa carta y generas un tablero nuevo? | [Listas en Kotlin](../00-android/00-kotlin/42-listas.md#3-inmutabilidad-y-adicion-funcional-de-elementos), [`copy()`](../00-android/00-kotlin/23-data-classes.md#3-el-metodo-copy-y-la-inmutabilidad), [Inmutabilidad](../glosario.md#inmutabilidad) |
+| **Niveles** | ¿El tamaño del tablero y el número de parejas son datos del nivel o están repartidos por el código? ¿Qué pasa si mañana hay que añadir un cuarto nivel? | [`enum class` con propiedades](../00-android/00-kotlin/24-enum-classes.md#2-enums-con-propiedades-y-metodos), glosario: [`enum class`](../glosario.md#enum-class) |
+| **Repartir y barajar** | ¿Cómo consigues dos cartas iguales por pareja? ¿Cómo cambias el orden en cada partida? ¿Cómo harías que el orden sea **fijo en un test**? | Kotlin: [listas](../00-android/00-kotlin/42-listas.md#4-operaciones-funcionales-imprescindibles). Glosario: [`shuffled`](../glosario.md#shuffled) y [`Random` con semilla](../glosario.md#random-semilla). Oficial: [`shuffled`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/shuffled.html) |
+| **Dibujar el tablero** | ¿Qué contenedor coloca las cartas en filas y columnas? ¿Cómo sabe Compose qué carta es cuál cuando el estado cambia? | [3A.3 · Tablero de cartas en cuadrícula](../03/a-diseno/3a.3-listas-cuadriculas.md#42-ejemplo-tablero-de-cartas-en-cuadricula), [`key`](../03/a-diseno/3a.3-listas-cuadriculas.md#3-la-clave-del-rendimiento-asignacion-de-key). Oficial: [listas y cuadrículas en Compose](https://developer.android.com/develop/ui/compose/lists) |
+| **Imágenes de las cartas** | ¿Dónde se guardan las imágenes dentro del proyecto? ¿Cómo las pintas desde el código? ¿Qué datos de la carta bastan para saber qué imagen le toca? | [UT2 · Mostrar imágenes con `Image`](../02/2.3.2-imagenes-iconos-recursos.md#3-mostrar-imagenes-con-image), [Codelab 3.07 · Las imágenes](../03/codelabs/07-ficha-heroe-recursos.md#3-paso-1-las-imagenes), glosario: [`painterResource`](../glosario.md#painter-resource) |
+| **Qué pasa al pulsar** | Piensa los casos uno a uno: ¿carta ya boca arriba?, ¿ya emparejada?, ¿es la primera del par?, ¿es la segunda?, ¿tablero bloqueado? ¿En qué orden los compruebas? | [3C.1 · Implementación del ViewModel](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#31-implementacion-del-viewmodel), glosario: [`when`](../glosario.md#when) |
+| **Contar movimientos y parejas** | ¿En qué momento exacto cuenta un movimiento? ¿Guardas las parejas en un contador o se pueden calcular a partir de las cartas? | Es lógica tuya, y se comprueba en los tests |
+| **Bloquear el tablero** | ¿Dónde vive el bloqueo? ¿Quién lo activa y quién lo desactiva? ¿Qué debe ignorar la lógica mientras está activo? | [3C.1 · Una espera con bloqueo](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#52-una-espera-con-bloqueo) |
+| **Que el giro no rompa la partida** | ¿Dónde está el estado de la partida para que sobreviva al giro del móvil? ¿Qué pasaría con un `remember`? | [3C.1 · Supervivencia ante cambios de configuración](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#11-supervivencia-ante-cambios-de-configuracion), glosario: [Cambio de configuración](../glosario.md#cambio-de-configuracion) |
+| **Tiempo, pausa y animación** | Son las dos investigaciones de la sección siguiente | [Volteo animado](#investigacion-volteo) y [Temporizador, retardo y pausa](#investigacion-temporizador) |
+| **Navegación entre pantallas** | ¿Qué datos mínimos necesita cada destino? ¿A dónde debe llevar el botón atrás? | [3B.1 · Navigation 3](../03/b-navegacion/3b.1-navigation3.md), [Codelab 3.05](../03/codelabs/05-navegacion-navigation3.md) |
+| **Probar la lógica** | ¿Qué estado de partida preparas, qué evento lanzas y qué estado esperas? ¿Qué parámetro del ViewModel te permite controlar el azar y el tiempo? | [3C.1 · Probar el tiempo sin esperar](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#54-probar-el-tiempo-sin-esperar), [3C.4 · Probar los ViewModel](../03/c-arquitectura/3c.4-testing.md#4-probar-los-viewmodel) |
+
+!!! warning "Consulta la documentación ahora"
+    En el examen y en la defensa **no tendrás internet**. Los enlaces a la documentación oficial son para que los uses **mientras programas**: lo que aprendas de ellos, tienes que poder explicarlo sin mirarlos.
+
+### Un orden de trabajo que funciona
+
+1. **Modelo y niveles:** cómo es una carta, cómo es un nivel y qué guarda el `UiState`.
+
+2. **ViewModel con la lógica del juego, y sus tests,** antes de dibujar nada. Si la lógica funciona en un test, la pantalla es solo pintarlas.
+
+3. **Tablero estático:** la cuadrícula con las cartas, sin animación.
+
+4. **Navegación:** las tres pantallas conectadas, con el nivel y el resultado como datos.
+
+5. **Tiempo y ciclo de vida,** y **al final la animación**: el giro es lo último, porque solo depende del estado que ya tienes.
+
+Si algo falla, revisa en este orden: ¿es un problema de los **datos** (qué guarda el `UiState`), de la **lógica** (lo que decide el ViewModel cuando se pulsa una carta) o de la **pantalla** (cómo se pinta)? Empieza por los datos: si el estado es correcto, el fallo está en la lógica o en la pantalla.
+
+---
+
+## 5. Las dos investigaciones obligatorias {#investigaciones}
 
 Estas dos partes no se ven del todo en clase. Tienes que **investigar** cómo resolverlas, con los apuntes y la documentación oficial.
 
-### 4.1. Volteo animado {#investigacion-volteo}
+### 5.1. Volteo animado {#investigacion-volteo}
 
 Al pulsar una carta, debe **girar en 3D** para mostrar su cara. Investiga y usa:
 
@@ -166,7 +209,7 @@ Dónde mirar:
 
 - Documentación oficial: [animaciones de valores en Compose](https://developer.android.com/develop/ui/compose/animation/value-based).
 
-### 4.2. Temporizador, retardo de fallo y pausa {#investigacion-temporizador}
+### 5.2. Temporizador, retardo de fallo y pausa {#investigacion-temporizador}
 
 Tres piezas que se apoyan en corrutinas dentro del ViewModel:
 
@@ -194,7 +237,7 @@ Dónde mirar:
 
 ---
 
-## 5. Mejoras opcionales {#mejoras}
+## 6. Mejoras opcionales {#mejoras}
 
 Cuando los mínimos estén completos y funcionando, puedes añadir mejoras. **Suben la nota del proyecto**, pero no sustituyen a ningún mínimo.
 
@@ -239,7 +282,7 @@ Las mejoras **no sustituyen** a los mínimos: se pregunta por ellos igual.
 
 ---
 
-## 6. Entrega {#entrega}
+## 7. Entrega {#entrega}
 
 Para entregar tienes que **generar un fichero `.zip`** con tu proyecto, y enviarlo en la forma y el plazo que indique el profesor.
 
@@ -287,16 +330,18 @@ En Windows se escribe `gradlew.bat crearZip -Pnombre=apellido-nombre`. El zip se
 
 ---
 
-## 7. La plantilla del proyecto y el README {#plantilla-readme}
+## 8. La plantilla del proyecto y el README {#plantilla-readme}
 
 No tendrás que empezar de cero. Hay un **proyecto plantilla** con el paquete ya creado (`com.pm2627.p1ev.memory`), las dependencias necesarias y un **README normalizado**, con los apartados ya preparados para que los rellenes.
 
 !!! info "Descarga la plantilla"
     [**pmdm2627_1eval_proyecto** en GitHub](https://github.com/jssdocente/pmdm2627_1eval_proyecto): clónala o descárgala con *Code → Download ZIP* y trabaja sobre tu copia.
 
-    Dentro tienes una carpeta `ayuda/` con dos páginas:
+    Dentro tienes una carpeta `ayuda/` con tres páginas:
 
     - [**README de ejemplo**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/README-ejemplo.md): cómo se debe estructurar y rellenar el README. Está hecho para un proyecto **simulado** (otro juego), para que veas qué nivel de detalle se espera en cada apartado. No lo copies: tu README tiene que explicar **tu** proyecto.
+
+    - [**Pistas**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/pistas.md): la tabla de [claves del proyecto](#claves), para tenerla junto al código.
 
     - [**Preparar el entorno**](https://github.com/jssdocente/pmdm2627_1eval_proyecto/blob/main/ayuda/preparar-entorno.md): IDE, SDK, JDK y errores frecuentes al abrir y compilar.
 
@@ -314,7 +359,7 @@ El README no es un trámite: es donde **explicas tu proyecto**, y te servirá pa
 
     - **Paquetes:** el árbol de paquetes de tu proyecto y para qué sirve cada uno.
 
-    - **Ficheros importantes:** una tabla con qué hace cada fichero relevante (por ejemplo, dónde está el `UiState`, dónde están las reglas, dónde está la navegación).
+    - **Ficheros importantes:** una tabla con qué hace cada fichero relevante (por ejemplo, dónde está el `UiState`, dónde está la lógica, dónde está la navegación).
 
     - **Cómo fluye un evento:** el recorrido completo desde que el usuario pulsa algo hasta que la pantalla se vuelve a dibujar, nombrando **tus** funciones.
 
@@ -329,7 +374,7 @@ El README no es un trámite: es donde **explicas tu proyecto**, y te servirá pa
 
 ---
 
-## 8. Cómo se evalúa {#evaluacion}
+## 9. Cómo se evalúa {#evaluacion}
 
 La nota final se reparte así: **proyecto 40 %, examen práctico 40 %, defensa escrita 20 %**.
 
@@ -363,7 +408,7 @@ Respondes por escrito sobre **tu código**, también **sin internet**. Una respu
 
 ---
 
-## 9. Lista de comprobación final {#lista-comprobacion}
+## 10. Lista de comprobación final {#lista-comprobacion}
 
 Marca cada casilla cuando lo hayas **comprobado de verdad**, no cuando creas que está.
 
@@ -389,7 +434,7 @@ Marca cada casilla cuando lo hayas **comprobado de verdad**, no cuando creas que
 ### Arquitectura y tests
 
 - [ ] Hay un **ViewModel por partida** con un `UiState` inmutable expuesto como `StateFlow`.
-- [ ] La pantalla **solo pinta y envía eventos**. Las reglas están en el ViewModel.
+- [ ] La pantalla **solo pinta y envía eventos**. La lógica del juego está en el ViewModel.
 - [ ] El estado de cada carta está en el `UiState`.
 - [ ] Hay tests de **emparejar**, **fallar** y **ganar**, y **pasan**.
 - [ ] Los tests que usan el temporizador lo **paran** al terminar.

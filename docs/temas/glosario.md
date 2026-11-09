@@ -1131,6 +1131,14 @@ Campo de texto con borde. Como todo en Compose, no guarda el texto: lo recibe en
 
 ## P {#letra-p}
 
+#### `painterResource` {#painter-resource}
+
+Función que convierte un recurso de `res/drawable` (por ejemplo `R.drawable.logo`) en un `Painter`, que es lo que necesita `Image` para dibujarlo.
+
+**Dónde:** [UT2 · Mostrar imágenes con `Image`](02/2.3.2-imagenes-iconos-recursos.md#3-mostrar-imagenes-con-image)<br>
+**Practica:** [Codelab 3.07 · Las imágenes](03/codelabs/07-ficha-heroe-recursos.md#3-paso-1-las-imagenes)<br>
+**Ver también:** [Recursos](#recursos) · [La clase `R`](#clase-r)
+
 #### Pantalla de inicio (*splash*) {#splash}
 
 Pantalla que muestra el sistema al arrancar la app. Desde Android 12 siempre existe, y se personaliza con `core-splashscreen`.
@@ -1237,6 +1245,13 @@ Herramienta que reduce, ofusca y optimiza el código al compilar para `release`.
 
 **Dónde:** [3E.1 · Reducir y proteger el código](03/e-publicacion/3e.1-preparar-lanzamiento.md#5-reducir-y-proteger-el-codigo-con-r8)<br>
 **Ver también:** [Tipos de compilación (*build types*)](#tipos-de-compilacion) · [AAB (Android App Bundle)](#aab)
+
+#### `Random` con semilla {#random-semilla}
+
+Generador de números aleatorios. Si se crea con una semilla fija, produce siempre la misma secuencia, y eso permite comprobar en un test algo que en la app es aleatorio, como el orden de las cartas.
+
+**Dónde:** [Guía del proyecto · Cómo afrontarlo](evaluacion/1eval-proyecto.md#claves) · Oficial: [`kotlin.random.Random`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.random/-random/)<br>
+**Ver también:** [`shuffled`](#shuffled)
 
 #### Rangos {#rangos}
 
@@ -1368,6 +1383,13 @@ Flujo caliente sin valor actual, para difundir eventos puntuales como mostrar un
 
 **Dónde:** [Kotlin · SharedFlow](00-android/00-kotlin/52-flows.md#5-sharedflow-emision-de-eventos-unicos-one-shot-events)<br>
 **Ver también:** [`StateFlow`](#stateflow) · [Flujo frío y flujo caliente](#flujo-frio-caliente)
+
+#### `shuffled` {#shuffled}
+
+Función de las colecciones de Kotlin que devuelve **una lista nueva** con los mismos elementos en orden aleatorio, sin modificar la original. Acepta un `Random`, para poder controlar el azar.
+
+**Dónde:** [Guía del proyecto · Cómo afrontarlo](evaluacion/1eval-proyecto.md#claves) · Oficial: [`shuffled`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/shuffled.html)<br>
+**Ver también:** [`Random` con semilla](#random-semilla) · [Inmutabilidad](#inmutabilidad)
 
 #### Side effect {#side-effect}
 
