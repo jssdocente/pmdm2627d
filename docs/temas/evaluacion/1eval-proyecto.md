@@ -1,5 +1,7 @@
 # **Guía del proyecto de la 1ª evaluación: juego de memoria por niveles**
 
+![Portada: proyecto de la 1ª evaluación, juego de memoria](img/portada-proyecto.svg){ width="50%" style="display: block; margin: 0 auto;" }
+
 Vas a programar en Android, con **Kotlin** y **Jetpack Compose**, un **juego de memoria**: un tablero de cartas boca abajo en el que hay que encontrar las parejas volteándolas de dos en dos. Esta página te dice **qué tiene que hacer tu proyecto**, qué es obligatorio, qué es opcional, cómo se entrega y cómo se evalúa.
 
 !!! info "Lo esencial en cinco líneas"

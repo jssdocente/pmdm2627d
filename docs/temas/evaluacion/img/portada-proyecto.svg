@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1f2e"/><stop offset="1" stop-color="#134563"/></linearGradient></defs>
+<rect width="1280" height="720" fill="url(#g)"/><rect width="14" height="720" fill="#4fd1c5"/>
+<text x="70" y="170" font-size="24" font-weight="700" fill="#4fd1c5" font-family="Helvetica" letter-spacing="3">PMDM · 2º DAM · 1ª EVALUACIÓN</text>
+<text x="70" y="270" font-size="76" font-weight="800" fill="#ffffff" font-family="Helvetica">Proyecto:</text>
+<text x="70" y="355" font-size="76" font-weight="800" fill="#ffffff" font-family="Helvetica">Juego de</text>
+<text x="70" y="440" font-size="76" font-weight="800" fill="#ffcf5c" font-family="Helvetica">memoria</text>
+<text x="70" y="515" font-size="27" fill="#cbd5e0" font-family="Helvetica">Kotlin · Jetpack Compose · ViewModel</text>
+<text x="70" y="556" font-size="27" fill="#cbd5e0" font-family="Helvetica">Navigation 3 · Tests unitarios</text>
+<rect x="690" y="132" width="112" height="140" rx="16" fill="#f7fafc" stroke="#ffffff" stroke-width="5"/><text x="746.0" y="224.0" font-size="64" text-anchor="middle" fill="#ffcf5c" font-family="Helvetica">★</text>
+<rect x="820" y="132" width="112" height="140" rx="16" fill="#1d4e6b" stroke="#2f7ea8" stroke-width="3"/><text x="876.0" y="220.0" font-size="52" text-anchor="middle" fill="#2f7ea8" font-family="Helvetica">?</text>
+<rect x="950" y="132" width="112" height="140" rx="16" fill="#f7fafc" stroke="#4fd1c5" stroke-width="5"/><text x="1006.0" y="224.0" font-size="64" text-anchor="middle" fill="#4fd1c5" font-family="Helvetica">●</text>
+<rect x="1080" y="132" width="112" height="140" rx="16" fill="#1d4e6b" stroke="#2f7ea8" stroke-width="3"/><text x="1136.0" y="220.0" font-size="52" text-anchor="middle" fill="#2f7ea8" font-family="Helvetica">?</text>
+<rect x="690" y="290" width="112" height="140" rx="16" fill="#1d4e6b" stroke="#2f7ea8" stroke-width="3"/><text x="746.0" y="378.0" font-size="52" text-anchor="middle" fill="#2f7ea8" font-family="Helvetica">?</text>
+<rect x="820" y="290" width="112" height="140" rx="16" fill="#f7fafc" stroke="#ffffff" stroke-width="5"/><text x="876.0" y="382.0" font-size="64" text-anchor="middle" fill="#ff6b81" font-family="Helvetica">♥</text>
+<rect x="950" y="290" width="112" height="140" rx="16" fill="#f7fafc" stroke="#ffffff" stroke-width="5"/><text x="1006.0" y="382.0" font-size="64" text-anchor="middle" fill="#ff6b81" font-family="Helvetica">♥</text>
+<rect x="1080" y="290" width="112" height="140" rx="16" fill="#1d4e6b" stroke="#2f7ea8" stroke-width="3"/><text x="1136.0" y="378.0" font-size="52" text-anchor="middle" fill="#2f7ea8" font-family="Helvetica">?</text>
+<rect x="690" y="448" width="112" height="140" rx="16" fill="#f7fafc" stroke="#4fd1c5" stroke-width="5"/><text x="746.0" y="540.0" font-size="64" text-anchor="middle" fill="#a78bfa" font-family="Helvetica">▲</text>
+<rect x="820" y="448" width="112" height="140" rx="16" fill="#1d4e6b" stroke="#2f7ea8" stroke-width="3"/><text x="876.0" y="536.0" font-size="52" text-anchor="middle" fill="#2f7ea8" font-family="Helvetica">?</text>
+<rect x="950" y="448" width="112" height="140" rx="16" fill="#1d4e6b" stroke="#2f7ea8" stroke-width="3"/><text x="1006.0" y="536.0" font-size="52" text-anchor="middle" fill="#2f7ea8" font-family="Helvetica">?</text>
+<rect x="1080" y="448" width="112" height="140" rx="16" fill="#f7fafc" stroke="#4fd1c5" stroke-width="5"/><text x="1136.0" y="540.0" font-size="64" text-anchor="middle" fill="#4fd1c5" font-family="Helvetica">●</text>
+</svg>
