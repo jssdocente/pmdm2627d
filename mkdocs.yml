@@ -261,6 +261,9 @@ extra:
   search:
     language: "es"
   social:
+    - icon: material/download
+      link: https://jssdocente.github.io/pmdm2627d/pmdm2627-apuntes-offline.zip
+      name: Descargar los apuntes para consultarlos sin conexión
     - icon: material/email-edit
       link: mailto:<jssgarcia.docente@gmail.com>
   #analytics:
@@ -286,6 +289,12 @@ watch:
 
 plugins:
   - search
+  # Versión descargable sin conexión (solo se activan con OFFLINE=true;
+  # ver mkdocs-offline.yml y el workflow de CI). El sitio online no cambia.
+  - offline:
+      enabled: !ENV [OFFLINE, false]
+  - privacy:
+      enabled: !ENV [OFFLINE, false]
   - glightbox:
       touchNavigation: true
       loop: false

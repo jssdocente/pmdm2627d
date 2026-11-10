@@ -28,3 +28,7 @@ _bck/
 
 # Caché de Python (hook de MkDocs del banco de preguntas)
 __pycache__/
+
+# Versión offline de los apuntes (mkdocs-offline.yml) y caché de sus plugins
+site-offline/
+.cache/

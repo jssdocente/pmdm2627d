@@ -1,0 +1,20 @@
+# Versión de los apuntes para consultar sin conexión (abriendo index.html
+# desde el disco). Se construye con:
+#
+#   OFFLINE=true mkdocs build -f mkdocs-offline.yml
+#
+# OFFLINE=true activa los plugins offline (navegación y búsqueda desde file://)
+# y privacy (descarga fuentes, imágenes y scripts externos al propio sitio),
+# declarados en mkdocs.yml. Aquí solo se cambia lo que no debe ir en el zip.
+INHERIT: mkdocs.yml
+
+# Sin site_url, privacy enlaza Mermaid.js como script local en cada página; con
+# él, lo apunta a https://jssdocente.github.io/... y sin red no se dibujan.
+site_url: null
+# Subcarpeta con nombre propio: al descomprimir el zip queda todo dentro de ella
+site_dir: site-offline/pmdm2627-apuntes
+
+# Material antiguo y páginas cifradas del profesor: fuera de la descarga
+exclude_docs: |
+  _bck/
+  profesor/

@@ -4,6 +4,16 @@ Aquí tienes los apuntes y las prácticas del módulo de ***Programación multim
 
 Empezamos por el desarrollo de aplicaciones Android con **Kotlin** como lenguaje y **Jetpack Compose** para la interfaz. Usa esta página para orientarte: qué entra en cada evaluación, qué incluye la documentación y cómo trabajar cada tema.
 
+!!! tip "Apuntes sin conexión"
+
+    Puedes descargar todos los apuntes para consultarlos sin internet: **[⬇️ pmdm2627-apuntes-offline.zip](https://jssdocente.github.io/pmdm2627d/pmdm2627-apuntes-offline.zip)**. Se regenera cada vez que se actualiza la web, así que vuelve a descargarlo de vez en cuando.
+
+    1. Descomprime el zip en tu ordenador.
+
+    2. Abre la carpeta `pmdm2627-apuntes` y haz doble clic en `index.html`.
+
+    Funcionan la navegación, las imágenes, los diagramas y el buscador. Los vídeos de YouTube, los enlaces externos y las prácticas online (ejecución de código Kotlin) siguen necesitando conexión.
+
 ---
 
 ## Evaluaciones

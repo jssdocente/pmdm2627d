@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configurar Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.x
 
@@ -36,8 +36,20 @@ jobs:
         run: |
           mkdocs build
 
+      # Apuntes para consultar sin conexión: se genera aparte (plugins offline
+      # y privacy, sin _bck/ ni profesor/) y se publica como un zip dentro del
+      # propio sitio: https://jssdocente.github.io/pmdm2627d/pmdm2627-apuntes-offline.zip
+      - name: Generar zip de los apuntes sin conexión
+        env:
+          OFFLINE: "true"
+        run: |
+          mkdocs build -f mkdocs-offline.yml
+          cd site-offline
+          zip -rq9 ../site/pmdm2627-apuntes-offline.zip pmdm2627-apuntes -x '*/search/search_index.json'
+          ls -lh ../site/pmdm2627-apuntes-offline.zip
+
       - name: Subir artefacto de GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
@@ -50,4 +62,4 @@ jobs:
     steps:
       - name: Desplegar a GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
