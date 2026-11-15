@@ -1611,7 +1611,14 @@ Clase que guarda el estado de una pantalla y su lógica. Sobrevive a los cambios
 
 **Dónde:** [3C.1 · El rol del ViewModel](03/c-arquitectura/3c.1-capa-ui-viewmodel.md#1-el-rol-del-viewmodel-en-la-arquitectura-moderna) · [3C.1 · Implementación](03/c-arquitectura/3c.1-capa-ui-viewmodel.md#31-implementacion-del-viewmodel) · [3B.1 · Un ViewModel para cada pantalla](03/b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla)<br>
 **Practica:** [Codelab 3.06 · El ViewModel](03/codelabs/06-quiz-viewmodel.md#5-paso-3-el-viewmodel)<br>
-**Ver también:** [`UiState`](#uistate) · [`StateFlow`](#stateflow) · [`viewModelScope`](#viewmodelscope) · [Cambio de configuración](#cambio-de-configuracion)
+**Ver también:** [`UiState`](#uistate) · [`StateFlow`](#stateflow) · [`viewModelScope`](#viewmodelscope) · [`ViewModelStore`](#viewmodelstore) · [Cambio de configuración](#cambio-de-configuracion)
+
+#### `ViewModelStore` {#viewmodelstore}
+
+Almacén donde viven los ViewModel. `viewModel()` busca en él y solo crea uno nuevo si no lo encuentra. Su dueño es la Activity o, con Navigation 3, cada entrada de la pila; cuando el dueño se cierra de verdad, el almacén se vacía y cada ViewModel recibe `onCleared()`.
+
+**Dónde:** [3C.1 · Supervivencia ante cambios de configuración](03/c-arquitectura/3c.1-capa-ui-viewmodel.md#11-supervivencia-ante-cambios-de-configuracion) · [3B.1 · Un ViewModel para cada pantalla](03/b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla)<br>
+**Ver también:** [`ViewModel`](#viewmodel) · [`viewModelScope`](#viewmodelscope) · [Cambio de configuración](#cambio-de-configuracion)
 
 #### `viewModelScope` {#viewmodelscope}
 
