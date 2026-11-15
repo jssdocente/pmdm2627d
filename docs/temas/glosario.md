@@ -614,6 +614,13 @@ Implementación sencilla pero funcional de una interfaz, escrita por ti y con da
 **Dónde:** [3C.4 · Fakes frente a mocks](03/c-arquitectura/3c.4-testing.md#31-fakes-frente-a-mocks) · [3C.4 · Un repositorio de prueba](03/c-arquitectura/3c.4-testing.md#32-un-repositorio-de-prueba-controlable)<br>
 **Ver también:** [Mock](#mock) · [Repositorio](#repositorio)
 
+#### Fases de Compose {#fases-compose}
+
+Los tres pasos de cada fotograma: **composición** (ejecutar las funciones composable para saber qué se muestra), **diseño** (medir y colocar) y **dibujo** (pintar). Un valor leído en la lambda de `graphicsLayer` solo repite el dibujo.
+
+**Dónde:** [3A.4 · `graphicsLayer`](03/a-diseno/3a.4-animaciones.md#2-transformar-el-dibujo-graphicslayer)<br>
+**Ver también:** [Recomposición](#recomposicion) · [`graphicsLayer`](#graphicslayer)
+
 #### `filterKeys` y `filterValues` {#filterkeys}
 
 Filtran un `Map` según su clave o su valor, y devuelven otro `Map`.
@@ -1339,7 +1346,7 @@ Ejecuta un test con corrutinas en tiempo virtual, de modo que un `delay` no hace
 
 **Dónde:** [3C.1 · Probar el tiempo sin esperar](03/c-arquitectura/3c.1-capa-ui-viewmodel.md#54-probar-el-tiempo-sin-esperar) · [3C.4 · Test de un caso de uso](03/c-arquitectura/3c.4-testing.md#33-test-de-un-caso-de-uso)<br>
 **Practica:** [Codelab 3.08 · Tiempo virtual](03/codelabs/08-temporizador-pomodoro.md#7-paso-6-tests-con-tiempo-virtual)<br>
-**Ver también:** [`runBlocking`](#runblocking) · [Turbine](#turbine)
+**Ver también:** [`runBlocking`](#runblocking) · [Tiempo virtual](#tiempo-virtual) · [Turbine](#turbine)
 
 ## S {#letra-s}
 
@@ -1515,6 +1522,14 @@ Un test local (`src/test`) corre en el ordenador, en la JVM. Uno instrumentado (
 
 **Dónde:** [3C.4 · Tests locales e instrumentados](03/c-arquitectura/3c.4-testing.md#12-tests-locales-y-tests-instrumentados) · [3C.4 · Ejecutar los tests](03/c-arquitectura/3c.4-testing.md#6-ejecutar-los-tests)<br>
 **Ver también:** [Pirámide de tests](#piramide-de-tests) · [Árbol semántico](#arbol-semantico)
+
+#### Tiempo virtual {#tiempo-virtual}
+
+Reloj de pruebas de `runTest`: un `delay` no espera, sino que queda apuntado, y el reloj solo avanza cuando el test lo manda con `advanceTimeBy` o `advanceUntilIdle`. Un temporizador sin fin nunca deja la agenda vacía, así que hay que pararlo antes de acabar el test.
+
+**Dónde:** [3C.1 · Probar el tiempo sin esperar](03/c-arquitectura/3c.1-capa-ui-viewmodel.md#54-probar-el-tiempo-sin-esperar)<br>
+**Practica:** [Codelab 3.08 · Tiempo virtual](03/codelabs/08-temporizador-pomodoro.md#7-paso-6-tests-con-tiempo-virtual)<br>
+**Ver también:** [`runTest`](#runtest) · [`Job`](#job)
 
 #### Tipos de compilación (*build types*) {#tipos-de-compilacion}
 
