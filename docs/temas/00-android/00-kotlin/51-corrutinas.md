@@ -655,6 +655,96 @@ val job = launch(Dispatchers.Default) {
     }
     ```
 
+### 6.3. Aislar fallos: `coroutineScope` frente a `supervisorScope`
+
+En el apartado 6.1 vimos que **los errores suben**: si un hijo falla, el padre cancela a los hermanos. Es lo que queremos cuando las tareas forman un todo (si falta una pieza, el resultado no vale). Pero a veces las tareas son **independientes**: una pantalla que carga el perfil, los logros y los amigos de un jugador no debería quedarse sin perfil porque el servidor de logros esté caído.
+
+Kotlin ofrece dos constructores `suspend` para crear un ámbito dentro de una función, y se diferencian justo en esto:
+
+| | `coroutineScope { }` | `supervisorScope { }` |
+| :--- | :--- | :--- |
+| **Espera a sus hijos** | Sí | Sí |
+| **Si un hijo falla** | Cancela a los hermanos y relanza la excepción a quien lo llamó | **No** cancela a los hermanos: cada hijo falla por separado |
+| **Ideal para** | Tareas que forman un todo (todo o nada) | Tareas independientes (lo que pueda cargar, que cargue) |
+
+#### Todo o nada: `coroutineScope`
+
+```kotlin
+import kotlinx.coroutines.*
+import java.io.IOException
+
+suspend fun cargarPerfil(): String { delay(1000); return "Perfil de Ana" }
+suspend fun cargarLogros(): String { delay(500); throw IOException("Servidor de logros caído") }
+suspend fun cargarAmigos(): String { delay(1500); return "12 amigos" }
+
+suspend fun panelTodoONada(): List<String> = coroutineScope {
+    val perfil = async { cargarPerfil() }
+    val logros = async { cargarLogros() }
+    val amigos = async { cargarAmigos() }
+    listOf(perfil.await(), logros.await(), amigos.await())
+}
+
+fun main() = runBlocking {
+    try {
+        println(panelTodoONada())
+    } catch (e: IOException) {
+        println("Panel fallido: ${e.message}")
+    }
+}
+```
+
+**Salida en consola (a los 0,5 s):**
+
+```text
+Panel fallido: Servidor de logros caído
+```
+
+A los 500 ms falla `cargarLogros()`. El `coroutineScope` **cancela** a `cargarPerfil()` y `cargarAmigos()` aunque iban bien, y relanza la excepción, que se captura **fuera** del scope.
+
+#### Cada uno por su lado: `supervisorScope`
+
+Cambiando solo el constructor, los hermanos dejan de cancelarse entre sí. El error de cada `async` se guarda en su `Deferred` y se lanza **al llamar a `await()`**, así que el `try-catch` va alrededor de ese `await()`:
+
+```kotlin
+suspend fun panelResistente(): List<String> = supervisorScope {
+    val perfil = async { cargarPerfil() }
+    val logros = async { cargarLogros() }
+    val amigos = async { cargarAmigos() }
+
+    val textoLogros = try {
+        logros.await()
+    } catch (e: IOException) {
+        "Logros no disponibles"
+    }
+    listOf(perfil.await(), textoLogros, amigos.await())
+}
+```
+
+**Salida en consola (a los 1,5 s):**
+
+```text
+[Perfil de Ana, Logros no disponibles, 12 amigos]
+```
+
+!!! warning "Con `launch` dentro de un `supervisorScope`, el error no tiene a quién subir"
+    `async` guarda la excepción hasta el `await()`. Un `launch`, en cambio, no tiene a nadie que la recoja: si no la capturas **dentro** del `launch`, llega al manejador de excepciones del hilo y en Android **cierra la app**. Dentro de un `supervisorScope`, escribe siempre el `try-catch` en el cuerpo de cada `launch`.
+
+#### Los scopes de Android ya son «supervisores»
+
+`viewModelScope` se crea con un **`SupervisorJob`**: un `launch` que falla no cancela a los demás `launch` del mismo ViewModel. Si montas un scope propio, hazlo igual:
+
+```kotlin
+val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+scope.launch { cargarLogros() }   // si esta falla (y la captura su try-catch)…
+scope.launch { cargarAmigos() }   // …esta sigue
+
+scope.cancel()                    // al terminar, cancela el scope entero
+```
+
+!!! danger "No uses `GlobalScope`"
+    `GlobalScope.launch { }` lanza una corrutina **sin padre**: no pertenece a ninguna pantalla ni ViewModel, así que nadie la cancela y vive hasta que termina o se cierra el proceso. Es la forma de crear corrutinas huérfanas que siguen trabajando para una pantalla que ya no existe. Usa el scope que te dé el entorno (`viewModelScope`, `LaunchedEffect`, `rememberCoroutineScope`) o crea uno propio y cancélalo.
+
 ---
 
 ## 7. Manejo de Errores con `try-catch`

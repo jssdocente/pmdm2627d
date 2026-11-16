@@ -22,6 +22,8 @@ _bck/
 .projects/ut3-lab/
 # Codelab de Kotlin: repositorio Git propio (jssdocente/pmdm2627-lab-kotlin)
 .projects/kotlin-lab/
+# Laboratorio de corrutinas y flows (clase extra de la UT2): repositorio Git propio (jssdocente/pmdm2627-lab-flows)
+.projects/lab-flows/
 
 # Documentación interna del profesor: no se sube (el repositorio es público)
 .profesor/

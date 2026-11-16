@@ -41,4 +41,12 @@ Cada sesión corresponde a una clase de **2 horas**.
 !!! info "Sesiones de estudio autónomo"
     Las sesiones marcadas con 📚 no se dan en el aula: tienen su guía para que las sigas por tu cuenta, a tu ritmo, con el mismo formato que el resto.
 
+## Clases extra
+
+Las **clases extra** no tienen número: no dependen de ninguna sesión y las puedes hacer en cualquier momento. Cada una tiene su propia guía.
+
+| Clase | Contenido | Apuntes | Proyecto |
+| :--- | :--- | :--- | :--- |
+| [**Extra** · Corrutinas y *Flow* en vivo](./extra-corrutinas-flow-en-vivo.md) · ⭐ *en dos partes* | Paralelismo con `async`, *scopes* y fallos, cancelación y reintentos, flujos fríos y calientes, `stateIn` y `shareIn`, y operadores (`debounce`, `flatMapLatest`, `combine`) | [Corrutinas](../../00-android/00-kotlin/51-corrutinas.md), [Flows](../../00-android/00-kotlin/52-flows.md) | `pmdm2627-lab-flows`, una rama por estación |
+
 Las guías se irán publicando a medida que avance el curso. La siguiente sesión de clase es la [**3.01**](../../03/sesiones/index.md#plan-de-sesiones), ya en la UT3.

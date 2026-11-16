@@ -688,6 +688,13 @@ Clases y funciones con parámetros de tipo, como `List<T>`, que funcionan con cu
 **Dónde:** [Kotlin · Clases genéricas](00-android/00-kotlin/25-genericos.md#1-clases-genericas) · [Kotlin · Restricciones de tipo](00-android/00-kotlin/25-genericos.md#3-restricciones-de-tipo-upper-bounds) · [Kotlin · Varianza](00-android/00-kotlin/25-genericos.md#4-varianza-en-kotlin-covarianza-out-y-contravarianza-in)<br>
 **Practica:** [Codelab de Kotlin · Genéricos](00-android/00-kotlin/codelabs/02-genericos.md#1-la-idea-en-un-minuto)
 
+#### `GlobalScope` {#globalscope}
+
+Ámbito de corrutinas sin padre que vive tanto como el proceso. Nadie lo cancela, así que deja corrutinas huérfanas: no se usa en una app.
+
+**Dónde:** [Kotlin · No uses `GlobalScope`](00-android/00-kotlin/51-corrutinas.md#63-aislar-fallos-coroutinescope-frente-a-supervisorscope)<br>
+**Ver también:** [`CoroutineScope`](#coroutinescope) · [Concurrencia estructurada](#concurrencia-estructurada)
+
 #### Gradle {#gradle}
 
 Herramienta que construye el proyecto: descarga dependencias, compila y empaqueta. Se configura con Kotlin DSL.
@@ -1475,6 +1482,13 @@ Operador que convierte un `Flow` frío en un `StateFlow`. Es la forma habitual d
 
 **Dónde:** [3C.2 · ViewModel con dependencias](03/c-arquitectura/3c.2-clean-architecture.md#81-el-catalogo) · [Kotlin · De Flow frío a StateFlow](00-android/00-kotlin/52-flows.md#71-de-flow-frio-a-stateflow-el-operador-statein)<br>
 **Ver también:** [`StateFlow`](#stateflow) · [`ViewModel`](#viewmodel)
+
+#### `supervisorScope` y `SupervisorJob` {#supervisorscope}
+
+Ámbito en el que el fallo de una corrutina hija no cancela a sus hermanas. `supervisorScope { }` se usa dentro de una función `suspend`; `SupervisorJob()` al crear un scope propio. `viewModelScope` ya lo incluye.
+
+**Dónde:** [Kotlin · `coroutineScope` frente a `supervisorScope`](00-android/00-kotlin/51-corrutinas.md#63-aislar-fallos-coroutinescope-frente-a-supervisorscope)<br>
+**Ver también:** [`CoroutineScope`](#coroutinescope) · [Concurrencia estructurada](#concurrencia-estructurada) · [`viewModelScope`](#viewmodelscope)
 
 #### `suspend` {#suspend}
 
