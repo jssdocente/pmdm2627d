@@ -59,7 +59,11 @@ Dos ideas que lo explican todo:
 <figcaption>Al pulsar una carta solo se vuelven a ejecutar las funciones que leen lo que ha cambiado: esa carta, no el tablero entero.</figcaption>
 </figure>
 
-→ Más despacio: [Gestión del estado](../00-android/00-compose/22-state-management.md) y la [sesión 2.02](../02/sesiones/s02-estado-state-hoisting.md).
+!!! info "📚 En los apuntes"
+
+    - Compose · [Qué es el estado](../00-android/00-compose/22-state-management.md#que-es-el-estado-y-por-que-es-importante) y [remember y mutableStateOf](../00-android/00-compose/22-state-management.md#declarando-el-estado-el-duo-indispensable-remember-y-mutablestateof)
+    - Sesión de clase: [2.02 · Estado y state hoisting](../02/sesiones/s02-estado-state-hoisting.md)
+    - Glosario: [recomposición](../glosario.md#recomposicion) · [remember](../glosario.md#remember)
 
 ### 1.2. Por qué el estado sale de la vista
 
@@ -90,11 +94,23 @@ Segundo, **llevarlo a un ViewModel**, que vive fuera de la Activity y es donde s
 
 Fíjate en la tabla de abajo: solo con el ViewModel se cumplen las cuatro condiciones. Por eso el proyecto exige que **la pantalla solo pinte el estado y envíe eventos**.
 
+!!! info "📚 En los apuntes"
+
+    - Compose · [State hoisting y UDF](../00-android/00-compose/22-state-management.md#elevacion-del-estado-state-hoisting-y-patron-udf) · [La regla de oro del state hoisting](../00-android/00-compose/22-state-management.md#la-regla-de-oro-del-state-hoisting)
+    - 3C.1 · [§1.1 Supervivencia ante cambios de configuración](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#11-supervivencia-ante-cambios-de-configuracion)
+    - Glosario: [state hoisting](../glosario.md#state-hoisting) · [rememberSaveable](../glosario.md#remembersaveable)
+
 ### 1.3. Qué es un ViewModel y por qué lo necesitas
 
 El ViewModel vive **fuera** de la pantalla, en un almacén, y la pantalla nueva recibe **el mismo** después de un giro. Por eso la partida, las cartas y los contadores van en él. Recorre la animación entera, sobre todo los pasos del giro y el de `onCleared()`:
 
 <div class="cpa" data-cpa="giro"></div>
+
+!!! info "📚 En los apuntes"
+
+    - 3C.1 · [§1 El rol del ViewModel](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#1-el-rol-del-viewmodel-en-la-arquitectura-moderna) · [§1.1 Supervivencia ante cambios de configuración](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#11-supervivencia-ante-cambios-de-configuracion)
+    - 3B.1 · [§8 Un ViewModel para cada pantalla](../03/b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla)
+    - Glosario: [ViewModel](../glosario.md#viewmodel) · [ViewModelStore](../glosario.md#viewmodelstore) · [viewModelScope](../glosario.md#viewmodelscope)
 
 ### 1.4. El modelo: los niveles y las cartas
 
@@ -158,6 +174,12 @@ data class Carta(
 
 <div class="cpa" data-cpa="situacion"></div>
 
+!!! info "📚 En los apuntes"
+
+    - Kotlin · [Enum con propiedades](../00-android/00-kotlin/24-enum-classes.md#2-enums-con-propiedades-y-metodos) · [Enum y when exhaustivo](../00-android/00-kotlin/24-enum-classes.md#5-el-duo-estrella-enum-y-la-expresion-when-exhaustiva) · [entries](../00-android/00-kotlin/24-enum-classes.md#3-iteracion-moderna-entries-vs-values)
+    - Kotlin · [Declarar una data class](../00-android/00-kotlin/23-data-classes.md#1-declaracion-de-una-data-class) · [copy y la inmutabilidad](../00-android/00-kotlin/23-data-classes.md#3-el-metodo-copy-y-la-inmutabilidad) · [equals basado en contenido](../00-android/00-kotlin/23-data-classes.md#22-equals-y-hashcode-basados-en-contenido)
+    - Glosario: [enum class](../glosario.md#enum-class) · [data class](../glosario.md#data-class) · [copy](../glosario.md#copy)
+
 ### 1.5. Repartir y barajar
 
 Una función de Kotlin puro que recibe el nivel y devuelve las cartas ya barajadas. Recibe también el `Random`: en la app será `Random.Default` (cada partida distinta) y en un test, `Random(42)` (siempre el mismo orden).
@@ -209,6 +231,12 @@ val dibujos: List<Int> = listOf(
 )
 ```
 
+!!! info "📚 En los apuntes"
+
+    - Kotlin · [Listas: operaciones funcionales](../00-android/00-kotlin/42-listas.md#4-operaciones-funcionales-imprescindibles) · [groupBy](../00-android/00-kotlin/42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby) · [Inmutabilidad de las listas](../00-android/00-kotlin/42-listas.md#3-inmutabilidad-y-adicion-funcional-de-elementos)
+    - UT2 · [Los recursos y la clase R](../02/2.3.2-imagenes-iconos-recursos.md#la-clase-r) · [Mapas de bits y vectores](../02/2.3.2-imagenes-iconos-recursos.md#2-mapas-de-bits-y-vectores)
+    - Glosario: [shuffled](../glosario.md#shuffled) · [Random con semilla](../glosario.md#random-semilla)
+
 ### 1.6. El estado de la partida
 
 Todo lo que pinta el tablero, en un único objeto inmutable. Si algo se ve en pantalla, sale de aquí. Cada cambio produce un estado **nuevo**: así el `StateFlow` detecta que es distinto y avisa a la pantalla.
@@ -246,6 +274,12 @@ data class TableroUiState(
     // TODO 5: añade el resto del estado y, en el cuerpo, las propiedades calculadas.
 )
 ```
+
+!!! info "📚 En los apuntes"
+
+    - 3C.1 · [§2 Modelado inmutable del estado](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#2-modelado-inmutable-del-estado-uistate) · [§2.1 Ejemplo: el estado de un juego](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#21-ejemplo-modelado-de-estado-para-un-juego)
+    - Compose · [Estado agregado con data class](../00-android/00-compose/22-state-management.md#patron-2-estado-agregado-continuo-data-class)
+    - Glosario: [UiState](../glosario.md#uistate) · [inmutabilidad](../glosario.md#inmutabilidad) · [StateFlow](../glosario.md#stateflow)
 
 ### 1.7. El ViewModel: las reglas del juego
 
@@ -339,6 +373,13 @@ class TableroViewModel(
 
 !!! tip "La regla, en el ViewModel"
     Que una carta ya descubierta no se pueda pulsar no se resuelve desactivando la carta en la pantalla: lo decide `onCartaPulsada`. Es lo que se puede probar con un test y lo que protege el juego, llegue el toque de donde llegue.
+
+!!! info "📚 En los apuntes"
+
+    - 3C.1 · [§3 StateFlow y UDF](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#3-reactividad-con-stateflow-y-el-patron-udf) · [§3.1 Implementación del ViewModel](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#31-implementacion-del-viewmodel)
+    - Sesiones de clase: [3.05 · ViewModel y UiState (I)](../03/sesiones/s05-viewmodel-uistate-i.md) · [3.07 · ViewModel y UiState (II)](../03/sesiones/s07-viewmodel-uistate-ii.md)
+    - Investigación 6.2 (bloqueo y temporizador): [guía del proyecto](1eval-proyecto.md#investigacion-temporizador) · [3C.1 §5 Tareas con tiempo](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#5-tareas-con-tiempo-en-el-viewmodel)
+    - Glosario: [UDF](../glosario.md#udf) · [when](../glosario.md#when) · [copy](../glosario.md#copy)
 
 ### 1.8. Los tests: el juego funciona sin pantalla
 
@@ -447,6 +488,13 @@ class TableroViewModelTest {
 
 Cuando hagas la investigación 6.2, el test de fallar necesitará el **reloj virtual**. Así funciona por dentro: [3C.1 §5.4](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#54-probar-el-tiempo-sin-esperar).
 
+!!! info "📚 En los apuntes"
+
+    - 3C.4 · [§1.3 Arrange, Act, Assert](../03/c-arquitectura/3c.4-testing.md#13-estructura-de-un-test-arrange-act-assert) · [§4 Probar los ViewModel](../03/c-arquitectura/3c.4-testing.md#4-probar-los-viewmodel) · [§4.1 El problema del hilo principal](../03/c-arquitectura/3c.4-testing.md#41-el-problema-del-hilo-principal) · [§6 Ejecutar los tests](../03/c-arquitectura/3c.4-testing.md#6-ejecutar-los-tests)
+    - 3C.1 · [§5.4 Probar el tiempo sin esperar](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#54-probar-el-tiempo-sin-esperar)
+    - Kotlin · [groupBy](../00-android/00-kotlin/42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby)
+    - Glosario: [runTest](../glosario.md#runtest) · [Dispatcher](../glosario.md#dispatcher) · [Random con semilla](../glosario.md#random-semilla)
+
 ??? question "Antes de seguir: ¿lo tienes claro?"
 
     1. ¿Por qué la partida no se pierde al girar el móvil? → Porque el estado está en el ViewModel, que la pantalla nueva recibe tal cual desde su almacén.
@@ -466,6 +514,11 @@ La pantalla se parte en dos: **`TableroScreen`**, que conoce el ViewModel, y **`
 Cuando cambia el estado, Compose solo vuelve a ejecutar las funciones que lo **leen**. Si cambia una carta, se recompone esa carta, no el tablero entero: las demás reciben una `Carta` igual que antes y Compose se las salta. La `key` de la cuadrícula hace que cada celda sea siempre **la misma carta**.
 
 <div class="cpa" data-cpa="memfases"></div>
+
+!!! info "📚 En los apuntes"
+
+    - 3A.4 · [§2 Transformar el dibujo: graphicsLayer](../03/a-diseno/3a.4-animaciones.md#2-transformar-el-dibujo-graphicslayer)
+    - Glosario: [recomposición](../glosario.md#recomposicion) · [fases de Compose](../glosario.md#fases-compose)
 
 ### 2.2. La cuadrícula y la carta
 
@@ -555,6 +608,14 @@ fun CartaView(
 }
 ```
 
+!!! info "📚 En los apuntes"
+
+    - 3A.3 · [§3 La key](../03/a-diseno/3a.3-listas-cuadriculas.md#3-la-clave-del-rendimiento-asignacion-de-key) · [§4.1 Modos de cuadrícula](../03/a-diseno/3a.3-listas-cuadriculas.md#41-modos-de-cuadricula) · [§4.2 Tablero de cartas](../03/a-diseno/3a.3-listas-cuadriculas.md#42-ejemplo-tablero-de-cartas-en-cuadricula)
+    - UT2 · [§3 Image](../02/2.3.2-imagenes-iconos-recursos.md#3-mostrar-imagenes-con-image) · [contentScale](../02/2.3.2-imagenes-iconos-recursos.md#contentscale-como-se-adapta-la-imagen-a-su-hueco) · [contentDescription](../02/2.3.2-imagenes-iconos-recursos.md#contentdescription-accesibilidad) · [Column](../02/2.3.1-layouts-modificadores.md#2-column-elementos-uno-debajo-de-otro) · [Modifier](../02/2.3.1-layouts-modificadores.md#7-que-es-un-modifier)
+    - 3A.1 · [§1.2 colorScheme y roles de color](../03/a-diseno/3a.1-material-design-3-scaffold.md#12-esquemas-de-color-colorscheme-y-roles-semanticos)
+    - Investigación 6.1 (volteo): [guía del proyecto](1eval-proyecto.md#investigacion-volteo)
+    - Glosario: [LazyVerticalGrid](../glosario.md#lazyverticalgrid) · [painterResource](../glosario.md#painter-resource) · [contentScale](../glosario.md#contentscale) · [@Preview](../glosario.md#preview)
+
 ### 2.3. La pantalla con estado
 
 `TableroScreen` es la única que conoce el ViewModel: observa su estado, se lo pasa al contenido y avisa hacia fuera cuando se gana.
@@ -593,6 +654,12 @@ fun TableroScreen(
     // TODO 20: pinta TableroContent(estado, onCartaPulsada = viewModel::onCartaPulsada)
 }
 ```
+
+!!! info "📚 En los apuntes"
+
+    - 3C.1 · [§4.1 Pantalla contenedora (stateful)](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#41-pantalla-contenedora-stateful-screen) · [§4.2 Contenido sin estado (stateless)](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#42-componente-de-presentacion-stateless-content)
+    - Compose · [collectAsStateWithLifecycle](../00-android/00-compose/22-state-management.md#2-consumo-seguro-en-compose-collectasstatewithlifecycle) · [LaunchedEffect](../00-android/00-compose/27-compositionlocal-contexto-efectos.md#1-launchedeffect-ejecutar-corrutinas-asociadas-a-un-ciclo-de-vida)
+    - Glosario: [collectAsStateWithLifecycle](../glosario.md#collectasstatewithlifecycle) · [LaunchedEffect](../glosario.md#launchedeffect)
 
 ??? question "Antes de seguir: ¿lo tienes claro?"
 
@@ -637,6 +704,12 @@ data class Tablero(val nivel: Nivel) : NavKey
 
 // TODO 21: el destino Resultado, con los datos que necesita su pantalla (movimientos y segundos).
 ```
+
+!!! info "📚 En los apuntes"
+
+    - 3B.1 · [§1 Una pila de pantallas](../03/b-navegacion/3b.1-navigation3.md#1-la-idea-una-pila-de-pantallas) · [§2 Configurar el proyecto](../03/b-navegacion/3b.1-navigation3.md#2-configurar-el-proyecto) · [§3 Definir los destinos](../03/b-navegacion/3b.1-navigation3.md#3-paso-1-definir-los-destinos)
+    - Codelab: [3.05 · Navegación con Navigation 3](../03/codelabs/05-navegacion-navigation3.md)
+    - Glosario: [NavKey](../glosario.md#navkey) · [pila de navegación](../glosario.md#pila-de-navegacion)
 
 ### 3.2. Inicio y resultado
 
@@ -692,6 +765,13 @@ fun ResultadoScreen(
     TODO("23: Column { ¡Has ganado! ; movimientos ; tiempo ; Button(onClick = onVolverAlInicio) }")
 }
 ```
+
+!!! info "📚 En los apuntes"
+
+    - UT2 · [Column](../02/2.3.1-layouts-modificadores.md#2-column-elementos-uno-debajo-de-otro) · [Textos y colores como recursos (strings.xml)](../02/2.3.2-imagenes-iconos-recursos.md#5-textos-y-colores-como-recursos)
+    - 3A.2 · [§1 Los botones de Material 3](../03/a-diseno/3a.2-componentes-interactivos.md#1-la-jerarquia-de-botones-en-material-3)
+    - 3B.1 · [§5 Mostrar la pantalla actual: las pantallas reciben lambdas](../03/b-navegacion/3b.1-navigation3.md#5-paso-3-mostrar-la-pantalla-actual-con-navdisplay)
+    - Kotlin · [Enum: entries](../00-android/00-kotlin/24-enum-classes.md#3-iteracion-moderna-entries-vs-values)
 
 ### 3.3. La app: la pila, las pantallas y un ViewModel por partida
 
@@ -786,6 +866,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 ```
+
+!!! info "📚 En los apuntes"
+
+    - 3B.1 · [§4 Crear la pila](../03/b-navegacion/3b.1-navigation3.md#4-paso-2-crear-la-pila) · [§5 NavDisplay](../03/b-navegacion/3b.1-navigation3.md#5-paso-3-mostrar-la-pantalla-actual-con-navdisplay) · [§6 Volver atrás](../03/b-navegacion/3b.1-navigation3.md#6-volver-atras) · [§7 Operaciones con la pila](../03/b-navegacion/3b.1-navigation3.md#7-operaciones-habituales-con-la-pila) · [§8 Un ViewModel para cada pantalla](../03/b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla)
+    - Sesiones de clase: [3.03 · Navigation 3 (I)](../03/sesiones/s03-navigation3-i.md) · [3.04 · Navigation 3 (II)](../03/sesiones/s04-navigation3-ii-edge-to-edge.md) · [3.07 · ViewModel y UiState (II)](../03/sesiones/s07-viewmodel-uistate-ii.md)
+    - Glosario: [NavDisplay](../glosario.md#navdisplay) · [ViewModelStore](../glosario.md#viewmodelstore)
 
 ??? question "Antes de seguir: ¿lo tienes claro?"
 
