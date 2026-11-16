@@ -5,6 +5,7 @@
  * resaltada; a la derecha, lo que ocurre; debajo, una frase que lo explica.
  *
  * Uso en un .md:
+ *   <div class="cpa" data-cpa="estado"></div>      -> var, remember, rememberSaveable o ViewModel: dónde vive el estado (proyecto, paso a paso)
  *   <div class="cpa" data-cpa="viewmodel"></div>   -> qué es un ViewModel y cuánto vive (apuntes 3C.1 §1.1)
  *   <div class="cpa" data-cpa="stateflow"></div>   -> UiState inmutable que viaja por un StateFlow (apuntes 3C.1 §3)
  *   <div class="cpa" data-cpa="udf"></div>         -> eventos que suben y estado que baja, con espera bloqueada (apuntes 3C.1 §3)
@@ -316,6 +317,118 @@
         screen: { partidas: 1, recomp: 2 }, warn: "La pantalla dice 1 y el dato es 2: nadie ha avisado." } }
   ];
 
+  // ------------------------------- Memory: un turno, estado a estado (guía exprés)
+  // Solo enseña el esqueleto que publica la guía (firmas y TODO), nunca las reglas resueltas.
+
+  var TURNO_CODE = [
+    "data class TableroUiState(",
+    "    val cartas: List<Carta> = emptyList(),",
+    "    // TODO 5: el resto del estado (movimientos, …)",
+    ")",
+    "",
+    "class TableroViewModel(nivel: Nivel, …) : ViewModel() {",
+    "    private val _uiState = MutableStateFlow(TableroUiState())",
+    "    val uiState: StateFlow<TableroUiState> = _uiState.asStateFlow()",
+    "",
+    "    init { onNuevaPartida() }",
+    "",
+    "    fun onNuevaPartida() {",
+    "        _uiState.value = TableroUiState(cartas = repartir(…), …)",
+    "    }",
+    "",
+    "    fun onCartaPulsada(id: Int) {",
+    "        // TODO 7: las reglas, caso a caso",
+    "        _uiState.update { it.copy(/* … */) }",
+    "    }",
+    "}",
+    "",
+    "// TableroScreen",
+    "val estado by viewModel.uiState.collectAsStateWithLifecycle()",
+    "TableroContent(estado, onCartaPulsada = viewModel::onCartaPulsada)",
+    "",
+    "// ❌ Lo que NO se hace (un estado con una lista mutable):",
+    "_uiState.value.cartasMutables[0] = cartaVolteada"
+  ];
+
+  // Cuatro cartas, dos parejas. a = boca abajo, b = boca arriba, p = emparejada.
+  var TURNO_DIB = { 1: "🍎", 2: "🐱", 3: "🍎", 4: "🐱" };
+
+  function turnoChip(id, sit, chg, big) {
+    var cls = "cpa-tc " + sit + (chg ? " chg" : "") + (big ? " big" : "");
+    return '<span class="' + cls + '">' + (sit === "a" ? "?" : TURNO_DIB[id]) + "</span>";
+  }
+
+  function turnoBox(b, nuevo) {
+    var chips = [1, 2, 3, 4].map(function (id, n) {
+      return turnoChip(id, b.c[n], (b.chg || []).indexOf(id) >= 0);
+    }).join("");
+    var mov = (b.chg || []).indexOf("mov") >= 0 ? '<span class="chg">movimientos = ' + b.mov + "</span>" : "movimientos = " + b.mov;
+    var bad = b.st === "mutado";
+    return '<div class="cpa-uis ' + (b.st || "") + (nuevo ? " pop" : "") + '"><div class="h">UiState #' + b.id +
+      (b.st === "viejo" ? " · ya nadie lo usa" : "") + (bad ? " · ¡cambiado por dentro!" : "") + "</div>" +
+      '<div class="cpa-tcs' + (bad ? " bad" : "") + '">cartas = ' + chips + "</div><div>" + mov + "</div>" +
+      '<div class="cpa-note">… lo que añadas en el TODO 5</div></div>';
+  }
+
+  function renderTurno(sc, s, prev) {
+    var ids = prev ? prev.boxes.map(function (b) { return b.id; }) : [];
+    var boxes = s.boxes.map(function (b) { return turnoBox(b, prev && ids.indexOf(b.id) < 0); }).join("");
+    var flash = prev && prev.screen.recomp !== s.screen.recomp;
+    var tablero = s.sub ? '<div class="cpa-tab">' + [1, 2, 3, 4].map(function (id, n) {
+      return '<span class="cpa-tcw">' + turnoChip(id, s.screen.c[n], false, true) +
+        (s.tap === id ? '<span class="cpa-tap" aria-hidden="true">👆</span>' : "") + "</span>";
+    }).join("") + '</div><div class="cpa-note">Movimientos: ' + s.screen.mov + "</div>" : '<div class="big">…</div>';
+    sc.innerHTML =
+      '<div class="cpa-sf"><div class="cpa-sf-vm"><div class="cpa-lbl">TableroViewModel · _uiState</div>' + boxes +
+      '<div class="cpa-lbl" style="margin-top:.4rem">valor del StateFlow → <b>UiState #' + s.value + "</b></div></div>" +
+      '<div class="cpa-pipe"><span class="cpa-lbl">StateFlow</span>' +
+      (s.tok ? '<span class="cpa-tok ' + s.tok.dir + '"><span class="cpa-pill ' + s.tok.k + '">' + s.tok.t + "</span></span>" : "") +
+      '<span class="cpa-lbl">' + (s.sub ? "suscrita ✓" : "sin suscribir") + "</span></div>" +
+      '<div class="cpa-phone' + (flash ? " flash" : "") + '"><div class="cpa-lbl">TableroScreen</div>' + tablero +
+      '<div class="cpa-note">recomposiciones: ' + s.screen.recomp + "</div>" +
+      (s.ro ? '<div class="cpa-note">🔒 solo lectura: no puede escribir en el estado</div>' : "") +
+      (s.ok ? '<div class="cpa-note"><b>' + s.ok + "</b></div>" : "") +
+      (s.warn ? '<div class="cpa-warn">' + s.warn + "</div>" : "") + "</div></div>";
+  }
+
+  var T1 = { id: 1, c: ["a", "a", "a", "a"], mov: 0 };
+  var T2 = { id: 2, c: ["b", "a", "a", "a"], mov: 0, chg: [1] };
+  var T3 = { id: 3, c: ["p", "a", "p", "a"], mov: 1, chg: [1, 3, "mov"] };
+  var P0 = { c: ["a", "a", "a", "a"], mov: 0 };
+  var P1 = { c: ["b", "a", "a", "a"], mov: 0 };
+  var P2 = { c: ["p", "a", "p", "a"], mov: 1 };
+  function pant(p, r) { return { c: p.c, mov: p.mov, recomp: r }; }
+
+  var TURNO_STEPS = [
+    { hl: [0, 1, 2, 3], txt: "El estado del tablero es una <b>foto</b> de todo lo que se pinta: una <code>data class</code> con <code>val</code>. Lo que añadas en el TODO 5 también será <code>val</code>.",
+      s: { boxes: [], value: "–", sub: false, screen: pant(P0, 0) } },
+    { hl: [6, 9, 11, 12], txt: "Al crearse el ViewModel, <code>init</code> llama a <code>onNuevaPartida()</code>: reparte las cartas y guarda el <b>UiState #1</b> en el <code>MutableStateFlow</code> privado. Todas boca abajo, 0 movimientos.",
+      s: { boxes: [T1], value: 1, sub: false, screen: pant(P0, 0) } },
+    { hl: [7], txt: "Hacia fuera solo se publica un <b>StateFlow</b> de solo lectura: la pantalla podrá mirar el estado, pero nunca cambiarlo.",
+      s: { boxes: [T1], value: 1, sub: false, ro: true, screen: pant(P0, 0) } },
+    { hl: [22, 23], txt: "<code>TableroScreen</code> se suscribe con <code>collectAsStateWithLifecycle()</code>, recibe el #1 y se lo pasa a <code>TableroContent</code>, que pinta cuatro cartas boca abajo.",
+      s: { boxes: [T1], value: 1, sub: true, ro: true, screen: pant(P0, 1), tok: { dir: "down", k: "st", t: "#1" } } },
+    { hl: [15, 23], txt: "El usuario pulsa la carta 1. La carta <b>no se da la vuelta sola</b>: <code>TableroContent</code> solo avisa con <code>onCartaPulsada(1)</code>, y el evento sube al ViewModel.",
+      s: { boxes: [T1], value: 1, sub: true, ro: true, tap: 1, screen: pant(P0, 1), tok: { dir: "up", k: "ev", t: "onCartaPulsada(1)" } } },
+    { hl: [16, 17], txt: "El ViewModel aplica las reglas (eso es tu <b>TODO 7</b>). Es la primera carta del turno, así que <code>copy</code> crea un <b>UiState #2</b> con la carta 1 boca arriba. El #1 no se toca.",
+      s: { boxes: [T1, T2], value: 1, sub: true, ro: true, screen: pant(P0, 1) } },
+    { hl: [17], txt: "<code>update</code> guarda el #2. Es <b>distinto</b> del #1, así que el StateFlow lo emite hacia la pantalla.",
+      s: { boxes: [T1, T2], value: 2, sub: true, ro: true, screen: pant(P0, 1), tok: { dir: "down", k: "st", t: "#2" } } },
+    { hl: [22, 23], txt: "La pantalla recibe el #2 y se <b>recompone</b>: la carta 1 enseña su dibujo. Nadie la ha volteado a mano: se ha pintado un estado nuevo.",
+      s: { boxes: [con(T1, { st: "viejo" }), T2], value: 2, sub: true, ro: true, screen: pant(P1, 2) } },
+    { hl: [15, 23], txt: "Ahora pulsa la carta 3. Otra vez, solo sube un evento: <code>onCartaPulsada(3)</code>.",
+      s: { boxes: [T2], value: 2, sub: true, ro: true, tap: 3, screen: pant(P1, 2), tok: { dir: "up", k: "ev", t: "onCartaPulsada(3)" } } },
+    { hl: [16, 17], txt: "Es la segunda carta y las dos son 🍎: según las reglas, quedan <b>emparejadas</b> y cuenta un movimiento. Un solo <code>copy</code> cambia varias cosas a la vez en el <b>UiState #3</b>.",
+      s: { boxes: [T2, T3], value: 2, sub: true, ro: true, screen: pant(P1, 2) } },
+    { hl: [17, 22, 23], txt: "El StateFlow emite el #3 y la pantalla se recompone: la pareja en verde y «Movimientos: 1».",
+      s: { boxes: [con(T2, { st: "viejo" }), T3], value: 3, sub: true, ro: true, screen: pant(P2, 3), tok: { dir: "down", k: "st", t: "#3" } } },
+    { hl: [15, 16], txt: "¿Y si se pulsa otra vez la carta 1, que ya está emparejada? La regla dice <b>no hacer nada</b>: no hay <code>copy</code>, no hay estado nuevo y la pantalla <b>no se recompone</b>. Lo decide el ViewModel, no la pantalla.",
+      s: { boxes: [T3], value: 3, sub: true, ro: true, tap: 1, ok: "sin estado nuevo: nada que pintar", screen: pant(P2, 3), tok: { dir: "up", k: "ev", t: "onCartaPulsada(1)" } } },
+    { hl: [25, 26], bad: true, txt: "<b>El error clásico:</b> cambiar una carta por dentro de una lista mutable. El dato cambia, pero el StateFlow ve <b>el mismo objeto</b> y no emite: la pantalla sigue pintando lo de antes.",
+      s: { boxes: [con(T3, { st: "mutado", chg: [2], c: ["p", "b", "p", "a"] })], value: 3, sub: true, ro: true, screen: pant(P2, 3),
+        warn: "La carta 2 está boca arriba en el dato, pero no en la pantalla: nadie ha avisado." } }
+  ];
+
   // ---------------------------------------- composición, diseño y dibujo
 
   var FASES_CODE = [
@@ -589,6 +702,614 @@
     montar();
   }
 
+  // ------------------------- Memory: el tablero jugable (eventos suben, estado baja)
+  // Muestra el comportamiento que describe el KDoc de onCartaPulsada, nunca su código.
+
+  function memChip(d, sit, extra) {
+    return '<span class="cpa-tc ' + sit + (extra ? " " + extra : "") + '">' + (sit === "a" ? "?" : d) + "</span>";
+  }
+
+  function buildTablero(root) {
+    var DIBS = ["🍎", "🐱", "⭐"];
+    var pad = frame(root, "Juega: el evento sube, el estado baja", "Pulsa las cartas del tablero");
+    pad.innerHTML =
+      '<div class="cpa-ctrl"><button type="button" class="b-nueva">Nueva partida</button>' +
+      '<label><input type="checkbox" class="o-slow"> Cámara lenta</label>' +
+      '<label><input type="checkbox" class="o-norule"> Quitar la regla 2 (carta ya descubierta → nada)</label></div>' +
+      '<div class="cpa-flow"><div class="cpa-box"><div class="cpa-lbl">TableroContent · sin estado</div>' +
+      '<div class="cpa-mtab o-tab"></div><div class="cpa-total o-mov"></div><p class="cpa-note o-nota"></p></div>' +
+      '<div class="cpa-fpipe"><span class="l t">↑ eventos</span><span class="l b">↓ StateFlow</span></div>' +
+      '<div class="cpa-box"><div class="cpa-lbl">TableroViewModel</div><div class="cpa-state o-state"></div>' +
+      '<div class="cpa-evlog o-log"></div></div></div>';
+    var q = function (c) { return pad.querySelector(c); };
+    var st, marcas, num = 0, pipe = q(".cpa-fpipe");
+    function lento() { return q(".o-slow").checked ? 3 : 1; }
+    function log(m, c) { var d = document.createElement("div"); d.innerHTML = m; if (c) d.className = c; q(".o-log").insertBefore(d, q(".o-log").firstChild); }
+    function copia(o) { return JSON.parse(JSON.stringify(o)); }
+    function token(tipo, texto, sube, fin) {
+      var t = document.createElement("div"); t.className = "cpa-token " + tipo; t.textContent = texto;
+      var h = pipe.clientHeight || 160; t.style.transitionDuration = (0.55 * lento()) + "s"; t.style.top = (sube ? h - 40 : 18) + "px";
+      pipe.appendChild(t);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { t.style.top = (sube ? 18 : h - 40) + "px"; }); });
+      setTimeout(function () { t.style.opacity = 0; setTimeout(function () { t.remove(); }, 300); if (fin) fin(); }, 550 * lento());
+    }
+    function emitir(n) { var a = st; st = n; num++; pintarEstado(a); token("st", "UiState #" + num, false, function () { recomponer(a); }); }
+    function carta(o, id) { return o.cartas.filter(function (c) { return c.id === id; })[0]; }
+    function barajar() {
+      var d = DIBS.concat(DIBS);
+      for (var k = d.length - 1; k > 0; k--) { var r = Math.floor(Math.random() * (k + 1)), x = d[k]; d[k] = d[r]; d[r] = x; }
+      return d.map(function (x, k) { return { id: k + 1, d: x, s: "a" }; });
+    }
+
+    function onCartaPulsada(id) {
+      if (st.bloq) { log("onCartaPulsada(" + id + ") → <b>1.</b> tablero bloqueado: nada", "ign"); return; }
+      var c = carta(st, id), libre = c.s === "a";
+      if (!libre && !q(".o-norule").checked) { log("onCartaPulsada(" + id + ") → <b>2.</b> ya descubierta: nada, sin estado nuevo", "ign"); return; }
+      var arriba = st.cartas.filter(function (x) { return x.s === "b"; });
+      var n = copia(st), nc = carta(n, id);
+      if (!arriba.length) {
+        nc.s = "b"; log("onCartaPulsada(" + id + ") → <b>3.</b> primera del turno: boca arriba", "ok"); emitir(n); return;
+      }
+      var pr = arriba[0], np = carta(n, pr.id);
+      n.mov++;
+      if (pr.d === c.d) {
+        nc.s = "p"; np.s = "p";
+        if (pr.id === c.id) log("onCartaPulsada(" + id + ") → <b>4a.</b> ¡pareja… consigo misma! Sin la regla 2, el juego se rompe", "ign");
+        else log("onCartaPulsada(" + id + ") → <b>4a.</b> ¡pareja! emparejadas · movimientos = " + n.mov, "ok");
+        emitir(n);
+        if (n.cartas.every(function (x) { return x.s === "p"; })) log("todas emparejadas: <b>partida ganada</b>", "ok");
+        return;
+      }
+      nc.s = "b"; n.bloq = true;
+      log("onCartaPulsada(" + id + ") → <b>4b.</b> no son pareja: se ven un momento, tablero bloqueado", "co");
+      emitir(n);
+      setTimeout(function () {
+        if (!vivo(root) || st.cartas.length !== n.cartas.length) return;
+        var m = copia(st); carta(m, id).s = "a"; carta(m, pr.id).s = "a"; m.bloq = false;
+        log("…y vuelven boca abajo; desbloqueado", "co"); emitir(m);
+      }, 1300 * lento());
+    }
+
+    function pintarEstado(a) {
+      var ch = a ? st.cartas.map(function (c, k) { return a.cartas[k].s !== c.s || a.cartas[k].d !== c.d; }) : [];
+      var L = ["TableroUiState("];
+      L.push("  cartas = " + st.cartas.map(function (c, k) { return memChip(c.d, c.s, ch[k] ? "chg" : ""); }).join(""));
+      var cm = a && a.mov !== st.mov;
+      L.push((cm ? '<span class="chg">' : "") + "  movimientos = " + st.mov + (cm ? "</span>" : ""));
+      L.push('  <span class="cpa-com">// … lo que añadas en el TODO 5</span>');
+      if (st.bloq) L.push('  <span class="cpa-com">// bloqueado: investigación 6.2</span>');
+      L.push(")");
+      q(".o-state").innerHTML = L.join("\n");
+    }
+
+    function recomponer(a) {
+      var tab = q(".o-tab");
+      st.cartas.forEach(function (c, k) {
+        var w = tab.children[k], b = w.querySelector("button");
+        b.className = "cpa-tc big " + c.s; b.textContent = c.s === "a" ? "?" : c.d;
+        b.setAttribute("aria-label", "Carta " + c.id + (c.s === "a" ? ", boca abajo" : c.s === "b" ? ", boca arriba" : ", emparejada"));
+        if (a && (a.cartas[k].s !== c.s || a.cartas[k].d !== c.d)) {
+          marcas[k]++; w.classList.remove("flash"); void w.offsetWidth; w.classList.add("flash");
+        }
+        var g = w.querySelector(".cpa-badge"); g.textContent = marcas[k]; g.style.display = marcas[k] ? "" : "none";
+      });
+      var par = st.cartas.filter(function (x) { return x.s === "p"; }).length; par = Math.floor(par / 2);
+      var mv = q(".o-mov"); mv.textContent = "Movimientos: " + st.mov + " · Parejas: " + par + "/" + DIBS.length;
+      if (a && a.mov !== st.mov) { mv.classList.remove("flash"); void mv.offsetWidth; mv.classList.add("flash"); }
+      q(".o-nota").textContent = par === DIBS.length ? "¡Partida ganada! Pulsa «Nueva partida»." :
+        st.bloq ? "Bloqueado: los toques siguen llegando al ViewModel, que es quien los ignora." :
+        "La carta no se da la vuelta sola: solo avisa. El número de cada carta cuenta cuántas veces se ha vuelto a dibujar.";
+    }
+
+    function montar(nuevo) {
+      st = { cartas: barajar(), mov: 0, bloq: false }; num = 1;
+      marcas = st.cartas.map(function () { return 0; });
+      var tab = q(".o-tab"); tab.innerHTML = "";
+      st.cartas.forEach(function (c) {
+        var w = document.createElement("span"); w.className = "cpa-tcw";
+        w.innerHTML = '<button type="button"></button><span class="cpa-badge"></span>';
+        w.querySelector("button").onclick = function () { token("ev", "onCartaPulsada(" + c.id + ")", true, function () { onCartaPulsada(c.id); }); };
+        tab.appendChild(w);
+      });
+      q(".o-log").innerHTML = ""; log(nuevo ? "onNuevaPartida(): reparte y publica UiState #1" : "init → onNuevaPartida(): UiState #1");
+      pintarEstado(null); recomponer(null);
+    }
+    q(".b-nueva").onclick = function () { token("ev", "onNuevaPartida()", true, function () { montar(true); }); };
+    montar(false);
+  }
+
+  // ------------------------------- Memory (guía exprés): giro, test, fases y pila
+  // Tablero fijo de 6 cartas: parejas 1-5 (🍎), 2-4 (🐱) y 3-6 (⭐).
+
+  var M6 = ["🍎", "🐱", "⭐", "🐱", "🍎", "⭐"];
+  function miniTab(sits, opts) {
+    opts = opts || {};
+    return '<div class="cpa-mtab mini">' + sits.map(function (sit, k) {
+      var cls = (opts.hl || []).indexOf(k + 1) >= 0 ? "chg" : "";
+      if (opts.ver && sit === "a") return '<span class="cpa-tc a ver ' + cls + '">' + M6[k] + "</span>";
+      return memChip(M6[k], sit, cls);
+    }).join("") + "</div>";
+  }
+
+  // ---- §1.3 · la partida sobrevive al giro
+
+  var GIRO_CODE = [
+    "class TableroViewModel(nivel: Nivel, …) : ViewModel() {",
+    "    private val _uiState = MutableStateFlow(TableroUiState())",
+    "    val uiState: StateFlow<TableroUiState> = _uiState.asStateFlow()",
+    "    init { onNuevaPartida() }",
+    "    // al destruirse: onCleared() y viewModelScope cancela sus corrutinas",
+    "}",
+    "",
+    "// MemoryApp",
+    "entry<Tablero> { clave ->",
+    "    val viewModel = viewModel { TableroViewModel(clave.nivel) }",
+    "    TableroScreen(viewModel, …)",
+    "}",
+    "",
+    "// TableroScreen",
+    "val estado by viewModel.uiState.collectAsStateWithLifecycle()",
+    "",
+    "// ❌ La partida guardada en la pantalla:",
+    "var cartas by remember { mutableStateOf(repartir(…)) }"
+  ];
+
+  var G_INI = ["a", "a", "a", "a", "a", "a"];
+  var G_MID = ["p", "p", "a", "p", "p", "a"];
+
+  function renderGiro(sc, s, prev) {
+    var a = s.act, vm = s.vm;
+    var logs = (s.log || []).map(function (l, k) {
+      var nuevo = prev && (prev.log || []).length <= k;
+      return '<div class="' + (nuevo ? "new" : "") + '">' + esc(l) + "</div>";
+    }).join("") || '<span class="cpa-note">vacío</span>';
+    var act = '<div class="cpa-act' + (a.dead ? " dead" : "") + (a.isNew && prev ? " pop" : "") + '">' +
+      '<div class="cpa-act-h"><span>Activity nº ' + a.n + "</span><span>" + (a.dead ? "destruida" : "en pantalla") + "</span></div>" +
+      '<div class="cpa-lbl">' + (a.scr || "TableroScreen") + "</div>" +
+      (a.tab ? miniTab(a.tab) + '<div class="cpa-note">Movimientos: ' + a.mov + "</div>" : '<div class="cpa-note">' + (a.txt || "…") + "</div>") +
+      (a.rem ? slot("si la partida estuviera en remember", a.rem, a.rem.indexOf("✗") >= 0 ? "lost" : "") : "") +
+      slot("viewModel { … }", a.ref || "—", a.ref ? "ref" : "") + "</div>";
+    var look = '<div class="cpa-look">' + (s.look
+      ? '<span class="arrow">→</span>busca Tablero&shy;ViewModel<br><span class="' + s.look.k + '">' + s.look.r + "</span>" : "") + "</div>";
+    var nuevoVm = prev && vm && (!prev.vm || prev.vm.id !== vm.id);
+    var store = '<div class="cpa-store' + (s.store ? "" : " gone") + '"><div class="cpa-lbl">' +
+      (s.store ? "ViewModelStore · " + s.store : "almacén eliminado") + "</div>" +
+      (vm ? '<div class="cpa-obj' + (vm.dead ? " dead" : "") + (nuevoVm ? " pop" : "") + '"><b>TableroViewModel ' + vm.id +
+        "</b><br>nivel = " + vm.niv + "<br>" + (vm.tab ? miniTab(vm.tab) : "") + "movimientos = " + vm.mov + "</div>"
+        : '<p class="cpa-note">vacío</p>') + "</div>";
+    sc.innerHTML = '<div class="cpa-vm">' + act + look + store +
+      '<div class="cpa-log"><div class="cpa-lbl">Logcat</div>' + logs + "</div></div>";
+  }
+
+  var GV1 = "@4c1e", GV2 = "@9b07";
+  var GIRO_STEPS = [
+    { hl: [0, 5], txt: "El ViewModel de la partida es una clase que hereda de <code>ViewModel</code>. Lo importante es <b>dónde vive</b>: no dentro de la pantalla, sino en un <b>almacén</b> aparte que Android conserva.",
+      s: { act: { n: 1, scr: "Inicio", txt: "elige nivel" }, store: "entrada Tablero(FACIL)", vm: null } },
+    { hl: [8, 9, 3], txt: "Se entra en el tablero. <code>viewModel { … }</code> busca en el almacén: no hay ninguno, así que crea un <code>TableroViewModel(FACIL)</code>. Su <code>init</code> reparte las cartas.",
+      s: { act: { n: 1, tab: G_INI, mov: 0, ref: GV1 }, look: BUSCA_NO, store: "entrada Tablero(FACIL)", vm: { id: GV1, niv: "FACIL", tab: G_INI, mov: 0 }, log: ["TableroViewModel " + GV1 + " creado · reparte"] } },
+    { hl: [9, 14], txt: "Se juega: dos parejas y 5 movimientos. Cada recomposición vuelve a pedir el ViewModel y <b>lo encuentra</b>: el mismo objeto, con el mismo estado.",
+      s: { act: { n: 1, tab: G_MID, mov: 5, ref: GV1, rem: "2 parejas, 5 mov." }, look: BUSCA_SI, store: "entrada Tablero(FACIL)", vm: { id: GV1, niv: "FACIL", tab: G_MID, mov: 5 }, log: ["TableroViewModel " + GV1 + " creado · reparte"] } },
+    { hl: [16, 17], bad: true, txt: "Giras el móvil. Android <b>destruye la Activity</b> y todo lo que había dentro. Si la partida estuviera en un <code>remember</code> de la pantalla, se perdería aquí. El almacén, en cambio, <b>se conserva</b>.",
+      s: { act: { n: 1, tab: G_MID, mov: 5, dead: true, rem: "✗ perdida" }, store: "entrada Tablero(FACIL)", vm: { id: GV1, niv: "FACIL", tab: G_MID, mov: 5 }, log: ["TableroViewModel " + GV1 + " creado · reparte", "(giro: Activity destruida)"] } },
+    { hl: [9, 14], txt: "Se crea la <b>Activity nº 2</b>. <code>viewModel { … }</code> encuentra <b>el mismo</b> " + GV1 + " y <code>collectAsStateWithLifecycle()</code> recibe su estado: el tablero aparece igual. No hay otro <code>init</code>: no se vuelve a repartir.",
+      s: { act: { n: 2, tab: G_MID, mov: 5, ref: GV1, isNew: true, rem: "✗ empezaría de cero" }, look: BUSCA_SI, store: "entrada Tablero(FACIL)", vm: { id: GV1, niv: "FACIL", tab: G_MID, mov: 5 }, log: ["TableroViewModel " + GV1 + " creado · reparte", "(giro: Activity destruida)"] } },
+    { hl: [4], txt: "Ahora sales del tablero (atrás, a Inicio). La entrada sale de la pila, su almacén se vacía y llega <code>onCleared()</code>: <code>viewModelScope</code> cancela sus corrutinas. El temporizador de la investigación 6.2 se para solo.",
+      s: { act: { n: 2, scr: "Inicio", txt: "elige nivel" }, store: null, vm: { id: GV1, niv: "FACIL", tab: G_MID, mov: 5, dead: true }, log: ["TableroViewModel " + GV1 + " creado · reparte", "(giro: Activity destruida)", "TableroViewModel " + GV1 + " onCleared"] } },
+    { hl: [8, 9, 3], txt: "Otra partida: una entrada nueva, un almacén nuevo y un <code>TableroViewModel</code> <b>nuevo</b> que reparte de nuevo. Cada partida, su ViewModel.",
+      s: { act: { n: 2, tab: G_INI, mov: 0, ref: GV2 }, look: BUSCA_NO, store: "entrada Tablero(FACIL) nueva", vm: { id: GV2, niv: "FACIL", tab: G_INI, mov: 0 }, log: ["TableroViewModel " + GV1 + " creado · reparte", "(giro: Activity destruida)", "TableroViewModel " + GV1 + " onCleared", "TableroViewModel " + GV2 + " creado · reparte"] } }
+  ];
+
+  // ---- §1.8 · el juego, probado sin pantalla
+
+  var TEST_CODE = [
+    "class TableroViewModelTest {",
+    "    @get:Rule val mainDispatcherRule = MainDispatcherRule()",
+    "",
+    "    private fun crearViewModel() =",
+    "        TableroViewModel(nivel = …, random = Random(42))",
+    "    private fun idsDeUnaPareja(estado: TableroUiState): Pair<Int, Int> = …",
+    "",
+    "    @Test",
+    "    fun `al pulsar dos cartas iguales quedan emparejadas…`() {",
+    "        // Arrange: el ViewModel y los ids de una pareja",
+    "        // Act: pulsar las dos",
+    "        // Assert: las dos emparejadas, 1 movimiento, 1 pareja",
+    "    }",
+    "}"
+  ];
+
+  var TESTS = ["iguales: emparejadas y 1 movimiento", "distintas: no se emparejan", "todas las parejas: ganada", "carta ya descubierta: nada"];
+
+  function renderTest(sc, s, prev) {
+    var lista = TESTS.map(function (t, k) {
+      var r = s.res[k];
+      return '<div class="cpa-tr ' + (r === "✓" ? "ok" : r === "✗" ? "ko" : "") + '"><b>' + r + "</b> " + t + "</div>";
+    }).join("");
+    var checks = (s.checks || []).map(function (c) {
+      return '<div class="cpa-tr ' + (c[0] === "✓" ? "ok" : "ko") + '"><b>' + c[0] + "</b> " + c[1] + "</div>";
+    }).join("");
+    sc.innerHTML = '<div class="cpa-tst">' +
+      '<div class="cpa-box"><div class="cpa-lbl">JVM del ordenador · sin emulador, sin pantalla</div>' +
+      (s.fase ? '<div class="cpa-fase">' + s.fase + "</div>" : "") +
+      (s.main ? '<div class="cpa-note">Dispatchers.Main → <b>' + s.main + "</b></div>" : "") +
+      (s.vm ? '<div class="cpa-obj' + (prev && !prev.vm ? " pop" : "") + '"><b>TableroViewModel</b> · Random(42)<br>' +
+        miniTab(s.vm.tab, { ver: true, hl: s.vm.hl }) + "movimientos = " + s.vm.mov +
+        (s.vm.nota ? '<div class="cpa-note">' + s.vm.nota + "</div>" : "") + "</div>" : "") +
+      (s.act ? '<div class="cpa-evlog">' + s.act.map(function (x) { return "<div>" + esc(x) + "</div>"; }).join("") + "</div>" : "") +
+      checks + "</div>" +
+      '<div class="cpa-box"><div class="cpa-lbl">Resultado de ./gradlew test</div>' + lista +
+      '<div class="cpa-note">' + s.sum + "</div></div></div>";
+  }
+
+  var R0 = ["✗", "✗", "✗", "✗"];
+  var TEST_STEPS = [
+    { hl: [0, 13], txt: "Un test es una clase normal que se ejecuta en la <b>JVM del ordenador</b>: sin emulador y sin pantalla. Con los TODO del esqueleto, los cuatro tests fallan. Así empieza tu proyecto: en <b>rojo</b>.",
+      s: { res: R0, sum: "4 tests, 4 fallos" } },
+    { hl: [1], txt: "<code>viewModelScope</code> usa el hilo principal, que en la JVM no existe. <code>MainDispatcherRule</code> lo cambia por uno de pruebas antes de cada test. Va completa: cópiala tal cual.",
+      s: { res: R0, sum: "4 tests, 4 fallos", main: "uno de pruebas" } },
+    { hl: [3, 4, 9], txt: "<b>Arrange.</b> Se crea el ViewModel con <code>Random(42)</code>: el reparto sale <b>siempre igual</b>. Y el test ve el estado entero, también lo que hay debajo de las cartas boca abajo.",
+      s: { res: R0, sum: "4 tests, 4 fallos", main: "uno de pruebas", fase: "Arrange · preparar", vm: { tab: G_INI, mov: 0 } } },
+    { hl: [5, 9], txt: "No memorices posiciones: <b>búscalas en el estado</b>. <code>idsDeUnaPareja</code> agrupa las cartas por su pareja y devuelve dos ids del mismo grupo, aquí el 1 y el 5.",
+      s: { res: R0, sum: "4 tests, 4 fallos", main: "uno de pruebas", fase: "Arrange · preparar", vm: { tab: G_INI, mov: 0, hl: [1, 5], nota: "idsDeUnaPareja → (1, 5)" } } },
+    { hl: [10], txt: "<b>Act.</b> El test llama a los eventos <b>como si el usuario pulsara</b>: <code>onCartaPulsada(1)</code> y <code>onCartaPulsada(5)</code>. Nadie toca una pantalla.",
+      s: { res: R0, sum: "4 tests, 4 fallos", main: "uno de pruebas", fase: "Act · actuar", act: ["onCartaPulsada(1)", "onCartaPulsada(5)"], vm: { tab: ["p", "a", "a", "a", "p", "a"], mov: 1, hl: [1, 5] } } },
+    { hl: [11], txt: "<b>Assert.</b> Se mira <code>viewModel.uiState.value</code> y se comprueba lo que dice el nombre del test. Todo cuadra: el primer test pasa a <b>verde</b>.",
+      s: { res: ["✓", "✗", "✗", "✗"], sum: "4 tests, 1 correcto, 3 fallos", main: "uno de pruebas", fase: "Assert · comprobar", vm: { tab: ["p", "a", "a", "a", "p", "a"], mov: 1 },
+        checks: [["✓", "las cartas 1 y 5, emparejadas"], ["✓", "movimientos = 1"], ["✓", "1 pareja encontrada"]] } },
+    { hl: [11], bad: true, txt: "¿Y si se te olvida contar el movimiento en <code>onCartaPulsada</code>? El test lo detecta al momento, sin abrir el emulador ni jugar una partida: <code>expected:&lt;1&gt; but was:&lt;0&gt;</code>.",
+      s: { res: ["✗", "✗", "✗", "✗"], sum: "4 tests, 4 fallos", main: "uno de pruebas", fase: "Assert · comprobar", vm: { tab: ["p", "a", "a", "a", "p", "a"], mov: 0 },
+        checks: [["✓", "las cartas 1 y 5, emparejadas"], ["✗", "movimientos: esperaba 1, hay 0"]] } },
+    { hl: [7, 8], txt: "Los demás tests siguen la misma receta. Cuando los cuatro estén en verde, las reglas funcionan, y la pantalla solo tendrá que pintarlas.",
+      s: { res: ["✓", "✓", "✓", "✓"], sum: "4 tests, 4 correctos" } }
+  ];
+
+  // ---- §2.1 · qué se vuelve a dibujar al voltear una carta
+
+  var MFASES_CODE = [
+    "@Composable",
+    "fun TableroScreen(viewModel: TableroViewModel, …) {",
+    "    val estado by viewModel.uiState.collectAsStateWithLifecycle()",
+    "    TableroContent(estado, onCartaPulsada = viewModel::onCartaPulsada)",
+    "}",
+    "",
+    "@Composable",
+    "fun TableroContent(estado: TableroUiState, onCartaPulsada: (Int) -> Unit) {",
+    "    Marcador(movimientos = …, parejas = …)",
+    "    LazyVerticalGrid(columns = GridCells.Fixed(…)) {",
+    "        items(estado.cartas, key = { it.id }) { carta ->",
+    "            CartaView(carta, onClick = { onCartaPulsada(carta.id) })",
+    "        }",
+    "    }",
+    "}",
+    "",
+    "// Investigación 6.1: el ángulo se lee al DIBUJAR",
+    "Modifier.graphicsLayer { rotationY = angulo }",
+    "// ⚠️ Parece lo mismo, pero se lee al COMPONER:",
+    "Modifier.graphicsLayer(rotationY = angulo)"
+  ];
+
+  var MNODOS = [["TableroScreen", 0], ["TableroContent", 1], ["Marcador", 2], ["LazyVerticalGrid", 2]]
+    .concat([1, 2, 3, 4, 5, 6].map(function (n) { return ["CartaView " + n, 3]; }));
+
+  function renderMemFases(sc, s) {
+    var arbol = MNODOS.map(function (n) {
+      var cls = s.comp.indexOf(n[0]) >= 0 ? "c" : s.draw.indexOf(n[0]) >= 0 ? "d" : s.skip ? "s" : "";
+      var c = s.cnt[n[0]] || [1, 1];
+      return '<div class="cpa-node i' + n[1] + " " + cls + '"><span>' + n[0] + "</span><small>comp " + c[0] + " · dibujo " + c[1] + "</small></div>";
+    }).join("");
+    var fase = function (k, t, d) {
+      return '<div class="cpa-phase' + (s.ph.indexOf(k) >= 0 ? " on" : "") + '">' + t + "<small>" + d + "</small></div>";
+    };
+    sc.innerHTML = '<div class="cpa-ph"><div><div class="cpa-lbl">Árbol de la pantalla</div>' + arbol +
+      '<p class="cpa-note"><span class="cpa-sw c"></span> se recompone · <span class="cpa-sw d"></span> solo se redibuja</p></div>' +
+      '<div class="cpa-phases"><div class="cpa-lbl">El tablero</div>' + miniTab(s.tab, { hl: s.hl }) +
+      (s.giro ? '<p class="cpa-note" style="text-align:center">carta 5 girando: <code>angulo = ' + s.giro + "°</code></p>" : "") +
+      '<div class="cpa-lbl" style="margin-top:.5rem">Fases de un fotograma</div>' +
+      fase("c", "1 · Composición", "qué se muestra: ejecuta las funciones") +
+      fase("l", "2 · Diseño", "dónde va: mide y coloca") +
+      fase("d", "3 · Dibujo", "cómo se ve: pinta los píxeles") +
+      (s.fps ? '<p class="cpa-note" style="text-align:center">' + s.fps + "</p>" : "") + "</div></div>";
+  }
+
+  function cuenta(base, cambios) {
+    var r = {}, k;
+    MNODOS.forEach(function (n) { r[n[0]] = (base[n[0]] || [1, 1]).slice(); });
+    for (k in cambios) r[k] = cambios[k];
+    return r;
+  }
+  var MF_TODOS = MNODOS.map(function (n) { return n[0]; });
+  var MF1 = cuenta({}, {});
+  var MF2 = cuenta(MF1, { "TableroScreen": [2, 2], "TableroContent": [2, 2], "LazyVerticalGrid": [2, 2], "CartaView 1": [2, 2] });
+  var MF3 = cuenta(MF2, { "TableroScreen": [3, 3], "TableroContent": [3, 3], "LazyVerticalGrid": [3, 3], "Marcador": [2, 2], "CartaView 1": [3, 3], "CartaView 5": [2, 2] });
+  var MF4 = cuenta(MF3, { "CartaView 5": [2, 10] });
+  var MF5 = cuenta(MF3, { "CartaView 5": [20, 20] });
+
+  var MFASES_STEPS = [
+    { hl: [1, 2, 3, 7, 8, 9, 10, 11], txt: "La primera vez se ejecutan las tres fases para <b>todo</b> el árbol: la pantalla, el marcador, la cuadrícula y las seis cartas.",
+      s: { comp: MF_TODOS, draw: [], ph: ["c", "l", "d"], cnt: MF1, tab: G_INI } },
+    { hl: [2, 3, 10, 11], txt: "Pulsas la carta 1 y llega un estado nuevo. Se recomponen quienes lo leen y <b>solo la carta 1</b>. Las otras cinco reciben una <code>Carta</code> igual que antes (data class: <code>equals</code>) y Compose <b>se las salta</b>. El marcador, también: sus números no han cambiado.",
+      s: { skip: true, comp: ["TableroScreen", "TableroContent", "LazyVerticalGrid", "CartaView 1"], draw: [], ph: ["c", "l", "d"], cnt: MF2, tab: ["b", "a", "a", "a", "a", "a"], hl: [1] } },
+    { hl: [8, 10, 11], txt: "Pulsas la carta 5: ¡pareja! Cambian las cartas 1 y 5 y los movimientos. Se recomponen esas dos cartas y el <b>marcador</b>. Las cartas 2, 3, 4 y 6 siguen sin tocarse.",
+      s: { skip: true, comp: ["TableroScreen", "TableroContent", "Marcador", "LazyVerticalGrid", "CartaView 1", "CartaView 5"], draw: [], ph: ["c", "l", "d"], cnt: MF3, tab: ["p", "a", "a", "a", "p", "a"], hl: [1, 5] } },
+    { hl: [10], txt: "La <code>key</code> (el <code>id</code>) le dice a Compose <b>qué carta es cuál</b>, no por su posición. Así, lo que recuerda cada celda (como el ángulo de su giro) se queda en la carta correcta.",
+      s: { skip: true, comp: [], draw: [], ph: [], cnt: MF3, tab: ["p", "a", "a", "a", "p", "a"], hl: [1, 5] } },
+    { hl: [16, 17], txt: "Investigación 6.1: si la carta <b>gira</b>, el ángulo cambia en cada fotograma. Leído <b>dentro de la lambda</b> de <code>graphicsLayer</code>, solo se repite el <b>dibujo</b> de esa carta. Cero recomposiciones.",
+      s: { skip: true, comp: [], draw: ["CartaView 5"], ph: ["d"], cnt: MF4, tab: ["p", "a", "a", "a", "p", "a"], giro: 90, fps: "fotograma 9 de unos 18" } },
+    { hl: [18, 19], bad: true, txt: "Con <code>graphicsLayer(rotationY = angulo)</code>, el ángulo se lee <b>al componer</b>: cada fotograma recompone la carta y repite las tres fases. Funciona, pero hace mucho más trabajo.",
+      s: { skip: true, comp: ["CartaView 5"], draw: [], ph: ["c", "l", "d"], cnt: MF5, tab: ["p", "a", "a", "a", "p", "a"], giro: 180, fps: "18 fotogramas = 18 recomposiciones" } }
+  ];
+
+  // ---- §3.3 · la pila del Memory y un ViewModel por partida
+
+  var MPILA_CODE = [
+    "@Serializable data object Inicio : NavKey",
+    "@Serializable data class Tablero(val nivel: Nivel) : NavKey",
+    "// TODO 21: Resultado(…)",
+    "",
+    "val pila = rememberNavBackStack(Inicio)",
+    "NavDisplay(",
+    "    backStack = pila,",
+    "    onBack = { pila.removeLastOrNull() },",
+    "    entryDecorators = listOf(",
+    "        rememberSaveableStateHolderNavEntryDecorator(),",
+    "        rememberViewModelStoreNavEntryDecorator(),",
+    "    ),",
+    "    entryProvider = entryProvider {",
+    "        entry<Inicio> { … pila.add(Tablero(nivel)) }",
+    "        entry<Tablero> { clave ->",
+    "            val viewModel = viewModel { TableroViewModel(clave.nivel) }",
+    "            …",
+    "        }",
+    "    }",
+    ")",
+    "",
+    "// Al ganar, ¿opción A o B?",
+    "pila.add(Resultado(…))",
+    "pila[pila.lastIndex] = Resultado(…)"
+  ];
+
+  var MP_INI = { uid: 1, k: "Inicio", scr: "Inicio", sub: "FACIL · MEDIO · DIFICIL" };
+  var MP_TAB = { uid: 2, k: "Tablero(FACIL)", vm: "TableroViewModel(FACIL) · creado", scr: "Tablero", sub: "nivel FACIL: el ViewModel lo recibe en el constructor" };
+  var MP_TAB2 = con(MP_TAB, { vm: "TableroViewModel(FACIL) · el mismo" });
+  var MP_RES = { uid: 3, k: "Resultado(…)", scr: "Resultado", sub: "¡Has ganado! · 9 movimientos · 42 s" };
+  var MP_TABM = { uid: 4, k: "Tablero(MEDIO)", vm: "TableroViewModel(MEDIO) · nuevo", scr: "Tablero", sub: "otra partida, otro ViewModel" };
+  var MPILA_STEPS = [
+    { hl: [0, 1, 2], txt: "Cada destino es una <b>clave</b> con solo <b>datos sencillos</b>: el nivel para el tablero; para el resultado, lo que pinta su pantalla. Nunca las cartas ni el ViewModel.", s: { stack: [MP_INI] } },
+    { hl: [4, 5, 6], txt: "La pila empieza con <code>Inicio</code>. <code>NavDisplay</code> dibuja siempre la <b>cima</b>.", s: { stack: [MP_INI] } },
+    { hl: [13, 14, 15], txt: "Se elige FACIL: <code>pila.add(Tablero(FACIL))</code>. El decorador da a <b>esta entrada</b> su propio almacén y <code>viewModel { … }</code> crea el ViewModel con el nivel de la clave.", s: { stack: [MP_INI, MP_TAB] } },
+    { hl: [10, 15], txt: "Giras el móvil: la pantalla se recrea, pero el ViewModel de la entrada es <b>el mismo objeto</b>. La partida sigue.", s: { stack: [MP_INI, MP_TAB2], rot: true } },
+    { hl: [21, 22], txt: "Al ganar, opción A: <b>apilar</b> el resultado. El tablero y su ViewModel siguen vivos debajo.", s: { stack: [MP_INI, MP_TAB2, MP_RES] } },
+    { hl: [7], txt: "Con la opción A, atrás desde Resultado vuelve al tablero de una partida <b>ya ganada</b>.", s: { stack: [MP_INI, MP_TAB2], q: "¿Tiene sentido volver a una partida acabada? Piensa qué espera quien juega." } },
+    { hl: [21, 23], txt: "Opción B: <b>sustituir</b> el tablero por el resultado. La entrada del tablero sale de la pila: su ViewModel recibe <code>onCleared()</code> y sus corrutinas (el temporizador) se cancelan.",
+      s: { stack: [MP_INI, con(MP_TAB2, { gone: true, dead: true, vm: "onCleared() · corrutinas canceladas" }), MP_RES] } },
+    { hl: [7], txt: "Con la opción B, atrás lleva a Inicio. Ninguna es «la buena» siempre: <b>decide y justifícalo en el README</b>.", s: { stack: [MP_INI], q: "Cada opción da un botón atrás distinto. ¿Cuál quieres en tu Memory y por qué?" } },
+    { hl: [13, 15], txt: "Nueva partida en MEDIO: una entrada nueva y un <code>TableroViewModel(MEDIO)</code> <b>nuevo</b>, que reparte desde cero. Nada se arrastra de la partida anterior.", s: { stack: [MP_INI, MP_TABM] } }
+  ];
+
+  // ------------------------------- Memory (guía exprés): playgrounds propios
+
+  function codeHtml(lines) {
+    return lines.map(function (l) { return '<span class="cpa-ln">' + (kotlin(l) || " ") + "</span>"; }).join("");
+  }
+  function radios(nombre, ops, val) {
+    var g = "cpa-" + nombre + "-" + Math.random().toString(36).slice(2, 7);
+    return ops.map(function (o) {
+      return '<label><input type="radio" name="' + g + '" value="' + o[0] + '"' + (o[0] === val ? " checked" : "") + "> " + o[1] + "</label>";
+    }).join("");
+  }
+  function onRadios(pad, sel, fn) {
+    Array.prototype.forEach.call(pad.querySelectorAll(sel + " input"), function (r) { r.onchange = function () { fn(r.value); }; });
+  }
+
+  // ---- §1.4 · la situación de la carta: Boolean o enum
+
+  function buildSituacion(root) {
+    var pad = frame(root, "¿Dos Boolean o una enum para la situación de la carta?", "Elige el modelo y prueba todas las combinaciones");
+    pad.innerHTML = '<div class="cpa-ctrl o-mod">' + radios("mod", [["bool", "Dos <code>Boolean</code>"], ["enum", "Una <code>enum class</code>"]], "bool") + "</div>" +
+      '<div class="cpa-ctrl o-val"></div>' +
+      '<div class="cpa-est"><div class="cpa-code o-code"></div><div class="cpa-sit"><div class="o-carta"></div><p class="cpa-note o-nota"></p></div></div>' +
+      '<table class="cpa-vals cpa-tabla o-tabla"></table>';
+    var q = function (c) { return pad.querySelector(c); };
+    var modo = "bool", arriba = false, emp = false, sit = "BOCA_ABAJO";
+    var SITS = [["BOCA_ABAJO", "boca abajo", "a"], ["BOCA_ARRIBA", "boca arriba", "b"], ["EMPAREJADA", "emparejada", "p"]];
+    function valores() {
+      if (modo === "bool") {
+        q(".o-val").innerHTML = '<label><input type="checkbox" class="o-ar"' + (arriba ? " checked" : "") + "> <code>bocaArriba</code></label>" +
+          '<label><input type="checkbox" class="o-em"' + (emp ? " checked" : "") + "> <code>emparejada</code></label>";
+        q(".o-ar").onchange = function () { arriba = this.checked; pintar(); };
+        q(".o-em").onchange = function () { emp = this.checked; pintar(); };
+      } else {
+        q(".o-val").innerHTML = radios("sit", SITS.map(function (x) { return [x[0], "<code>" + x[0] + "</code>"]; }), sit);
+        onRadios(pad, ".o-val", function (v) { sit = v; pintar(); });
+      }
+    }
+    function pintar() {
+      var cod, carta, nota, tabla, bad = false;
+      if (modo === "bool") {
+        cod = ["data class Carta(", "    val id: Int,", "    …,", "    val bocaArriba: Boolean,", "    val emparejada: Boolean,", ")", "",
+          "// Carta actual:", "Carta(id = 3, …, bocaArriba = " + arriba + ", emparejada = " + emp + ")"];
+        bad = !arriba && emp;
+        carta = bad ? '<span class="cpa-tc big bad">¿?</span>' : memChip("⭐", emp ? "p" : arriba ? "b" : "a", "big");
+        nota = bad ? "<b class=\"cpa-bad-txt\">Combinación imposible:</b> boca abajo y emparejada a la vez. ¿Qué pinta CartaView? El compilador no lo impide: tendrías que acordarte tú en cada <code>copy</code>."
+          : "Prueba a marcar <code>emparejada</code> sin <code>bocaArriba</code>.";
+        tabla = "<tr><th>bocaArriba</th><th>emparejada</th><th></th></tr>" + [[false, false], [true, false], [true, true], [false, true]].map(function (c) {
+          var mal = !c[0] && c[1];
+          return "<tr><td>" + c[0] + "</td><td>" + c[1] + "</td><td>" + (mal ? '<span class="cpa-bad-txt">✘ imposible</span>' : '<span class="cpa-ok-txt">✔ válida</span>') + "</td></tr>";
+        }).join("") + "<tr><td colspan=\"3\">4 combinaciones, <b>1 imposible</b></td></tr>";
+      } else {
+        var x = SITS.filter(function (y) { return y[0] === sit; })[0];
+        cod = ["enum class Situacion { BOCA_ABAJO, BOCA_ARRIBA, EMPAREJADA }  // por ejemplo", "", "data class Carta(", "    val id: Int,", "    …,", "    val situacion: Situacion,", ")", "",
+          "// CartaView: el when obliga a tratar todas", "when (carta.situacion) {", "    Situacion.BOCA_ABAJO -> Reverso()", "    Situacion.BOCA_ARRIBA, Situacion.EMPAREJADA -> Dibujo(…)", "}"];
+        carta = memChip("⭐", x[2], "big");
+        nota = "Solo existen las situaciones que has escrito. Si añades una nueva, el <code>when</code> deja de compilar hasta que la trates.";
+        tabla = "<tr><th>situacion</th><th></th></tr>" + SITS.map(function (y) { return "<tr><td><code>" + y[0] + "</code></td><td><span class=\"cpa-ok-txt\">✔ válida</span></td></tr>"; }).join("") +
+          "<tr><td colspan=\"2\">3 valores, <b>0 imposibles</b></td></tr>";
+      }
+      q(".o-code").innerHTML = codeHtml(cod);
+      if (bad) q(".o-code").lastChild.className = "cpa-ln on bad";
+      q(".o-carta").innerHTML = carta;
+      q(".o-nota").innerHTML = nota;
+      q(".o-tabla").innerHTML = tabla;
+    }
+    onRadios(pad, ".o-mod", function (v) { modo = v; valores(); pintar(); });
+    valores(); pintar();
+  }
+
+  // ---- §2.2 · la cuadrícula: columnas y key
+
+  function buildCuadricula(root) {
+    var pad = frame(root, "La cuadrícula del tablero", "Cambia las columnas, pulsa cartas y vuelve a repartir");
+    pad.innerHTML = '<div class="cpa-ctrl"><label>columnas <select class="o-col"><option>2</option><option selected>3</option><option>4</option><option>6</option></select></label>' +
+      '<label>parejas <select class="o-par"><option>3</option><option selected>6</option><option>8</option></select></label>' +
+      '<label><input type="checkbox" class="o-key" checked> <code>key = { it.id }</code></label>' +
+      '<button type="button" class="o-rep">Nueva partida (otro reparto)</button></div>' +
+      '<div class="cpa-est"><div class="cpa-code o-code"></div><div><div class="cpa-phone"><div class="cpa-lbl">TableroContent</div><div class="cpa-mtab o-tab"></div></div>' +
+      '<p class="cpa-note o-nota"></p></div></div>';
+    var q = function (c) { return pad.querySelector(c); };
+    var DIB = ["🍎", "🐱", "⭐", "🌙", "🍄", "🎈", "🐟", "🌵"];
+    var cartas = [], recuerdo = {};
+    function repartir() {
+      var n = +q(".o-par").value, d = [];
+      for (var k = 0; k < n; k++) { d.push(DIB[k]); d.push(DIB[k]); }
+      for (k = d.length - 1; k > 0; k--) { var r = Math.floor(Math.random() * (k + 1)), x = d[k]; d[k] = d[r]; d[r] = x; }
+      cartas = d.map(function (x, k) { return { id: k + 1, d: x }; });
+    }
+    function clave(c, k) { return q(".o-key").checked ? "id" + c.id : "pos" + k; }
+    function pintar(nota) {
+      var col = +q(".o-col").value, key = q(".o-key").checked;
+      q(".o-code").innerHTML = codeHtml([
+        "LazyVerticalGrid(columns = GridCells.Fixed(" + col + ")) {",
+        "    items(estado.cartas" + (key ? ", key = { it.id }" : "") + ") { carta ->",
+        "        CartaView(carta, onClick = { onCartaPulsada(carta.id) })",
+        "    }",
+        "}",
+        "",
+        "// Cada celda recuerda cosas suyas, por ejemplo el giro (inv. 6.1).",
+        "// " + (key ? "Con key, lo recordado va con la CARTA (su id)." : "Sin key, lo recordado se queda en la POSICIÓN.")
+      ]);
+      var tab = q(".o-tab");
+      tab.style.gridTemplateColumns = "repeat(" + col + ", auto)";
+      tab.innerHTML = cartas.map(function (c, k) {
+        var r = recuerdo[clave(c, k)];
+        return '<button type="button" class="cpa-tc big ' + (r ? "b" : "a") + '" data-k="' + k + '" aria-label="Carta ' + c.id + '">' + (r ? c.d : "?") +
+          '<small class="cpa-cid">' + c.id + "</small></button>";
+      }).join("");
+      Array.prototype.forEach.call(tab.children, function (b) {
+        b.onclick = function () { var k = +b.dataset.k, c = cartas[k], ck = clave(c, k); recuerdo[ck] = !recuerdo[ck]; pintar(); };
+      });
+      q(".o-nota").innerHTML = nota || ("Las mismas " + cartas.length + " cartas en " + col + " columnas: el número de columnas sale del estado (del nivel). Pulsa dos o tres cartas para darles la vuelta y luego reparte otra vez.");
+    }
+    q(".o-col").onchange = function () { pintar(); };
+    q(".o-par").onchange = function () { repartir(); recuerdo = {}; pintar(); };
+    q(".o-key").onchange = function () { recuerdo = {}; pintar(); };
+    q(".o-rep").onclick = function () {
+      var antes = {}; cartas.forEach(function (c, k) { if (recuerdo[clave(c, k)]) antes[c.id] = true; });
+      var mezcla = cartas.slice(); for (var k = mezcla.length - 1; k > 0; k--) { var r = Math.floor(Math.random() * (k + 1)), x = mezcla[k]; mezcla[k] = mezcla[r]; mezcla[r] = x; }
+      cartas = mezcla;
+      pintar(q(".o-key").checked
+        ? "Con <code>key</code>, cada carta conserva lo suyo aunque cambie de sitio: siguen de cara las mismas cartas (mira su número)."
+        : "<b class=\"cpa-bad-txt\">Sin key</b>, lo recordado se ha quedado en las <b>posiciones</b>: ahora están de cara otras cartas. Es lo que pasaría con el giro de una carta.");
+    };
+    repartir(); pintar();
+  }
+
+  // ---- §2.2 · la imagen de la carta: contentScale
+
+  var IMG_CARTA = "data:image/svg+xml," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd166"/><stop offset="1" stop-color="#ef476f"/></linearGradient></defs>' +
+    '<rect width="300" height="200" fill="url(#g)"/><circle cx="40" cy="40" r="14" fill="#fff" opacity=".7"/><circle cx="260" cy="160" r="14" fill="#fff" opacity=".7"/>' +
+    '<text x="150" y="135" font-size="110" text-anchor="middle">🐱</text></svg>');
+
+  function buildImagen(root) {
+    var CS = {
+      Fit: ["contain", "Se ve <b>entera</b> y sin deformar; si la forma no coincide, sobran bandas."],
+      Crop: ["cover", "<b>Llena</b> la carta sin deformar; recorta lo que sobra por los lados."],
+      FillBounds: ["fill", "<b class=\"cpa-bad-txt\">Deforma</b> la imagen para llenar la carta. Casi nunca es lo que quieres."],
+      Inside: ["scale-down", "Como Fit, pero <b>nunca la agranda</b> más que su tamaño original."]
+    };
+    var pad = frame(root, "La imagen de la carta", "Elige la forma de la carta y el contentScale");
+    pad.innerHTML = '<div class="cpa-ctrl o-cs">' + radios("cs", Object.keys(CS).map(function (k) { return [k, "<code>" + k + "</code>"]; }), "Fit") + "</div>" +
+      '<div class="cpa-ctrl"><label>forma de la carta <select class="o-ar"><option value="0.75" selected>aspectRatio(3f / 4f)</option><option value="1">aspectRatio(1f)</option></select></label></div>' +
+      '<div class="cpa-est"><div class="cpa-code o-code"></div><div class="cpa-imgw"><div class="cpa-cimg o-carta"><img alt="Dibujo de ejemplo: un gato sobre fondo de color" src="' + IMG_CARTA + '"></div>' +
+      '<p class="cpa-note o-nota"></p></div></div>';
+    var q = function (c) { return pad.querySelector(c); };
+    var cs = "Fit";
+    function pintar() {
+      var ar = q(".o-ar").value;
+      q(".o-carta").style.aspectRatio = ar === "1" ? "1 / 1" : "3 / 4";
+      q(".o-carta img").style.objectFit = CS[cs][0];
+      q(".o-code").innerHTML = codeHtml([
+        "Card(onClick = onClick, modifier = Modifier." + (ar === "1" ? "aspectRatio(1f)" : "aspectRatio(3f / 4f)") + ") {",
+        "    Image(",
+        "        painter = painterResource(carta.dibujo),",
+        "        contentDescription = …,",
+        "        contentScale = ContentScale." + cs + ",",
+        "        modifier = Modifier.fillMaxSize(),",
+        "    )",
+        "}"
+      ]);
+      q(".o-code").children[4].className = "cpa-ln on";
+      q(".o-nota").innerHTML = CS[cs][1] + " El dibujo de ejemplo es apaisado (3:2).";
+    }
+    onRadios(pad, ".o-cs", function (v) { cs = v; pintar(); });
+    q(".o-ar").onchange = pintar;
+    pintar();
+  }
+
+  // ---- §3.1 · la pila del Memory, para jugar
+
+  function buildNavMemory(root) {
+    var pad = frame(root, "Navega por el Memory", "Usa la mini app y el botón atrás; mira cómo cambia la pila");
+    pad.innerHTML = '<div class="cpa-ctrl o-op">Al ganar: ' + radios("op", [["add", "apilar Resultado"], ["set", "sustituir el Tablero"]], "add") +
+      '<button type="button" class="o-reset">Reiniciar</button></div>' +
+      '<div class="cpa-nav"><div><div class="cpa-lbl">La pila (abajo, la primera)</div><div class="cpa-stack o-pila"></div>' +
+      '<div class="cpa-evlog o-log"></div></div>' +
+      '<div><div class="cpa-lbl">Lo que se ve: la cima</div><div class="cpa-screen o-pant"></div>' +
+      '<div class="cpa-ctrl"><button type="button" class="o-atras">◁ Atrás (sistema)</button></div></div></div>';
+    var q = function (c) { return pad.querySelector(c); };
+    var pila, n, cerrada;
+    function log(t, c) { var d = document.createElement("div"); d.innerHTML = t; if (c) d.className = c; q(".o-log").insertBefore(d, q(".o-log").firstChild); }
+    function quitar(e) { if (e.vm) log("TableroViewModel " + e.vm + " · onCleared()", "co"); }
+    function pintar() {
+      q(".o-pila").innerHTML = pila.map(function (e, k) {
+        return '<div class="cpa-entry' + (k === pila.length - 1 ? " top" : "") + '">' + e.k + (e.vm ? '<br><span class="cpa-vmc">TableroViewModel ' + e.vm + "</span>" : "") + "</div>";
+      }).join("") || '<p class="cpa-note">vacía</p>';
+      var c = pila[pila.length - 1], p = q(".o-pant");
+      if (cerrada) { p.innerHTML = "<b>La app se ha cerrado</b><div class=\"cpa-note\">La pila se quedó vacía.</div>"; }
+      else if (c.t === "ini") {
+        p.innerHTML = "<b>Inicio</b><div class=\"cpa-note\">elige nivel</div>" + ["FACIL", "MEDIO", "DIFICIL"].map(function (nv) { return '<button type="button" class="cpa-fakebtn" data-n="' + nv + '">' + nv + "</button>"; }).join(" ");
+        Array.prototype.forEach.call(p.querySelectorAll("button"), function (b) {
+          b.onclick = function () { n++; var e = { t: "tab", k: "Tablero(" + b.dataset.n + ")", vm: "@" + (n * 4099).toString(16).slice(-4) }; pila.push(e);
+            log("pila.add(Tablero(" + b.dataset.n + "))"); log("TableroViewModel " + e.vm + " · creado", "ok"); pintar(); };
+        });
+      } else if (c.t === "tab") {
+        p.innerHTML = "<b>" + c.k + "</b><div class=\"cpa-note\">jugando…</div>" + miniTab(["p", "a", "b", "a", "p", "a"]) + '<button type="button" class="cpa-fakebtn o-gana">Simular victoria</button>';
+        p.querySelector(".o-gana").onclick = function () {
+          var r = { t: "res", k: "Resultado(…)" };
+          if (q(".o-op input:checked").value === "add") { pila.push(r); log("pila.add(Resultado(…))"); }
+          else { quitar(pila[pila.length - 1]); pila[pila.length - 1] = r; log("pila[pila.lastIndex] = Resultado(…)"); }
+          pintar();
+        };
+      } else {
+        p.innerHTML = "<b>Resultado</b><div class=\"cpa-note\">¡Has ganado! · 9 movimientos · 42 s</div>" + '<button type="button" class="cpa-fakebtn o-vol">Volver al inicio</button>';
+        p.querySelector(".o-vol").onclick = function () {
+          while (pila.length > 1) quitar(pila.pop());
+          log("while (pila.size > 1) pila.removeLastOrNull()"); pintar();
+        };
+      }
+    }
+    q(".o-atras").onclick = function () {
+      if (cerrada) return;
+      var e = pila.pop(); log("atrás → pila.removeLastOrNull()"); quitar(e);
+      if (!pila.length) cerrada = true;
+      else if (pila[pila.length - 1].t === "tab" && e.t === "res") log("<b>Has vuelto a una partida ya ganada.</b> ¿Es lo que quieres?", "ign");
+      pintar();
+    };
+    function reset() { pila = [{ t: "ini", k: "Inicio" }]; n = 0; cerrada = false; q(".o-log").innerHTML = ""; log("rememberNavBackStack(Inicio)"); pintar(); }
+    q(".o-reset").onclick = reset;
+    reset();
+  }
+
   // --------------------------------------------------- el giro sigue al estado
 
   function buildVolteo(root) {
@@ -722,6 +1443,156 @@
     reloj = setInterval(tic, 100);
   }
 
+  // ------------------------------------------------ ¿dónde vive el estado?
+
+  var ESTADO_MODOS = {
+    var: {
+      nombre: "var normal",
+      code: [
+        "@Composable",
+        "fun Marcador() {",
+        "    var movimientos = 0",
+        "    Button(onClick = { movimientos++ }) {",
+        "        Text(\"Movimientos: $movimientos\")",
+        "    }",
+        "}"
+      ],
+      giro: false, test: false, vista: true
+    },
+    remember: {
+      nombre: "remember",
+      code: [
+        "@Composable",
+        "fun Marcador() {",
+        "    var movimientos by remember { mutableIntStateOf(0) }",
+        "    Button(onClick = { movimientos++ }) {",
+        "        Text(\"Movimientos: $movimientos\")",
+        "    }",
+        "}"
+      ],
+      giro: false, test: false, vista: true
+    },
+    saveable: {
+      nombre: "rememberSaveable",
+      code: [
+        "@Composable",
+        "fun Marcador() {",
+        "    var movimientos by rememberSaveable { mutableIntStateOf(0) }",
+        "    Button(onClick = { movimientos++ }) {",
+        "        Text(\"Movimientos: $movimientos\")",
+        "    }",
+        "}"
+      ],
+      giro: true, test: false, vista: true
+    },
+    vm: {
+      nombre: "ViewModel",
+      code: [
+        "// Simplificado: en el proyecto, movimientos va dentro de TableroUiState",
+        "class TableroViewModel : ViewModel() {",
+        "    private val _movimientos = MutableStateFlow(0)",
+        "    val movimientos = _movimientos.asStateFlow()",
+        "    fun onJugada() = _movimientos.update { it + 1 }  // la regla, aquí",
+        "}",
+        "",
+        "@Composable",
+        "fun Marcador(movimientos: Int, onJugada: () -> Unit) {",
+        "    Button(onClick = onJugada) {",
+        "        Text(\"Movimientos: $movimientos\")",
+        "    }",
+        "}"
+      ],
+      giro: true, test: true, vista: false
+    }
+  };
+
+  function buildEstado(root) {
+    var pad = frame(root, "¿Dónde vive el estado?", "Elige dónde se guardan los movimientos y pruébalo");
+    var grupo = "cpa-est-" + Math.random().toString(36).slice(2, 7);
+    var radios = Object.keys(ESTADO_MODOS).map(function (k) {
+      return '<label><input type="radio" name="' + grupo + '" value="' + k + '"' + (k === "var" ? " checked" : "") + "> <code>" + ESTADO_MODOS[k].nombre + "</code></label>";
+    }).join("");
+    pad.innerHTML =
+      '<div class="cpa-ctrl o-modos">' + radios + "</div>" +
+      '<div class="cpa-est"><div class="cpa-code o-code" role="region" aria-label="Código"></div>' +
+      '<div><div class="cpa-phone o-phone"><div class="cpa-lbl o-act"></div><div class="big o-pant"></div>' +
+      '<button type="button" class="cpa-fakebtn o-mas">+1 movimiento</button></div>' +
+      '<div class="cpa-ctrl"><button type="button" class="o-rec">Otra cosa recompone la pantalla</button>' +
+      '<button type="button" class="o-giro">Girar el móvil</button><button type="button" class="o-reset">Reiniciar</button></div>' +
+      '<table class="cpa-vals o-mem"></table></div></div>' +
+      '<p class="cpa-caption o-msg"></p>' +
+      '<table class="cpa-vals cpa-tabla o-tabla"></table>';
+    var q = function (c) { return pad.querySelector(c); };
+    var modo, dato, pantalla, recomp, actividad;
+    function msg(t) { q(".o-msg").innerHTML = t; }
+    function flash() { var p = q(".o-phone"); p.classList.remove("flash"); void p.offsetWidth; p.classList.add("flash"); }
+    function pintar() {
+      var m = ESTADO_MODOS[modo];
+      q(".o-code").innerHTML = m.code.map(function (l) { return '<span class="cpa-ln">' + (kotlin(l) || " ") + "</span>"; }).join("");
+      q(".o-act").textContent = "Activity nº " + actividad;
+      q(".o-pant").textContent = "Movimientos: " + pantalla;
+      var desfase = dato !== pantalla;
+      q(".o-mem").innerHTML =
+        "<tr><td>Valor guardado</td><td>movimientos = " + dato + (desfase ? ' <b class="cpa-bad-txt">≠ pantalla</b>' : "") + "</td></tr>" +
+        "<tr><td>Dónde está</td><td>" + (modo === "vm" ? "en el ViewModel, fuera de la Activity" : modo === "saveable" ? "en la composición (y en el Bundle al girar)" : "dentro de la función composable") + "</td></tr>" +
+        "<tr><td>Recomposiciones</td><td>" + recomp + "</td></tr>";
+      var si = function (b) { return b ? '<span class="cpa-ok-txt">✔ sí</span>' : '<span class="cpa-bad-txt">✘ no</span>'; };
+      q(".o-tabla").innerHTML =
+        "<tr><td>¿La pantalla se entera del cambio?</td><td>" + si(modo !== "var") + "</td></tr>" +
+        "<tr><td>¿Sobrevive al giro del móvil?</td><td>" + si(m.giro) + "</td></tr>" +
+        "<tr><td>¿La regla se puede probar sin pantalla?</td><td>" + si(m.test) + "</td></tr>" +
+        "<tr><td>¿La vista solo pinta, sin decidir?</td><td>" + si(!m.vista) + "</td></tr>";
+    }
+    function reiniciar(texto) {
+      dato = 0; pantalla = 0; recomp = 1; actividad = 1;
+      msg(texto || "Pulsa «+1 movimiento» varias veces y después prueba los otros dos botones.");
+      pintar();
+    }
+    q(".o-mas").onclick = function () {
+      dato++;
+      if (modo === "var") {
+        msg("El valor ha cambiado, pero <b>nadie avisa a Compose</b>: una variable normal no es estado. La pantalla no se recompone y sigue mostrando " + pantalla + ".");
+      } else {
+        pantalla = dato; recomp++; flash();
+        msg(modo === "vm"
+          ? "El botón llama a <code>onJugada()</code>. El ViewModel aplica la regla y publica el valor nuevo; la pantalla, que lo observa, se recompone."
+          : "<code>mutableIntStateOf</code> es estado observable: al cambiar, Compose <b>recompone</b> las funciones que lo leen.");
+      }
+      pintar();
+    };
+    q(".o-rec").onclick = function () {
+      recomp++; flash();
+      if (modo === "var") {
+        dato = 0; pantalla = 0;
+        msg("Al recomponer, la función se <b>vuelve a ejecutar</b> desde el principio: <code>var movimientos = 0</code> otra vez. Lo que hubiera, se pierde. Por eso hace falta <code>remember</code>.");
+      } else {
+        pantalla = dato;
+        msg("La función se ha vuelto a ejecutar, pero el valor <b>sigue</b>: " + (modo === "vm" ? "está en el ViewModel, no en la función." : "<code>remember</code> lo guarda entre recomposiciones."));
+      }
+      pintar();
+    };
+    q(".o-giro").onclick = function () {
+      actividad++; recomp = 1; flash();
+      if (modo === "var" || modo === "remember") {
+        dato = 0; pantalla = 0;
+        msg("Al girar, Android <b>destruye la Activity y crea otra</b>. Lo guardado en la composición desaparece con ella: vuelve a 0.");
+      } else if (modo === "saveable") {
+        pantalla = dato;
+        msg("<code>rememberSaveable</code> lo guarda en el Bundle y lo recupera. Funciona con datos pequeños, pero la <b>regla</b> (contar la jugada) sigue dentro de la vista y no se puede probar sin pantalla.");
+      } else {
+        pantalla = dato;
+        msg("La Activity nueva recibe <b>el mismo ViewModel</b>, con su valor. Y la regla está fuera de la vista: se puede probar con un test.");
+      }
+      pintar();
+    };
+    q(".o-reset").onclick = function () { reiniciar(); };
+    Array.prototype.forEach.call(pad.querySelectorAll(".o-modos input"), function (r) {
+      r.onchange = function () { modo = r.value; reiniciar("Ahora los movimientos viven en <code>" + ESTADO_MODOS[modo].nombre + "</code>. Repite las pruebas."); };
+    });
+    modo = "var";
+    reiniciar();
+  }
+
   // ----------------------------------------------------------------- arranque
 
   var DEMOS = {
@@ -732,11 +1603,22 @@
       steps: VM_STEPS,
       render: renderViewModel
     },
+    giro: { title: "La partida sobrevive al giro: el ViewModel de cada partida", subtitle: "Avanza paso a paso o pulsa Reproducir", code: GIRO_CODE, steps: GIRO_STEPS, render: renderGiro },
+    test: { title: "El juego, probado sin pantalla", subtitle: "Avanza paso a paso o pulsa Reproducir", code: TEST_CODE, steps: TEST_STEPS, render: renderTest },
+    memfases: { title: "Qué se vuelve a dibujar al voltear una carta", subtitle: "Avanza paso a paso o pulsa Reproducir", code: MFASES_CODE, steps: MFASES_STEPS, render: renderMemFases },
+    mempila: { title: "La pila del Memory: un ViewModel por partida", subtitle: "Avanza paso a paso o pulsa Reproducir", code: MPILA_CODE, steps: MPILA_STEPS, render: renderPila },
+    turno: { title: "Un turno del Memory, estado a estado", subtitle: "Avanza paso a paso o pulsa Reproducir", code: TURNO_CODE, steps: TURNO_STEPS, render: renderTurno },
     stateflow: { title: "Un estado inmutable que viaja por un StateFlow", subtitle: "Avanza paso a paso o pulsa Reproducir", code: SF_CODE, steps: SF_STEPS, render: renderStateFlow },
     fases: { title: "Qué se vuelve a ejecutar: composición, diseño y dibujo", subtitle: "Avanza paso a paso o pulsa Reproducir", code: FASES_CODE, steps: FASES_STEPS, render: renderFases },
     pila: { title: "Apilar o sustituir: la pila y la vida de cada ViewModel", subtitle: "Avanza paso a paso o pulsa Reproducir", code: PILA_CODE, steps: PILA_STEPS, render: renderPila },
     virtual: { title: "Probar el tiempo sin esperar: el reloj virtual", subtitle: "Avanza paso a paso o pulsa Reproducir", code: VIRTUAL_CODE, steps: VIRTUAL_STEPS, render: renderVirtual },
     udf: { build: buildUdf },
+    tablero: { build: buildTablero },
+    situacion: { build: buildSituacion },
+    cuadricula: { build: buildCuadricula },
+    imagen: { build: buildImagen },
+    navmemory: { build: buildNavMemory },
+    estado: { build: buildEstado },
     volteo: { build: buildVolteo },
     job: { build: buildJob }
   };

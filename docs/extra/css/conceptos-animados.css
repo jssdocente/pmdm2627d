@@ -835,3 +835,78 @@
   .md-typeset .cpa-tok.down,
   .md-typeset .cpa-spin { animation: none; }
 }
+
+/* ---------- ¿dónde vive el estado? (interactiva) */
+
+.md-typeset .cpa-est {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+@container (min-width: 36rem) {
+  .md-typeset .cpa-est { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+}
+
+.md-typeset .cpa-est .cpa-code { max-height: none; }
+.md-typeset .cpa-est .cpa-phone { margin-bottom: 0.4rem; }
+.md-typeset .cpa-phone button.cpa-fakebtn { border: none; cursor: pointer; font: inherit; }
+.md-typeset .cpa-tabla { margin-top: 0.4rem; }
+.md-typeset .cpa-ok-txt { color: var(--cpa-ok); font-weight: 700; }
+.md-typeset .cpa-bad-txt { color: var(--cpa-err); font-weight: 700; }
+
+/* Añadidos a las figuras SVG .arq-svg (mapa del proyecto): flecha de estado, insignias de parte */
+.md-typeset .arq-flow-st { stroke: #4a7dff; stroke-width: 2.2; fill: none; }
+.md-typeset .arq-head-st { fill: #4a7dff; }
+.md-typeset .arq-red-txt { fill: #e5484d; }
+.md-typeset .arq-blue-txt { fill: #4a7dff; }
+.md-typeset .arq-badge { fill: #7e57c2; }
+
+/* Memory · un turno: cartas en el estado (chips) y en la pantalla (tablero 2×2) */
+.md-typeset .cpa-tcs { white-space: nowrap; }
+.md-typeset .cpa-tc {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.25em; height: 1.35em; margin: 0 0.08em; border-radius: 3px;
+  border: 1px solid var(--cpa-border); background: var(--cpa-surface);
+  font-size: 0.95em; line-height: 1; vertical-align: middle;
+}
+.md-typeset .cpa-tc.a { color: var(--cpa-muted); font-weight: 700; }
+.md-typeset .cpa-tc.b { background: var(--cpa-bg); border-color: var(--cpa-state); }
+.md-typeset .cpa-tc.p { background: color-mix(in srgb, var(--cpa-ok) 22%, transparent); border-color: var(--cpa-ok); }
+.md-typeset .cpa-tc.chg { box-shadow: 0 0 0 2px var(--cpa-flash); }
+.md-typeset .cpa-tcs.bad .cpa-tc.chg { box-shadow: 0 0 0 2px var(--cpa-err); }
+.md-typeset .cpa-tab { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; gap: 0.3rem; margin: 0.3rem 0; }
+.md-typeset .cpa-tcw { position: relative; display: inline-block; }
+.md-typeset .cpa-tc.big { width: 2.1rem; height: 2.5rem; font-size: 1.15rem; margin: 0; border-width: 2px; border-radius: 0.35rem; }
+.md-typeset .cpa-tc.big.a { background: color-mix(in srgb, var(--cpa-primary) 70%, transparent); color: #fff; border-color: transparent; }
+.md-typeset .cpa-tap { position: absolute; right: -0.45rem; bottom: -0.5rem; font-size: 1rem; animation: cpa-tap 0.9s ease-out; }
+@keyframes cpa-tap { 0% { transform: translateY(-0.5rem); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .md-typeset .cpa-tap { animation: none; } }
+.md-typeset .cpa-mtab { display: grid; grid-template-columns: repeat(3, auto); justify-content: center; gap: 0.45rem; margin: 0.5rem 0; }
+.md-typeset .cpa-mtab button.cpa-tc { cursor: pointer; font-family: inherit; padding: 0; }
+.md-typeset .cpa-mtab button.cpa-tc.a:hover { filter: brightness(1.1); }
+.md-typeset .cpa-mtab .cpa-tcw { border-radius: 0.35rem; }
+.md-typeset .o-state .cpa-tc { font-size: 0.85rem; }
+
+/* Memory · giro, test, fases y pila */
+.md-typeset .cpa-mtab.mini { grid-template-columns: repeat(3, auto); gap: 0.15rem; margin: 0.25rem 0; justify-content: start; }
+.md-typeset .cpa-mtab.mini .cpa-tc { font-size: 0.8rem; width: 1.5em; height: 1.6em; margin: 0; }
+.md-typeset .cpa-tc.a.ver { color: inherit; font-weight: 400; opacity: 0.45; }
+.md-typeset .cpa-tst { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+@container (min-width: 40rem) { .md-typeset .cpa-tst { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); } }
+.md-typeset .cpa-tr { font: 0.68rem/1.6 var(--md-code-font-family, ui-monospace, monospace); }
+.md-typeset .cpa-tr.ok b { color: var(--cpa-ok); }
+.md-typeset .cpa-tr.ko b { color: var(--cpa-err); }
+.md-typeset .cpa-fase { font-weight: 700; color: var(--cpa-primary); margin: 0.2rem 0; }
+.md-typeset .cpa-node.i3 { margin-left: 2.4rem; }
+
+/* Memory · playgrounds propios */
+.md-typeset .cpa-sit { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; }
+.md-typeset .cpa-tc.big.bad { border-color: var(--cpa-err); color: var(--cpa-err); background: color-mix(in srgb, var(--cpa-err) 15%, transparent); }
+.md-typeset .o-tab button.cpa-tc { position: relative; cursor: pointer; font-family: inherit; padding: 0; }
+.md-typeset .cpa-cid { position: absolute; left: 0.15rem; top: 0.05rem; font-size: 0.5rem; opacity: 0.75; }
+.md-typeset .cpa-imgw { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+.md-typeset .cpa-cimg { width: 9rem; border: 3px solid var(--cpa-ink); border-radius: 0.6rem; overflow: hidden; background: repeating-conic-gradient(var(--cpa-surface) 0 25%, var(--cpa-bg) 0 50%) 0 0 / 14px 14px; }
+.md-typeset .cpa-cimg img { display: block; width: 100%; height: 100%; }
+.md-typeset .cpa-ctrl select { font: inherit; }

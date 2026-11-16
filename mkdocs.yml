@@ -158,6 +158,7 @@ nav:
   - "Evaluación":
       - "1ª Evaluación":
           - "Guía del proyecto": temas/evaluacion/1eval-proyecto.md
+          - "El proyecto, paso a paso": temas/evaluacion/1eval-proyecto-paso-a-paso.md
           - "Guía de estudio": temas/evaluacion/1eval-guia-estudio.md
           - "🎯 Practica Kotlin (test)": temas/evaluacion/practica-kotlin.md
           - "🧪 Practica Kotlin (código y TDD)": temas/evaluacion/practica-codigo.md

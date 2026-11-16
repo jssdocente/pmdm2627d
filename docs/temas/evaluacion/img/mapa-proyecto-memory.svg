@@ -1,0 +1,124 @@
+<svg class="arq-svg" viewBox="0 0 760 530" role="img" aria-labelledby="arq-mapa-t arq-mapa-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-mapa-t">Mapa del proyecto del juego de memoria</title>
+  <desc id="arq-mapa-d">Tres paquetes. Arriba, navegacion, con MemoryApp, que tiene la pila y el NavDisplay, y Destinos. MemoryApp muestra una de las tres pantallas del paquete ui: InicioScreen, TableroScreen y ResultadoScreen. Dentro de tablero, TableroScreen dibuja TableroContent y CartaView, sin estado. Al pulsar una carta, el evento onCartaPulsada sube al TableroViewModel, que tiene las reglas; el ViewModel crea un TableroUiState nuevo y ese estado baja por un StateFlow hasta TableroScreen. El ViewModel usa el paquete model, abajo: Nivel, Carta, repartir y Dibujos. Cada caja lleva el número de la parte de la guía en que se construye.</desc>
+  <defs>
+    <marker id="arq-mapa-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+    <marker id="arq-mapa-ev" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+    <marker id="arq-mapa-st" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-st"/></marker>
+  </defs>
+
+  <!-- navegacion/ -->
+  <rect x="20" y="16" width="720" height="92" rx="12" class="arq-box arq-dashed"/>
+  <text x="34" y="38" class="arq-t arq-code arq-strong arq-muted">navegacion/</text>
+  <rect x="150" y="44" width="200" height="48" rx="8" class="arq-gray"/>
+  <text x="250" y="64" class="arq-t arq-code arq-strong" text-anchor="middle">MemoryApp</text>
+  <text x="250" y="82" class="arq-t arq-xs" text-anchor="middle">la pila y el NavDisplay</text>
+  <rect x="410" y="44" width="300" height="48" rx="8" class="arq-gray"/>
+  <text x="560" y="64" class="arq-t arq-code arq-strong" text-anchor="middle">Destinos</text>
+  <text x="560" y="82" class="arq-t arq-xs" text-anchor="middle">Inicio · Tablero(nivel) · Resultado(…)</text>
+  <line x1="350" y1="68" x2="406" y2="68" class="arq-dep" marker-end="url(#arq-mapa-a)"/>
+
+  <!-- ui/ -->
+  <rect x="20" y="124" width="720" height="246" rx="12" class="arq-box arq-dashed"/>
+  <text x="34" y="146" class="arq-t arq-code arq-strong arq-muted">ui/</text>
+
+  <rect x="30" y="164" width="128" height="48" rx="8" class="arq-ui"/>
+  <text x="94" y="184" class="arq-t arq-code arq-strong" text-anchor="middle">InicioScreen</text>
+  <text x="94" y="202" class="arq-t arq-xs arq-muted" text-anchor="middle">inicio/</text>
+
+  <rect x="602" y="164" width="128" height="48" rx="8" class="arq-ui"/>
+  <text x="666" y="184" class="arq-t arq-code arq-strong" text-anchor="middle">ResultadoScreen</text>
+  <text x="666" y="202" class="arq-t arq-xs arq-muted" text-anchor="middle">resultado/</text>
+
+  <!-- ui/tablero/ -->
+  <rect x="166" y="150" width="428" height="208" rx="10" class="arq-box arq-dashed"/>
+  <text x="178" y="168" class="arq-t arq-code arq-xs arq-strong arq-muted">tablero/</text>
+
+  <rect x="178" y="176" width="136" height="48" rx="8" class="arq-ui"/>
+  <text x="246" y="196" class="arq-t arq-code arq-strong" text-anchor="middle">TableroScreen</text>
+  <text x="246" y="214" class="arq-t arq-xs" text-anchor="middle">con estado</text>
+
+  <rect x="178" y="284" width="136" height="52" rx="8" class="arq-ui"/>
+  <text x="246" y="304" class="arq-t arq-code arq-strong" text-anchor="middle">TableroContent</text>
+  <text x="246" y="324" class="arq-t arq-xs" text-anchor="middle">y CartaView · sin estado</text>
+
+  <rect x="446" y="176" width="136" height="48" rx="8" class="arq-dom"/>
+  <text x="514" y="196" class="arq-t arq-code arq-strong" text-anchor="middle">TableroUiState</text>
+  <text x="514" y="214" class="arq-t arq-xs" text-anchor="middle">el estado</text>
+
+  <rect x="446" y="284" width="136" height="52" rx="8" class="arq-dom"/>
+  <text x="514" y="304" class="arq-t arq-code arq-strong" text-anchor="middle">TableroViewModel</text>
+  <text x="514" y="324" class="arq-t arq-xs" text-anchor="middle">las reglas</text>
+
+  <!-- el ciclo: pinta ↓, evento →, nuevo estado ↑, estado ← -->
+  <line x1="246" y1="224" x2="246" y2="280" class="arq-dep" marker-end="url(#arq-mapa-a)"/>
+  <text x="256" y="257" class="arq-t arq-xs arq-muted">le pasa el estado</text>
+
+  <line x1="314" y1="310" x2="442" y2="310" class="arq-flow" marker-end="url(#arq-mapa-ev)"/>
+  <text x="378" y="301" class="arq-t arq-code" style="font-size:11px" text-anchor="middle">onCartaPulsada(id)</text>
+  <text x="378" y="326" class="arq-t arq-xs arq-strong arq-red-txt" text-anchor="middle">el evento sube</text>
+
+  <line x1="514" y1="284" x2="514" y2="228" class="arq-flow-st" marker-end="url(#arq-mapa-st)"/>
+  <text x="504" y="252" class="arq-t arq-code" style="font-size:11px" text-anchor="end">copy()</text>
+  <text x="504" y="266" class="arq-t arq-xs arq-muted" text-anchor="end">estado nuevo</text>
+
+  <line x1="446" y1="200" x2="318" y2="200" class="arq-flow-st" marker-end="url(#arq-mapa-st)"/>
+  <text x="380" y="191" class="arq-t arq-code" style="font-size:11px" text-anchor="middle">StateFlow</text>
+  <text x="380" y="216" class="arq-t arq-xs arq-strong arq-blue-txt" text-anchor="middle">el estado baja</text>
+
+  <!-- MemoryApp muestra una pantalla -->
+  <path d="M220,92 C200,124 120,130 100,160" class="arq-dep" marker-end="url(#arq-mapa-a)"/>
+  <line x1="246" y1="92" x2="246" y2="172" class="arq-dep" marker-end="url(#arq-mapa-a)"/>
+  <path d="M290,92 C340,132 620,128 650,160" class="arq-dep" marker-end="url(#arq-mapa-a)"/>
+  <text x="36" y="118" class="arq-t arq-xs arq-muted">muestra una pantalla</text>
+
+  <!-- model/ -->
+  <rect x="20" y="386" width="720" height="78" rx="12" class="arq-box arq-dashed"/>
+  <text x="34" y="408" class="arq-t arq-code arq-strong arq-muted">model/</text>
+  <line x1="514" y1="336" x2="514" y2="410" class="arq-dep" marker-end="url(#arq-mapa-a)"/>
+  <text x="524" y="382" class="arq-t arq-xs arq-muted">usa</text>
+  <rect x="108" y="414" width="130" height="40" rx="8" class="arq-data"/>
+  <text x="173" y="430" class="arq-t arq-code arq-strong" text-anchor="middle">Nivel</text>
+  <text x="173" y="446" class="arq-t arq-xs" text-anchor="middle">enum: cuántas parejas</text>
+  <rect x="252" y="414" width="130" height="40" rx="8" class="arq-data"/>
+  <text x="317" y="430" class="arq-t arq-code arq-strong" text-anchor="middle">Carta</text>
+  <text x="317" y="446" class="arq-t arq-xs" text-anchor="middle">data class</text>
+  <rect x="449" y="414" width="130" height="40" rx="8" class="arq-data"/>
+  <text x="514" y="430" class="arq-t arq-code arq-strong" text-anchor="middle">repartir()</text>
+  <text x="514" y="446" class="arq-t arq-xs" text-anchor="middle">Reparto.kt</text>
+  <rect x="593" y="414" width="130" height="40" rx="8" class="arq-data"/>
+  <text x="658" y="430" class="arq-t arq-code arq-strong" text-anchor="middle">Dibujos</text>
+  <text x="658" y="446" class="arq-t arq-xs" text-anchor="middle">las imágenes</text>
+
+  <!-- parte de la guía en que se construye cada caja -->
+  <g class="arq-t arq-xs arq-strong" text-anchor="middle">
+    <circle cx="342" cy="44" r="9" class="arq-badge"/><text x="342" y="48" class="arq-on">3</text>
+    <circle cx="702" cy="44" r="9" class="arq-badge"/><text x="702" y="48" class="arq-on">3</text>
+    <circle cx="150" cy="164" r="9" class="arq-badge"/><text x="150" y="168" class="arq-on">3</text>
+    <circle cx="722" cy="164" r="9" class="arq-badge"/><text x="722" y="168" class="arq-on">3</text>
+    <circle cx="306" cy="176" r="9" class="arq-badge"/><text x="306" y="180" class="arq-on">2</text>
+    <circle cx="306" cy="284" r="9" class="arq-badge"/><text x="306" y="288" class="arq-on">2</text>
+    <circle cx="574" cy="176" r="9" class="arq-badge"/><text x="574" y="180" class="arq-on">1</text>
+    <circle cx="574" cy="284" r="9" class="arq-badge"/><text x="574" y="288" class="arq-on">1</text>
+    <circle cx="230" cy="414" r="9" class="arq-badge"/><text x="230" y="418" class="arq-on">1</text>
+    <circle cx="374" cy="414" r="9" class="arq-badge"/><text x="374" y="418" class="arq-on">1</text>
+    <circle cx="571" cy="414" r="9" class="arq-badge"/><text x="571" y="418" class="arq-on">1</text>
+    <circle cx="715" cy="414" r="9" class="arq-badge"/><text x="715" y="418" class="arq-on">1</text>
+  </g>
+
+  <!-- leyenda -->
+  <rect x="20" y="482" width="22" height="14" rx="4" class="arq-ui"/>
+  <text x="48" y="494" class="arq-t arq-xs">pantalla</text>
+  <rect x="110" y="482" width="22" height="14" rx="4" class="arq-dom"/>
+  <text x="138" y="494" class="arq-t arq-xs">estado y reglas</text>
+  <rect x="236" y="482" width="22" height="14" rx="4" class="arq-data"/>
+  <text x="264" y="494" class="arq-t arq-xs">modelo</text>
+  <line x1="320" y1="489" x2="350" y2="489" class="arq-flow"/>
+  <text x="356" y="494" class="arq-t arq-xs">evento</text>
+  <line x1="408" y1="489" x2="438" y2="489" class="arq-flow-st"/>
+  <text x="444" y="494" class="arq-t arq-xs">estado</text>
+  <circle cx="504" cy="489" r="9" class="arq-badge"/>
+  <text x="504" y="493" class="arq-t arq-xs arq-strong arq-on" text-anchor="middle">1</text>
+  <text x="518" y="494" class="arq-t arq-xs">parte de esta guía en que lo construyes</text>
+  <text x="380" y="522" class="arq-t arq-s arq-strong" text-anchor="middle">El evento sube al ViewModel; el estado baja a la pantalla. Siempre en el mismo sentido.</text>
+</svg>

@@ -17,6 +17,9 @@ Vas a programar en Android, con **Kotlin** y **Jetpack Compose**, un **juego de 
 | Examen práctico | 40 % | Modificar y ampliar **tu** proyecto |
 | Defensa escrita | 20 % | Explicar **tu** código, señalando ficheros y funciones |
 
+!!! tip "¿Por dónde empiezo a programar?"
+    En [El proyecto, paso a paso](1eval-proyecto-paso-a-paso.md) tienes el esqueleto del proyecto fichero a fichero, con cada pieza explicada al grano, animaciones de los conceptos clave y un `TODO` numerado en cada sitio donde te toca programar a ti.
+
 ---
 
 ## 1. La plantilla del proyecto y el README {#plantilla-readme}
@@ -217,6 +220,8 @@ Antes de escribir código, conviene saber **qué decisiones** tendrás que tomar
     En el examen y en la defensa **no tendrás internet**. Los enlaces a la documentación oficial son para que los uses **mientras programas**: lo que aprendas de ellos, tienes que poder explicarlo sin mirarlos.
 
 ### Un orden de trabajo que funciona
+
+Es el mismo orden de [El proyecto, paso a paso](1eval-proyecto-paso-a-paso.md), que te da el esqueleto de cada fichero.
 
 1. **Modelo y niveles:** cómo es una carta, cómo es un nivel y qué guarda el `UiState`.
 
