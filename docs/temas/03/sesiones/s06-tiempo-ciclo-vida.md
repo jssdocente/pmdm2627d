@@ -102,6 +102,7 @@ Hasta ahora, todo cambiaba porque alguien pulsaba algo: evento, nuevo estado, re
 
 - `launch` devuelve un **`Job`**: el mando a distancia de la corrutina. Si lo guardas, puedes pararla con `cancel()`. → [3C.1 §5.1](../c-arquitectura/3c.1-capa-ui-viewmodel.md#51-una-tarea-que-se-puede-parar-job)
 - El `Job` **no va en el `UiState`**: no es un dato que se pinte, sino una herramienta del ViewModel.
+- Lo verás en una línea de tiempo, con una barra por corrutina, en el [bloque 6](#6-parar-al-salir-de-la-app-15-min).
 
 !!! example "Manos a la obra"
 
@@ -174,6 +175,7 @@ Hasta ahora, todo cambiaba porque alguien pulsaba algo: evento, nuevo estado, re
 
 - Al terminar, la partida tarda un momento en guardarse. Durante esa espera no se debe poder pulsar nada.
 - El bloqueo es **un campo del estado**, no una variable de la pantalla, y se activa **antes** de esperar. → [3C.1 §5.2](../c-arquitectura/3c.1-capa-ui-viewmodel.md#52-una-espera-con-bloqueo)
+- Pruébalo en la [animación de los eventos y el estado](../c-arquitectura/3c.1-capa-ui-viewmodel.md#31-implementacion-del-viewmodel): pulsa *Terminar*, quita la regla del ViewModel y pulsa varias veces durante la espera.
 
 !!! example "Manos a la obra"
 
@@ -217,6 +219,10 @@ Hasta ahora, todo cambiaba porque alguien pulsaba algo: evento, nuevo estado, re
 <figcaption>El <code>Job</code> es la herramienta y el <code>UiState</code>, lo que se recuerda.</figcaption>
 </figure>
 
+Pruébalo antes de programarlo: arranca, pulsa el botón «Inicio», vuelve y gira el móvil. Marca después «Sin `LifecycleResumeEffect`» y repite.
+
+<div class="cpa" data-cpa="job"></div>
+
 !!! example "Manos a la obra"
 
     1. Añade los dos eventos al ViewModel:
@@ -248,6 +254,8 @@ Hasta ahora, todo cambiaba porque alguien pulsaba algo: evento, nuevo estado, re
 
 ## 7 ⏩ · Experimento: dos corrutinas a la vez (10 min)
 
+Antes de tocar el código, provócalo en la animación del [bloque 6](#6-parar-al-salir-de-la-app-15-min): marca «Olvidar `jobCronometro?.cancel()`» y pulsa *onEmpezar* varias veces.
+
 !!! example "Manos a la obra"
 
     1. En `arrancarCronometro`, comenta la línea `jobCronometro?.cancel()`.
@@ -264,6 +272,8 @@ Hasta ahora, todo cambiaba porque alguien pulsaba algo: evento, nuevo estado, re
 
 - En un test, `delay` no espera: con un dispatcher de pruebas, el tiempo es **virtual** y lo avanzas tú. → [3C.1 §5.4](../c-arquitectura/3c.1-capa-ui-viewmodel.md#54-probar-el-tiempo-sin-esperar)
 - `viewModelScope` usa el hilo principal, que en un test no existe: la regla `MainDispatcherRule` lo sustituye. → [3C.4 §4.1](../c-arquitectura/3c.4-testing.md#41-el-problema-del-hilo-principal)
+
+<div class="cpa" data-cpa="virtual"></div>
 
 !!! example "Manos a la obra"
 

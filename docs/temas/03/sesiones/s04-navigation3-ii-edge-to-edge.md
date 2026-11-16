@@ -255,6 +255,12 @@ graph LR
 <figcaption>El estado decide el destino y la animación calcula cómo llegar.</figcaption>
 </figure>
 
+Mientras el corazón crece, ¿qué se vuelve a ejecutar? Recórrelo paso a paso. → [3A.4 §2](../a-diseno/3a.4-animaciones.md#2-transformar-el-dibujo-graphicslayer)
+
+<div class="cpa" data-cpa="fases"></div>
+
+- Con `graphicsLayer` también se gira en 3D, y la regla es la misma: el estado manda. Juega con la [animación del giro de una carta](../a-diseno/3a.4-animaciones.md#21-un-giro-en-3d-que-sigue-al-estado).
+
 !!! example "Manos a la obra"
 
     1. En `ui/ficha/FichaJuego.kt`, dentro de `FilaValoracion`, calcula dos valores animados justo antes del `IconToggleButton`:

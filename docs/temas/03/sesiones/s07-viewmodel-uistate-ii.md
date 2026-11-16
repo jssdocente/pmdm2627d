@@ -207,6 +207,9 @@ Crear las piezas a mano funciona, pero cuando haya muchas será tedioso. Eso es 
 
 - Queremos que cada ViewModel **se cree al entrar** en su pantalla y **se destruya al sacarla** de la pila. Navigation 3 lo hace con un segundo **decorador de entrada**. → [3B.1 §8](../b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla)
 - `viewModel { … }` recibe una lambda que sabe **cómo crear** el ViewModel: la primera vez la ejecuta y, después, devuelve siempre el mismo.
+- Repasa en el último paso de la [animación del ViewModel](../c-arquitectura/3c.1-capa-ui-viewmodel.md#11-supervivencia-ante-cambios-de-configuracion) qué cambia con el decorador y sin él.
+
+<div class="cpa" data-cpa="pila"></div>
 
 !!! example "Manos a la obra"
 

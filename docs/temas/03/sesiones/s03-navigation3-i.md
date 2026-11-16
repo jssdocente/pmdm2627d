@@ -227,7 +227,7 @@ graph TD
 
 ## 7 ⏩ · Operaciones con la pila: «Siguiente juego» (10 min)
 
-Añade al detalle un botón «Siguiente juego» que muestre el detalle del juego siguiente de la lista (y del primero al llegar al último). Atrás debe llevar **a la biblioteca**, no al juego anterior. → [3B.1 §7](../b-navegacion/3b.1-navigation3.md#7-operaciones-habituales-con-la-pila)
+Añade al detalle un botón «Siguiente juego» que muestre el detalle del juego siguiente de la lista (y del primero al llegar al último). Atrás debe llevar **a la biblioteca**, no al juego anterior. → [3B.1 §7](../b-navegacion/3b.1-navigation3.md#7-operaciones-habituales-con-la-pila). La diferencia entre apilar y sustituir la tienes animada en [3B.1 §8](../b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla).
 
 ??? success "Pista"
     No añadas una pantalla más a la pila: **sustituye** la última, con `pila[pila.lastIndex] = DetalleJuego(siguienteId)`. El siguiente id lo calculas con `indexOfFirst` sobre `juegos` y el resto de dividir por `juegos.size`.

@@ -97,6 +97,10 @@ sequenceDiagram
     A->>VM: onCleared(): ahora sí se destruye
 ```
 
+Ahora, paso a paso: qué pasa con `remember`, `rememberSaveable` y el ViewModel al girar, al salir y si Android cierra la app. → [3C.1 §1.1](../c-arquitectura/3c.1-capa-ui-viewmodel.md#11-supervivencia-ante-cambios-de-configuracion)
+
+<div class="cpa" data-cpa="viewmodel"></div>
+
 ---
 
 ## 2 · Las dependencias (10 min)
@@ -162,6 +166,8 @@ Necesitamos dos librerías de la familia `lifecycle`, con la **misma versión** 
 - El estado se guarda en un **`MutableStateFlow` privado** y se expone como **`StateFlow` de solo lectura**: la interfaz lo observa, pero no puede cambiarlo. → [3C.1 §3.1](../c-arquitectura/3c.1-capa-ui-viewmodel.md#31-implementacion-del-viewmodel)
 - Cada cosa que puede hacer el usuario es una **función-evento** del ViewModel. Dentro, `update { … }` recibe el estado actual y devuelve el nuevo.
 
+<div class="cpa" data-cpa="stateflow"></div>
+
 !!! example "Manos a la obra"
 
     1. Crea `ui/FichaJuegoViewModel.kt` con el estado:
@@ -201,6 +207,7 @@ Necesitamos dos librerías de la familia `lifecycle`, con la **misma versión** 
 
 - `viewModel()` devuelve el ViewModel: lo crea la primera vez y, después, devuelve siempre el mismo.
 - `collectAsStateWithLifecycle()` convierte el `StateFlow` en un estado de Compose: cada vez que el ViewModel emite un estado nuevo, se recompone. Además deja de escuchar cuando la app pasa a segundo plano. → [El ViewModel como State Holder](../../00-android/00-compose/22-state-management.md#2-consumo-seguro-en-compose-collectasstatewithlifecycle)
+- Antes de programarlo, míralo funcionar: en la [animación de los eventos y el estado](../c-arquitectura/3c.1-capa-ui-viewmodel.md#31-implementacion-del-viewmodel) cada pulsación sube como evento y solo destella lo que cambia.
 
 !!! example "Manos a la obra"
 
