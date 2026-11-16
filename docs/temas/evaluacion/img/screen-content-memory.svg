@@ -1,0 +1,66 @@
+<svg class="arq-svg" viewBox="0 0 760 350" role="img" aria-labelledby="arq-scc-t arq-scc-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-scc-t">Una pantalla en tres piezas: Screen, Content y la carta</title>
+  <desc id="arq-scc-d">A la izquierda, el TableroViewModel. TableroScreen es la única pieza que lo conoce: recibe de él el estado por un StateFlow y le envía el evento onCartaPulsada. Debajo, TableroContent no tiene estado: recibe el TableroUiState y una lambda, y avisa hacia arriba cuando se pulsa una carta. Debajo, CartaView recibe una sola Carta y un onClick. Content y CartaView se pueden ver en una Preview con datos inventados; Screen no, porque necesita un ViewModel.</desc>
+  <defs>
+    <marker id="arq-scc-ev" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-flow"/></marker>
+    <marker id="arq-scc-st" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head-st"/></marker>
+  </defs>
+
+  <!-- ViewModel -->
+  <rect x="20" y="30" width="170" height="60" rx="8" class="arq-dom"/>
+  <text x="105" y="55" class="arq-t arq-code arq-strong" text-anchor="middle">TableroViewModel</text>
+  <text x="105" y="74" class="arq-t arq-xs" text-anchor="middle">estado y reglas</text>
+
+  <!-- Screen -->
+  <rect x="300" y="30" width="230" height="60" rx="8" class="arq-ui"/>
+  <text x="415" y="55" class="arq-t arq-code arq-strong" text-anchor="middle">TableroScreen</text>
+  <text x="415" y="74" class="arq-t arq-xs" text-anchor="middle">con estado · conoce el ViewModel</text>
+
+  <!-- Content -->
+  <rect x="300" y="150" width="230" height="60" rx="8" class="arq-ui arq-dashed"/>
+  <text x="415" y="175" class="arq-t arq-code arq-strong" text-anchor="middle">TableroContent</text>
+  <text x="415" y="194" class="arq-t arq-xs" text-anchor="middle">sin estado · marcador y cuadrícula</text>
+
+  <!-- CartaView -->
+  <rect x="300" y="262" width="230" height="52" rx="8" class="arq-ui arq-dashed"/>
+  <text x="415" y="284" class="arq-t arq-code arq-strong" text-anchor="middle">CartaView</text>
+  <text x="415" y="302" class="arq-t arq-xs" text-anchor="middle">sin estado · una carta</text>
+
+  <!-- VM ↔ Screen -->
+  <line x1="190" y1="50" x2="296" y2="50" class="arq-flow-st" marker-end="url(#arq-scc-st)"/>
+  <text x="243" y="42" class="arq-t arq-code" style="font-size:11px" text-anchor="middle">StateFlow</text>
+  <line x1="300" y1="74" x2="194" y2="74" class="arq-flow" marker-end="url(#arq-scc-ev)"/>
+  <text x="245" y="90" class="arq-t arq-code" style="font-size:11px" text-anchor="middle">onCartaPulsada</text>
+
+  <!-- Screen ↔ Content -->
+  <line x1="390" y1="90" x2="390" y2="146" class="arq-flow-st" marker-end="url(#arq-scc-st)"/>
+  <text x="382" y="123" class="arq-t arq-code" style="font-size:11px" text-anchor="end">estado</text>
+  <line x1="440" y1="150" x2="440" y2="94" class="arq-flow" marker-end="url(#arq-scc-ev)"/>
+  <text x="448" y="123" class="arq-t arq-code" style="font-size:11px">onCartaPulsada</text>
+
+  <!-- Content ↔ CartaView -->
+  <line x1="390" y1="210" x2="390" y2="258" class="arq-flow-st" marker-end="url(#arq-scc-st)"/>
+  <text x="382" y="239" class="arq-t arq-code" style="font-size:11px" text-anchor="end">carta</text>
+  <line x1="440" y1="262" x2="440" y2="214" class="arq-flow" marker-end="url(#arq-scc-ev)"/>
+  <text x="448" y="239" class="arq-t arq-code" style="font-size:11px">onClick</text>
+
+  <!-- Preview -->
+  <text x="556" y="56" class="arq-t arq-xs arq-strong">✗ sin @Preview</text>
+  <text x="556" y="72" class="arq-t arq-xs arq-muted">necesita un ViewModel</text>
+  <text x="556" y="176" class="arq-t arq-xs arq-strong">✓ @Preview</text>
+  <text x="556" y="192" class="arq-t arq-xs arq-muted">con un estado inventado</text>
+  <text x="556" y="284" class="arq-t arq-xs arq-strong">✓ @Preview</text>
+  <text x="556" y="300" class="arq-t arq-xs arq-muted">boca abajo y boca arriba</text>
+
+  <!-- leyenda -->
+  <rect x="20" y="150" width="22" height="14" rx="4" class="arq-ui"/>
+  <text x="48" y="162" class="arq-t arq-xs">con estado</text>
+  <rect x="20" y="176" width="22" height="14" rx="4" class="arq-ui arq-dashed"/>
+  <text x="48" y="188" class="arq-t arq-xs">sin estado</text>
+  <line x1="20" y1="211" x2="42" y2="211" class="arq-flow-st"/>
+  <text x="48" y="215" class="arq-t arq-xs">el estado baja</text>
+  <line x1="20" y1="235" x2="42" y2="235" class="arq-flow"/>
+  <text x="48" y="239" class="arq-t arq-xs">el evento sube</text>
+
+  <text x="380" y="342" class="arq-t arq-s arq-strong" text-anchor="middle">Solo la Screen conoce el ViewModel; el resto pinta lo que recibe y avisa.</text>
+</svg>

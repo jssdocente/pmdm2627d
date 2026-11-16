@@ -4,9 +4,9 @@ Esta página te acompaña mientras construyes el [proyecto de la 1ª evaluación
 
 !!! info "Cómo se usa"
 
-    1. Parte de la [plantilla del proyecto](1eval-proyecto.md#plantilla-readme). Todos los ficheros van dentro de `app/src/main/java/com/pm2627/p1ev/memory/` (los tests, en `app/src/test/java/com/pm2627/p1ev/memory/`). El título de cada bloque de código dice la ruta.
+    1. Descarga la [plantilla del proyecto](1eval-proyecto.md#plantilla-readme) y **ejecútala**: ya arranca con un tablero mínimo que funciona. Es tu [punto de partida](#parte-0-tu-punto-de-partida). Todos los ficheros van dentro de `app/src/main/java/com/pm2627/p1ev/memory/` (los tests, en `app/src/test/java/com/pm2627/p1ev/memory/`). El título de cada bloque de código dice la ruta.
 
-    2. Copia cada fichero **cuando llegues a él**, no todos de golpe. Lee su comentario: dice qué tiene que hacer esa pieza y por qué.
+    2. Hay dos tipos de fichero. Los que **ya están en la plantilla** (`Carta`, `TableroUiState`, `TableroViewModel`, `TableroScreen` y `MainActivity`) los **amplías** cuando llegues a ellos: el bloque lo indica con «🧩 Ya está en la plantilla». Los demás los **creas** cuando llegues a ellos, no todos de golpe. Lee siempre el comentario de cada fichero: dice qué tiene que hacer esa pieza y por qué.
 
     3. Completa los `TODO` **en orden** (están numerados). Cada uno lleva una pista y el apartado de los apuntes donde se explica.
 
@@ -35,9 +35,61 @@ Y el **orden de trabajo**, el mismo de la guía del proyecto, repartido en tres 
 
 | Parte | Qué construyes | Cómo sabes que funciona |
 | :--- | :--- | :--- |
+| [0 · El punto de partida](#parte-0-tu-punto-de-partida) | Llevas el estado del tablero mínimo de la plantilla al ViewModel | Giras el móvil y las casillas no se pierden |
 | [1 · El corazón](#parte-1-el-corazon-modelo-reglas-y-tests) | El modelo, el estado, el ViewModel con las reglas y sus tests | Los tests de emparejar y ganar en verde, **sin pantalla** |
 | [2 · La pantalla](#parte-2-la-pantalla-del-tablero) | El tablero: la cuadrícula de cartas pintada desde el estado | La `@Preview` y una partida jugable |
 | [3 · Las tres pantallas](#parte-3-las-tres-pantallas) | Inicio, Resultado y la navegación entre ellas | Elegir nivel, jugar, ganar y volver |
+
+---
+
+## Parte 0 · Tu punto de partida
+
+La plantilla no está vacía: trae la **estructura de paquetes** y un **tablero mínimo que ya funciona**. Son seis casillas lisas y un contador de toques. Al tocar una casilla se da la vuelta y enseña su número. Todavía no hay parejas, ni reglas, ni imágenes: eso lo construyes tú, paso a paso, sobre algo que ya ves en el móvil.
+
+| Fichero de la plantilla | Qué hace ahora | Dónde lo amplías |
+| :--- | :--- | :--- |
+| `ui/tablero/TableroScreen.kt` | Pinta el tablero **y guarda el estado** con `remember` | Aquí (0.2) y en [2.1](#21-screen-y-content-como-se-disena-una-pantalla) a [2.5](#25-la-pantalla-con-estado) |
+| `model/Carta.kt` | Una carta con `id` y `bocaArriba` | [1.4](#14-el-modelo-los-niveles-y-las-cartas) |
+| `ui/tablero/TableroUiState.kt` | Existe, pero **nadie lo usa** | Aquí (0.2) y en [1.6](#16-el-estado-de-la-partida) |
+| `ui/tablero/TableroViewModel.kt` | Existe, pero **nadie lo usa** | Aquí (0.2) y en [1.7](#17-el-viewmodel-las-reglas-del-juego) |
+| `MainActivity.kt` | Muestra directamente `TableroScreen` | [3.3](#33-la-app-la-pila-las-pantallas-y-un-viewmodel-por-partida) |
+
+### 0.1. Prueba: gira el móvil
+
+1. Ejecuta la app y da la vuelta a dos o tres casillas.
+
+2. Gira el móvil (en el emulador, con los botones de rotación).
+
+3. Mira el contador y las casillas. ¿Qué ha pasado? ¿Por qué?
+
+El tablero vuelve a empezar: las casillas boca abajo y los toques a 0. No es un error de Compose. `TableroScreen` está hecho **mal a propósito**: guarda el estado de la partida dentro de la pantalla, con `remember`, y al girar Android destruye la Activity y crea otra. Con ella se va todo lo que estaba en la composición. Los apartados [1.1](#11-el-estado-y-la-recomposicion), [1.2](#12-por-que-el-estado-sale-de-la-vista) y [1.3](#13-que-es-un-viewmodel-y-por-que-lo-necesitas) explican qué está pasando; léelos con la app abierta.
+
+### 0.2. Del `remember` al ViewModel
+
+!!! warning "Antes de empezar: ¿qué es un ViewModel?"
+    Este paso usa un ViewModel por primera vez en el proyecto. Si no tienes claro qué es, cuánto vive y qué partes tiene, lee antes [1.3 · Qué es un ViewModel](#13-que-es-un-viewmodel-y-por-que-lo-necesitas). Te llevará cinco minutos y es la base de todo lo demás.
+
+El arreglo es sacar el estado de la pantalla y llevarlo al `TableroViewModel`, que ya existe y sobrevive al giro. Hazlo **sin cambiar lo que se ve**: el tablero tiene que seguir funcionando igual, pero ahora sin perderse.
+
+1. **El estado, en `TableroUiState`.** Lo que hoy son dos variables de la pantalla (las cartas y los toques) pasa a ser un único objeto inmutable.
+
+2. **El ViewModel lo crea y lo publica.** En su `MutableStateFlow` privado empieza con las seis cartas boca abajo, y lo expone como `StateFlow` de solo lectura (`uiState`).
+
+3. **El evento sube.** Lo que hacía el `onClick` de la casilla se convierte en una función del ViewModel, `onCartaPulsada(id)`, que publica un estado nuevo con `_uiState.update { it.copy(…) }`.
+
+4. **La pantalla solo pinta y avisa.** `TableroScreen` obtiene el ViewModel con `viewModel()`, lee el estado con `collectAsStateWithLifecycle()` y, al pulsar, llama a `viewModel.onCartaPulsada(carta.id)`. Ya no queda ningún `remember` con datos del juego.
+
+5. **Comprueba.** Gira el móvil: las casillas y el contador siguen ahí.
+
+!!! tip "Lo que acabas de hacer es la arquitectura del proyecto entero"
+    El evento **sube** al ViewModel y el estado **baja** a la pantalla (UDF). A partir de aquí no cambias la forma, solo la llenas: el estado crece con el nivel y los movimientos ([1.6](#16-el-estado-de-la-partida)), `onCartaPulsada` pasa de «dar la vuelta» a aplicar las reglas del Memory ([1.7](#17-el-viewmodel-las-reglas-del-juego)) y la pantalla se divide en piezas sin estado ([Parte 2](#parte-2-la-pantalla-del-tablero)).
+
+!!! info "📚 En los apuntes"
+
+    - 3C.1 · [§1.1 Supervivencia ante cambios de configuración](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#11-supervivencia-ante-cambios-de-configuracion) · [§3 StateFlow y UDF](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#3-reactividad-con-stateflow-y-el-patron-udf) · [§4.1 Pantalla contenedora](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#41-pantalla-contenedora-stateful-screen)
+    - Compose · [collectAsStateWithLifecycle](../00-android/00-compose/22-state-management.md#2-consumo-seguro-en-compose-collectasstatewithlifecycle)
+    - Sesión de clase: [3.05 · ViewModel y UiState (I)](../03/sesiones/s05-viewmodel-uistate-i.md)
+    - Glosario: [cambio de configuración](../glosario.md#cambio-de-configuracion) · [ViewModel](../glosario.md#viewmodel) · [UDF](../glosario.md#udf)
 
 ---
 
@@ -102,19 +154,101 @@ Fíjate en la tabla de abajo: solo con el ViewModel se cumplen las cuatro condic
 
 ### 1.3. Qué es un ViewModel y por qué lo necesitas
 
-El ViewModel vive **fuera** de la pantalla, en un almacén, y la pantalla nueva recibe **el mismo** después de un giro. Por eso la partida, las cartas y los contadores van en él. Recorre la animación entera, sobre todo los pasos del giro y el de `onCleared()`:
+Un **ViewModel** es una clase de Android Jetpack (`androidx.lifecycle.ViewModel`) que **guarda el estado de una pantalla y la lógica que lo cambia**. No dibuja nada y no sabe nada de Compose: tiene datos y funciones. La pantalla le **pide** el estado para pintarlo y le **avisa** de lo que hace el usuario.
+
+Lo que lo hace especial es **cuánto vive**. Una función `@Composable` se ejecuta una y otra vez, y la Activity se destruye y se vuelve a crear cada vez que giras el móvil. El ViewModel no: Android lo guarda en un **almacén** (`ViewModelStore`) **fuera** de la Activity. Al girar, la Activity nueva pide el ViewModel y recibe **el mismo objeto**, con su estado intacto.
+
+**El almacén (`ViewModelStore`).** Es un objeto de Android que guarda los ViewModel de una pantalla, cada uno con una **clave** (por defecto, el nombre de su clase). Piensa en el guardarropa de un teatro: dejas el abrigo, te dan un número, y aunque salgas un momento al pasillo, al volver te devuelven **tu** abrigo. Solo cuando el teatro cierra se vacía el guardarropa.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/evaluacion/img/almacen-viewmodel-memory.svg"
+<figcaption>Qué pasa con el almacén al girar el móvil y cuándo se vacía.</figcaption>
+</figure>
+
+1. **Cada almacén tiene un dueño.** En el punto de partida, el dueño es la `MainActivity`. Cuando haya navegación ([3.3](#33-la-app-la-pila-las-pantallas-y-un-viewmodel-por-partida)), cada pantalla de la pila tendrá **su propio almacén**, y por eso cada partida tendrá su propio ViewModel.
+
+2. **`viewModel()` busca antes de crear.** Mira en el almacén si ya hay un ViewModel con esa clave. Si no lo hay, lo crea y lo guarda; si lo hay, devuelve **ese**. Simplificado, hace esto:
+
+    ```kotlin
+    // Lo que hace viewModel() por dentro (muy simplificado)
+    val vm = almacen["TableroViewModel"]       // ¿ya existe? Lo devuelve.
+        ?: TableroViewModel().also {           // si no, lo crea…
+            almacen["TableroViewModel"] = it   // …y lo guarda.
+        }
+    ```
+
+3. **Al girar, Android no vacía el almacén.** Destruye la Activity, pero le pasa el almacén a la Activity nueva. Ella llama otra vez a `viewModel()` y encuentra el mismo ViewModel.
+
+4. **Al salir de verdad, sí lo vacía.** Si cierras la pantalla con atrás (o, con navegación, la partida sale de la pila), Android sabe que no va a volver: vacía el almacén y llama a `onCleared()` de cada ViewModel, que cancela sus corrutinas.
+
+La clave de todo: **la Activity es de usar y tirar; el almacén, no**. Por eso el estado del juego va en el ViewModel y no en la pantalla.
+
+| | `remember` en la pantalla | ViewModel |
+| :--- | :--- | :--- |
+| ¿Dónde vive el dato? | En la composición | En el almacén, fuera de la Activity |
+| ¿Sobrevive a una recomposición? | Sí | Sí |
+| ¿Sobrevive al giro del móvil? | **No** (es lo que viste en [0.1](#01-prueba-gira-el-movil)) | **Sí** |
+| ¿Dónde están las reglas del juego? | Mezcladas con el dibujo | En funciones del ViewModel |
+| ¿Se puede probar sin pantalla? | No | **Sí**, con un test normal ([1.8](#18-los-tests-el-juego-funciona-sin-pantalla)) |
+
+**Cuánto vive, paso a paso.** Recorre la animación entera; fíjate sobre todo en los pasos del giro y en el de `onCleared()`:
+
+1. **Nace** la primera vez que la pantalla lo pide.
+
+2. **Sobrevive** al giro: la Activity muere y renace, pero el almacén le devuelve el mismo ViewModel.
+
+3. **Muere** cuando la pantalla se va de verdad (sales de la app con atrás, o la partida sale de la pila de navegación). Justo antes, Android llama a su `onCleared()` y cancela sus corrutinas.
 
 <div class="cpa" data-cpa="giro"></div>
+
+**Sus tres partes.** Todos los ViewModel del curso tienen la misma forma. Es la que ya tiene el `TableroViewModel` de la plantilla:
+
+```kotlin
+class TableroViewModel : ViewModel() {                              // 1 · hereda de ViewModel
+
+    private val _uiState = MutableStateFlow(TableroUiState())       // 2 · el estado: privado y modificable…
+    val uiState: StateFlow<TableroUiState> = _uiState.asStateFlow() //     …y público de solo lectura
+
+    fun onCartaPulsada(id: Int) {                                   // 3 · un evento: lo que hace el usuario
+        _uiState.update { it.copy(/* … */) }                        //     publica un estado NUEVO
+    }
+}
+```
+
+1. **Hereda de `ViewModel`.** Es lo que hace que Android lo guarde en el almacén y lo conserve al girar.
+
+2. **El estado, en un `StateFlow`.** Dentro, un `MutableStateFlow` privado que solo el ViewModel puede cambiar; fuera, un `StateFlow` de solo lectura. La pantalla lo observa y se recompone cada vez que llega un estado nuevo, pero **no puede modificarlo**.
+
+3. **Los eventos, como funciones `onAlgo`.** La pantalla no cambia el estado: llama a `onCartaPulsada(id)`. Dentro se aplican las reglas y se publica un estado nuevo con `copy`.
+
+**Cómo lo usa la pantalla.** Dos líneas, que escribirás en el [paso 0.2](#02-del-remember-al-viewmodel):
+
+```kotlin
+val viewModel: TableroViewModel = viewModel()                      // pide el ViewModel (el mismo tras girar)
+val estado by viewModel.uiState.collectAsStateWithLifecycle()     // observa su estado
+```
+
+`viewModel()` no crea un ViewModel nuevo cada vez: la primera vez lo crea y lo guarda en el almacén, y las siguientes (también después de girar) devuelve el que ya existe. Por eso **nunca** se escribe `TableroViewModel()` a mano dentro de un composable.
+
+!!! danger "Lo que no va en un ViewModel"
+    - **Nada de Compose:** ni `@Composable`, ni `remember`, ni `mutableStateOf` para el estado de la pantalla. El ViewModel no importa nada de `androidx.compose`, y por eso se puede probar sin pantalla.
+    - **Ninguna referencia a la Activity ni a una vista.** El ViewModel vive más que la Activity: si guardara una, la mantendría viva después de destruirse (una fuga de memoria).
+    - **Nada de navegación:** el ViewModel no cambia de pantalla. Expone en el estado que la partida está ganada, y es la pantalla la que avisa hacia fuera ([2.5](#25-la-pantalla-con-estado)).
 
 !!! info "📚 En los apuntes"
 
     - 3C.1 · [§1 El rol del ViewModel](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#1-el-rol-del-viewmodel-en-la-arquitectura-moderna) · [§1.1 Supervivencia ante cambios de configuración](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#11-supervivencia-ante-cambios-de-configuracion)
+    - 3C.1 · [§3 StateFlow y UDF](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#3-reactividad-con-stateflow-y-el-patron-udf) · [§3.1 Implementación del ViewModel](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#31-implementacion-del-viewmodel) · [§4.1 Pantalla contenedora](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#41-pantalla-contenedora-stateful-screen)
     - 3B.1 · [§8 Un ViewModel para cada pantalla](../03/b-navegacion/3b.1-navigation3.md#8-un-viewmodel-para-cada-pantalla)
-    - Glosario: [ViewModel](../glosario.md#viewmodel) · [ViewModelStore](../glosario.md#viewmodelstore) · [viewModelScope](../glosario.md#viewmodelscope)
+    - Sesión de clase: [3.05 · Por qué un ViewModel](../03/sesiones/s05-viewmodel-uistate-i.md#1-por-que-un-viewmodel-10-min) · [El ViewModel: StateFlow y eventos](../03/sesiones/s05-viewmodel-uistate-i.md#4-el-viewmodel-stateflow-y-eventos-20-min)
+    - Codelab: [3.06 · Quiz con ViewModel: el ViewModel](../03/codelabs/06-quiz-viewmodel.md#5-paso-3-el-viewmodel) · [¿Por qué sobrevive al giro?](../03/codelabs/06-quiz-viewmodel.md#7-paso-5-por-que-sobrevive-al-giro)
+    - Glosario: [ViewModel](../glosario.md#viewmodel) · [ViewModelStore](../glosario.md#viewmodelstore) · [viewModelScope](../glosario.md#viewmodelscope) · [StateFlow](../glosario.md#stateflow) · [MVVM](../glosario.md#mvvm)
 
 ### 1.4. El modelo: los niveles y las cartas
 
 Los datos del juego, sin nada de Android. Un **nivel** es un dato fijo (unos pocos y conocidos), así que es una `enum class` con propiedades. Una **carta** es un dato inmutable: una `data class` con `val`.
+
+`Nivel.kt` lo creas. 🧩 `Carta.kt` **ya está en la plantilla** con `id` y `bocaArriba`: sustitúyelo por esta versión y completa el `TODO 2`. Al cambiar `bocaArriba` por la situación de la carta, el compilador te señalará los sitios de la pantalla que tienes que adaptar.
 
 ```kotlin title="model/Nivel.kt"
 package com.pm2627.p1ev.memory.model
@@ -239,6 +373,8 @@ val dibujos: List<Int> = listOf(
 
 ### 1.6. El estado de la partida
 
+🧩 **Ya está en la plantilla** (y en el [paso 0.2](#02-del-remember-al-viewmodel) le añadiste los toques). Ahora crece: el contador de toques se convierte en el de **movimientos** y entra lo que necesita el nivel.
+
 Todo lo que pinta el tablero, en un único objeto inmutable. Si algo se ve en pantalla, sale de aquí. Cada cambio produce un estado **nuevo**: así el `StateFlow` detecta que es distinto y avisa a la pantalla.
 
 <div class="cpa" data-cpa="turno"></div>
@@ -282,6 +418,8 @@ data class TableroUiState(
     - Glosario: [UiState](../glosario.md#uistate) · [inmutabilidad](../glosario.md#inmutabilidad) · [StateFlow](../glosario.md#stateflow)
 
 ### 1.7. El ViewModel: las reglas del juego
+
+🧩 **Ya está en la plantilla** y desde el [paso 0.2](#02-del-remember-al-viewmodel) tiene un `onCartaPulsada` que solo da la vuelta a la carta. Sustitúyelo por esta versión: ahora recibe el nivel y el `Random`, reparte las cartas y `onCartaPulsada` aplica las reglas del Memory.
 
 La pantalla **no decide nada**: avisa de que se ha pulsado la carta 7 y el ViewModel aplica las reglas y publica un estado nuevo. Juega una partida y mira el registro de la derecha: cada toque dice qué caso del KDoc de `onCartaPulsada` se ha aplicado (1, 2, 3, 4a o 4b).
 
@@ -507,9 +645,51 @@ Cuando hagas la investigación 6.2, el test de fallar necesitará el **reloj vir
 
 ## Parte 2 · La pantalla del tablero
 
-La pantalla se parte en dos: **`TableroScreen`**, que conoce el ViewModel, y **`TableroContent`**, que solo recibe datos y lambdas. El contenido sin estado se ve en una `@Preview` con un estado inventado, sin emulador. Repasa el patrón en [3C.1 §4](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#4-consumo-del-viewmodel-en-compose).
+Tras el [paso 0.2](#02-del-remember-al-viewmodel), `TableroScreen` ya lee el estado del ViewModel, pero sigue haciéndolo **todo en un solo fichero**: observa el ViewModel, pinta el marcador, la cuadrícula y cada casilla. En esta parte la divides en piezas con una responsabilidad cada una y conviertes las casillas en cartas de verdad.
 
-### 2.1. Qué se vuelve a dibujar
+### 2.1. Screen y Content: cómo se diseña una pantalla
+
+Una pantalla con ViewModel se escribe en **dos niveles**:
+
+- **La Screen (con estado, *stateful*)** es la única que conoce el ViewModel. Observa su estado, se lo pasa al contenido y conecta los eventos con las funciones del ViewModel. **No dibuja nada** por sí misma.
+- **El Content (sin estado, *stateless*)** no conoce el ViewModel: recibe **el estado y lambdas** como parámetros, pinta y avisa. Lo mismo vale para las piezas más pequeñas, como la carta.
+
+<figure class="arq-fig">
+--8<-- "docs/temas/evaluacion/img/screen-content-memory.svg"
+<figcaption>La pantalla del tablero en tres piezas. Solo la de arriba conoce el ViewModel.</figcaption>
+</figure>
+
+| Pieza | Qué recibe | Qué hace | ¿Se ve en una `@Preview`? |
+| :--- | :--- | :--- | :--- |
+| `TableroScreen` | El ViewModel (y lo que avisa hacia fuera) | Observa el estado y conecta eventos | No: necesita un ViewModel |
+| `TableroContent` | Un `TableroUiState` y `onCartaPulsada` | Pinta el marcador y la cuadrícula | Sí, con un estado inventado |
+| `CartaView` | Una `Carta` y un `onClick` | Pinta una carta | Sí, boca abajo y boca arriba |
+
+¿Por qué partirla así?
+
+1. **Se puede ver sin ejecutar la app.** Con un `TableroUiState` inventado ves el tablero en la `@Preview` a mitad de partida, con cartas boca arriba y emparejadas, sin jugar hasta llegar ahí.
+
+2. **Cada pieza hace una sola cosa.** Si algo se pinta mal, el fallo está en el Content o en la carta; si el dato es incorrecto, en el ViewModel. Es la misma pregunta de las [pistas](1eval-proyecto.md#claves): ¿datos, lógica o pantalla?
+
+3. **La pantalla no puede saltarse las reglas.** El Content no tiene acceso al ViewModel ni puede cambiar el estado: solo avisa con `onCartaPulsada(id)`, y la decisión es del ViewModel.
+
+Es *state hoisting* aplicado a la pantalla entera: el estado sube hasta la Screen (y de ahí, al ViewModel) y lo de abajo solo recibe valores y lambdas. Este es el reparto que harás en la plantilla:
+
+| Lo que hoy hace `TableroScreen` | A dónde va |
+| :--- | :--- |
+| Obtener el ViewModel y leer el estado | Se queda en `TableroScreen` ([2.5](#25-la-pantalla-con-estado)) |
+| El marcador y la `LazyVerticalGrid` | `TableroContent` ([2.3](#23-la-cuadricula-lazyverticalgrid)) |
+| La función privada `Casilla` | `CartaView`, ya con la imagen ([2.4](#24-la-carta)) |
+
+!!! info "📚 En los apuntes"
+
+    - 3C.1 · [§4 Consumo del ViewModel en Compose](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#4-consumo-del-viewmodel-en-compose) · [§4.1 Pantalla contenedora (stateful)](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#41-pantalla-contenedora-stateful-screen) · [§4.2 Contenido sin estado (stateless)](../03/c-arquitectura/3c.1-capa-ui-viewmodel.md#42-componente-de-presentacion-stateless-content)
+    - Compose · [State hoisting y UDF](../00-android/00-compose/22-state-management.md#elevacion-del-estado-state-hoisting-y-patron-udf)
+    - Codelab: [3.06 · Quiz con ViewModel, paso 4: la pantalla](../03/codelabs/06-quiz-viewmodel.md#6-paso-4-la-pantalla) (`QuizScreen` y `QuizContent`)
+    - Sesión de clase: [3.05 · ViewModel y UiState (I)](../03/sesiones/s05-viewmodel-uistate-i.md#5-conectar-el-viewmodel-a-la-app-15-min)
+    - Glosario: [state hoisting](../glosario.md#state-hoisting) · [@Preview](../glosario.md#preview)
+
+### 2.2. Qué se vuelve a dibujar
 
 Cuando cambia el estado, Compose solo vuelve a ejecutar las funciones que lo **leen**. Si cambia una carta, se recompone esa carta, no el tablero entero: las demás reciben una `Carta` igual que antes y Compose se las salta. La `key` de la cuadrícula hace que cada celda sea siempre **la misma carta**.
 
@@ -520,11 +700,42 @@ Cuando cambia el estado, Compose solo vuelve a ejecutar las funciones que lo **l
     - 3A.4 · [§2 Transformar el dibujo: graphicsLayer](../03/a-diseno/3a.4-animaciones.md#2-transformar-el-dibujo-graphicslayer)
     - Glosario: [recomposición](../glosario.md#recomposicion) · [fases de Compose](../glosario.md#fases-compose)
 
-### 2.2. La cuadrícula y la carta
+### 2.3. La cuadrícula: `LazyVerticalGrid`
 
-Un tablero de filas y columnas fijas es una `LazyVerticalGrid` con `GridCells.Fixed(columnas)`. Cada carta lleva su `key` (su `id`): así Compose sabe qué carta es cuál aunque cambie el estado. Juega con las columnas:
+El tablero es una **cuadrícula**: cartas en filas y columnas. En Compose se hace con `LazyVerticalGrid`, la versión en rejilla de `LazyColumn`. Ya la usa la plantilla; ahora toca entender cada parámetro, porque el tablero del juego cambia de forma según el nivel.
+
+```kotlin
+LazyVerticalGrid(
+    columns = GridCells.Fixed(3),                       // 1 · cuántas columnas
+    horizontalArrangement = Arrangement.spacedBy(8.dp), // 2 · hueco entre columnas
+    verticalArrangement = Arrangement.spacedBy(8.dp),   //     y entre filas
+) {
+    items(cartas, key = { it.id }) { carta ->           // 3 · una celda por carta, con su key
+        CartaView(carta, onClick = { … })
+    }
+}
+```
+
+1. **`columns`** decide la forma. Con `GridCells.Fixed(n)` hay siempre `n` columnas y las filas salen solas: 12 cartas en 4 columnas son 3 filas. Con `GridCells.Adaptive(minSize)` caben tantas columnas como permita el ancho; es lo que usa la plantilla para que las casillas no se deformen al girar. **En el juego usarás `Fixed`**, con las columnas del nivel: la forma del tablero es parte del nivel, no del tamaño de la pantalla.
+
+2. **`spacedBy`** deja el mismo hueco entre celdas, sin `padding` en cada carta.
+
+3. **`items(lista, key = …)`** crea una celda por elemento. La **`key`** hace que Compose identifique cada celda por el `id` de la carta y no por su posición: es la que permite que solo se recomponga la carta que cambia ([2.2](#22-que-se-vuelve-a-dibujar)) y que el volteo de la investigación 6.1 ocurra en la carta correcta.
+
+¿Por qué *lazy* si el tablero cabe en pantalla? Porque es el contenedor de rejilla de Compose: no hay una «cuadrícula no lazy». Además, si un nivel no cabe, la cuadrícula hace scroll y solo compone las celdas visibles.
+
+El tamaño de cada carta lo pone la propia carta con `Modifier.aspectRatio(…)`: la columna fija el ancho y la proporción da el alto. Prueba cómo cambia el tablero con las columnas:
 
 <div class="cpa" data-cpa="cuadricula"></div>
+
+!!! info "📚 En los apuntes"
+
+    - 3A.3 · [§1 Column frente a LazyLayout](../03/a-diseno/3a.3-listas-cuadriculas.md#1-el-problema-del-rendimiento-column-con-scroll-vs-lazylayout) · [§3 La key](../03/a-diseno/3a.3-listas-cuadriculas.md#3-la-clave-del-rendimiento-asignacion-de-key) · [§4.1 Modos de cuadrícula](../03/a-diseno/3a.3-listas-cuadriculas.md#41-modos-de-cuadricula) · [§4.2 Tablero de cartas](../03/a-diseno/3a.3-listas-cuadriculas.md#42-ejemplo-tablero-de-cartas-en-cuadricula) · [§4.5 Playground de cuadrículas](../03/a-diseno/3a.3-listas-cuadriculas.md#45-playground-de-cuadriculas)
+    - Sesión de clase: [3.01 · De Column a LazyColumn](../03/sesiones/s01-tema-scaffold-listas.md#4-de-column-a-lazycolumn-20-min) · [key: el experimento de ordenar](../03/sesiones/s01-tema-scaffold-listas.md#5-key-el-experimento-de-ordenar-20-min) · [Reto: la biblioteca en cuadrícula](../03/sesiones/s01-tema-scaffold-listas.md#7-reto-expres-la-biblioteca-en-cuadricula-10-min)
+    - Codelab: [3.02 · Catálogo con LazyColumn, la lista con key](../03/codelabs/02-catalogo-lazycolumn.md#5-paso-3-la-lista-con-key)
+    - Glosario: [LazyVerticalGrid](../glosario.md#lazyverticalgrid)
+
+Con eso ya puedes escribir el contenido del tablero:
 
 ```kotlin title="ui/tablero/TableroContent.kt"
 package com.pm2627.p1ev.memory.ui.tablero
@@ -571,7 +782,9 @@ private fun TableroContentPreview() {
 }
 ```
 
-La carta decide qué dibujar **solo con sus datos**. Para las imágenes, `Image` con `painterResource` y un `contentScale` que no las deforme:
+### 2.4. La carta
+
+Es la función `Casilla` de la plantilla convertida en una pieza propia y pública, con su `@Preview`. La carta decide qué dibujar **solo con sus datos**. Para las imágenes, `Image` con `painterResource` y un `contentScale` que no las deforme:
 
 <div class="cpa" data-cpa="imagen"></div>
 
@@ -610,13 +823,14 @@ fun CartaView(
 
 !!! info "📚 En los apuntes"
 
-    - 3A.3 · [§3 La key](../03/a-diseno/3a.3-listas-cuadriculas.md#3-la-clave-del-rendimiento-asignacion-de-key) · [§4.1 Modos de cuadrícula](../03/a-diseno/3a.3-listas-cuadriculas.md#41-modos-de-cuadricula) · [§4.2 Tablero de cartas](../03/a-diseno/3a.3-listas-cuadriculas.md#42-ejemplo-tablero-de-cartas-en-cuadricula)
     - UT2 · [§3 Image](../02/2.3.2-imagenes-iconos-recursos.md#3-mostrar-imagenes-con-image) · [contentScale](../02/2.3.2-imagenes-iconos-recursos.md#contentscale-como-se-adapta-la-imagen-a-su-hueco) · [contentDescription](../02/2.3.2-imagenes-iconos-recursos.md#contentdescription-accesibilidad) · [Column](../02/2.3.1-layouts-modificadores.md#2-column-elementos-uno-debajo-de-otro) · [Modifier](../02/2.3.1-layouts-modificadores.md#7-que-es-un-modifier)
     - 3A.1 · [§1.2 colorScheme y roles de color](../03/a-diseno/3a.1-material-design-3-scaffold.md#12-esquemas-de-color-colorscheme-y-roles-semanticos)
     - Investigación 6.1 (volteo): [guía del proyecto](1eval-proyecto.md#investigacion-volteo)
-    - Glosario: [LazyVerticalGrid](../glosario.md#lazyverticalgrid) · [painterResource](../glosario.md#painter-resource) · [contentScale](../glosario.md#contentscale) · [@Preview](../glosario.md#preview)
+    - Glosario: [painterResource](../glosario.md#painter-resource) · [contentScale](../glosario.md#contentscale) · [@Preview](../glosario.md#preview)
 
-### 2.3. La pantalla con estado
+### 2.5. La pantalla con estado
+
+🧩 **Ya está en la plantilla**, y desde el [paso 0.2](#02-del-remember-al-viewmodel) observa el ViewModel. Ahora se queda solo con eso: el dibujo de la cuadrícula y de cada casilla se ha ido a `TableroContent` y `CartaView` ([2.3](#23-la-cuadricula-lazyverticalgrid) y [2.4](#24-la-carta)), y el ViewModel le llega desde fuera, desde la navegación (3.3).
 
 `TableroScreen` es la única que conoce el ViewModel: observa su estado, se lo pasa al contenido y avisa hacia fuera cuando se gana.
 
@@ -850,7 +1064,7 @@ import com.pm2627.p1ev.memory.ui.theme.MemoryTheme
 
 /**
  * LA ACTIVITY: solo arranca la app. Toda la interfaz está en MemoryApp.
- * Sustituye el Greeting de la plantilla por esto. (Completa: no hay que tocarla.)
+ * Sustituye TableroScreen por MemoryApp, como aquí. (Completa: no hay que tocarla.)
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

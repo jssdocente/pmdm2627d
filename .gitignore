@@ -24,6 +24,8 @@ _bck/
 .projects/kotlin-lab/
 # Laboratorio de corrutinas y flows (clase extra de la UT2): repositorio Git propio (jssdocente/pmdm2627-lab-flows)
 .projects/lab-flows/
+# Plantilla del proyecto de la 1ª evaluación (Memory): repositorio Git propio (jssdocente/pmdm2627_1eval_proyecto)
+.projects/1eval-proyecto/
 
 # Documentación interna del profesor: no se sube (el repositorio es público)
 .profesor/

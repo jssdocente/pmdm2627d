@@ -1,0 +1,44 @@
+<svg class="arq-svg" viewBox="0 0 760 330" role="img" aria-labelledby="arq-alm-t arq-alm-d" xmlns="http://www.w3.org/2000/svg">
+  <title id="arq-alm-t">El almacén de ViewModels al girar el móvil</title>
+  <desc id="arq-alm-d">A la izquierda, la Activity antes del giro; a la derecha, la Activity nueva después del giro. Abajo, en el centro, el almacén, ViewModelStore, que guarda el TableroViewModel con su clave. Paso 1: la primera Activity llama a viewModel(), no lo encuentra en el almacén, lo crea y lo guarda. Paso 2: al girar, la primera Activity se destruye, pero Android no vacía el almacén: se lo pasa a la Activity nueva. Paso 3: la Activity nueva llama a viewModel(), lo encuentra y recibe el mismo objeto, con el mismo estado. Paso 4: solo cuando sales de verdad, por ejemplo con atrás, se vacía el almacén y se llama a onCleared.</desc>
+  <defs>
+    <marker id="arq-alm-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arq-head"/></marker>
+  </defs>
+
+  <!-- Activities -->
+  <rect x="20" y="30" width="190" height="60" rx="8" class="arq-ui arq-dashed"/>
+  <text x="115" y="55" class="arq-t arq-code arq-strong" text-anchor="middle">MainActivity</text>
+  <text x="115" y="74" class="arq-t arq-xs" text-anchor="middle">antes del giro · se destruye ✗</text>
+
+  <rect x="550" y="30" width="190" height="60" rx="8" class="arq-ui"/>
+  <text x="645" y="55" class="arq-t arq-code arq-strong" text-anchor="middle">MainActivity</text>
+  <text x="645" y="74" class="arq-t arq-xs" text-anchor="middle">después del giro · otra nueva</text>
+
+  <!-- 2 · el giro -->
+  <line x1="210" y1="60" x2="546" y2="60" class="arq-dep" marker-end="url(#arq-alm-a)"/>
+  <text x="378" y="50" class="arq-t arq-xs arq-strong" text-anchor="middle">2 · giras el móvil</text>
+  <text x="378" y="78" class="arq-t arq-xs arq-muted" text-anchor="middle">la Activity muere, pero el almacén pasa a la nueva</text>
+
+  <!-- almacén -->
+  <rect x="240" y="150" width="280" height="110" rx="12" class="arq-box arq-dashed"/>
+  <text x="254" y="172" class="arq-t arq-code arq-strong arq-muted">ViewModelStore · el almacén</text>
+  <rect x="270" y="186" width="220" height="56" rx="8" class="arq-dom"/>
+  <text x="380" y="209" class="arq-t arq-code arq-strong" text-anchor="middle">TableroViewModel</text>
+  <text x="380" y="228" class="arq-t arq-xs" text-anchor="middle">con su estado: cartas y toques</text>
+
+  <!-- 1 · crear y guardar -->
+  <path d="M115,90 C115,150 180,200 266,206" class="arq-dep" marker-end="url(#arq-alm-a)"/>
+  <text x="24" y="128" class="arq-t arq-xs arq-strong">1 · viewModel()</text>
+  <text x="24" y="144" class="arq-t arq-xs">no está → lo crea</text>
+  <text x="24" y="160" class="arq-t arq-xs">y lo guarda</text>
+
+  <!-- 3 · devolver el mismo -->
+  <path d="M494,206 C580,200 645,150 645,94" class="arq-dep" marker-end="url(#arq-alm-a)"/>
+  <text x="736" y="128" class="arq-t arq-xs arq-strong" text-anchor="end">3 · viewModel()</text>
+  <text x="736" y="144" class="arq-t arq-xs" text-anchor="end">ya está → devuelve</text>
+  <text x="736" y="160" class="arq-t arq-xs" text-anchor="end">el MISMO objeto</text>
+
+  <!-- 4 · vaciar -->
+  <text x="380" y="286" class="arq-t arq-xs" text-anchor="middle"><tspan class="arq-strong">4 · Sales de verdad</tspan> (atrás, o la partida sale de la pila): el almacén se vacía y se llama a onCleared().</text>
+  <text x="380" y="318" class="arq-t arq-s arq-strong" text-anchor="middle">La Activity se cambia en cada giro; el almacén, y el ViewModel de dentro, no.</text>
+</svg>
