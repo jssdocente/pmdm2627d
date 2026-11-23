@@ -365,6 +365,10 @@ val dibujos: List<Int> = listOf(
 )
 ```
 
+!!! tip "¿No tienes imágenes? Descarga unas de prueba"
+
+    Tienes **16 figuras vectoriales** (`carta_*.xml`) listas para usar, sin derechos de terceros: [descargar `imagenes-prueba.zip`](https://github.com/jssdocente/pmdm2627_1eval_proyecto/raw/recursos-imagenes/recursos/imagenes-prueba.zip). Descomprime y copia los `carta_*.xml` en `app/src/main/res/drawable/`; en la [rama de recursos](https://github.com/jssdocente/pmdm2627_1eval_proyecto/tree/recursos-imagenes/recursos) tienes la vista previa y cómo usarlas. Si prefieres las tuyas, recuerda indicar la fuente y la licencia en el README.
+
 !!! info "📚 En los apuntes"
 
     - Kotlin · [Listas: operaciones funcionales](../00-android/00-kotlin/42-listas.md#4-operaciones-funcionales-imprescindibles) · [groupBy](../00-android/00-kotlin/42-listas.md#44-agrupacion-y-ordenacion-groupby-y-sortedby) · [Inmutabilidad de las listas](../00-android/00-kotlin/42-listas.md#3-inmutabilidad-y-adicion-funcional-de-elementos)
